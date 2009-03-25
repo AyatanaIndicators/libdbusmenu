@@ -1,0 +1,17 @@
+compile
+m4
+libdbusmenu-glib/.deps
+libdbusmenu-glib/.libs
+libdbusmenu-glib/dbusmenu-glib.pc
+libdbusmenu-glib/libdbusmenu-glib.la
+libdbusmenu-glib/libdbusmenu_glib_la-test.lo
+libdbusmenu-gtk/.deps
+libdbusmenu-gtk/.libs
+libdbusmenu-gtk/dbusmenu-gtk.pc
+libdbusmenu-gtk/libdbusmenu-gtk.la
+libdbusmenu-gtk/libdbusmenu_gtk_la-test.lo
+libdbusmenu-qt/.deps
+libdbusmenu-qt/.libs
+libdbusmenu-qt/dbusmenu-qt.pc
+libdbusmenu-qt/libdbusmenu-qt.la
+libdbusmenu-qt/libdbusmenu_qt_la-test.lo
