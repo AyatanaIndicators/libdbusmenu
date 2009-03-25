@@ -1,0 +1,2 @@
+
+void mysymbol (void);

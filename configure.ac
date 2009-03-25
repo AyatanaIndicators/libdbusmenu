@@ -48,6 +48,8 @@ AM_GLIB_GNU_GETTEXT
 AC_OUTPUT([
 Makefile
 po/Makefile.in
+libdbusmenu-glib/Makefile
+libdbusmenu-glib/dbusmenu-glib.pc
 ])
 
 ###########################
