@@ -1,5 +1,6 @@
 
-AC_INIT(src/applet-main.c)
+AC_INIT(libdbusmenu, 0.0.1, ted@canonical.com)
+AC_COPYRIGHT([Copyright 2009 Canonical])
 
 AC_PREREQ(2.53)
 
