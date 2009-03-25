@@ -1,6 +1,6 @@
 
 EXTRA_DIST = \
-	dbusmenu_glib.pc.in
+	dbusmenu-glib.pc.in
 
 lib_LTLIBRARIES = \
 	libdbusmenu-glib.la
@@ -24,6 +24,6 @@ libdbusmenu_glib_la_CFLAGS = \
 libdbusmenu_glib_la_LIBADD = \
 	$(LIBDBUSMENU_GLIB_LIBS)
 
-pkgconfig_DATA = dbusmenu_glib.pc
+pkgconfig_DATA = dbusmenu-glib.pc
 pkgconfigdir = $(libdir)/pkgconfig
 

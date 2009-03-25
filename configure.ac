@@ -50,6 +50,10 @@ Makefile
 po/Makefile.in
 libdbusmenu-glib/Makefile
 libdbusmenu-glib/dbusmenu-glib.pc
+libdbusmenu-gtk/Makefile
+libdbusmenu-gtk/dbusmenu-gtk.pc
+libdbusmenu-qt/Makefile
+libdbusmenu-qt/dbusmenu-qt.pc
 ])
 
 ###########################

@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+bindir=@bindir@
+includedir=@includedir@
+
+Cflags: -I${includedir}/libdbusmenu-0.1
+Requires: dbus-glib-1 dbusmenu-glib
+Libs: -L${libdir} -ldbusmenu-qt
+
+Name: libdbusmenu-qt
+Description: libdbusmenu-qt.
+Version: @VERSION@
+
