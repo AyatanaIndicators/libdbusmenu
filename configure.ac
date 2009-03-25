@@ -5,7 +5,7 @@ AC_COPYRIGHT([Copyright 2009 Canonical])
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-applet, 0.1.3)
+AM_INIT_AUTOMAKE(libdbusmenu, 0.0.1)
 
 AM_MAINTAINER_MODE
 
