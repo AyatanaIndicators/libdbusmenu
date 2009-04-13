@@ -20,6 +20,21 @@ AC_SUBST(VERSION)
 AC_CONFIG_MACRO_DIR([m4])
 
 ###########################
+# Dependencies - GLib
+###########################
+
+GLIB_REQUIRED_VERSION=2.18
+DBUS_REQUIRED_VERSION=0.76
+XML_REQUIRED_VERSION=2.6
+
+PKG_CHECK_MODULES(DBUSMENUGLIB, glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                libxml-2.0 >= $XML_REQUIRED_VERSION)
+
+AC_SUBST(DBUSMENUGLIB_CFLAGS)
+AC_SUBST(DBUSMENUGLIB_LIBS)
+
+###########################
 # Lib versioning 
 ###########################
 

@@ -8,10 +8,10 @@ lib_LTLIBRARIES = \
 libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-glib/
 
 libdbusmenu_glibinclude_HEADERS = \
-	test.h
+	menuitem.h
 
 libdbusmenu_glib_la_SOURCES = \
-	test.c
+	menuitem.c
 
 libdbusmenu_glib_la_LDFLAGS = \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
@@ -19,10 +19,10 @@ libdbusmenu_glib_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_glib_la_CFLAGS = \
-	$(LIBDBUSMENU_GLIB_CFLAGS)
+	$(DBUSMENUGLIB_CFLAGS)
 
 libdbusmenu_glib_la_LIBADD = \
-	$(LIBDBUSMENU_GLIB_LIBS)
+	$(DBUSMENUGLIB_LIBS)
 
 pkgconfig_DATA = dbusmenu-glib.pc
 pkgconfigdir = $(libdir)/pkgconfig
