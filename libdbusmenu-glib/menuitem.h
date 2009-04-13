@@ -16,17 +16,43 @@ G_BEGIN_DECLS
 typedef struct _DbusmenuMenuitem      DbusmenuMenuitem;
 typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
 
+#define DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED    "property-changed"
+#define DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED      "item-activated"
+
 struct _DbusmenuMenuitemClass
 {
-GObjectClass parent_class;
+	GObjectClass parent_class;
+
+	/* Signals */
+	void (*property_changed) (gchar * property);
+	void (*item_activated) (void);
+
+	/* Virtual functions */
+	void (*buildxml) (GPtrArray ** stringarray);
+
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
 };
 
 struct _DbusmenuMenuitem
 {
-GObject parent;
+	GObject parent;
 };
 
 GType dbusmenu_menuitem_get_type (void);
+
+GList * dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi);
+guint dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent);
+
+gboolean dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child);
+gboolean dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child);
+gboolean dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position);
+
+gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value);
+const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
+gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 
 G_END_DECLS
 
