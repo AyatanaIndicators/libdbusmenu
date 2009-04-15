@@ -9,12 +9,19 @@ lib_LTLIBRARIES = \
 libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-glib/
 
 libdbusmenu_glibinclude_HEADERS = \
-	menuitem.h
+	menuitem.h \
+	server.h \
+	client.h
 
 libdbusmenu_glib_la_SOURCES = \
 	dbusmenu-server.h \
 	dbusmenu-client.h \
-	menuitem.c
+	menuitem.h \
+	menuitem.c \
+	server.h \
+	server.c \
+	client.h \
+	client.c
 
 libdbusmenu_glib_la_LDFLAGS = \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
