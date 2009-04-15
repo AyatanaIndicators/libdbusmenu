@@ -3,6 +3,7 @@
 #endif
 
 #include "client.h"
+#include "dbusmenu-client.h"
 
 typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 

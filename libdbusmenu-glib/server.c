@@ -4,6 +4,14 @@
 
 #include "server.h"
 
+/* DBus Prototypes */
+static gboolean _dbusmenu_server_get_property (void);
+static gboolean _dbusmenu_server_get_properties (void);
+static gboolean _dbusmenu_server_call (void);
+static gboolean _dbusmenu_server_list_properties (void);
+
+#include "dbusmenu-server.h"
+
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 
 struct _DbusmenuServerPrivate
@@ -52,3 +60,33 @@ dbusmenu_server_finalize (GObject *object)
 	G_OBJECT_CLASS (dbusmenu_server_parent_class)->finalize (object);
 	return;
 }
+
+/* DBus Prototypes */
+static gboolean 
+_dbusmenu_server_get_property (void)
+{
+
+	return TRUE;
+}
+
+static gboolean
+_dbusmenu_server_get_properties (void)
+{
+
+	return TRUE;
+}
+
+static gboolean
+_dbusmenu_server_call (void)
+{
+
+	return TRUE;
+}
+
+static gboolean
+_dbusmenu_server_list_properties (void)
+{
+
+	return TRUE;
+}
+
