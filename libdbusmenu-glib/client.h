@@ -4,6 +4,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "menuitem.h"
+
 G_BEGIN_DECLS
 
 #define DBUSMENU_CLIENT_TYPE            (dbusmenu_client_get_type ())
@@ -24,7 +26,9 @@ struct _DbusmenuClient {
 	GObject parent;
 };
 
-GType dbusmenu_client_get_type (void);
+GType                dbusmenu_client_get_type   (void);
+DbusmenuClient *     dbusmenu_client_new        (const gchar * name, const gchar * object);
+DbusmenuMenuitem *   dbusmenu_client_get_root   (DbusmenuClient * client);
 
 G_END_DECLS
 
