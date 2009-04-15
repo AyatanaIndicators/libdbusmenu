@@ -16,3 +16,5 @@ libdbusmenu-qt/dbusmenu-qt.pc
 libdbusmenu-qt/libdbusmenu-qt.la
 libdbusmenu-qt/libdbusmenu_qt_la-test.lo
 libdbusmenu-glib/libdbusmenu_glib_la-menuitem.lo
+dbusmenu-client.h
+dbusmenu-server.h

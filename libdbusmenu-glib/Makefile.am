@@ -1,6 +1,7 @@
 
 EXTRA_DIST = \
-	dbusmenu-glib.pc.in
+	dbusmenu-glib.pc.in \
+	dbus-menu.xml
 
 lib_LTLIBRARIES = \
 	libdbusmenu-glib.la
@@ -11,6 +12,8 @@ libdbusmenu_glibinclude_HEADERS = \
 	menuitem.h
 
 libdbusmenu_glib_la_SOURCES = \
+	dbusmenu-server.h \
+	dbusmenu-client.h \
 	menuitem.c
 
 libdbusmenu_glib_la_LDFLAGS = \
@@ -26,4 +29,22 @@ libdbusmenu_glib_la_LIBADD = \
 
 pkgconfig_DATA = dbusmenu-glib.pc
 pkgconfigdir = $(libdir)/pkgconfig
+
+BUILT_SOURCES = \
+	dbusmenu-client.h \
+	dbusmenu-server.h
+
+dbusmenu-server.h: dbus-menu.xml
+	dbus-binding-tool \
+		--prefix=_dbusmenu_server \
+		--mode=glib-server \
+		--output=dbusmenu-server.h \
+		$(srcdir)/dbus-menu.xml
+
+dbusmenu-client.h: dbus-menu.xml
+	dbus-binding-tool \
+		--prefix=_dbusmenu_client \
+		--mode=glib-client \
+		--output=dbusmenu-client.h \
+		$(srcdir)/dbus-menu.xml
 
