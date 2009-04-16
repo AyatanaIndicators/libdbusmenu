@@ -54,6 +54,8 @@ gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * pr
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 
+void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray ** array);
+
 G_END_DECLS
 
 #endif

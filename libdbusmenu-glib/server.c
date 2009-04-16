@@ -115,6 +115,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(self);
 
 	priv->root = NULL;
+	priv->dbusobject = NULL;
 
 	return;
 }
@@ -136,13 +137,30 @@ dbusmenu_server_finalize (GObject *object)
 static void
 set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(obj);
+
 	switch (id) {
 	case PROP_DBUS_OBJECT:
+		g_return_if_fail(priv->dbusobject == NULL);
+		priv->dbusobject = g_value_dup_string(value);
+		DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+		dbus_g_connection_register_g_object(connection,
+											priv->dbusobject,
+											obj);
 		break;
 	case PROP_ROOT_NODE:
+		if (priv->root != NULL) {
+			g_object_unref(G_OBJECT(priv->root));
+			priv->root = NULL;
+		}
+		priv->root = DBUSMENU_MENUITEM(g_value_get_pointer(value));
+		if (priv->root != NULL) {
+			g_object_ref(G_OBJECT(priv->root));
+		}
 		break;
 	case PROP_LAYOUT:
-		break;
+		/* Can't set this, fall through to error */
+		g_warning("Can not set property: layout");
 	default:
 		g_return_if_reached();
 		break;
@@ -152,15 +170,44 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 }
 
 static void
+xmlarray_foreach_free (gpointer arrayentry, gpointer userdata)
+{
+	if (arrayentry != NULL) {
+		g_free(arrayentry);
+	}
+
+	return;
+}
+
+static void
 get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(obj);
+
 	switch (id) {
 	case PROP_DBUS_OBJECT:
+		g_value_set_string(value, priv->dbusobject);
 		break;
 	case PROP_ROOT_NODE:
+		g_value_set_pointer(value, priv->root);
 		break;
-	case PROP_LAYOUT:
+	case PROP_LAYOUT: {
+		GPtrArray * xmlarray = g_ptr_array_new();
+		g_ptr_array_add(xmlarray, g_strdup("<menu>"));
+		if (priv->root != NULL) {
+			dbusmenu_menuitem_buildxml(priv->root, &xmlarray);
+		}
+		g_ptr_array_add(xmlarray, g_strdup("</menu>"));
+		g_ptr_array_add(xmlarray, NULL);
+
+		/* build string */
+		gchar * finalstring = g_strjoinv("\n", (gchar **)xmlarray->pdata);
+		g_value_take_string(value, finalstring);
+
+		g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
+		g_ptr_array_free(xmlarray, TRUE);
 		break;
+	}
 	default:
 		g_return_if_reached();
 		break;
