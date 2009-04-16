@@ -135,8 +135,20 @@ dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
 }
 
 void
-dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray ** array)
+dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
 {
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	if (children == NULL) {
+		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" />", dbusmenu_menuitem_get_id(mi)));
+	} else {
+		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\">", dbusmenu_menuitem_get_id(mi)));
+		for ( ; children != NULL; children = children->next) {
+			dbus_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array);
+		}
+		g_ptr_array_add(array, g_strdup("</menu>"));
+	}
 
 	return;
 }

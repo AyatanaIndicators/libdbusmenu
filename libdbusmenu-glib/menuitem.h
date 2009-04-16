@@ -28,7 +28,7 @@ struct _DbusmenuMenuitemClass
 	void (*item_activated) (void);
 
 	/* Virtual functions */
-	void (*buildxml) (GPtrArray ** stringarray);
+	void (*buildxml) (GPtrArray * stringarray);
 
 	void (*reserved1) (void);
 	void (*reserved2) (void);
@@ -54,7 +54,7 @@ gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * pr
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 
-void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray ** array);
+void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
 
 G_END_DECLS
 

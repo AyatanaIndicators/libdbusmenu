@@ -195,7 +195,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		GPtrArray * xmlarray = g_ptr_array_new();
 		g_ptr_array_add(xmlarray, g_strdup("<menu>"));
 		if (priv->root != NULL) {
-			dbusmenu_menuitem_buildxml(priv->root, &xmlarray);
+			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
 		}
 		g_ptr_array_add(xmlarray, g_strdup("</menu>"));
 		g_ptr_array_add(xmlarray, NULL);
