@@ -39,7 +39,8 @@ static guint signals[LAST_SIGNAL] = { 0 };
 enum {
 	PROP_0,
 	PROP_DBUS_OBJECT,
-	PROP_ROOT_NODE
+	PROP_ROOT_NODE,
+	PROP_LAYOUT
 };
 
 static void dbusmenu_server_class_init (DbusmenuServerClass *class);
@@ -92,6 +93,11 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                              "The base object of the menus that are served",
 	                                              DBUSMENU_TYPE_MENUITEM,
 	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_LAYOUT,
+	                                 g_param_spec_string(DBUSMENU_SERVER_PROP_LAYOUT, "XML Layout of the menus",
+	                                              "A simple XML string that describes the layout of the menus",
+	                                              "<menu />",
+	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	dbus_g_object_type_install_info(DBUSMENU_TYPE_SERVER, &dbus_glib__dbusmenu_server_object_info);
 
