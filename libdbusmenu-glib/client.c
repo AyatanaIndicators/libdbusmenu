@@ -12,7 +12,7 @@ struct _DbusmenuClientPrivate
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_CLIENT_TYPE, DbusmenuClientPrivate))
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate))
 
 static void dbusmenu_client_class_init (DbusmenuClientClass *klass);
 static void dbusmenu_client_init       (DbusmenuClient *self);
