@@ -153,7 +153,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			g_object_unref(G_OBJECT(priv->root));
 			priv->root = NULL;
 		}
-		priv->root = DBUSMENU_MENUITEM(g_value_get_pointer(value));
+		priv->root = DBUSMENU_MENUITEM(g_value_get_object(value));
 		if (priv->root != NULL) {
 			g_object_ref(G_OBJECT(priv->root));
 		}
@@ -189,7 +189,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		g_value_set_string(value, priv->dbusobject);
 		break;
 	case PROP_ROOT_NODE:
-		g_value_set_pointer(value, priv->root);
+		g_value_set_object(value, priv->root);
 		break;
 	case PROP_LAYOUT: {
 		GPtrArray * xmlarray = g_ptr_array_new();
@@ -254,7 +254,7 @@ dbusmenu_server_new (const gchar * object)
 	}
 
 	DbusmenuServer * self = g_object_new(DBUSMENU_TYPE_SERVER,
-	                                     "dbus-object-name", object,
+	                                     DBUSMENU_SERVER_PROP_DBUS_OBJECT, object,
 	                                     NULL);
 
 	return self;
@@ -264,9 +264,9 @@ void
 dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 {
 	GValue rootvalue = {0};
-	g_value_init(&rootvalue, G_TYPE_POINTER);
-	g_value_set_pointer(&rootvalue, root);
-	g_object_set_property(G_OBJECT(self), "root-node", &rootvalue);
+	g_value_init(&rootvalue, G_TYPE_OBJECT);
+	g_value_set_object(&rootvalue, root);
+	g_object_set_property(G_OBJECT(self), DBUSMENU_SERVER_PROP_ROOT_NODE, &rootvalue);
 	return;
 }
 
