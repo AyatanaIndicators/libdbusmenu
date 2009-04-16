@@ -36,6 +36,11 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 /* Properties */
+enum {
+	PROP_0,
+	PROP_DBUS_OBJECT,
+	PROP_ROOT_NODE
+};
 
 static void dbusmenu_server_class_init (DbusmenuServerClass *class);
 static void dbusmenu_server_init       (DbusmenuServer *self);
@@ -75,6 +80,18 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         NULL, NULL,
 	                                         g_cclosure_marshal_VOID__VOID,
 	                                         G_TYPE_NONE, 0);
+
+
+	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
+	                                 g_param_spec_string(DBUSMENU_SERVER_PROP_DBUS_OBJECT, "DBus object path",
+	                                              "The object that represents this set of menus on DBus",
+	                                              "/org/freedesktop/dbusmenu",
+	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_ROOT_NODE,
+	                                 g_param_spec_object(DBUSMENU_SERVER_PROP_ROOT_NODE, "Root menu node",
+	                                              "The base object of the menus that are served",
+	                                              DBUSMENU_TYPE_MENUITEM,
+	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	dbus_g_object_type_install_info(DBUSMENU_TYPE_SERVER, &dbus_glib__dbusmenu_server_object_info);
 

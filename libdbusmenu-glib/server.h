@@ -19,6 +19,9 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_SIGNAL_ID_UPDATE       "id-update"
 #define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE   "layout-update"
 
+#define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
+#define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
+
 typedef struct _DbusmenuServer      DbusmenuServer;
 typedef struct _DbusmenuServerClass DbusmenuServerClass;
 
