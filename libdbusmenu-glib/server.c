@@ -173,6 +173,7 @@ static void
 xmlarray_foreach_free (gpointer arrayentry, gpointer userdata)
 {
 	if (arrayentry != NULL) {
+		/* g_debug("Freeing pointer: %s", (gchar *)arrayentry); */
 		g_free(arrayentry);
 	}
 
@@ -193,16 +194,17 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_LAYOUT: {
 		GPtrArray * xmlarray = g_ptr_array_new();
-		g_ptr_array_add(xmlarray, g_strdup("<menu>"));
-		if (priv->root != NULL) {
+		if (priv->root == NULL) {
+			g_ptr_array_add(xmlarray, g_strdup("<menu />"));
+		} else {
 			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
 		}
-		g_ptr_array_add(xmlarray, g_strdup("</menu>"));
 		g_ptr_array_add(xmlarray, NULL);
 
 		/* build string */
-		gchar * finalstring = g_strjoinv("\n", (gchar **)xmlarray->pdata);
+		gchar * finalstring = g_strjoinv("", (gchar **)xmlarray->pdata);
 		g_value_take_string(value, finalstring);
+		/* g_debug("Final string: %s", finalstring); */
 
 		g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
 		g_ptr_array_free(xmlarray, TRUE);
