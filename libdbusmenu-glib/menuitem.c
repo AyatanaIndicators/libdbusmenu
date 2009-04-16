@@ -7,6 +7,7 @@
 typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
 struct _DbusmenuMenuitemPrivate
 {
+	guint id;
 	GList * children;
 };
 
@@ -33,9 +34,16 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	object_class->finalize = dbusmenu_menuitem_finalize;
 }
 
+static guint menuitem_next_id = 1;
+
 static void
 dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 {
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(self);
+
+	priv->id = menuitem_next_id++;
+	priv->children = NULL;
+	
 	return;
 }
 
