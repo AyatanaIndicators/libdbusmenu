@@ -43,10 +43,13 @@ enum {
 	PROP_LAYOUT
 };
 
+/* Prototype */
 static void dbusmenu_server_class_init (DbusmenuServerClass *class);
 static void dbusmenu_server_init       (DbusmenuServer *self);
 static void dbusmenu_server_dispose    (GObject *object);
 static void dbusmenu_server_finalize   (GObject *object);
+static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
+static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 
 G_DEFINE_TYPE (DbusmenuServer, dbusmenu_server, G_TYPE_OBJECT);
 
@@ -59,6 +62,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 
 	object_class->dispose = dbusmenu_server_dispose;
 	object_class->finalize = dbusmenu_server_finalize;
+	object_class->set_property = set_property;
+	object_class->get_property = get_property;
 
 	signals[ID_PROP_UPDATE] =   g_signal_new(DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE,
 	                                         G_TYPE_FROM_CLASS(class),
@@ -125,6 +130,42 @@ static void
 dbusmenu_server_finalize (GObject *object)
 {
 	G_OBJECT_CLASS (dbusmenu_server_parent_class)->finalize (object);
+	return;
+}
+
+static void
+set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
+{
+	switch (id) {
+	case PROP_DBUS_OBJECT:
+		break;
+	case PROP_ROOT_NODE:
+		break;
+	case PROP_LAYOUT:
+		break;
+	default:
+		g_return_if_reached();
+		break;
+	}
+
+	return;
+}
+
+static void
+get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
+{
+	switch (id) {
+	case PROP_DBUS_OBJECT:
+		break;
+	case PROP_ROOT_NODE:
+		break;
+	case PROP_LAYOUT:
+		break;
+	default:
+		g_return_if_reached();
+		break;
+	}
+
 	return;
 }
 
