@@ -3,6 +3,7 @@
 #endif
 
 #include "server.h"
+#include "server-marshal.h"
 
 /* DBus Prototypes */
 static gboolean _dbusmenu_server_get_property (void);
@@ -12,17 +13,31 @@ static gboolean _dbusmenu_server_list_properties (void);
 
 #include "dbusmenu-server.h"
 
+/* Privates, I'll show you mine... */
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 
 struct _DbusmenuServerPrivate
 {
 	DbusmenuMenuitem * root;
+	gchar * dbusobject;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_SERVER, DbusmenuServerPrivate))
 
-static void dbusmenu_server_class_init (DbusmenuServerClass *klass);
+/* Signals */
+enum {
+	ID_PROP_UPDATE,
+	ID_UPDATE,
+	LAYOUT_UPDATE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
+/* Properties */
+
+static void dbusmenu_server_class_init (DbusmenuServerClass *class);
 static void dbusmenu_server_init       (DbusmenuServer *self);
 static void dbusmenu_server_dispose    (GObject *object);
 static void dbusmenu_server_finalize   (GObject *object);
@@ -30,14 +45,36 @@ static void dbusmenu_server_finalize   (GObject *object);
 G_DEFINE_TYPE (DbusmenuServer, dbusmenu_server, G_TYPE_OBJECT);
 
 static void
-dbusmenu_server_class_init (DbusmenuServerClass *klass)
+dbusmenu_server_class_init (DbusmenuServerClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	g_type_class_add_private (klass, sizeof (DbusmenuServerPrivate));
+	g_type_class_add_private (class, sizeof (DbusmenuServerPrivate));
 
 	object_class->dispose = dbusmenu_server_dispose;
 	object_class->finalize = dbusmenu_server_finalize;
+
+	signals[ID_PROP_UPDATE] =   g_signal_new(DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE,
+	                                         G_TYPE_FROM_CLASS(class),
+	                                         G_SIGNAL_RUN_LAST,
+	                                         G_STRUCT_OFFSET(DbusmenuServerClass, id_prop_update),
+	                                         NULL, NULL,
+	                                         _dbusmenu_server_marshal_VOID__UINT_STRING_STRING,
+	                                         G_TYPE_NONE, 3, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING);
+	signals[ID_UPDATE] =        g_signal_new(DBUSMENU_SERVER_SIGNAL_ID_UPDATE,
+	                                         G_TYPE_FROM_CLASS(class),
+	                                         G_SIGNAL_RUN_LAST,
+	                                         G_STRUCT_OFFSET(DbusmenuServerClass, id_update),
+	                                         NULL, NULL,
+	                                         g_cclosure_marshal_VOID__UINT,
+	                                         G_TYPE_NONE, 1, G_TYPE_UINT);
+	signals[LAYOUT_UPDATE] =    g_signal_new(DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE,
+	                                         G_TYPE_FROM_CLASS(class),
+	                                         G_SIGNAL_RUN_LAST,
+	                                         G_STRUCT_OFFSET(DbusmenuServerClass, layout_update),
+	                                         NULL, NULL,
+	                                         g_cclosure_marshal_VOID__VOID,
+	                                         G_TYPE_NONE, 0);
 
 	dbus_g_object_type_install_info(DBUSMENU_TYPE_SERVER, &dbus_glib__dbusmenu_server_object_info);
 

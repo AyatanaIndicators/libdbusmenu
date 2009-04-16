@@ -20,3 +20,6 @@ dbusmenu-client.h
 dbusmenu-server.h
 libdbusmenu_glib_la-client.lo
 libdbusmenu_glib_la-server.lo
+server-marshal.c
+server-marshal.h
+libdbusmenu_glib_la-server-marshal.lo

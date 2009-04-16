@@ -20,6 +20,8 @@ libdbusmenu_glib_la_SOURCES = \
 	menuitem.c \
 	server.h \
 	server.c \
+	server-marshal.h \
+	server-marshal.c \
 	client.h \
 	client.c
 
@@ -39,7 +41,9 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 BUILT_SOURCES = \
 	dbusmenu-client.h \
-	dbusmenu-server.h
+	dbusmenu-server.h \
+	server-marshal.h \
+	server-marshal.c
 
 dbusmenu-server.h: dbus-menu.xml
 	dbus-binding-tool \
@@ -54,4 +58,14 @@ dbusmenu-client.h: dbus-menu.xml
 		--mode=glib-client \
 		--output=dbusmenu-client.h \
 		$(srcdir)/dbus-menu.xml
+
+server-marshal.h: $(srcdir)/server-marshal.list
+	glib-genmarshal --header \
+		--prefix=_dbusmenu_server_marshal $(srcdir)/server-marshal.list \
+		> server-marshal.h
+
+server-marshal.c: $(srcdir)/server-marshal.list
+	glib-genmarshal --body \
+		--prefix=_dbusmenu_server_marshal $(srcdir)/server-marshal.list \
+		> server-marshal.c
 
