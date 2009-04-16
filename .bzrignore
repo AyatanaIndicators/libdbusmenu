@@ -23,3 +23,6 @@ libdbusmenu_glib_la-server.lo
 server-marshal.c
 server-marshal.h
 libdbusmenu_glib_la-server-marshal.lo
+.deps
+.libs
+glib-server-nomenu

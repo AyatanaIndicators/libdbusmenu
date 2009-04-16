@@ -66,6 +66,12 @@ dbusmenu_menuitem_finalize (GObject *object)
 }
 
 /* Public interface */
+DbusmenuMenuitem *
+dbusmenu_menuitem_new (void)
+{
+	return g_object_new(DBUSMENU_TYPE_MENUITEM, NULL);
+}
+
 guint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {

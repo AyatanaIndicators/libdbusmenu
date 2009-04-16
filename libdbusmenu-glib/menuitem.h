@@ -43,6 +43,9 @@ struct _DbusmenuMenuitem
 
 GType dbusmenu_menuitem_get_type (void);
 
+DbusmenuMenuitem * dbusmenu_menuitem_new (void);
+guint dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi);
+
 GList * dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi);
 guint dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent);
 
