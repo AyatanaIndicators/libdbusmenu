@@ -10,7 +10,7 @@ struct _DbusmenuMenuitemPrivate
 };
 
 #define DBUSMENU_MENUITEM_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_MENUITEM_TYPE, DbusmenuMenuitemPrivate))
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemPrivate))
 
 static void dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass);
 static void dbusmenu_menuitem_init       (DbusmenuMenuitem *self);
