@@ -8,12 +8,12 @@
 
 G_BEGIN_DECLS
 
-#define DBUSMENU_SERVER_TYPE            (dbusmenu_server_get_type ())
-#define DBUSMENU_SERVER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), DBUSMENU_SERVER_TYPE, DbusmenuServer))
-#define DBUSMENU_SERVER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), DBUSMENU_SERVER_TYPE, DbusmenuServerClass))
-#define DBUSMENU_IS_SERVER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), DBUSMENU_SERVER_TYPE))
-#define DBUSMENU_IS_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_SERVER_TYPE))
-#define DBUSMENU_SERVER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_SERVER_TYPE, DbusmenuServerClass))
+#define DBUSMENU_TYPE_SERVER            (dbusmenu_server_get_type ())
+#define DBUSMENU_SERVER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), DBUSMENU_TYPE_SERVER, DbusmenuServer))
+#define DBUSMENU_SERVER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), DBUSMENU_TYPE_SERVER, DbusmenuServerClass))
+#define DBUSMENU_IS_SERVER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), DBUSMENU_TYPE_SERVER))
+#define DBUSMENU_IS_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_SERVER))
+#define DBUSMENU_SERVER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_SERVER, DbusmenuServerClass))
 
 typedef struct _DbusmenuServer      DbusmenuServer;
 typedef struct _DbusmenuServerClass DbusmenuServerClass;

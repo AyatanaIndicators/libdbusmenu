@@ -16,10 +16,11 @@ typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 
 struct _DbusmenuServerPrivate
 {
+	DbusmenuMenuitem * root;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_SERVER_TYPE, DbusmenuServerPrivate))
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_SERVER, DbusmenuServerPrivate))
 
 static void dbusmenu_server_class_init (DbusmenuServerClass *klass);
 static void dbusmenu_server_init       (DbusmenuServer *self);
@@ -38,12 +39,18 @@ dbusmenu_server_class_init (DbusmenuServerClass *klass)
 	object_class->dispose = dbusmenu_server_dispose;
 	object_class->finalize = dbusmenu_server_finalize;
 
+	dbus_g_object_type_install_info(DBUSMENU_TYPE_SERVER, &dbus_glib__dbusmenu_server_object_info);
+
 	return;
 }
 
 static void
 dbusmenu_server_init (DbusmenuServer *self)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(self);
+
+	priv->root = NULL;
+
 	return;
 }
 
