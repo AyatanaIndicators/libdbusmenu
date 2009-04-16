@@ -32,6 +32,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 
 	object_class->dispose = dbusmenu_menuitem_dispose;
 	object_class->finalize = dbusmenu_menuitem_finalize;
+
+	return;
 }
 
 static guint menuitem_next_id = 1;
@@ -64,6 +66,13 @@ dbusmenu_menuitem_finalize (GObject *object)
 }
 
 /* Public interface */
+guint
+dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
+{
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return priv->id;
+}
+
 GList *
 dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 {
@@ -145,7 +154,7 @@ dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
 	} else {
 		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\">", dbusmenu_menuitem_get_id(mi)));
 		for ( ; children != NULL; children = children->next) {
-			dbus_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array);
+			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array);
 		}
 		g_ptr_array_add(array, g_strdup("</menu>"));
 	}
