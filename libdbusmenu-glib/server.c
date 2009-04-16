@@ -68,7 +68,7 @@ dbusmenu_server_finalize (GObject *object)
 	return;
 }
 
-/* DBus Prototypes */
+/* DBus interface */
 static gboolean 
 _dbusmenu_server_get_property (void)
 {
@@ -96,4 +96,31 @@ _dbusmenu_server_list_properties (void)
 
 	return TRUE;
 }
+
+/* Public Interface */
+DbusmenuServer *
+dbusmenu_server_new (const gchar * object)
+{
+	if (object == NULL) {
+		object = "/org/freedesktop/dbusmenu";
+	}
+
+	DbusmenuServer * self = g_object_new(DBUSMENU_TYPE_SERVER,
+	                                     "dbus-object-name", object,
+	                                     NULL);
+
+	return self;
+}
+
+void
+dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
+{
+	GValue rootvalue = {0};
+	g_value_init(&rootvalue, G_TYPE_POINTER);
+	g_value_set_pointer(&rootvalue, root);
+	g_object_set_property(G_OBJECT(self), "root-node", &rootvalue);
+	return;
+}
+
+
 
