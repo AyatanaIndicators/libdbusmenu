@@ -5,11 +5,21 @@
 #include "client.h"
 #include "dbusmenu-client.h"
 
+/* Properties */
+enum {
+	PROP_0,
+	PROP_DBUSOBJECT,
+	PROP_DBUSNAME
+};
+
 typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 
 struct _DbusmenuClientPrivate
 {
 	DbusmenuMenuitem * root;
+	
+	gchar * dbus_object;
+	gchar * dbus_name;
 
 	DBusGProxy * menuproxy;
 	DBusGProxy * propproxy;
@@ -23,6 +33,8 @@ static void dbusmenu_client_class_init (DbusmenuClientClass *klass);
 static void dbusmenu_client_init       (DbusmenuClient *self);
 static void dbusmenu_client_dispose    (GObject *object);
 static void dbusmenu_client_finalize   (GObject *object);
+static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
+static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
 
@@ -35,6 +47,19 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 
 	object_class->dispose = dbusmenu_client_dispose;
 	object_class->finalize = dbusmenu_client_finalize;
+	object_class->set_property = set_property;
+	object_class->get_property = get_property;
+
+	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
+	                                 g_param_spec_string("dbus-object", "DBus Object we represent",
+	                                              "The Object on the client that we're getting our data from.",
+	                                              NULL,
+	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_DBUSNAME,
+	                                 g_param_spec_string("dbus-name", "DBus Client we connect to",
+	                                              "Name of the DBus client we're connecting to.",
+	                                              NULL,
+	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	return;
 }
@@ -45,6 +70,10 @@ dbusmenu_client_init (DbusmenuClient *self)
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(self);
 
 	priv->root = NULL;
+
+	priv->dbus_object = NULL;
+	priv->dbus_name = NULL;
+
 	priv->menuproxy = NULL;
 	priv->propproxy = NULL;
 	priv->layoutcall = NULL;
@@ -63,6 +92,20 @@ static void
 dbusmenu_client_finalize (GObject *object)
 {
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
+	return;
+}
+
+static void
+set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
+{
+
+	return;
+}
+
+static void
+get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
+{
+
 	return;
 }
 
