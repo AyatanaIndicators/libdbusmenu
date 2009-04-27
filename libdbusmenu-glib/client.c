@@ -2,6 +2,9 @@
 #include "config.h"
 #endif
 
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+
 #include "client.h"
 #include "dbusmenu-client.h"
 
@@ -213,13 +216,33 @@ build_proxies (DbusmenuClient * client)
 	return;
 }
 
+/* Parse recursively through the XML and make it into
+   objects as need be */
+static gboolean
+parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent)
+{
+
+	return FALSE;
+}
+
 /* Take the layout passed to us over DBus and turn it into
    a set of beautiful objects */
 static void
 parse_layout (DbusmenuClient * client, const gchar * layout)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
+	xmlDocPtr xmldoc;
 
+	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 16*1024), "dbusmenu.xml", NULL, 0);
+
+	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
+
+	if (!parse_layout_xml(root, priv->root, NULL)) {
+		g_warning("Unable to parse layout on client %s object %s", priv->dbus_name, priv->dbus_object);
+	}
+
+	xmlFreeDoc(xmldoc);
 	return;
 }
 
@@ -243,6 +266,9 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 
 	const gchar * xml = g_value_get_string(&value);
 	parse_layout(client, xml);
+
+	priv->layoutcall = NULL;
+
 	return;
 }
 
