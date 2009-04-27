@@ -29,13 +29,17 @@ struct _DbusmenuClientPrivate
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate))
 
+/* GObject Stuff */
 static void dbusmenu_client_class_init (DbusmenuClientClass *klass);
 static void dbusmenu_client_init       (DbusmenuClient *self);
 static void dbusmenu_client_dispose    (GObject *object);
 static void dbusmenu_client_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
+/* Private Funcs */
+static void build_proxies (DbusmenuClient * client);
 
+/* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
 
 static void
@@ -98,6 +102,25 @@ dbusmenu_client_finalize (GObject *object)
 static void
 set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(obj);
+
+	switch (id) {
+	case PROP_DBUSNAME:
+		priv->dbus_name = g_value_dup_string(value);
+		if (priv->dbus_name != NULL && priv->dbus_object != NULL) {
+			build_proxies(DBUSMENU_CLIENT(obj));
+		}
+		break;
+	case PROP_DBUSOBJECT:
+		priv->dbus_object = g_value_dup_string(value);
+		if (priv->dbus_name != NULL && priv->dbus_object != NULL) {
+			build_proxies(DBUSMENU_CLIENT(obj));
+		}
+		break;
+	default:
+		g_warning("Unknown property %d.", id);
+		return;
+	}
 
 	return;
 }
@@ -105,6 +128,19 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 static void
 get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(obj);
+
+	switch (id) {
+	case PROP_DBUSNAME:
+		g_value_set_string(value, priv->dbus_name);
+		break;
+	case PROP_DBUSOBJECT:
+		g_value_set_string(value, priv->dbus_object);
+		break;
+	default:
+		g_warning("Unknown property %d.", id);
+		return;
+	}
 
 	return;
 }
@@ -133,7 +169,7 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 static void
 update_layout (DbusmenuClient * client)
 {
-
+	update_layout_cb(NULL, NULL, NULL);
 
 }
 
@@ -142,6 +178,7 @@ DbusmenuClient *
 dbusmenu_client_new (const gchar * name, const gchar * object)
 {
 	DbusmenuClient * self = g_object_new(DBUSMENU_TYPE_CLIENT, "name", name, "object", object, NULL);
+	update_layout(self);
 
 	return self;
 }
