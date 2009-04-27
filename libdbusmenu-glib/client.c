@@ -21,6 +21,7 @@ struct _DbusmenuClientPrivate
 	gchar * dbus_object;
 	gchar * dbus_name;
 
+	DBusGConnection * session_bus;
 	DBusGProxy * menuproxy;
 	DBusGProxy * propproxy;
 	DBusGProxyCall * layoutcall;
@@ -78,6 +79,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->dbus_object = NULL;
 	priv->dbus_name = NULL;
 
+	priv->session_bus = NULL;
 	priv->menuproxy = NULL;
 	priv->propproxy = NULL;
 	priv->layoutcall = NULL;
@@ -88,6 +90,22 @@ dbusmenu_client_init (DbusmenuClient *self)
 static void
 dbusmenu_client_dispose (GObject *object)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(object);
+
+	if (priv->layoutcall != NULL) {
+		dbus_g_proxy_cancel_call(priv->propproxy, priv->layoutcall);
+		priv->layoutcall = NULL;
+	}
+	if (priv->menuproxy != NULL) {
+		g_object_unref(G_OBJECT(priv->menuproxy));
+		priv->menuproxy = NULL;
+	}
+	if (priv->propproxy != NULL) {
+		g_object_unref(G_OBJECT(priv->propproxy));
+		priv->propproxy = NULL;
+	}
+	priv->session_bus = NULL;
+
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->dispose (object);
 	return;
 }
@@ -152,8 +170,42 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 static void
 build_proxies (DbusmenuClient * client)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	GError * error = NULL;
 
+	g_return_if_fail(priv->dbus_object != NULL);
+	g_return_if_fail(priv->dbus_name != NULL);
 
+	priv->session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (error != NULL) {
+		g_error("Unable to get session bus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	priv->propproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
+	                                                  priv->dbus_name,
+	                                                  priv->dbus_object,
+	                                                  DBUS_INTERFACE_PROPERTIES,
+	                                                  &error);
+	if (error != NULL) {
+		g_error("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
+		g_error_free(error);
+		return;
+	}
+
+	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
+	                                                  priv->dbus_name,
+	                                                  priv->dbus_object,
+	                                                  "org.freedesktop.dbusmenu",
+	                                                  &error);
+	if (error != NULL) {
+		g_error("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
+		g_error_free(error);
+		return;
+	}
+
+	return;
 }
 
 /* When the layout property returns, here's where we take care of that. */
@@ -169,8 +221,18 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 static void
 update_layout (DbusmenuClient * client)
 {
-	update_layout_cb(NULL, NULL, NULL);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
+	dbus_g_proxy_begin_call (priv->propproxy,
+	                         "Get",
+	                         update_layout_cb,
+	                         client,
+	                         NULL,
+	                         G_TYPE_STRING, "org.freedesktop.dbusmenu",
+	                         G_TYPE_STRING, "layout",
+	                         G_TYPE_INVALID, G_TYPE_VALUE, G_TYPE_INVALID);
+
+	return;
 }
 
 /* Public API */
