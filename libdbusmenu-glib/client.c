@@ -113,6 +113,11 @@ dbusmenu_client_dispose (GObject *object)
 static void
 dbusmenu_client_finalize (GObject *object)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(object);
+
+	g_free(priv->dbus_name);
+	g_free(priv->dbus_object);
+
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
 	return;
 }
@@ -208,12 +213,37 @@ build_proxies (DbusmenuClient * client)
 	return;
 }
 
+/* Take the layout passed to us over DBus and turn it into
+   a set of beautiful objects */
+static void
+parse_layout (DbusmenuClient * client, const gchar * layout)
+{
+
+
+	return;
+}
+
 /* When the layout property returns, here's where we take care of that. */
 static void
 update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
+	DbusmenuClient * client = DBUSMENU_CLIENT(data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
+	GError * error = NULL;
+	GValue value = {0};
 
+	g_value_init(&value, G_TYPE_STRING);
+
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
+		g_warning("Getting layout failed on client %s object %s: %s", priv->dbus_name, priv->dbus_object, error->message);
+		g_error_free(error);
+		return;
+	}
+
+	const gchar * xml = g_value_get_string(&value);
+	parse_layout(client, xml);
+	return;
 }
 
 /* Call the property on the server we're connected to and set it up to
@@ -223,14 +253,18 @@ update_layout (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
-	dbus_g_proxy_begin_call (priv->propproxy,
-	                         "Get",
-	                         update_layout_cb,
-	                         client,
-	                         NULL,
-	                         G_TYPE_STRING, "org.freedesktop.dbusmenu",
-	                         G_TYPE_STRING, "layout",
-	                         G_TYPE_INVALID, G_TYPE_VALUE, G_TYPE_INVALID);
+	if (priv->layoutcall != NULL) {
+		return;
+	}
+
+	priv->layoutcall = dbus_g_proxy_begin_call (priv->propproxy,
+	                                            "Get",
+	                                            update_layout_cb,
+	                                            client,
+	                                            NULL,
+	                                            G_TYPE_STRING, "org.freedesktop.dbusmenu",
+	                                            G_TYPE_STRING, "layout",
+	                                            G_TYPE_INVALID, G_TYPE_VALUE, G_TYPE_INVALID);
 
 	return;
 }
@@ -251,8 +285,8 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	if (priv->layoutcall != NULL) {
-		/* Oh, we're in the middle of getting it */
-		/* TODO: Wait here */
+		/* Will end the current call and block on it's completion */
+		update_layout_cb(priv->propproxy, priv->layoutcall, client);
 	}
 
 	return priv->root;
