@@ -216,13 +216,58 @@ build_proxies (DbusmenuClient * client)
 	return;
 }
 
+/* Get the ID attribute of the node, parse it and
+   return it.  Also we're checking to ensure the node
+   is a 'menu' here. */
+static guint
+parse_node_get_id (xmlNodePtr node)
+{
+	if (g_strcmp0((gchar *)node->name, "menu") != 0) {
+		/* This kills some nodes early */
+		return 0;
+	}
+
+	xmlAttrPtr attrib;
+	for (attrib = node->properties; node != NULL; node = node->next) {
+		if (g_strcmp0((gchar *)node->name, "id") == 0) {
+			if (node->children != NULL) {
+				return (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
+			}
+			break;
+		}
+	}
+
+	return 0;
+}
+
 /* Parse recursively through the XML and make it into
    objects as need be */
-static gboolean
+static DbusmenuMenuitem *
 parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent)
 {
+	guint id = parse_node_get_id(node);
+	if (item == NULL || dbusmenu_menuitem_get_id(item) != id) {
+		if (item != NULL) {
+			if (parent != NULL) {
+				dbusmenu_menuitem_child_delete(parent, item);
+			}
+			g_object_unref(G_OBJECT(item));
+		}
 
-	return FALSE;
+		/* Build a new item */
+		item = dbusmenu_menuitem_new_with_id(id);
+	} 
+
+	xmlNodePtr children;
+	guint position;
+	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
+		guint childid = parse_node_get_id(children);
+		DbusmenuMenuitem * childmi = dbusmenu_menuitem_child_find(item, childid);
+		childmi = parse_layout_xml(children, childmi, item);
+		dbusmenu_menuitem_child_add_position(item, childmi, position);
+	}
+
+	return item;
 }
 
 /* Take the layout passed to us over DBus and turn it into
@@ -238,7 +283,8 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
-	if (!parse_layout_xml(root, priv->root, NULL)) {
+	priv->root = parse_layout_xml(root, priv->root, NULL);
+	if (priv->root == NULL) {
 		g_warning("Unable to parse layout on client %s object %s", priv->dbus_name, priv->dbus_object);
 	}
 
