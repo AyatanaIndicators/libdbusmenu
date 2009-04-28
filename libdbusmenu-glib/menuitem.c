@@ -72,6 +72,13 @@ dbusmenu_menuitem_new (void)
 	return g_object_new(DBUSMENU_TYPE_MENUITEM, NULL);
 }
 
+DbusmenuMenuitem *
+dbusmenu_menuitem_new_with_id (guint id)
+{
+
+	return NULL;
+}
+
 guint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {
@@ -126,6 +133,13 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 
 	return FALSE;
+}
+
+DbusmenuMenuitem *
+dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
+{
+
+	return NULL;
 }
 
 gboolean
