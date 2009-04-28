@@ -59,12 +59,12 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	object_class->get_property = get_property;
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
-	                                 g_param_spec_string("dbus-object", "DBus Object we represent",
+	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
 	                                              "The Object on the client that we're getting our data from.",
 	                                              NULL,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property (object_class, PROP_DBUSNAME,
-	                                 g_param_spec_string("dbus-name", "DBus Client we connect to",
+	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_NAME, "DBus Client we connect to",
 	                                              "Name of the DBus client we're connecting to.",
 	                                              NULL,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
@@ -345,7 +345,10 @@ update_layout (DbusmenuClient * client)
 DbusmenuClient *
 dbusmenu_client_new (const gchar * name, const gchar * object)
 {
-	DbusmenuClient * self = g_object_new(DBUSMENU_TYPE_CLIENT, "name", name, "object", object, NULL);
+	DbusmenuClient * self = g_object_new(DBUSMENU_TYPE_CLIENT,
+	                                     DBUSMENU_CLIENT_PROP_DBUS_NAME, name,
+	                                     DBUSMENU_CLIENT_PROP_DBUS_OBJECT, object,
+	                                     NULL);
 	update_layout(self);
 
 	return self;
