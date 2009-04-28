@@ -26,3 +26,4 @@ libdbusmenu_glib_la-server-marshal.lo
 .deps
 .libs
 glib-server-nomenu
+test-glib-layout-server
