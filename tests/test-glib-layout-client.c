@@ -26,7 +26,6 @@ main (int argc, char ** argv)
 	DbusmenuClient * client = dbusmenu_client_new(":1", "/org/test");
 	dbusmenu_client_get_root(client);
 
-	timer_func(NULL);
 	g_timeout_add_seconds(2, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
