@@ -1,6 +1,7 @@
 
 libexec_PROGRAMS = \
 	glib-server-nomenu \
+	test-glib-layout-client \
 	test-glib-layout-server
 
 glib_server_nomenu_SOURCES = \
@@ -22,6 +23,17 @@ test_glib_layout_server_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_layout_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_layout_client_SOURCES = \
+	test-glib-layout-client.c
+
+test_glib_layout_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_layout_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
