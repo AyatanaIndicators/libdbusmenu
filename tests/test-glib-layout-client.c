@@ -23,7 +23,7 @@ main (int argc, char ** argv)
 {
 	g_type_init();
 
-	DbusmenuClient * client = dbusmenu_client_new(":1", "/org/test");
+	DbusmenuClient * client = dbusmenu_client_new(":1.1", "/org/test");
 	dbusmenu_client_get_root(client);
 
 	g_timeout_add_seconds(2, timer_func, NULL);
