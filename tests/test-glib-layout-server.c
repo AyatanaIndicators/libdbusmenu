@@ -38,8 +38,10 @@ timer_func (gpointer data)
 		g_main_loop_quit(mainloop);
 		return FALSE;
 	}
+	g_debug("Updating to Layout %d", layouton);
 
-	dbusmenu_server_set_root(server, layout2menuitem(&layouts[layouton++]));
+	dbusmenu_server_set_root(server, layout2menuitem(&layouts[layouton]));
+	layouton++;
 
 	return TRUE;
 }
@@ -52,10 +54,12 @@ main (int argc, char ** argv)
 	server = dbusmenu_server_new("/org/test");
 
 	timer_func(NULL);
-	g_timeout_add(100, timer_func, NULL);
+	g_timeout_add(250, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
+
+	g_debug("Quiting");
 
 	return 0;
 }
