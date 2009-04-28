@@ -24,12 +24,13 @@ main (int argc, char ** argv)
 	g_type_init();
 
 	DbusmenuClient * client = dbusmenu_client_new(":1.1", "/org/test");
-	dbusmenu_client_get_root(client);
 
-	g_timeout_add_seconds(2, timer_func, NULL);
+	g_timeout_add_seconds(2, timer_func, client);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
+
+	g_object_unref(G_OBJECT(client));
 
 	if (passed) {
 		g_debug("Quiting");
