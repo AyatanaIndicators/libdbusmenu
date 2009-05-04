@@ -268,6 +268,7 @@ dbusmenu_server_new (const gchar * object)
 void
 dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 {
+	g_debug("Setting root object: 0x%X", (unsigned int)root);
 	GValue rootvalue = {0};
 	g_value_init(&rootvalue, G_TYPE_OBJECT);
 	g_value_set_object(&rootvalue, root);
