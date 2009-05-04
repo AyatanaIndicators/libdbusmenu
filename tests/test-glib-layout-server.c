@@ -1,6 +1,10 @@
 
 #include <glib.h>
 
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 
@@ -51,10 +55,12 @@ main (int argc, char ** argv)
 {
 	g_type_init();
 
+	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
+
 	server = dbusmenu_server_new("/org/test");
 
 	timer_func(NULL);
-	g_timeout_add(250, timer_func, NULL);
+	g_timeout_add(2500, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
