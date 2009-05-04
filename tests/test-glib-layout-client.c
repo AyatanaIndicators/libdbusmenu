@@ -23,7 +23,7 @@ main (int argc, char ** argv)
 {
 	g_type_init();
 
-	g_usleep(10000);
+	g_usleep(500000);
 
 	DbusmenuClient * client = dbusmenu_client_new(":1.0", "/org/test");
 
