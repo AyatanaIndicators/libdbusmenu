@@ -302,8 +302,6 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	GError * error = NULL;
 	GValue value = {0};
 
-	g_value_init(&value, G_TYPE_STRING);
-
 	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
 		g_warning("Getting layout failed on client %s object %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		priv->layoutcall = NULL;
