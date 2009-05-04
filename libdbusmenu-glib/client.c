@@ -285,7 +285,7 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 	priv->root = parse_layout_xml(root, priv->root, NULL);
 	if (priv->root == NULL) {
-		g_warning("Unable to parse layout on client %s object %s", priv->dbus_name, priv->dbus_object);
+		g_warning("Unable to parse layout on client %s object %s: %s", priv->dbus_name, priv->dbus_object, layout);
 	}
 
 	xmlFreeDoc(xmldoc);
