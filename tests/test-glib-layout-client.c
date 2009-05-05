@@ -13,6 +13,7 @@ static gboolean
 verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
 {
 	if (layout->id != dbusmenu_menuitem_get_id(mi)) {
+		g_debug("Failed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
 		return FALSE;
 	}
 
@@ -22,6 +23,11 @@ verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
 		return TRUE;
 	}
 	if (children == NULL || layout->submenu == NULL) {
+		if (children == NULL) {
+			g_debug("Failed as there are no children but we have submenus");
+		} else {
+			g_debug("Failed as we have children but no submenu");
+		}
 		return FALSE;
 	}
 
@@ -32,11 +38,16 @@ verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
 		}
 	}
 
-	if (children != NULL || layout[i].id != 0) {
-		return FALSE;
+	if (children == NULL && layout[i].id == 0) {
+		return TRUE;
 	}
 
-	return TRUE;
+	if (children != NULL) {
+		g_debug("Failed as there are still children but no submenus");
+	} else {
+		g_debug("Failed as there are still submenus but no children");
+	}
+	return FALSE;
 }
 
 static void
