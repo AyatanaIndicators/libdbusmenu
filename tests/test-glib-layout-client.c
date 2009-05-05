@@ -9,6 +9,12 @@ static guint layouton = 0;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
 
+static void
+layout_updated (DbusmenuClient * client, gpointer data)
+{
+	g_debug("Layout Updated");
+}
+
 static gboolean
 timer_func (gpointer data)
 {
@@ -26,6 +32,7 @@ main (int argc, char ** argv)
 	g_usleep(500000);
 
 	DbusmenuClient * client = dbusmenu_client_new(":1.0", "/org/test");
+	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
 	g_timeout_add_seconds(6, timer_func, client);
 
