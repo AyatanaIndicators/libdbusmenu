@@ -9,10 +9,52 @@ static guint layouton = 0;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
 
+static gboolean
+verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
+{
+	if (layout->id != dbusmenu_menuitem_get_id(mi)) {
+		return FALSE;
+	}
+
+	GList * children = dbusmenu_menuitem_get_children(mi);
+
+	if (children == NULL && layout->submenu == NULL) {
+		return TRUE;
+	}
+	if (children == NULL || layout->submenu == NULL) {
+		return FALSE;
+	}
+
+	guint i = 0;
+	for (i = 0; children != NULL && layout[i].id != 0; children = g_list_next(children), i++) {
+		if (!verify_root_to_layout(DBUSMENU_MENUITEM(children->data), &layout[i])) {
+			return FALSE;
+		}
+	}
+
+	if (children != NULL || layout[i].id != 0) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static void
 layout_updated (DbusmenuClient * client, gpointer data)
 {
 	g_debug("Layout Updated");
+
+	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(client);
+	layout_t * layout = &layouts[layouton];
+	
+	if (!verify_root_to_layout(menuroot, layout)) {
+		g_debug("Failed layout: %d", layouton);
+		passed = FALSE;
+	}
+
+	layouton++;
+
+	return;
 }
 
 static gboolean
@@ -34,7 +76,7 @@ main (int argc, char ** argv)
 	DbusmenuClient * client = dbusmenu_client_new(":1.0", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
-	g_timeout_add_seconds(6, timer_func, client);
+	g_timeout_add_seconds(10, timer_func, client);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
