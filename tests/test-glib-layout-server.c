@@ -28,6 +28,7 @@ layout2menuitem (layout_t * layout)
 		}
 	}
 
+	g_debug("Layout to menu return: 0x%X", (unsigned int)local);
 	return local;
 }
 
