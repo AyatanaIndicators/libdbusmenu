@@ -159,6 +159,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		} else {
 			g_debug("Setting root node to NULL");
 		}
+		g_signal_emit(obj, signals[LAYOUT_UPDATE], 0, TRUE);
 		break;
 	case PROP_LAYOUT:
 		/* Can't set this, fall through to error */
