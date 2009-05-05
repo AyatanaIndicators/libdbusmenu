@@ -11,6 +11,12 @@ struct _DbusmenuMenuitemPrivate
 	GList * children;
 };
 
+/* Properties */
+enum {
+	PROP_0,
+	PROP_ID,
+};
+
 #define DBUSMENU_MENUITEM_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemPrivate))
 
@@ -19,6 +25,8 @@ static void dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass);
 static void dbusmenu_menuitem_init       (DbusmenuMenuitem *self);
 static void dbusmenu_menuitem_dispose    (GObject *object);
 static void dbusmenu_menuitem_finalize   (GObject *object);
+static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
+static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 
 /* GObject stuff */
 G_DEFINE_TYPE (DbusmenuMenuitem, dbusmenu_menuitem, G_TYPE_OBJECT);
@@ -32,6 +40,14 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 
 	object_class->dispose = dbusmenu_menuitem_dispose;
 	object_class->finalize = dbusmenu_menuitem_finalize;
+	object_class->set_property = set_property;
+	object_class->get_property = get_property;
+
+	g_object_class_install_property (object_class, PROP_ID,
+	                                 g_param_spec_uint("id", "ID for the menu item",
+	                                              "This is a unique indentifier for the menu item.",
+												  0, 30000, 0,
+	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	return;
 }
@@ -43,7 +59,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 {
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(self);
 
-	priv->id = menuitem_next_id++;
+	priv->id = 0; 
 	priv->children = NULL;
 	
 	return;
@@ -65,6 +81,41 @@ dbusmenu_menuitem_finalize (GObject *object)
 	return;
 }
 
+static void
+set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
+{
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(obj);
+
+	switch (id) {
+	case PROP_ID:
+		priv->id = g_value_get_uint(value);
+		if (priv->id > menuitem_next_id) {
+			menuitem_next_id = priv->id;
+		}
+		break;
+	}
+
+	return;
+}
+
+static void
+get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
+{
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(obj);
+
+	switch (id) {
+	case PROP_ID:
+		if (priv->id == 0) {
+			priv->id = menuitem_next_id++;
+		}
+		g_value_set_uint(value, priv->id);
+		break;
+	}
+
+	return;
+}
+
+
 /* Public interface */
 DbusmenuMenuitem *
 dbusmenu_menuitem_new (void)
@@ -75,15 +126,16 @@ dbusmenu_menuitem_new (void)
 DbusmenuMenuitem *
 dbusmenu_menuitem_new_with_id (guint id)
 {
-
-	return NULL;
+	return g_object_new(DBUSMENU_TYPE_MENUITEM, "id", id, NULL);
 }
 
 guint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {
-	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
-	return priv->id;
+	GValue retval = {0};
+	g_value_init(&retval, G_TYPE_UINT);
+	g_object_get_property(G_OBJECT(mi), "id", &retval);
+	return g_value_get_uint(&retval);
 }
 
 GList *
