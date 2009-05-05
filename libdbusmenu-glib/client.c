@@ -15,6 +15,14 @@ enum {
 	PROP_DBUSNAME
 };
 
+/* Signals */
+enum {
+	LAYOUT_UPDATED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 
 struct _DbusmenuClientPrivate
@@ -63,6 +71,22 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	object_class->finalize = dbusmenu_client_finalize;
 	object_class->set_property = set_property;
 	object_class->get_property = get_property;
+
+	/**
+		DbusmenuClient::layout-update:
+		@arg0: The #DbusmenuClient object
+
+		Tells that the layout has been updated and parsed by
+		this object and is ready for grabbing by the calling
+		application.
+	*/
+	signals[LAYOUT_UPDATED]  = g_signal_new(DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, layout_updated),
+	                                        NULL, NULL,
+	                                        g_cclosure_marshal_VOID__VOID,
+	                                        G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
@@ -330,6 +354,7 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	parse_layout(client, xml);
 
 	priv->layoutcall = NULL;
+	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
 
 	return;
 }
