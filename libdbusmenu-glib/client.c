@@ -265,19 +265,21 @@ parse_node_get_id (xmlNodePtr node)
 {
 	if (g_strcmp0((gchar *)node->name, "menu") != 0) {
 		/* This kills some nodes early */
+		g_warning("XML Node is not 'menu' it is '%s'", node->name);
 		return 0;
 	}
 
 	xmlAttrPtr attrib;
-	for (attrib = node->properties; node != NULL; node = node->next) {
-		if (g_strcmp0((gchar *)node->name, "id") == 0) {
-			if (node->children != NULL) {
+	for (attrib = node->properties; attrib != NULL; attrib = attrib->next) {
+		if (g_strcmp0((gchar *)attrib->name, "id") == 0) {
+			if (attrib->children != NULL) {
 				return (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
 			}
 			break;
 		}
 	}
 
+	g_warning("Unable to find an ID on the node");
 	return 0;
 }
 
@@ -287,12 +289,17 @@ static DbusmenuMenuitem *
 parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent)
 {
 	guint id = parse_node_get_id(node);
-	if (item == NULL || dbusmenu_menuitem_get_id(item) != id) {
+	if (item == NULL || dbusmenu_menuitem_get_id(item) != id || id == 0) {
 		if (item != NULL) {
 			if (parent != NULL) {
 				dbusmenu_menuitem_child_delete(parent, item);
 			}
 			g_object_unref(G_OBJECT(item));
+		}
+
+		if (id == 0) {
+			g_warning("ID from XML file is zero");
+			return NULL;
 		}
 
 		/* Build a new item */
@@ -354,6 +361,7 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	parse_layout(client, xml);
 
 	priv->layoutcall = NULL;
+	g_debug("Root is now: 0x%X", (unsigned int)priv->root);
 	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
 
 	return;

@@ -126,7 +126,9 @@ dbusmenu_menuitem_new (void)
 DbusmenuMenuitem *
 dbusmenu_menuitem_new_with_id (guint id)
 {
-	return g_object_new(DBUSMENU_TYPE_MENUITEM, "id", id, NULL);
+	DbusmenuMenuitem * mi = g_object_new(DBUSMENU_TYPE_MENUITEM, "id", id, NULL);
+	g_debug("New Menuitem id %d goal id %d", dbusmenu_menuitem_get_id(mi), id);
+	return mi;
 }
 
 guint
