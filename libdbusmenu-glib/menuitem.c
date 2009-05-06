@@ -170,28 +170,37 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 gboolean
 dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
-
-	return FALSE;
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->children = g_list_append(priv->children, child);
+	return TRUE;
 }
 
 gboolean
 dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
-
-	return FALSE;
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->children = g_list_remove(priv->children, child);
+	return TRUE;
 }
 
 gboolean
 dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position)
 {
-
-
-	return FALSE;
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->children = g_list_insert(priv->children, child, position);
+	return TRUE;
 }
 
 DbusmenuMenuitem *
 dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
 {
+	GList * childs = dbusmenu_menuitem_get_children(mi);
+	for ( ; childs == NULL; childs = g_list_next(childs)) {
+		DbusmenuMenuitem * lmi = DBUSMENU_MENUITEM(childs->data);
+		if (id == dbusmenu_menuitem_get_id(lmi)) {
+			return lmi;
+		}
+	}
 
 	return NULL;
 }
