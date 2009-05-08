@@ -195,6 +195,8 @@ DbusmenuMenuitem *
 dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
 {
 	GList * childs = dbusmenu_menuitem_get_children(mi);
+	if (childs == NULL) return NULL;
+
 	for ( ; childs == NULL; childs = g_list_next(childs)) {
 		DbusmenuMenuitem * lmi = DBUSMENU_MENUITEM(childs->data);
 		if (id == dbusmenu_menuitem_get_id(lmi)) {
