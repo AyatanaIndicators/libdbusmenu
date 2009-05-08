@@ -273,7 +273,9 @@ parse_node_get_id (xmlNodePtr node)
 	for (attrib = node->properties; attrib != NULL; attrib = attrib->next) {
 		if (g_strcmp0((gchar *)attrib->name, "id") == 0) {
 			if (attrib->children != NULL) {
-				return (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
+				guint id = (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
+				g_debug ("Found ID: %d", id);
+				return id;
 			}
 			break;
 		}
@@ -289,6 +291,7 @@ static DbusmenuMenuitem *
 parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent)
 {
 	guint id = parse_node_get_id(node);
+	g_debug("Looking at node with id: %d", id);
 	if (item == NULL || dbusmenu_menuitem_get_id(item) != id || id == 0) {
 		if (item != NULL) {
 			if (parent != NULL) {
@@ -309,6 +312,7 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 	xmlNodePtr children;
 	guint position;
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
+		g_debug("Looking at child: %d", position);
 		guint childid = parse_node_get_id(children);
 		DbusmenuMenuitem * childmi = dbusmenu_menuitem_child_find(item, childid);
 		childmi = parse_layout_xml(children, childmi, item);
@@ -358,6 +362,7 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	}
 
 	const gchar * xml = g_value_get_string(&value);
+	g_debug("Got layout string: %s", xml);
 	parse_layout(client, xml);
 
 	priv->layoutcall = NULL;
