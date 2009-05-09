@@ -12,6 +12,8 @@ static gboolean passed = TRUE;
 static gboolean
 verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
 {
+	g_debug("Verifying ID: %d", layout->id);
+
 	if (layout->id != dbusmenu_menuitem_get_id(mi)) {
 		g_debug("Failed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
 		return FALSE;
