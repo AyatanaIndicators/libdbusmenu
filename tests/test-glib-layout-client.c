@@ -34,20 +34,20 @@ verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
 	}
 
 	guint i = 0;
-	for (i = 0; children != NULL && layout[i].id != 0; children = g_list_next(children), i++) {
+	for (i = 0; children != NULL && layout->submenu[i].id != 0; children = g_list_next(children), i++) {
 		if (!verify_root_to_layout(DBUSMENU_MENUITEM(children->data), &layout->submenu[i])) {
 			return FALSE;
 		}
 	}
 
-	if (children == NULL && layout[i].id == 0) {
+	if (children == NULL && layout->submenu[i].id == 0) {
 		return TRUE;
 	}
 
 	if (children != NULL) {
-		g_debug("Failed as there are still children but no submenus");
+		g_debug("Failed as there are still children but no submenus.  (ID: %d)", layout->id);
 	} else {
-		g_debug("Failed as there are still submenus but no children");
+		g_debug("Failed as there are still submenus but no children.  (ID: %d)", layout->id);
 	}
 	return FALSE;
 }
