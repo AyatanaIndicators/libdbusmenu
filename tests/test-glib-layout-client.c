@@ -35,7 +35,7 @@ verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
 
 	guint i = 0;
 	for (i = 0; children != NULL && layout[i].id != 0; children = g_list_next(children), i++) {
-		if (!verify_root_to_layout(DBUSMENU_MENUITEM(children->data), &layout[i])) {
+		if (!verify_root_to_layout(DBUSMENU_MENUITEM(children->data), &layout->submenu[i])) {
 			return FALSE;
 		}
 	}
