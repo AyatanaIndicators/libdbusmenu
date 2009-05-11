@@ -48,6 +48,7 @@ DbusmenuMenuitem * dbusmenu_menuitem_new_with_id (guint id);
 guint dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi);
 
 GList * dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi);
+GList * dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi);
 guint dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent);
 
 gboolean dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child);

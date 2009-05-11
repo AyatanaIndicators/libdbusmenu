@@ -149,6 +149,27 @@ dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 	return priv->children;
 }
 
+/**
+	dbusmenu_menuitem_take_children:
+	@mi: The #DbusmenMenuitem to take the children from.
+
+	While the name sounds devious that's exactly what this function
+	does.  It takes the list of children from the @mi and clears the
+	internal list.  The calling function is no in charge of the ref's
+	on the children it has taken.  A lot of responsibility involved
+	in taking children.
+*/
+GList *
+dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	GList * children = priv->children;
+	priv->children = NULL;
+	return children;
+}
+
 guint
 dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
 {
