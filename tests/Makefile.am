@@ -1,3 +1,8 @@
+check: tests
+
+DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
+
+tests: test-glib-layout
 
 libexec_PROGRAMS = \
 	glib-server-nomenu \
@@ -14,6 +19,9 @@ glib_server_nomenu_CFLAGS = \
 glib_server_nomenu_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
+
+test-glib-layout: test-glib-layout-client test-glib-layout-server
+	$(DBUS_RUNNER) --task ./test-glib-layout-client --task ./test-glib-layout-server
 
 test_glib_layout_server_SOURCES = \
 	test-glib-layout-server.c
