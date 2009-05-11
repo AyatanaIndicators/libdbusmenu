@@ -4,6 +4,16 @@
 #include "menuitem.h"
 
 /* Private */
+/**
+	DbusmenuMenuitemPrivate:
+	@id: The ID of this menu item
+	@children: A list of #DbusmenuMenuitem objects that are
+	      children to this one.
+
+	These are the little secrets that we don't want getting
+	out of data that we have.  They can still be gotten using
+	accessor functions, but are protected appropriately.
+*/
 typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
 struct _DbusmenuMenuitemPrivate
 {
@@ -117,12 +127,28 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 
 /* Public interface */
+
+/**
+	dbusmenu_menuitem_new:
+
+	Create a new #DbusmenuMenuitem with all default values.
+
+	Return value: A newly allocated #DbusmenuMenuitem.
+*/
 DbusmenuMenuitem *
 dbusmenu_menuitem_new (void)
 {
 	return g_object_new(DBUSMENU_TYPE_MENUITEM, NULL);
 }
 
+/**
+	dbusmenu_menuitem_new_with_id:
+	@id: ID to use for this menuitem
+
+	This creates a blank #DbusmenuMenuitem with a specific ID.
+
+	Return value: A newly allocated #DbusmenuMenuitem.
+*/
 DbusmenuMenuitem *
 dbusmenu_menuitem_new_with_id (guint id)
 {
@@ -131,6 +157,14 @@ dbusmenu_menuitem_new_with_id (guint id)
 	return mi;
 }
 
+/**
+	dbusmenu_menuitem_get_id:
+	@mi: The #DbusmenuMenuitem to query.
+
+	Gets the unique ID for @mi.
+
+	Return value: The ID of the @mi.
+*/
 guint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {
@@ -140,6 +174,16 @@ dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 	return g_value_get_uint(&retval);
 }
 
+/**
+	dbusmenu_menuitem_get_children:
+	@mi: The #DbusmenuMenuitem to query.
+
+	Returns simply the list of children that this menu item
+	has.  The list is valid until another child related function
+	is called, where it might be changed.
+
+	Return value: A #GList of pointers to #DbusmenuMenuitem objects.
+*/
 GList *
 dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 {
@@ -158,6 +202,8 @@ dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 	internal list.  The calling function is no in charge of the ref's
 	on the children it has taken.  A lot of responsibility involved
 	in taking children.
+
+	Return value: A #GList of pointers to #DbusmenuMenuitem objects.
 */
 GList *
 dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
@@ -170,6 +216,17 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 	return children;
 }
 
+/**
+	dbusmenu_menuitem_get_position:
+	@mi: The #DbusmenuMenuitem to find the position of
+	@parent: The #DbusmenuMenuitem who's children contain @mi
+
+	This function returns the position of the menu item @mi
+	in the children of @parent.  It will return zero if the
+	menu item can't be found.
+
+	Return value: The position of @mi in the children of @parent.
+*/
 guint
 dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
 {
@@ -178,8 +235,9 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(parent), 0);
 
 	GList * childs = dbusmenu_menuitem_get_children(parent);
+	if (childs == NULL) return 0;
 	guint count = 0;
-	for ( ; childs != NULL; childs = childs->next) {
+	for ( ; childs != NULL; childs = childs->next, count++) {
 		if (childs->data == mi) break;
 	}
 
@@ -188,6 +246,16 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 	return count;
 }
 
+/**
+	dbusmenu_menuitem_child_append:
+	@mi: The #DbusmenuMenuitem which will become a new parent
+	@child: The #DbusmenMenuitem that will be a child
+
+	This function adds @child to the list of children on @mi at
+	the end of that list.
+
+	Return value: Whether the child has been added successfully.
+*/
 gboolean
 dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
@@ -196,6 +264,17 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	return TRUE;
 }
 
+/**
+	dbusmenu_menuitem_child_delete:
+	@mi: The #DbusmenuMenuitem which has @child as a child
+	@child: The child #DbusmenuMenuitem that you want to no longer
+	    be a child of @mi.
+	
+	This function removes @child from the children list of @mi.  It does
+	not call #g_object_unref on @child.
+
+	Return value: If we were able to delete @child.
+*/
 gboolean
 dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
@@ -204,6 +283,18 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	return TRUE;
 }
 
+/**
+	dbusmenu_menuitem_child_add_position:
+	@mi: The #DbusmenuMenuitem that we're adding the child @child to.
+	@child: The #DbusmenuMenuitem to make a child of @mi.
+	@position: Where in @mi object's list of chidren @child should be placed.
+
+	Puts @child in the list of children for @mi at the location
+	specified in @position.  If there is not enough entires available
+	then @child will be placed at the end of the list.
+
+	Return value: Whether @child was added successfully.
+*/
 gboolean
 dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position)
 {
@@ -212,6 +303,17 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 	return TRUE;
 }
 
+/**
+	dbusmenu_menuitem_child_find:
+	@mi: The #DbusmenuMenuitem who's children to look on
+	@id: The ID of the child that we're looking for.
+
+	Search the children of @mi to find one with the ID of @id.
+	If it doesn't exist then we return #NULL.
+
+	Return value: The menu item with the ID @id or #NULL if it
+	   can't be found.
+*/
 DbusmenuMenuitem *
 dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
 {
@@ -249,6 +351,17 @@ dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
 	return FALSE;
 }
 
+/**
+	dbusmenu_menuitem_buildxml:
+	@mi: #DbusmenuMenuitem to represent in XML
+	@array: A list of string that will be turned into an XML file
+
+	This function will add strings to the array @array.  It will put
+	at least one entry if this menu item has no children.  If it has
+	children it will put two for this entry, one representing the
+	start tag and one that is a closing tag.  It will allow it's
+	children to place their own tags in the array in between those two.
+*/
 void
 dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
 {
