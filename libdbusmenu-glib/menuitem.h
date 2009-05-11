@@ -13,12 +13,22 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_MENUITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_MENUITEM))
 #define DBUSMENU_MENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemClass))
 
-typedef struct _DbusmenuMenuitem      DbusmenuMenuitem;
-typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
 
 #define DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED    "property-changed"
 #define DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED      "item-activated"
 
+/**
+	DbusmenuMenuitemClass:
+	@property_changed: Slot for #DbusmenuMenuitem::property-changed.
+	@item_activated: Slot for #DbusmenuMenuitem::item-activated.
+	@buildxml: Virtual function that appends the strings required
+	           to represent this menu item in the menu XML file.
+	@reserved1: Reserved for future use.
+	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
+*/
+typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
 struct _DbusmenuMenuitemClass
 {
 	GObjectClass parent_class;
@@ -36,6 +46,17 @@ struct _DbusmenuMenuitemClass
 	void (*reserved4) (void);
 };
 
+/**
+	DbusmenuMenuitem:
+
+	This is the #GObject based object that represents a menu
+	item.  It gets created the same on both the client and
+	the server side and libdbusmenu-glib does the work of making
+	this object model appear on both sides of DBus.  Simple
+	really, though through updates and people coming on and off
+	the bus it can lead to lots of fun complex scenarios.
+*/
+typedef struct _DbusmenuMenuitem      DbusmenuMenuitem;
 struct _DbusmenuMenuitem
 {
 	GObject parent;
@@ -61,6 +82,25 @@ const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 
 void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
+
+/**
+	SECTION:menuitem
+	@short_description: A lowlevel represenation of a menuitem
+	@stability: Unstable
+	@include: libdbusmenu-glib/menuitem.h
+
+	A #DbusmenuMenuitem is the lowest level of represenation of a
+	single item in a menu.  It gets created on the server side
+	and copied over to the client side where it gets rendered.  As
+	the server starts to change it, and grow it, and do all kinds
+	of fun stuff that information is transfered over DBus and the
+	client updates it's understanding of the object model.
+
+	Most people using either the client or the server should be
+	able to deal mostly with #DbusmenuMenuitem objects.  These
+	are simple, but then they can be attached to more complex
+	objects and handled appropriately.
+*/
 
 G_END_DECLS
 
