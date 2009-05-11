@@ -311,13 +311,33 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 
 	xmlNodePtr children;
 	guint position;
+	GList * oldchildren = dbusmenu_menuitem_take_children(item);
+
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
 		g_debug("Looking at child: %d", position);
 		guint childid = parse_node_get_id(children);
-		DbusmenuMenuitem * childmi = dbusmenu_menuitem_child_find(item, childid);
+		DbusmenuMenuitem * childmi = NULL;
+
+		GList * childsearch = NULL;
+		for (childsearch = oldchildren; childsearch != NULL; childsearch = g_list_next(childsearch)) {
+			DbusmenuMenuitem * cs_mi = DBUSMENU_MENUITEM(childsearch->data);
+			if (childid == dbusmenu_menuitem_get_id(cs_mi)) {
+				oldchildren = g_list_remove(oldchildren, cs_mi);
+				childmi = cs_mi;
+				break;
+			}
+		}
+
 		childmi = parse_layout_xml(children, childmi, item);
 		dbusmenu_menuitem_child_add_position(item, childmi, position);
 	}
+
+	GList * oldchildleft = NULL;
+	for (oldchildleft = oldchildren; oldchildleft != NULL; oldchildleft = g_list_next(oldchildleft)) {
+		DbusmenuMenuitem * oldmi = DBUSMENU_MENUITEM(oldchildleft->data);
+		g_object_unref(G_OBJECT(oldmi));
+	}
+	g_list_free(oldchildren);
 
 	return item;
 }
