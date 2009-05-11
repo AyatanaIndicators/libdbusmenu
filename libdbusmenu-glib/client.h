@@ -20,9 +20,20 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
 
-typedef struct _DbusmenuClient      DbusmenuClient;
-typedef struct _DbusmenuClientClass DbusmenuClientClass;
+/**
+	DbusmenuClientClass:
+	@parent_class: #GObjectClass
+	@layout_updated: Slot for #DbusmenuClient::layout-updated.
+	@reserved1: Reserved for future use.
+	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
 
+	A simple class that takes all of the information from a
+	#DbusmenuServer over DBus and makes the same set of 
+	#DbusmenuMenuitem objects appear on the other side.
+*/
+typedef struct _DbusmenuClientClass DbusmenuClientClass;
 struct _DbusmenuClientClass {
 	GObjectClass parent_class;
 
@@ -35,6 +46,14 @@ struct _DbusmenuClientClass {
 	void (*reserved4) (void);
 };
 
+/**
+	DbusmenuClient:
+	@parent: #GObject.
+
+	The client for a #DbusmenuServer creating a shared
+	object set of #DbusmenuMenuitem objects.
+*/
+typedef struct _DbusmenuClient      DbusmenuClient;
 struct _DbusmenuClient {
 	GObject parent;
 };
@@ -42,6 +61,27 @@ struct _DbusmenuClient {
 GType                dbusmenu_client_get_type   (void);
 DbusmenuClient *     dbusmenu_client_new        (const gchar * name, const gchar * object);
 DbusmenuMenuitem *   dbusmenu_client_get_root   (DbusmenuClient * client);
+
+/**
+	SECTION:client
+	@short_description: The catcher of all the server traffic
+	@stability: Unstable
+	@include: libdbusmenu-glib/client.h
+
+	The client exists as a mirror to the server.  For most folks
+	all they will do with a client is set it up to connect to
+	a server and then watch as the menu items on their side
+	of the bus change.  This is all they should need to know about
+	the client, that it magically makes their menuitems dance.
+
+	It does this by setting up signal watchers and adjusting
+	the menuitems appropriately.  Most users should watch the
+	menu items and the signal #DbusmenuClient::layout-changed for
+	larger events so that they can be optimized.  It is possible
+	with that signal that even the root node would change.  If
+	that doesn't happen the normal signals on the individual
+	nodes should be enough for most users.
+*/
 
 G_END_DECLS
 
