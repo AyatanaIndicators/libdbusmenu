@@ -21,7 +21,7 @@ glib_server_nomenu_LDADD = \
 	$(DBUSMENUGLIB_LIBS)
 
 test-glib-layout: test-glib-layout-client test-glib-layout-server
-	$(DBUS_RUNNER) --task ./test-glib-layout-client --task ./test-glib-layout-server
+	$(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return
 
 test_glib_layout_server_SOURCES = \
 	test-glib-layout-server.c
