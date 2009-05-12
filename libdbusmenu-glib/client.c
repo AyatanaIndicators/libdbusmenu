@@ -52,7 +52,6 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
-
 struct _DbusmenuClientPrivate
 {
 	DbusmenuMenuitem * root;
@@ -444,6 +443,19 @@ update_layout (DbusmenuClient * client)
 }
 
 /* Public API */
+/**
+	dbusmenu_client_new:
+	@name: The DBus name for the server to connect to
+	@object: The object on the server to monitor
+
+	This function creates a new client that connects to a specific
+	server on DBus.  That server is at a specific location sharing
+	a known object.  The interface is assumed by the code to be 
+	the DBus menu interface.  The newly created client will start
+	sending out events as it syncs up with the server.
+
+	Return value: A brand new #DbusmenuClient
+*/
 DbusmenuClient *
 dbusmenu_client_new (const gchar * name, const gchar * object)
 {
@@ -456,6 +468,21 @@ dbusmenu_client_new (const gchar * name, const gchar * object)
 	return self;
 }
 
+/**
+	dbusmenu_client_get_root:
+	@client: The #DbusmenuClient to get the root node from
+
+	Grabs the root node for the specified client @client.  This
+	function may block.  It will block if there is currently a
+	call to update the layout, it will block on that layout 
+	updated and then return the newly updated layout.  Chances
+	are that this update is in the queue for the mainloop as
+	it would have been requested some time ago, but in theory
+	it could block longer.
+
+	Return value: A #DbusmenuMenuitem representing the root of
+		menu on the server.
+*/
 DbusmenuMenuitem *
 dbusmenu_client_get_root (DbusmenuClient * client)
 {
