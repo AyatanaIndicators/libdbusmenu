@@ -44,35 +44,8 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED    "property-changed"
 #define DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED      "item-activated"
-
-/**
-	DbusmenuMenuitemClass:
-	@property_changed: Slot for #DbusmenuMenuitem::property-changed.
-	@item_activated: Slot for #DbusmenuMenuitem::item-activated.
-	@buildxml: Virtual function that appends the strings required
-	           to represent this menu item in the menu XML file.
-	@reserved1: Reserved for future use.
-	@reserved2: Reserved for future use.
-	@reserved3: Reserved for future use.
-	@reserved4: Reserved for future use.
-*/
-typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
-struct _DbusmenuMenuitemClass
-{
-	GObjectClass parent_class;
-
-	/* Signals */
-	void (*property_changed) (gchar * property, gchar * value);
-	void (*item_activated) (void);
-
-	/* Virtual functions */
-	void (*buildxml) (GPtrArray * stringarray);
-
-	void (*reserved1) (void);
-	void (*reserved2) (void);
-	void (*reserved3) (void);
-	void (*reserved4) (void);
-};
+#define DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED         "child-added"
+#define DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED       "child-removed"
 
 /**
 	DbusmenuMenuitem:
@@ -88,6 +61,39 @@ typedef struct _DbusmenuMenuitem      DbusmenuMenuitem;
 struct _DbusmenuMenuitem
 {
 	GObject parent;
+};
+
+/**
+	DbusmenuMenuitemClass:
+	@property_changed: Slot for #DbusmenuMenuitem::property-changed.
+	@item_activated: Slot for #DbusmenuMenuitem::item-activated.
+	@child_added: Slot for #DbusmenuMenuitem::child-added.
+	@child_removed: Slot for #DbusmenuMenuitem::child-removed.
+	@buildxml: Virtual function that appends the strings required
+	           to represent this menu item in the menu XML file.
+	@reserved1: Reserved for future use.
+	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
+*/
+typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
+struct _DbusmenuMenuitemClass
+{
+	GObjectClass parent_class;
+
+	/* Signals */
+	void (*property_changed) (gchar * property, gchar * value);
+	void (*item_activated) (void);
+	void (*child_added) (DbusmenuMenuitem * child);
+	void (*child_removed) (DbusmenuMenuitem * child);
+
+	/* Virtual functions */
+	void (*buildxml) (GPtrArray * stringarray);
+
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
 };
 
 GType dbusmenu_menuitem_get_type (void);

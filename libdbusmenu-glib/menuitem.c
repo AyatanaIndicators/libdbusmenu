@@ -55,6 +55,9 @@ struct _DbusmenuMenuitemPrivate
 /* Signals */
 enum {
 	PROPERTY_CHANGED,
+	ITEM_ACTIVATED,
+	CHILD_ADDED,
+	CHILD_REMOVED,
 	LAST_SIGNAL
 };
 
@@ -102,12 +105,44 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 		updated or added.
 	*/
 	signals[PROPERTY_CHANGED] =   g_signal_new(DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
-	                                         G_TYPE_FROM_CLASS(klass),
-	                                         G_SIGNAL_RUN_LAST,
-	                                         G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
-	                                         NULL, NULL,
-	                                         _dbusmenu_menuitem_marshal_VOID__STRING_STRING,
-	                                         G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
+	                                           NULL, NULL,
+	                                           _dbusmenu_menuitem_marshal_VOID__STRING_STRING,
+	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+	/**
+		DbusmenuMenuitem::child-added:
+		@arg0: The #DbusmenuMenuitem which is the parent.
+		@arg1: The #DbusmenuMenuitem which is the child.
+
+		Signaled when the child menuitem has been added to
+		the parent.
+	*/
+	signals[CHILD_ADDED] =        g_signal_new(DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_added),
+	                                           NULL, NULL,
+	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
+	                                           G_TYPE_NONE, 2, G_TYPE_OBJECT);
+	/**
+		DbusmenuMenuitem::child-removed:
+		@arg0: The #DbusmenuMenuitem which was the parent.
+		@arg1: The #DbusmenuMenuitem which was the child.
+
+		Signaled when the child menuitem has been requested to
+		be removed from the parent.  This signal is called when
+		it has been removed from the list but not yet had
+		#g_object_unref called on it.
+	*/
+	signals[CHILD_REMOVED] =      g_signal_new(DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED,
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_removed),
+	                                           NULL, NULL,
+	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
+	                                           G_TYPE_NONE, 2, G_TYPE_OBJECT);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_uint("id", "ID for the menu item",
