@@ -280,6 +280,17 @@ _dbusmenu_server_list_properties (void)
 }
 
 /* Public Interface */
+/**
+	dbusmenu_server_new:
+	@object: The object name to show for this menu structure
+		on DBus.  May be NULL.
+
+	Creates a new #DbusmenuServer object with a specific object
+	path on DBus.  If @object is set to NULL the default object
+	name of "/org/freedesktop/dbusmenu" will be used.
+
+	Return value: A brand new #DbusmenuServer
+*/
 DbusmenuServer *
 dbusmenu_server_new (const gchar * object)
 {
@@ -294,6 +305,15 @@ dbusmenu_server_new (const gchar * object)
 	return self;
 }
 
+/**
+	dbusmenu_server_set_root:
+	@self: The #DbusmenuServer object to set the root on
+	@root: The new root #DbusmenuMenuitem tree
+
+	This function contains all of the #GValue wrapping
+	required to set the property #DbusmenuServer:root-node
+	on the server @self.
+*/
 void
 dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 {
