@@ -101,6 +101,8 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 
 	priv->id = 0; 
 	priv->children = NULL;
+
+	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
 	
 	return;
 }
@@ -116,6 +118,12 @@ dbusmenu_menuitem_dispose (GObject *object)
 static void
 dbusmenu_menuitem_finalize (GObject *object)
 {
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(object);
+
+	if (priv->properties != NULL) {
+		g_hash_table_destroy(priv->properties);
+		priv->properties = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_parent_class)->finalize (object);
 	return;
