@@ -486,6 +486,8 @@ dbusmenu_client_new (const gchar * name, const gchar * object)
 DbusmenuMenuitem *
 dbusmenu_client_get_root (DbusmenuClient * client)
 {
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), NULL);
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	if (priv->layoutcall != NULL) {
