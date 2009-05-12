@@ -51,6 +51,14 @@ struct _DbusmenuMenuitemPrivate
 	GHashTable * properties;
 };
 
+/* Signals */
+enum {
+	PROPERTY_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 /* Properties */
 enum {
 	PROP_0,
@@ -82,6 +90,22 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	object_class->finalize = dbusmenu_menuitem_finalize;
 	object_class->set_property = set_property;
 	object_class->get_property = get_property;
+
+	/**
+		DbusmenuMenuitem::property-changed:
+		@arg0: The #DbusmenuMenuitem object.
+		@arg1: The name of the property that changed
+
+		Emitted everytime a property on a menuitem is either
+		updated or added.
+	*/
+	signals[PROPERTY_CHANGED] =   g_signal_new(DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+	                                         G_TYPE_FROM_CLASS(klass),
+	                                         G_SIGNAL_RUN_LAST,
+	                                         G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
+	                                         NULL, NULL,
+	                                         g_cclosure_marshal_VOID__STRING,
+	                                         G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_uint("id", "ID for the menu item",
@@ -415,7 +439,7 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 	gchar * lval = g_strdup(value);
 
 	g_hash_table_insert(priv->properties, lprop, lval);
-	//g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, TRUE);
 
 	return TRUE;
 }
