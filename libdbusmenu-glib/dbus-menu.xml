@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+A library to allow applictions to provide simple indications of
+information to be displayed to users of the application through the
+interface shell.
+
+Copyright 2009 Canonical Ltd.
+
+Authors:
+    Ted Gould <ted@canonical.com>
+
+This program is free software: you can redistribute it and/or modify it 
+under the terms of either or both of the following licenses:
+
+1) the GNU Lesser General Public License version 3, as published by the 
+Free Software Foundation; and/or
+2) the GNU Lesser General Public License version 2.1, as published by 
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranties of 
+MERCHANTABILITY, SATISFACTORY QUALITY or FITNESS FOR A PARTICULAR 
+PURPOSE.  See the applicable version of the GNU Lesser General Public 
+License for more details.
+
+You should have received a copy of both the GNU Lesser General Public 
+License version 3 and version 2.1 along with this program.  If not, see 
+<http://www.gnu.org/licenses/>
+-->
+<node name="/">
+	<interface name="org.freedesktop.dbusmenu">
+
+<!-- Properties -->
+		<property name="layout" type="s" access="read"/>
+
+<!-- Functions -->
+		<method name="GetProperty">
+			<arg type="u" name="id" direction="in" />
+			<arg type="s" name="property" direction="in" />
+			<arg type="s" name="value" direction="out" />
+		</method>
+		<method name="GetProperties">
+			<arg type="u" name="id" direction="in" />
+			<arg type="as" name="property" direction="in" />
+			<arg type="a(ss)" name="value" direction="out" />
+		</method>
+		<method name="Call">
+			<arg type="u" name="id" direction="in" />
+		</method>
+		<method name="ListProperties">
+			<arg type="u" name="id" direction="in" />
+			<arg type="as" name="properties" direction="out" />
+		</method>
+
+<!-- Signals -->
+		<signal name="IdPropUpdate">
+			<arg type="u" name="id" direction="out" />
+			<arg type="s" name="prop" direction="out" />
+			<arg type="s" name="value" direction="out" />
+		</signal>
+		<signal name="IdUpdate">
+			<arg type="u" name="id" direction="out" />
+		</signal>
+		<signal name="LayoutUpdate">
+		</signal>
+
+<!-- End of interesting stuff -->
+
+	</interface>
+</node>
