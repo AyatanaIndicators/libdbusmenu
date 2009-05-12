@@ -381,25 +381,90 @@ dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
 	return NULL;
 }
 
+/**
+	dbusmenu_menuitem_property_set:
+	@mi: The #DbusmenuMenuitem to set the property on.
+	@property: Name of the property to set.
+	@value: The value of the property.
+
+	Takes the pair of @property and @value and places them as a
+	property on @mi.  If a property already exists by that name,
+	then the value is set to the new value.  If not, the property
+	is added.  If the value is changed or the property was previously
+	unset then the signal #DbusmenuMenuitem::prop-changed will be
+	emitted by this function.
+
+	Return value:  A boolean representing if the property value was set.
+*/
 gboolean
 dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(property != NULL, FALSE);
 
-	return FALSE;
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	gpointer lookup = g_hash_table_lookup(priv->properties, property);
+	if (g_strcmp0((gchar *)lookup, value) == 0) {
+		/* The value is the same as the value currently in the
+		   table so we don't really care.  Just say everything's okay */
+		return TRUE;
+	}
+
+	gchar * lprop = g_strdup(property);
+	gchar * lval = g_strdup(value);
+
+	g_hash_table_insert(priv->properties, lprop, lval);
+	//g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, TRUE);
+
+	return TRUE;
 }
 
+/**
+	dbusmenu_menuitem_property_get:
+	@mi: The #DbusmenuMenuitem to look for the property on.
+	@property: The property to grab.
+
+	Look up a property on @mi and return the value of it if
+	it exits.  #NULL will be returned if the property doesn't
+	exist.
+
+	Return value: A string with the value of the property
+		that shouldn't be free'd.  Or #NULL if the property
+		is not set.
+*/
 const gchar *
 dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	g_return_val_if_fail(property != NULL, NULL);
 
-	return NULL;
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	return (const gchar *)g_hash_table_lookup(priv->properties, property);
 }
 
+/**
+	dbusmenu_menuitem_property_exit:
+	@mi: The #DbusmenuMenuitem to look for the property on.
+	@property: The property to look for.
+
+	Checkes to see if a particular property exists on @mi and 
+	returns #TRUE if so.
+
+	Return value: A boolean checking to see if the property is available
+*/
 gboolean
 dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(property != NULL, FALSE);
 
-	return FALSE;
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	gpointer value = g_hash_table_lookup(priv->properties, property);
+
+	return value != NULL;
 }
 
 /**
