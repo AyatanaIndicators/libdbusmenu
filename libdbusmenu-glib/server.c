@@ -293,7 +293,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 static void 
 menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * value, DbusmenuServer * server)
 {
-
+	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, value, TRUE);
 	return;
 }
 
