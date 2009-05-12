@@ -93,6 +93,16 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	object_class->set_property = set_property;
 	object_class->get_property = get_property;
 
+	/**
+		DbusmenuServer::id-prop-update:
+		@arg0: The #DbusmenuServer emitting the signal.
+		@arg1: The ID of the #DbusmenuMenuitem changing a property.
+		@arg2: The property being changed.
+		@arg3: The value of the property being changed.
+
+		This signal is emitted when a menuitem updates or
+		adds a property.
+	*/
 	signals[ID_PROP_UPDATE] =   g_signal_new(DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE,
 	                                         G_TYPE_FROM_CLASS(class),
 	                                         G_SIGNAL_RUN_LAST,
@@ -100,6 +110,15 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         NULL, NULL,
 	                                         _dbusmenu_server_marshal_VOID__UINT_STRING_STRING,
 	                                         G_TYPE_NONE, 3, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING);
+	/**
+		DbusmenuServer::id-update:
+		@arg0: The #DbusmenuServer emitting the signal.
+		@arg1: ID of the #DbusmenuMenuitem changing.
+
+		The purpose of this signal is to show major change in
+		a menuitem to the point that #DbusmenuServer::id-prop-update
+		seems a little insubstantive.
+	*/
 	signals[ID_UPDATE] =        g_signal_new(DBUSMENU_SERVER_SIGNAL_ID_UPDATE,
 	                                         G_TYPE_FROM_CLASS(class),
 	                                         G_SIGNAL_RUN_LAST,
@@ -107,6 +126,13 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         NULL, NULL,
 	                                         g_cclosure_marshal_VOID__UINT,
 	                                         G_TYPE_NONE, 1, G_TYPE_UINT);
+	/**
+		DbusmenuServer::layout-update:
+		@arg0: The #DbusmenuServer emitting the signal.
+
+		This signal is emitted any time the layout of the
+		menuitems under this server is changed.
+	*/
 	signals[LAYOUT_UPDATE] =    g_signal_new(DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE,
 	                                         G_TYPE_FROM_CLASS(class),
 	                                         G_SIGNAL_RUN_LAST,
