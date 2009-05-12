@@ -37,6 +37,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 	@id: The ID of this menu item
 	@children: A list of #DbusmenuMenuitem objects that are
 	      children to this one.
+	@properties: All of the properties on this menu item.
 
 	These are the little secrets that we don't want getting
 	out of data that we have.  They can still be gotten using
@@ -47,6 +48,7 @@ struct _DbusmenuMenuitemPrivate
 {
 	guint id;
 	GList * children;
+	GHashTable * properties;
 };
 
 /* Properties */
