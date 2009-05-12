@@ -117,6 +117,7 @@ gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * 
 
 void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
+void dbusmenu_menuitem_activate (DbusmenuMenuitem * mi);
 
 /**
 	SECTION:menuitem

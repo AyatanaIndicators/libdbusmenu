@@ -112,6 +112,20 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           _dbusmenu_menuitem_marshal_VOID__STRING_STRING,
 	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 	/**
+		DbusmenuMenuitem::item-activated:
+		@arg0: The #DbusmenuMenuitem object.
+
+		Emitted on the objects on the server side when
+		they are signaled on the client side.
+	*/
+	signals[ITEM_ACTIVATED] =   g_signal_new(DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, item_activated),
+	                                           NULL, NULL,
+	                                           _dbusmenu_menuitem_marshal_VOID__VOID,
+	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
+	/**
 		DbusmenuMenuitem::child-added:
 		@arg0: The #DbusmenuMenuitem which is the parent.
 		@arg1: The #DbusmenuMenuitem which is the child.
@@ -588,5 +602,20 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 	GList * children = dbusmenu_menuitem_get_children(mi);
 	foreach_struct_t foreach_data = {func: func, data: data};
 	g_list_foreach(children, foreach_helper, &foreach_data);
+	return;
+}
+
+/**
+	dbusmenu_menuitem_activate:
+	@mi: The #DbusmenuMenuitem to send the signal on.
+
+	Emits the #DbusmenuMenuitem::item-activate signal on this
+	menu item.  Called by server objects when they get the
+	appropriate DBus signals from the client.
+*/
+void
+dbusmenu_menuitem_activate (DbusmenuMenuitem * mi)
+{
+	g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, TRUE);
 	return;
 }
