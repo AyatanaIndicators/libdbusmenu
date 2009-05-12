@@ -523,3 +523,35 @@ dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
 	return;
 }
 
+typedef struct {
+	void (*func) (DbusmenuMenuitem * mi, gpointer data);
+	gpointer data;
+} foreach_struct_t;
+
+static void
+foreach_helper (gpointer data, gpointer user_data)
+{
+	dbusmenu_menuitem_foreach(DBUSMENU_MENUITEM(data), ((foreach_struct_t *)user_data)->func, ((foreach_struct_t *)user_data)->data);
+	return;
+}
+
+/**
+	dbusmenu_menuitem_foreach:
+	@mi: The #DbusmenItem to start from
+	@func: Function to call on every node in the tree
+	@data: User data to pass to the function
+
+	This calls the function @func on this menu item and all
+	of the children of this item.  And their children.  And
+	their children.  And... you get the point.  It will get
+	called on the whole tree.
+*/
+void
+dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data)
+{
+	func(mi, data);
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	foreach_struct_t foreach_data = {func: func, data: data};
+	g_list_foreach(children, foreach_helper, &foreach_data);
+	return;
+}

@@ -110,6 +110,7 @@ const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 
 void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
+void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
 
 /**
 	SECTION:menuitem
