@@ -301,6 +301,8 @@ static void
 menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
 {
 	menuitem_signals_create(child, server);
+	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, TRUE);
 	return;
 }
 
@@ -308,6 +310,8 @@ static void
 menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
 {
 	menuitem_signals_remove(child, server);
+	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, TRUE);
 	return;
 }
 
