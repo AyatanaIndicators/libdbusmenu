@@ -30,6 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 #include "menuitem.h"
+#include "menuitem-marshal.h"
 
 /* Private */
 /**
@@ -105,7 +106,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
 	                                         NULL, NULL,
-	                                         g_cclosure_marshal_VOID__STRING_STRING,
+	                                         _dbusmenu_menuitem_marshal_VOID__STRING_STRING,
 	                                         G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	g_object_class_install_property (object_class, PROP_ID,
