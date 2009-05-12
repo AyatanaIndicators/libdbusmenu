@@ -78,6 +78,11 @@ static void dbusmenu_server_dispose    (GObject *object);
 static void dbusmenu_server_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
+static void menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * value, DbusmenuServer * server);
+static void menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server);
+static void menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server);
+static void menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data);
+static void menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data);
 
 G_DEFINE_TYPE (DbusmenuServer, dbusmenu_server, G_TYPE_OBJECT);
 
@@ -273,6 +278,49 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	}
 
+	return;
+}
+
+static void 
+menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * value, DbusmenuServer * server)
+{
+
+	return;
+}
+
+static void
+menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
+{
+	menuitem_signals_create(child, server);
+	return;
+}
+
+static void 
+menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
+{
+	menuitem_signals_remove(child, server);
+	return;
+}
+
+/* Connects all the signals that we're interested in
+   coming from a menuitem */
+static void
+menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data)
+{
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED, G_CALLBACK(menuitem_child_added), data);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(menuitem_child_removed), data);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menuitem_property_changed), data);
+	return;
+}
+
+/* Removes all the signals that we're interested in
+   coming from a menuitem */
+static void
+menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data)
+{
+	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_added), data);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_removed), data);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_property_changed), data);
 	return;
 }
 
