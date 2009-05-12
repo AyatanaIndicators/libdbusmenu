@@ -51,9 +51,20 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
 #define DBUSMENU_SERVER_PROP_LAYOUT            "layout"
 
-typedef struct _DbusmenuServer      DbusmenuServer;
-typedef struct _DbusmenuServerClass DbusmenuServerClass;
+/**
+	DbusmenuServerClass:
+	@parent_class: #GObjectClass
+	@id_prop_update: Slot for #DbusmenuServer::id-prop-update.
+	@id_update: Slot for #DbusmenuServer::id-update.
+	@layout_update: Slot for #DbusmenuServer::layout-update.
+	@dbusmenu_server_reserved1: Reserved for future use.
+	@dbusmenu_server_reserved2: Reserved for future use.
+	@dbusmenu_server_reserved3: Reserved for future use.
+	@dbusmenu_server_reserved4: Reserved for future use.
 
+	The class implementing the virtual functions for #DbusmenuServer.
+*/
+typedef struct _DbusmenuServerClass DbusmenuServerClass;
 struct _DbusmenuServerClass {
 	GObjectClass parent_class;
 
@@ -69,6 +80,14 @@ struct _DbusmenuServerClass {
 	void (*dbusmenu_server_reserved4)(void);
 };
 
+/**
+	DbusmenuServer:
+	@parent: #GObject
+
+	A server which represents a sharing of a set of
+	#DbusmenuMenuitems across DBus to a #DbusmenuClient.
+*/
+typedef struct _DbusmenuServer      DbusmenuServer;
 struct _DbusmenuServer {
 	GObject parent;
 };
@@ -77,6 +96,25 @@ GType               dbusmenu_server_get_type   (void);
 DbusmenuServer *    dbusmenu_server_new        (const gchar * object);
 void                dbusmenu_server_set_root   (DbusmenuServer * server, DbusmenuMenuitem * root);
 
+/**
+	SECIONT:server
+	@short_description: The server signals changed and
+		updates on a tree of #DbusmenuMenuitem objecs.
+	@stability: Unstable
+	@include: libdbusmenu-glib/server.h
+
+	A #DbusmenuServer is the object that represents the local
+	tree of #DbusmenuMenuitem objects on DBus.  It watches the
+	various signals that those objects emit and correctly
+	represents them across DBus to a #DbusmenuClient so that
+	the same tree can be maintained in another process.
+
+	The server needs to have the root set of #DbusmenuMenuitem
+	objects set via #dbusmenu_server_set_root but it will query
+	all of the objects in that tree automatically.  After setting
+	the root there should be no other maintence required by
+	users of the server class.
+*/
 G_END_DECLS
 
 #endif
