@@ -182,6 +182,13 @@ dbusmenu_server_init (DbusmenuServer *self)
 static void
 dbusmenu_server_dispose (GObject *object)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(object);
+
+	if (priv->root != NULL) {
+		dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, object);
+		g_object_unref(priv->root);
+	}
+
 	G_OBJECT_CLASS (dbusmenu_server_parent_class)->dispose (object);
 	return;
 }
@@ -209,12 +216,14 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_ROOT_NODE:
 		if (priv->root != NULL) {
+			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, obj);
 			g_object_unref(G_OBJECT(priv->root));
 			priv->root = NULL;
 		}
 		priv->root = DBUSMENU_MENUITEM(g_value_get_object(value));
 		if (priv->root != NULL) {
 			g_object_ref(G_OBJECT(priv->root));
+			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_create, obj);
 		} else {
 			g_debug("Setting root node to NULL");
 		}
