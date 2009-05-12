@@ -95,6 +95,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 		DbusmenuMenuitem::property-changed:
 		@arg0: The #DbusmenuMenuitem object.
 		@arg1: The name of the property that changed
+		@arg2: The new value of the property
 
 		Emitted everytime a property on a menuitem is either
 		updated or added.
@@ -104,8 +105,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
 	                                         NULL, NULL,
-	                                         g_cclosure_marshal_VOID__STRING,
-	                                         G_TYPE_NONE, 1, G_TYPE_STRING);
+	                                         g_cclosure_marshal_VOID__STRING_STRING,
+	                                         G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_uint("id", "ID for the menu item",
@@ -439,7 +440,7 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 	gchar * lval = g_strdup(value);
 
 	g_hash_table_insert(priv->properties, lprop, lval);
-	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, value, TRUE);
 
 	return TRUE;
 }

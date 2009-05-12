@@ -62,7 +62,7 @@ struct _DbusmenuMenuitemClass
 	GObjectClass parent_class;
 
 	/* Signals */
-	void (*property_changed) (gchar * property);
+	void (*property_changed) (gchar * property, gchar * value);
 	void (*item_activated) (void);
 
 	/* Virtual functions */
