@@ -196,6 +196,8 @@ dbusmenu_menuitem_new_with_id (guint id)
 guint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), 0);
+
 	GValue retval = {0};
 	g_value_init(&retval, G_TYPE_UINT);
 	g_object_get_property(G_OBJECT(mi), "id", &retval);
@@ -287,6 +289,9 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 gboolean
 dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
+
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_append(priv->children, child);
 	return TRUE;
@@ -306,6 +311,9 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 gboolean
 dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
+
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_remove(priv->children, child);
 	return TRUE;
@@ -326,6 +334,9 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 gboolean
 dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
+
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_insert(priv->children, child, position);
 	return TRUE;
@@ -345,6 +356,8 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 DbusmenuMenuitem *
 dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+
 	GList * childs = dbusmenu_menuitem_get_children(mi);
 	if (childs == NULL) return NULL;
 
