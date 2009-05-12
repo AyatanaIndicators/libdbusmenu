@@ -308,6 +308,15 @@ dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 	return priv->children;
 }
 
+/* For all the taken children we need to signal
+   that they were removed */
+static void
+take_children_signal (gpointer data, gpointer user_data)
+{
+	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
+	return;
+}
+
 /**
 	dbusmenu_menuitem_take_children:
 	@mi: The #DbusmenMenuitem to take the children from.
@@ -328,6 +337,7 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	GList * children = priv->children;
 	priv->children = NULL;
+	g_list_foreach(children, take_children_signal, mi);
 	return children;
 }
 
@@ -379,6 +389,7 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_append(priv->children, child);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
 	return TRUE;
 }
 
@@ -401,6 +412,7 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_remove(priv->children, child);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_REMOVED], 0, child, TRUE);
 	return TRUE;
 }
 
@@ -424,6 +436,7 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_insert(priv->children, child, position);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
 	return TRUE;
 }
 
