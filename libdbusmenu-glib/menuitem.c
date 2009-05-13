@@ -469,6 +469,52 @@ dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
 	return NULL;
 }
 
+typedef struct {
+	DbusmenuMenuitem * mi;
+	guint id;
+} find_id_t;
+
+/* Basically the heart of the find_id that matches the
+   API of GFunc.  Unfortunately, this goes through all the
+   children, but it rejects them quickly. */
+static void
+find_id_helper (gpointer in_mi, gpointer in_find_id)
+{
+	DbusmenuMenuitem * mi = (DbusmenuMenuitem *)in_mi;
+	find_id_t * find_id = (find_id_t *)in_find_id;
+
+	if (find_id->mi != NULL) return;
+	if (find_id->id == dbusmenu_menuitem_get_id(mi)) {
+		find_id->mi = mi;
+		return;
+	}
+
+	g_list_foreach(dbusmenu_menuitem_get_children(mi), find_id_helper, in_find_id);
+	return;
+}
+
+/**
+	dbusmenu_menuitem_find_id:
+	@mi: #DbusmenuMenuitem at the top of the tree to search
+	@id: ID of the #DbusmenuMenuitem to search for
+
+	This function searchs the whole tree of children that
+	are attached to @mi.  This could be quite a few nodes, all
+	the way down the tree.  It is a depth first search.
+
+	Return value: The #DbusmenuMenuitem with the ID of @id
+		or #NULL if there isn't such a menu item in the tree
+		represented by @mi.
+*/
+DbusmenuMenuitem *
+dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, guint id)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	find_id_t find_id = {mi: NULL, id: id};
+	find_id_helper(mi, &find_id);
+	return find_id.mi;
+}
+
 /**
 	dbusmenu_menuitem_property_set:
 	@mi: The #DbusmenuMenuitem to set the property on.
