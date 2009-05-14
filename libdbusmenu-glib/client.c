@@ -77,6 +77,8 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
 static void layout_update (DBusGProxy * proxy, DbusmenuClient * client);
+static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client);
+static void id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static guint parse_node_get_id (xmlNodePtr node);
 static DbusmenuMenuitem * parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent);
@@ -238,6 +240,20 @@ layout_update (DBusGProxy * proxy, DbusmenuClient * client)
 	return;
 }
 
+static void
+id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client)
+{
+
+	return;
+}
+
+static void
+id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
+{
+
+	return;
+}
+
 /* When we have a name and an object, build the two proxies and get the
    first version of the layout */
 static void
@@ -280,6 +296,12 @@ build_proxies (DbusmenuClient * client)
 
 	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdate", G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "LayoutUpdate", G_CALLBACK(layout_update), client, NULL);
+
+	dbus_g_proxy_add_signal(priv->menuproxy, "IdPropUpdate", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->menuproxy, "IdPropUpdate", G_CALLBACK(id_prop_update), client, NULL);
+
+	dbus_g_proxy_add_signal(priv->menuproxy, "IdUpdate", G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->menuproxy, "IdUpdate", G_CALLBACK(id_update), client, NULL);
 
 	return;
 }
