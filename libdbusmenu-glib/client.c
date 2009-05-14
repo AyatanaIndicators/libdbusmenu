@@ -240,17 +240,33 @@ layout_update (DBusGProxy * proxy, DbusmenuClient * client)
 	return;
 }
 
+/* Signal from the server that a property has changed
+   on one of our menuitems */
 static void
 id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	g_return_if_fail(priv->root != NULL);
 
+	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
+	g_return_if_fail(menuitem != NULL);
+
+	dbusmenu_menuitem_property_set(menuitem, property, value);
 	return;
 }
 
+/* Oh, lots of updates now.  That silly server, they want
+   to change all kinds of stuff! */
 static void
 id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	g_return_if_fail(priv->root != NULL);
 
+	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
+	g_return_if_fail(menuitem != NULL);
+
+	/* dbusmenu_menuitem_property_set(menuitem, property, value); */
 	return;
 }
 
