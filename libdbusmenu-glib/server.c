@@ -35,7 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 /* DBus Prototypes */
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error);
-static gboolean _dbusmenu_server_get_properties (void);
+static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, gpointer dict, GError ** error);
 static gboolean _dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error);
 
 #include "dbusmenu-server.h"
@@ -357,13 +357,39 @@ error_quark (void)
 static gboolean 
 _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+
+	if (mi == NULL) {
+		if (error != NULL) {
+			g_set_error(error,
+			            error_quark(),
+			            INVALID_MENUITEM_ID,
+			            "The ID supplied %d does not refer to a menu item we have",
+			            id);
+		}
+		return FALSE;
+	}
 
 	return TRUE;
 }
 
 static gboolean
-_dbusmenu_server_get_properties (void)
+_dbusmenu_server_get_properties (DbusmenuServer * server, guint id, gpointer dict, GError ** error)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+
+	if (mi == NULL) {
+		if (error != NULL) {
+			g_set_error(error,
+			            error_quark(),
+			            INVALID_MENUITEM_ID,
+			            "The ID supplied %d does not refer to a menu item we have",
+			            id);
+		}
+		return FALSE;
+	}
 
 	return TRUE;
 }
