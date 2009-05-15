@@ -41,15 +41,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 		</method>
 		<method name="GetProperties">
 			<arg type="u" name="id" direction="in" />
-			<arg type="as" name="property" direction="in" />
-			<arg type="a(ss)" name="value" direction="out" />
+			<arg type="a{ss}" name="properties" direction="out" />
 		</method>
 		<method name="Call">
 			<arg type="u" name="id" direction="in" />
-		</method>
-		<method name="ListProperties">
-			<arg type="u" name="id" direction="in" />
-			<arg type="as" name="properties" direction="out" />
 		</method>
 
 <!-- Signals -->

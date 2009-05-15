@@ -36,7 +36,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 /* DBus Prototypes */
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (void);
-static gboolean _dbusmenu_server_list_properties (void);
 static gboolean _dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error);
 
 #include "dbusmenu-server.h"
@@ -364,13 +363,6 @@ _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * proper
 
 static gboolean
 _dbusmenu_server_get_properties (void)
-{
-
-	return TRUE;
-}
-
-static gboolean
-_dbusmenu_server_list_properties (void)
 {
 
 	return TRUE;
