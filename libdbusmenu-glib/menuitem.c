@@ -602,6 +602,26 @@ dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
 }
 
 /**
+	dbusmenu_menuitem_properties_list:
+	@mi: #DbusmenuMenuitem to list the properties on
+
+	This functiong gets a list of the names of all the properties
+	that are set on this menu item.  This data on the list is owned
+	by the menuitem but the list is not and should be freed using
+	g_list_free() when the calling function is done with it.
+
+	Return value: A list of strings or NULL if there are none.
+*/
+GList *
+dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return g_hash_table_get_keys(priv->properties);
+}
+
+/**
 	dbusmenu_menuitem_buildxml:
 	@mi: #DbusmenuMenuitem to represent in XML
 	@array: A list of string that will be turned into an XML file
@@ -657,6 +677,9 @@ foreach_helper (gpointer data, gpointer user_data)
 void
 dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data)
 {
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	g_return_if_fail(func != NULL);
+
 	func(mi, data);
 	GList * children = dbusmenu_menuitem_get_children(mi);
 	foreach_struct_t foreach_data = {func: func, data: data};
@@ -675,6 +698,7 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 void
 dbusmenu_menuitem_activate (DbusmenuMenuitem * mi)
 {
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, TRUE);
 	return;
 }

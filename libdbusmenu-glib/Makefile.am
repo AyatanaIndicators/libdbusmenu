@@ -35,7 +35,7 @@ libdbusmenu_glib_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_glib_la_CFLAGS = \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror -DG_DISABLE_DEPRECATED
 
 libdbusmenu_glib_la_LIBADD = \
 	$(DBUSMENUGLIB_LIBS)

@@ -98,12 +98,12 @@ struct _DbusmenuMenuitemClass
 
 GType dbusmenu_menuitem_get_type (void);
 
-DbusmenuMenuitem * dbusmenu_menuitem_new (void);
-DbusmenuMenuitem * dbusmenu_menuitem_new_with_id (guint id);
+DbusmenuMenuitem * dbusmenu_menuitem_new (void) G_GNUC_WARN_UNUSED_RESULT;
+DbusmenuMenuitem * dbusmenu_menuitem_new_with_id (guint id) G_GNUC_WARN_UNUSED_RESULT;
 guint dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi);
 
 GList * dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi);
-GList * dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi);
+GList * dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
 guint dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent);
 
 gboolean dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child);
@@ -115,6 +115,7 @@ DbusmenuMenuitem * dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, guint id);
 gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value);
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
+GList * dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
 
 void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
