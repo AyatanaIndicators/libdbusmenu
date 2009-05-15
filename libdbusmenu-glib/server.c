@@ -34,10 +34,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "server-marshal.h"
 
 /* DBus Prototypes */
-static gboolean _dbusmenu_server_get_property (void);
+static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (void);
-static gboolean _dbusmenu_server_call (void);
 static gboolean _dbusmenu_server_list_properties (void);
+static gboolean _dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error);
 
 #include "dbusmenu-server.h"
 
@@ -71,6 +71,12 @@ enum {
 	PROP_LAYOUT
 };
 
+/* Errors */
+enum {
+	INVALID_MENUITEM_ID,
+	LAST_ERROR
+};
+
 /* Prototype */
 static void dbusmenu_server_class_init (DbusmenuServerClass *class);
 static void dbusmenu_server_init       (DbusmenuServer *self);
@@ -83,6 +89,7 @@ static void menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * 
 static void menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server);
 static void menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data);
 static void menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data);
+static GQuark error_quark (void);
 
 G_DEFINE_TYPE (DbusmenuServer, dbusmenu_server, G_TYPE_OBJECT);
 
@@ -337,9 +344,19 @@ menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data)
 	return;
 }
 
+static GQuark
+error_quark (void)
+{
+	static GQuark quark = 0;
+	if (quark == 0) {
+		quark = g_quark_from_static_string (G_LOG_DOMAIN);
+	}
+	return quark;
+}
+
 /* DBus interface */
 static gboolean 
-_dbusmenu_server_get_property (void)
+_dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error)
 {
 
 	return TRUE;
@@ -353,16 +370,30 @@ _dbusmenu_server_get_properties (void)
 }
 
 static gboolean
-_dbusmenu_server_call (void)
+_dbusmenu_server_list_properties (void)
 {
 
 	return TRUE;
 }
 
 static gboolean
-_dbusmenu_server_list_properties (void)
+_dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
+	if (mi == NULL) {
+		if (error != NULL) {
+			g_set_error(error,
+			            error_quark(),
+			            INVALID_MENUITEM_ID,
+			            "The ID supplied %d does not refer to a menu item we have",
+			            id);
+		}
+		return FALSE;
+	}
+
+	dbusmenu_menuitem_activate(mi);
 	return TRUE;
 }
 
