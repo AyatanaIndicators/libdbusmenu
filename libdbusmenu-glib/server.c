@@ -73,6 +73,8 @@ enum {
 /* Errors */
 enum {
 	INVALID_MENUITEM_ID,
+	INVALID_PROPERTY_NAME,
+	UNKNOWN_DBUS_ERROR,
 	LAST_ERROR
 };
 
@@ -370,6 +372,31 @@ _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * proper
 		}
 		return FALSE;
 	}
+
+	const gchar * prop = dbusmenu_menuitem_property_get(mi, property);
+	if (prop == NULL) {
+		if (error != NULL) {
+			g_set_error(error,
+			            error_quark(),
+			            INVALID_PROPERTY_NAME,
+			            "The property '%s' does not exist on menuitem with ID of %d",
+			            property,
+			            id);
+		}
+		return FALSE;
+	}
+
+	if (value == NULL) {
+		if (error != NULL) {
+			g_set_error(error,
+			            error_quark(),
+			            UNKNOWN_DBUS_ERROR,
+			            "Uhm, yeah.  We didn't get anywhere to put the value, that's really weird.  Seems impossible really.");
+		}
+		return FALSE;
+	}
+
+	*value = g_strdup(prop);
 
 	return TRUE;
 }
