@@ -33,9 +33,11 @@ static gboolean passed = TRUE;
 static gboolean
 verify_props (DbusmenuMenuitem * mi, gchar ** properties)
 {
+	if (properties == NULL) {
+		return TRUE;
+	}
 
-
-
+	return TRUE;
 }
 
 static gboolean
@@ -48,7 +50,7 @@ verify_root_to_layout(DbusmenuMenuitem * mi, proplayout_t * layout)
 		return FALSE;
 	}
 
-	if (!veryify_props(mi, layout->properties)) {
+	if (!verify_props(mi, layout->properties)) {
 		return FALSE;
 	}
 
