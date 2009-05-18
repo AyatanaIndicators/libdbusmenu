@@ -418,6 +418,8 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GHashTable *
 		return FALSE;
 	}
 
+	*dict = dbusmenu_menuitem_properties_copy(mi);
+
 	return TRUE;
 }
 
