@@ -621,6 +621,41 @@ dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi)
 	return g_hash_table_get_keys(priv->properties);
 }
 
+static void
+copy_helper (gpointer in_key, gpointer in_value, gpointer in_data)
+{
+	GHashTable * table = (GHashTable *)in_data;
+	g_hash_table_insert(table, in_key, in_value);
+	return;
+}
+
+/**
+	dbusmenu_menuitem_properties_copy:
+	@mi: #DbusmenuMenuitem that we're interested in the properties of
+
+	This function takes the properties of a #DbusmenuMenuitem
+	and puts them into a #GHashTable that is referenced by the
+	key of a string and has the value of a string.  The hash
+	table may not have any entries if there aren't any or there
+	is an error in processing.  It is the caller's responsibility
+	to destroy the created #GHashTable.
+
+	Return value: A brand new #GHashTable that contains all of the
+		properties that are on this #DbusmenuMenuitem @mi.
+*/
+GHashTable *
+dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
+{
+	GHashTable * ret = g_hash_table_new(g_str_hash, g_str_equal);
+
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), ret);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	g_hash_table_foreach(priv->properties, copy_helper, ret);
+
+	return ret;
+}
+
 /**
 	dbusmenu_menuitem_buildxml:
 	@mi: #DbusmenuMenuitem to represent in XML
