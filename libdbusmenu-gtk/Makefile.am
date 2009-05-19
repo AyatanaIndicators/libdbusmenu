@@ -19,10 +19,11 @@ libdbusmenu_gtk_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_gtk_la_CFLAGS = \
-	$(LIBDBUSMENU_GTK_CFLAGS)
+	$(DBUSMENUGTK_CFLAGS)
 
 libdbusmenu_gtk_la_LIBADD = \
-	$(LIBDBUSMENU_GTK_LIBS)
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGTK_LIBS)
 
 pkgconfig_DATA = dbusmenu-gtk.pc
 pkgconfigdir = $(libdir)/pkgconfig
