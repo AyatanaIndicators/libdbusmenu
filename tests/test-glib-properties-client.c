@@ -29,6 +29,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 static guint layouton = 0;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
+static guint death_timer = 0;
 
 static gboolean
 verify_props (DbusmenuMenuitem * mi, gchar ** properties)
@@ -90,24 +91,6 @@ verify_root_to_layout(DbusmenuMenuitem * mi, proplayout_t * layout)
 	return FALSE;
 }
 
-static void
-layout_updated (DbusmenuClient * client, gpointer data)
-{
-	g_debug("Layout Updated");
-
-	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(client);
-	proplayout_t * layout = &layouts[layouton];
-	
-	if (!verify_root_to_layout(menuroot, layout)) {
-		g_debug("Failed layout: %d", layouton);
-		passed = FALSE;
-	}
-
-	layouton++;
-
-	return;
-}
-
 static gboolean
 timer_func (gpointer data)
 {
@@ -117,17 +100,44 @@ timer_func (gpointer data)
 	return FALSE;
 }
 
+static void
+layout_updated (DbusmenuClient * client, gpointer data)
+{
+	g_debug("Layout Updated");
+
+	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(client);
+	proplayout_t * layout = &layouts[layouton];
+	
+	if (!verify_root_to_layout(menuroot, layout)) {
+		g_debug("FAILED LAYOUT: %d", layouton);
+		passed = FALSE;
+	} else {
+		/* Extend our death */
+		g_source_remove(death_timer);
+		death_timer = g_timeout_add_seconds(10, timer_func, client);
+	}
+
+	layouton++;
+	
+	if (layouts[layouton].id == 0) {
+		g_main_loop_quit(mainloop);
+	}
+
+	return;
+}
+
 int
 main (int argc, char ** argv)
 {
 	g_type_init();
 
+	/* Make sure the server starts up and all that */
 	g_usleep(500000);
 
 	DbusmenuClient * client = dbusmenu_client_new(":1.0", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
-	g_timeout_add_seconds(10, timer_func, client);
+	death_timer = g_timeout_add_seconds(10, timer_func, client);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
