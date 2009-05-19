@@ -33,3 +33,4 @@ menuitem-marshal.h
 libdbusmenu_glib_la-menuitem-marshal.lo
 test-glib-properties-client
 test-glib-properties-server
+libdbusmenu_gtk_la-menu.lo
