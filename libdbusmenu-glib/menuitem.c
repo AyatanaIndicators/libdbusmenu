@@ -537,6 +537,7 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 	g_return_val_if_fail(property != NULL, FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	g_debug("Setting a property.  ID: %d  Prop: %s  Value: %s", priv->id, property, value);
 
 	gpointer lookup = g_hash_table_lookup(priv->properties, property);
 	if (g_strcmp0((gchar *)lookup, value) == 0) {
