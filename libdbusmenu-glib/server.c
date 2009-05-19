@@ -274,7 +274,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	case PROP_LAYOUT: {
 		GPtrArray * xmlarray = g_ptr_array_new();
 		if (priv->root == NULL) {
-			g_debug("Getting layout without root node!");
+			/* g_debug("Getting layout without root node!"); */
 			g_ptr_array_add(xmlarray, g_strdup("<menu />"));
 		} else {
 			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
@@ -284,7 +284,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		/* build string */
 		gchar * finalstring = g_strjoinv("", (gchar **)xmlarray->pdata);
 		g_value_take_string(value, finalstring);
-		g_debug("Final string: %s", finalstring);
+		/* g_debug("Final string: %s", finalstring); */
 
 		g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
 		g_ptr_array_free(xmlarray, TRUE);
@@ -485,7 +485,7 @@ dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 	g_return_if_fail(DBUSMENU_IS_SERVER(self));
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(root));
 
-	g_debug("Setting root object: 0x%X", (unsigned int)root);
+	/* g_debug("Setting root object: 0x%X", (unsigned int)root); */
 	GValue rootvalue = {0};
 	g_value_init(&rootvalue, G_TYPE_OBJECT);
 	g_value_set_object(&rootvalue, root);

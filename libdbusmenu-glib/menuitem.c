@@ -266,7 +266,7 @@ DbusmenuMenuitem *
 dbusmenu_menuitem_new_with_id (guint id)
 {
 	DbusmenuMenuitem * mi = g_object_new(DBUSMENU_TYPE_MENUITEM, "id", id, NULL);
-	g_debug("New Menuitem id %d goal id %d", dbusmenu_menuitem_get_id(mi), id);
+	/* g_debug("New Menuitem id %d goal id %d", dbusmenu_menuitem_get_id(mi), id); */
 	return mi;
 }
 
@@ -537,7 +537,7 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 	g_return_val_if_fail(property != NULL, FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
-	g_debug("Setting a property.  ID: %d  Prop: %s  Value: %s", priv->id, property, value);
+	/* g_debug("Setting a property.  ID: %d  Prop: %s  Value: %s", priv->id, property, value); */
 
 	gpointer lookup = g_hash_table_lookup(priv->properties, property);
 	if (g_strcmp0((gchar *)lookup, value) == 0) {
