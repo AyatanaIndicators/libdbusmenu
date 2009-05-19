@@ -113,12 +113,20 @@ timer_func (gpointer data)
 	return FALSE;
 }
 
+static gboolean layout_verify_timer (gpointer data);
+
 static void
 layout_updated (DbusmenuClient * client, gpointer data)
 {
 	g_debug("Layout Updated");
+	g_timeout_add (250, layout_verify_timer, client);
+	return;
+}
 
-	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(client);
+static gboolean
+layout_verify_timer (gpointer data)
+{
+	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(DBUSMENU_CLIENT(data));
 	proplayout_t * layout = &layouts[layouton];
 	
 	if (!verify_root_to_layout(menuroot, layout)) {
@@ -127,7 +135,7 @@ layout_updated (DbusmenuClient * client, gpointer data)
 	} else {
 		/* Extend our death */
 		g_source_remove(death_timer);
-		death_timer = g_timeout_add_seconds(10, timer_func, client);
+		death_timer = g_timeout_add_seconds(10, timer_func, data);
 	}
 
 	layouton++;
@@ -136,7 +144,7 @@ layout_updated (DbusmenuClient * client, gpointer data)
 		g_main_loop_quit(mainloop);
 	}
 
-	return;
+	return FALSE;
 }
 
 int
