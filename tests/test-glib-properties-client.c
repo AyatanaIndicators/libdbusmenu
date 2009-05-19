@@ -46,24 +46,26 @@ verify_root_to_layout(DbusmenuMenuitem * mi, proplayout_t * layout)
 	g_debug("Verifying ID: %d", layout->id);
 
 	if (layout->id != dbusmenu_menuitem_get_id(mi)) {
-		g_debug("Failed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
+		g_debug("\tFailed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
 		return FALSE;
 	}
 
 	if (!verify_props(mi, layout->properties)) {
+		g_debug("\tFailed as unable to verify properties.");
 		return FALSE;
 	}
 
 	GList * children = dbusmenu_menuitem_get_children(mi);
 
 	if (children == NULL && layout->submenu == NULL) {
+		g_debug("\tPassed: %d", layout->id);
 		return TRUE;
 	}
 	if (children == NULL || layout->submenu == NULL) {
 		if (children == NULL) {
-			g_debug("Failed as there are no children but we have submenus");
+			g_debug("\tFailed as there are no children but we have submenus");
 		} else {
-			g_debug("Failed as we have children but no submenu");
+			g_debug("\tFailed as we have children but no submenu");
 		}
 		return FALSE;
 	}
@@ -76,13 +78,14 @@ verify_root_to_layout(DbusmenuMenuitem * mi, proplayout_t * layout)
 	}
 
 	if (children == NULL && layout->submenu[i].id == 0) {
+		g_debug("\tPassed: %d", layout->id);
 		return TRUE;
 	}
 
 	if (children != NULL) {
-		g_debug("Failed as there are still children but no submenus.  (ID: %d)", layout->id);
+		g_debug("\tFailed as there are still children but no submenus.  (ID: %d)", layout->id);
 	} else {
-		g_debug("Failed as there are still submenus but no children.  (ID: %d)", layout->id);
+		g_debug("\tFailed as there are still submenus but no children.  (ID: %d)", layout->id);
 	}
 	return FALSE;
 }
