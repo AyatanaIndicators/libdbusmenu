@@ -4,6 +4,8 @@
 
 #include <gtk/gtk.h>
 
+#include "menu.h"
+
 typedef struct _MenuPrivate MenuPrivate;
 
 struct _MenuPrivate
