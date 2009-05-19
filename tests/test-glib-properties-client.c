@@ -38,6 +38,19 @@ verify_props (DbusmenuMenuitem * mi, gchar ** properties)
 		return TRUE;
 	}
 
+	/* Verify they're all there and correct */
+	guint i;
+	for (i = 0; properties[i] != NULL; i += 2) {
+		const gchar * value = dbusmenu_menuitem_property_get(mi, properties[i]);
+		if (g_strcmp0(value, properties[i + 1])) {
+			g_debug("\tFailed as property '%s' should be '%s' and is '%s'", properties[i], properties[i+1], value);
+			return FALSE;
+		}
+	}
+
+	/* Verify that we don't have any extras */
+	// GList * props = dbusmenu_menuitem_properties_list(mi);
+
 	return TRUE;
 }
 
