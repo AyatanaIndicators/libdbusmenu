@@ -24,6 +24,7 @@ struct _DbusmenuGtkMenu {
 };
 
 GType dbusmenu_gtkmenu_get_type (void);
+DbusmenuGtkMenu * dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object);
 
 G_END_DECLS
 

@@ -167,3 +167,24 @@ build_client (DbusmenuGtkMenu * self)
 	return;
 }
 
+/* Public API */
+
+/**
+	dbusmenu_gtkmenu_new:
+	@dbus_name: Name of the #DbusmenuServer on DBus
+	@dbus_name: Name of the object on the #DbusmenuServer
+
+	Creates a new #DbusmenuGtkMenu object and creates a #DbusmenuClient
+	that connects across DBus to a #DbusmenuServer.
+
+	Return value: A new #DbusmenuGtkMenu sync'd with a server
+*/
+DbusmenuGtkMenu *
+dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object)
+{
+	return g_object_new(DBUSMENU_GTKMENU_TYPE,
+	                    DBUSMENU_CLIENT_PROP_DBUS_OBJECT, dbus_object,
+	                    DBUSMENU_CLIENT_PROP_DBUS_NAME, dbus_name,
+	                    NULL);
+}
+
