@@ -6,46 +6,54 @@
 
 #include "menu.h"
 
-typedef struct _MenuPrivate MenuPrivate;
+typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
 
-struct _MenuPrivate
+struct _DbusmenuGtkMenuPrivate
 {
 };
 
-#define MENU_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), MENU_TYPE, MenuPrivate))
+#define DBUSMENU_GTKMENU_GET_PRIVATE(o) \
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuPrivate))
 
-static void menu_class_init (MenuClass *klass);
-static void menu_init       (Menu *self);
-static void menu_dispose    (GObject *object);
-static void menu_finalize   (GObject *object);
+static void dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass);
+static void dbusmenu_gtkmenu_init       (DbusmenuGtkMenu *self);
+static void dbusmenu_gtkmenu_dispose    (GObject *object);
+static void dbusmenu_gtkmenu_finalize   (GObject *object);
 
-G_DEFINE_TYPE (Menu, menu, GTK_TYPE_MENU);
+G_DEFINE_TYPE (DbusmenuGtkMenu, dbusmenu_gtkmenu, GTK_TYPE_MENU);
 
 static void
-menu_class_init (MenuClass *klass)
+dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass)
 {
-GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-g_type_class_add_private (klass, sizeof (MenuPrivate));
+	g_type_class_add_private (klass, sizeof (DbusmenuGtkMenuPrivate));
 
-object_class->dispose = menu_dispose;
-object_class->finalize = menu_finalize;
+	object_class->dispose = dbusmenu_gtkmenu_dispose;
+	object_class->finalize = dbusmenu_gtkmenu_finalize;
+
+	return;
 }
 
 static void
-menu_init (Menu *self)
+dbusmenu_gtkmenu_init (DbusmenuGtkMenu *self)
 {
+
+	return;
 }
 
 static void
-menu_dispose (GObject *object)
+dbusmenu_gtkmenu_dispose (GObject *object)
 {
-G_OBJECT_CLASS (menu_parent_class)->dispose (object);
+
+	G_OBJECT_CLASS (dbusmenu_gtkmenu_parent_class)->dispose (object);
+	return;
 }
 
 static void
-menu_finalize (GObject *object)
+dbusmenu_gtkmenu_finalize (GObject *object)
 {
-G_OBJECT_CLASS (menu_parent_class)->finalize (object);
+
+	G_OBJECT_CLASS (dbusmenu_gtkmenu_parent_class)->finalize (object);
+	return;
 }
