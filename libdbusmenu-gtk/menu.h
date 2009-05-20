@@ -13,11 +13,29 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_GTKMENU_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_GTKMENU_TYPE))
 #define DBUSMENU_GTKMENU_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuClass))
 
+/**
+	DbusmenuGtkMenuClass:
+	@parent_class: #GtkMenuClass
+	@reserved1: Reserved for future use.
+	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
+*/
 typedef struct _DbusmenuGtkMenuClass DbusmenuGtkMenuClass;
 struct _DbusmenuGtkMenuClass {
 	GtkMenuClass parent_class;
+
+	/* Reserved */
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
 };
 
+/**
+	DbusmenuGtkMenu:
+	@parent: #GtkMenu
+*/
 typedef struct _DbusmenuGtkMenu      DbusmenuGtkMenu;
 struct _DbusmenuGtkMenu {
 	GtkMenu parent;
