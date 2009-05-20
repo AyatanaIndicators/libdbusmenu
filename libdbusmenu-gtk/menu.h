@@ -44,6 +44,31 @@ struct _DbusmenuGtkMenu {
 GType dbusmenu_gtkmenu_get_type (void);
 DbusmenuGtkMenu * dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object);
 
+/**
+	SECTION:gtkmenu
+	@short_description: A GTK Menu Object that syncronizes over DBus
+	@stability: Unstable
+	@include: libdbusmenu-gtk/menu.h
+
+	In general, this is just a #GtkMenu, why else would you care?  Oh,
+	because this menu is created by someone else on a server that exists
+	on the other side of DBus.  You need a #DbusmenuServer to be able
+	push the data into this menu.
+
+	The first thing you need to know is how to find that #DbusmenuServer
+	on DBus.  This involves both the DBus name and the DBus object that
+	the menu interface can be found on.  Those two value should be set
+	when creating the object using dbusmenu_gtkmenu_new().  They are then
+	stored on two properties #DbusmenuGtkMenu:dbus-name and #DbusmenuGtkMenu:dbus-object.
+
+	After creation the #DbusmenuGtkMenu it will continue to keep in
+	synchronization with the #DbusmenuServer object across Dbus.  If the
+	number of entries change, the menus change, if they change thier
+	properties change, they update in the items.  All of this should
+	be handled transparently to the user of this object.
+
+	TODO: Document properties.
+*/
 G_END_DECLS
 
 #endif
