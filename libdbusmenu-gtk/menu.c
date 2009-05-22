@@ -155,6 +155,19 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal Functions */
 
+/* Processing the layout being updated and handling
+   that and making it into a menu */
+void
+process_layout_change (DbusmenuClient * client, DbusmenuGtkMenu * gtkmenu)
+{
+
+
+	return;
+}
+
+
+/* Builds the client and connects all of the signals
+   up for it so that it's happy-happy */
 static void
 build_client (DbusmenuGtkMenu * self)
 {
@@ -162,6 +175,10 @@ build_client (DbusmenuGtkMenu * self)
 
 	if (priv->client == NULL) {
 		priv->client = dbusmenu_client_new(priv->dbus_name, priv->dbus_object);
+
+		/* Register for layout changes, this should come after the
+		   creation of the client pulls it from DBus */
+		g_signal_connect(G_OBJECT(priv->client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(process_layout_change), self);
 	}
 
 	return;
