@@ -158,6 +158,13 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 static const gchar * data_menuitem = "dbusmenugtk-data-gtkmenuitem";
 static const gchar * data_menu = "dbusmenugtk-data-gtkmenu";
 
+static gboolean
+menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
+{
+	dbusmenu_menuitem_activate(mi);
+	return TRUE;
+}
+
 static void
 menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
 {
@@ -173,6 +180,7 @@ connect_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi)
 	g_object_set_data_full(G_OBJECT(mi), data_menuitem, gmi, g_object_unref);
 
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), mi);
 
 	return;
 }
