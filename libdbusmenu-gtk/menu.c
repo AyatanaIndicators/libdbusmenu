@@ -179,14 +179,13 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenu
 static void
 destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 {
-	g_object_destory(G_OBJECT(udata));
+	g_object_unref(G_OBJECT(udata));
 	return;
 }
 
 static void
 connect_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi)
 {
-	g_object_ref(gmi);
 	g_object_set_data_full(G_OBJECT(mi), data_menuitem, gmi, g_object_unref);
 
 	g_signal_connect(G_OBJECT(mi),  DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
@@ -223,7 +222,7 @@ process_dbusmenu_menuitem (DbusmenuMenuitem * mi, GtkMenu * parentmenu)
 		g_object_ref(gtkmenu);
 		g_object_set_data_full(G_OBJECT(mi), data_menu, gtkmenu, g_object_unref);
 		unknown_menu = gtkmenu;
-		gtk_menuitem_set_submenu(GTK_MENU_ITEM(unknown_menuitem), gtkmenu);
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(unknown_menuitem), gtkmenu);
 		gtk_widget_show(gtkmenu);
 	}
 

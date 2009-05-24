@@ -19,7 +19,7 @@ libdbusmenu_gtk_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_gtk_la_CFLAGS = \
-	$(DBUSMENUGTK_CFLAGS)
+	$(DBUSMENUGTK_CFLAGS) -Wall -Werror
 
 libdbusmenu_gtk_la_LIBADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
