@@ -158,7 +158,7 @@ main (int argc, char ** argv)
 	GtkWidget * window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	GtkWidget * menubar = gtk_menu_bar_new();
 	GtkWidget * menuitem = gtk_menu_item_new_with_label("Test");
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), GTK_WIDGET(dbusmenu_gtkmenu_new (":1.0", "/org/test")));
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), GTK_WIDGET(dbusmenu_gtkmenu_new ("glib.label.test", "/org/test")));
 	gtk_widget_show(menuitem);
 	gtk_menu_bar_append(menubar, menuitem);
 	gtk_widget_show(menubar);
