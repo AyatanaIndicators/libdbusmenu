@@ -156,7 +156,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 /* Internal Functions */
 
 static const gchar * data_menuitem = "dbusmenugtk-data-gtkmenuitem";
-static const gchar * data_menu = "dbusmenugtk-data-gtkmenu";
+static const gchar * data_menu =     "dbusmenugtk-data-gtkmenu";
 
 static gboolean
 menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
@@ -168,9 +168,19 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 static void
 menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
 {
+	if (g_strcmp0(prop, "label")) {
+		gtk_menu_item_set_label(gmi, value);
+		gtk_widget_show(GTK_WIDGET(gmi));
+	}
 
+	return;
+}
 
-
+static void
+destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
+{
+	g_object_destory(G_OBJECT(udata));
+	return;
 }
 
 static void
@@ -179,8 +189,10 @@ connect_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi)
 	g_object_ref(gmi);
 	g_object_set_data_full(G_OBJECT(mi), data_menuitem, gmi, g_object_unref);
 
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(mi),  DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
 	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), mi);
+
+	g_object_weak_ref(G_OBJECT(mi), destoryed_dbusmenuitem_cb, gmi);
 
 	return;
 }
@@ -218,11 +230,13 @@ process_dbusmenu_menuitem (DbusmenuMenuitem * mi, GtkMenu * parentmenu)
 	/* Phase 1: Add missing children */
 	GList * child = NULL;
 	for (child = children; child != NULL; child = g_list_next(child)) {
-		
+		process_dbusmenu_menuitem(DBUSMENU_MENUITEM(child->data), GTK_MENU(unknown_menu));	
 	}
 
 	/* Phase 2: Delete removed children */
-
+	/* Actually, we don't need to do this because of the weak
+	   reference that we've added above.  When the DbusmenuMenuitem
+	   gets destroyed it takes its GtkMenuItem with it.  Bye bye. */
 
 	/* Phase 3: Profit! */
 	return;
