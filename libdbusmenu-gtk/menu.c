@@ -155,12 +155,87 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal Functions */
 
-/* Processing the layout being updated and handling
-   that and making it into a menu */
-void
-process_layout_change (DbusmenuClient * client, DbusmenuGtkMenu * gtkmenu)
+static const gchar * data_menuitem = "dbusmenugtk-data-gtkmenuitem";
+static const gchar * data_menu = "dbusmenugtk-data-gtkmenu";
+
+static void
+menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
 {
 
+
+
+}
+
+static void
+connect_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi)
+{
+	g_object_ref(gmi);
+	g_object_set_data_full(G_OBJECT(mi), data_menuitem, gmi, g_object_unref);
+
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+
+	return;
+}
+
+static void
+process_dbusmenu_menuitem (DbusmenuMenuitem * mi, GtkMenu * parentmenu)
+{
+	gpointer unknown_menuitem = g_object_get_data(G_OBJECT(mi), data_menuitem);
+	if (unknown_menuitem == NULL) {
+		/* Oh, a virgin DbusmenuMenuitem, let's fix that. */
+		GtkWidget * menuitem = gtk_menu_item_new();
+		connect_menuitem(mi, GTK_MENU_ITEM(menuitem));
+		unknown_menuitem = menuitem;
+		gtk_menu_shell_append(GTK_MENU_SHELL(parentmenu), menuitem);
+	}
+
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	if (children == NULL) {
+		/* If there are no children to process we are
+		   done and we can move along */
+		return;
+	}
+
+	/* Phase 0: Make a submenu if we don't have one */
+	gpointer unknown_menu = g_object_get_data(G_OBJECT(mi), data_menu);
+	if (unknown_menu == NULL) {
+		GtkWidget * gtkmenu = gtk_menu_new();
+		g_object_ref(gtkmenu);
+		g_object_set_data_full(G_OBJECT(mi), data_menu, gtkmenu, g_object_unref);
+		unknown_menu = gtkmenu;
+		gtk_menuitem_set_submenu(GTK_MENU_ITEM(unknown_menuitem), gtkmenu);
+		gtk_widget_show(gtkmenu);
+	}
+
+	/* Phase 1: Add missing children */
+	GList * child = NULL;
+	for (child = children; child != NULL; child = g_list_next(child)) {
+		
+	}
+
+	/* Phase 2: Delete removed children */
+
+
+	/* Phase 3: Profit! */
+	return;
+}
+
+/* Processing the layout being updated and handling
+   that and making it into a menu */
+static void
+process_layout_change (DbusmenuClient * client, DbusmenuGtkMenu * gtkmenu)
+{
+	DbusmenuMenuitem * root = dbusmenu_client_get_root(client);
+
+	GList * children = dbusmenu_menuitem_get_children(root);
+	if (children == NULL) {
+		return;
+	}
+
+	GList * child = NULL;
+	for (child = children; child != NULL; child = g_list_next(child)) {
+		process_dbusmenu_menuitem(DBUSMENU_MENUITEM(child->data), GTK_MENU(gtkmenu));
+	}
 
 	return;
 }
