@@ -169,6 +169,11 @@ dbusmenu_client_dispose (GObject *object)
 	}
 	priv->session_bus = NULL;
 
+	if (priv->root != NULL) {
+		g_object_unref(G_OBJECT(priv->root));
+		priv->root = NULL;
+	}
+
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->dispose (object);
 	return;
 }
