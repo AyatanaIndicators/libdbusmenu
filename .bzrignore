@@ -28,3 +28,11 @@ libdbusmenu_glib_la-server-marshal.lo
 glib-server-nomenu
 test-glib-layout-server
 test-glib-layout-client
+menuitem-marshal.c
+menuitem-marshal.h
+libdbusmenu_glib_la-menuitem-marshal.lo
+test-glib-properties-client
+test-glib-properties-server
+libdbusmenu_gtk_la-menu.lo
+test-gtk-label-client
+test-gtk-label-server
