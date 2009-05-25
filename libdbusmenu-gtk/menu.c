@@ -180,14 +180,14 @@ static void
 destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 {
 	g_debug("DbusmenuMenuitem was destroyed");
-	g_object_unref(G_OBJECT(udata));
+	gtk_widget_destroy(GTK_WIDGET(udata));
 	return;
 }
 
 static void
 connect_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi)
 {
-	g_object_set_data_full(G_OBJECT(mi), data_menuitem, gmi, g_object_unref);
+	g_object_set_data(G_OBJECT(mi), data_menuitem, gmi);
 
 	g_signal_connect(G_OBJECT(mi),  DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
 	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), mi);
