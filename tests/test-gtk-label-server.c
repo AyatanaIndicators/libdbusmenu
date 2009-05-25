@@ -8,7 +8,7 @@
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 
-#include "test-glib-properties.h"
+#include "test-gtk-label.h"
 
 static void
 set_props (DbusmenuMenuitem * mi, gchar ** props)

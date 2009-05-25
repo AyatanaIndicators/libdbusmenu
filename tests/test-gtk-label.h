@@ -9,6 +9,7 @@ struct _proplayout_t {
 };
 
 gchar * props1[] = {"label", "value1", NULL};
+gchar * props2[] = {"label", "value1", NULL};
 gchar * props3[] = {"label",
                     "And a property name that is really long should have a value that is really long, because well, that's an important part of the yin and yang of software testing.",
                     NULL};
@@ -65,9 +66,9 @@ proplayout_t submenu_4_0[] = {
 };
 
 proplayout_t layouts[] = {
-	{id: 1, properties: props1, submenu: NULL},
-	{id: 10, properties: props2, submenu: NULL},
-	{id: 20, properties: props3, submenu: NULL},
+	{id: 1, properties: props1, submenu: submenu_4_3},
+	{id: 10, properties: props2, submenu: submenu_4_2},
+	{id: 20, properties: props3, submenu: submenu_4_1},
 	{id: 100, properties: props2, submenu: submenu_4_0},
 	{id: 0, properties: NULL, submenu: NULL}
 };
