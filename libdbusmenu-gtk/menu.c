@@ -168,7 +168,7 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 static void
 menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
 {
-	if (g_strcmp0(prop, "label")) {
+	if (!g_strcmp0(prop, "label")) {
 		gtk_menu_item_set_label(gmi, value);
 		gtk_widget_show(GTK_WIDGET(gmi));
 	}
