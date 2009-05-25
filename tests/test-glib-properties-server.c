@@ -40,7 +40,7 @@ layout2menuitem (proplayout_t * layout)
 		}
 	}
 
-	g_debug("Layout to menu return: 0x%X", (unsigned int)local);
+	/* g_debug("Layout to menu return: 0x%X", (unsigned int)local); */
 	return local;
 }
 
@@ -57,7 +57,9 @@ timer_func (gpointer data)
 	}
 	g_debug("Updating to Layout %d", layouton);
 
-	dbusmenu_server_set_root(server, layout2menuitem(&layouts[layouton]));
+	DbusmenuMenuitem * mi = layout2menuitem(&layouts[layouton]);
+	dbusmenu_server_set_root(server, mi);
+	g_object_unref(G_OBJECT(mi));
 	layouton++;
 
 	return TRUE;
