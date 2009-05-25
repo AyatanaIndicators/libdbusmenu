@@ -387,6 +387,7 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 				dbusmenu_menuitem_child_delete(parent, item);
 			}
 			g_object_unref(G_OBJECT(item));
+			item = NULL;
 		}
 
 		if (id == 0) {
@@ -403,6 +404,7 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 	xmlNodePtr children;
 	guint position;
 	GList * oldchildren = dbusmenu_menuitem_take_children(item);
+	/* g_debug("Starting old children: %d", g_list_length(oldchildren)); */
 
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
 		/* g_debug("Looking at child: %d", position); */
@@ -423,9 +425,11 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 		dbusmenu_menuitem_child_add_position(item, childmi, position);
 	}
 
+	/* g_debug("Stopping old children: %d", g_list_length(oldchildren)); */
 	GList * oldchildleft = NULL;
 	for (oldchildleft = oldchildren; oldchildleft != NULL; oldchildleft = g_list_next(oldchildleft)) {
 		DbusmenuMenuitem * oldmi = DBUSMENU_MENUITEM(oldchildleft->data);
+		g_debug("Unref'ing menu item with layout update. ID: %d", dbusmenu_menuitem_get_id(oldmi));
 		g_object_unref(G_OBJECT(oldmi));
 	}
 	g_list_free(oldchildren);
