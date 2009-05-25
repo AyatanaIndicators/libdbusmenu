@@ -1,0 +1,4 @@
+debian/tmp/usr/include/libdbusmenu-0.1/libdbusmenu-glib/*
+debian/tmp/usr/lib/pkgconfig/dbusmenu-glib.pc
+debian/tmp/usr/lib/libdbusmenu-glib.a
+debian/tmp/usr/lib/libdbusmenu-glib.so

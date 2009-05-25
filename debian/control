@@ -1,0 +1,59 @@
+Source: libdbusmenu
+Section: gnome
+Priority: optional
+Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Build-Depends: debhelper (>= 5.0),
+               cdbs (>= 0.4.41),
+               libgtk2.0-dev (>= 2.12.0),
+               libdbus-glib-1-dev,
+               gnome-doc-utils,
+               libtool,
+               intltool,
+               libxml2-dev
+Standards-Version: 3.8.0
+Homepage: https://launchpad.net/libdbusmenu
+Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/libdbusmenu/ubuntu
+
+Package: libdbusmenu-glib0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: Menus over DBus a shared library in several scenes.
+ .
+ This package contains shared libraries to be used by applications.
+
+Package: libdbusmenu-glib-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libdbusmenu-glib0 (= ${binary:Version}),
+         libdbus-glib-1-dev (>= 0.76),
+         libgtk2.0-dev (>= 2.12.0)
+Description:  Menus over DBus a shared library in several scenes.
+ .
+ This package contains files that are needed to build applications.
+
+Package: libdbusmenu-gtk0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: Menus over DBus a shared library in several scenes.
+ .
+ This package contains shared libraries to be used by applications.
+
+Package: libdbusmenu-gtk-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libdbusmenu-gtk0 (= ${binary:Version}),
+         libdbus-glib-1-dev (>= 0.76),
+         libgtk2.0-dev (>= 2.12.0),
+         libdbusmenu-glib-dev
+Description:  Menus over DBus a shared library in several scenes.
+ .
+ This package contains files that are needed to build applications.
+
