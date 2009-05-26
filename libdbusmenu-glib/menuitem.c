@@ -139,7 +139,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_added),
 	                                           NULL, NULL,
 	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
-	                                           G_TYPE_NONE, 2, G_TYPE_OBJECT);
+	                                           G_TYPE_NONE, 1, G_TYPE_OBJECT);
 	/**
 		DbusmenuMenuitem::child-removed:
 		@arg0: The #DbusmenuMenuitem which was the parent.
