@@ -1,8 +1,8 @@
-libdbusmenu (0.0-0ubuntu1~ppa4) UNRELEASED; urgency=low
+libdbusmenu (0.0-0ubuntu1~ppa4) jaunty; urgency=low
 
   * Another bug fix.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 26 May 2009 23:59:27 +0200
+ -- Ted Gould <ted@ubuntu.com>  Tue, 26 May 2009 23:59:40 +0200
 
 libdbusmenu (0.0-0ubuntu1~ppa3) jaunty; urgency=low
 
