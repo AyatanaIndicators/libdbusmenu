@@ -1,3 +1,9 @@
+libdbusmenu (0.0-0ubuntu1~ppa5) UNRELEASED; urgency=low
+
+  * Fix for 64-bit builds
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 27 May 2009 10:13:01 +0200
+
 libdbusmenu (0.0-0ubuntu1~ppa4) jaunty; urgency=low
 
   * Another bug fix.
