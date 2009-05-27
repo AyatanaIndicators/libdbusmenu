@@ -41,7 +41,7 @@ layout2menuitem (proplayout_t * layout)
 		}
 	}
 
-	g_debug("Layout to menu return: 0x%X", (unsigned int)local);
+	/* g_debug("Layout to menu return: 0x%X", (unsigned int)local); */
 	return local;
 }
 
