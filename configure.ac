@@ -35,6 +35,20 @@ AC_SUBST(DBUSMENUGLIB_CFLAGS)
 AC_SUBST(DBUSMENUGLIB_LIBS)
 
 ###########################
+# Dependencies - GTK
+###########################
+
+GTK_REQUIRED_VERSION=2.16
+
+PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                libxml-2.0 >= $XML_REQUIRED_VERSION)
+
+AC_SUBST(DBUSMENUGTK_CFLAGS)
+AC_SUBST(DBUSMENUGTK_LIBS)
+
+###########################
 # Lib versioning 
 ###########################
 
