@@ -1,7 +1,9 @@
 
 EXTRA_DIST = \
 	dbusmenu-glib.pc.in \
-	dbus-menu.xml
+	dbus-menu.xml \
+	menuitem-marshal.list \
+	server-marshal.list
 
 lib_LTLIBRARIES = \
 	libdbusmenu-glib.la
@@ -18,6 +20,8 @@ libdbusmenu_glib_la_SOURCES = \
 	dbusmenu-client.h \
 	menuitem.h \
 	menuitem.c \
+	menuitem-marshal.h \
+	menuitem-marshal.c \
 	server.h \
 	server.c \
 	server-marshal.h \
@@ -31,7 +35,7 @@ libdbusmenu_glib_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_glib_la_CFLAGS = \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror -DG_DISABLE_DEPRECATED -DG_LOG_DOMAIN="\"LIBDBUSMENU-GLIB\""
 
 libdbusmenu_glib_la_LIBADD = \
 	$(DBUSMENUGLIB_LIBS)
@@ -42,6 +46,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = \
 	dbusmenu-client.h \
 	dbusmenu-server.h \
+	menuitem-marshal.h \
+	menuitem-marshal.c \
 	server-marshal.h \
 	server-marshal.c
 
@@ -68,4 +74,14 @@ server-marshal.c: $(srcdir)/server-marshal.list
 	glib-genmarshal --body \
 		--prefix=_dbusmenu_server_marshal $(srcdir)/server-marshal.list \
 		> server-marshal.c
+
+menuitem-marshal.h: $(srcdir)/menuitem-marshal.list
+	glib-genmarshal --header \
+		--prefix=_dbusmenu_menuitem_marshal $(srcdir)/menuitem-marshal.list \
+		> menuitem-marshal.h
+
+menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
+	glib-genmarshal --body \
+		--prefix=_dbusmenu_menuitem_marshal $(srcdir)/menuitem-marshal.list \
+		> menuitem-marshal.c
 
