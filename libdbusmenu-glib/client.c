@@ -86,6 +86,7 @@ static DbusmenuMenuitem * parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * i
 static void parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data);
 static void update_layout (DbusmenuClient * client);
+static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -272,7 +273,7 @@ id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	/* dbusmenu_menuitem_property_set(menuitem, property, value); */
+	org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, menuitem);
 	return;
 }
 
