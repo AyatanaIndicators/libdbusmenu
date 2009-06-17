@@ -94,12 +94,14 @@ test_gtk_label_server_SOURCES = \
 test_gtk_label_server_CFLAGS = \
 	-I $(srcdir)/.. \
 	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
-	$(DBUSMENUGTK_LIBS)
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
 
 test_gtk_label_client_SOURCES = \
 	test-gtk-label.h \
@@ -108,12 +110,14 @@ test_gtk_label_client_SOURCES = \
 test_gtk_label_client_CFLAGS = \
 	-I $(srcdir)/.. \
 	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
-	$(DBUSMENUGTK_LIBS)
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
 
 
 
