@@ -88,7 +88,6 @@ test-gtk-label: test-gtk-label-client test-gtk-label-server
 	$(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --task-name Server --ignore-return
 
 test_gtk_label_server_SOURCES = \
-	test-gtk-label.h \
 	test-gtk-label-server.c
 
 test_gtk_label_server_CFLAGS = \
@@ -104,7 +103,6 @@ test_gtk_label_server_LDADD = \
 	$(DBUSMENUTESTS_LIBS)
 
 test_gtk_label_client_SOURCES = \
-	test-gtk-label.h \
 	test-gtk-label-client.c
 
 test_gtk_label_client_CFLAGS = \
