@@ -95,8 +95,8 @@ main (int argc, char ** argv)
 
 	JsonParser * parser = json_parser_new();
 	GError * error = NULL;
-	if (!json_parser_load_from_file(parser, "test-gtk-label.json", &error)) {
-		g_debug("Failed parsing file %s because: %s", "test-gtk-label.json", error->message);
+	if (!json_parser_load_from_file(parser, argv[1], &error)) {
+		g_debug("Failed parsing file %s because: %s", argv[1], error->message);
 		return 1;
 	}
 	JsonNode * root_node = json_parser_get_root(parser);

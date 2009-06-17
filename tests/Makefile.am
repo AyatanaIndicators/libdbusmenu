@@ -84,8 +84,8 @@ test_glib_properties_client_LDADD = \
 
 
 
-test-gtk-label: test-gtk-label-client test-gtk-label-server
-	$(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --task-name Server --ignore-return
+test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json
+	$(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return
 
 test_gtk_label_server_SOURCES = \
 	test-gtk-label-server.c
@@ -124,4 +124,6 @@ examplesdir = $(docdir)/examples/
 examples_DATA = \
 	$(glib_server_nomenu_SOURCES)
 
-EXTRA_DIST = $(examples_DATA)
+EXTRA_DIST = \
+	$(examples_DATA) \
+	test-gtk-label.json
