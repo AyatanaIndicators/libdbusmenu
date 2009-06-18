@@ -351,6 +351,7 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	if (priv->root != NULL) {
 		g_object_unref(G_OBJECT(priv->root));
 		priv->root = NULL;
+		g_signal_emit(G_OBJECT(userdata), signals[LAYOUT_UPDATED], 0, TRUE);
 	}
 
 	if ((gpointer)priv->menuproxy == (gpointer)gobj_proxy) {
