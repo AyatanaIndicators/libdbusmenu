@@ -166,7 +166,7 @@ main (int argc, char ** argv)
 	gtk_window_set_title(GTK_WINDOW(window), "libdbusmenu-gtk test");
 	gtk_widget_show(window);
 
-	death_timer = g_timeout_add_seconds(10, timer_func, window);
+	death_timer = g_timeout_add_seconds(60, timer_func, window);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
