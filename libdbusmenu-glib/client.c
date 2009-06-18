@@ -64,6 +64,8 @@ struct _DbusmenuClientPrivate
 	DBusGProxy * menuproxy;
 	DBusGProxy * propproxy;
 	DBusGProxyCall * layoutcall;
+
+	DBusGProxy * dbusproxy;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -147,6 +149,8 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->propproxy = NULL;
 	priv->layoutcall = NULL;
 
+	priv->dbusproxy = NULL;
+
 	return;
 }
 
@@ -166,6 +170,10 @@ dbusmenu_client_dispose (GObject *object)
 	if (priv->propproxy != NULL) {
 		g_object_unref(G_OBJECT(priv->propproxy));
 		priv->propproxy = NULL;
+	}
+	if (priv->dbusproxy != NULL) {
+		g_object_unref(G_OBJECT(priv->dbusproxy));
+		priv->dbusproxy = NULL;
 	}
 	priv->session_bus = NULL;
 
@@ -276,6 +284,62 @@ id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
 	return;
 }
 
+/* Watches to see if our DBus savior comes onto the bus */
+static void
+dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, DbusmenuClient * client)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (!(new != NULL && prev == NULL)) {
+		/* If it's not someone new getting on the bus, sorry we
+		   simply just don't care.  It's not that your service isn't
+		   important to someone, just not us.  You'll find the right
+		   process someday, there's lots of processes out there. */
+		return;
+	}
+
+	if (g_strcmp0(new, priv->dbus_name)) {
+		/* Again, someone else's service. */
+		return;
+	}
+
+	/* Woot!  A service for us to love and to hold for ever
+	   and ever and ever! */
+	return build_proxies(client);
+}
+
+/* This function builds the DBus proxy which will look out for
+   the service coming up. */
+static void
+build_dbus_proxy (DbusmenuClient * client)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	GError * error = NULL;
+
+	if (priv->dbusproxy != NULL) {
+		return;
+	}
+
+	priv->dbusproxy = dbus_g_proxy_new_for_name_owner (priv->session_bus,
+	                                                   DBUS_SERVICE_DBUS,
+	                                                   DBUS_PATH_DBUS,
+	                                                   DBUS_INTERFACE_DBUS,
+	                                                   &error);
+	if (error != NULL) {
+		g_debug("Oh, that's bad.  That's really bad.  We can't get a proxy to DBus itself?  Seriously?  Here's all I know: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	dbus_g_proxy_add_signal(priv->dbusproxy, "NameOwnerChanged",
+	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->dbusproxy, "NameOwnerChanged",
+	                            G_CALLBACK(dbus_owner_change), client, NULL);
+
+	return;
+}
+
 /* When we have a name and an object, build the two proxies and get the
    first version of the layout */
 static void
@@ -291,6 +355,7 @@ build_proxies (DbusmenuClient * client)
 	if (error != NULL) {
 		g_error("Unable to get session bus: %s", error->message);
 		g_error_free(error);
+		build_dbus_proxy(client);
 		return;
 	}
 
@@ -304,6 +369,7 @@ build_proxies (DbusmenuClient * client)
 		g_error_free(error);
 		return;
 	}
+	// g_signal_connect(G_OBJECT(priv->propproxy), "destroy", proxy_destroyed, client);
 
 	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
 	                                                  priv->dbus_name,
@@ -314,6 +380,13 @@ build_proxies (DbusmenuClient * client)
 		g_error("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
 		return;
+	}
+	// g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", proxy_destroyed, client);
+
+	/* If we get here, we don't need the DBus proxy */
+	if (priv->dbusproxy != NULL) {
+		g_object_unref(G_OBJECT(priv->dbusproxy));
+		priv->dbusproxy = NULL;
 	}
 
 	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdate", G_TYPE_INVALID);
