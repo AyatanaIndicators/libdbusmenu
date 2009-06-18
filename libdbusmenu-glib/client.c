@@ -499,6 +499,10 @@ update_layout (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
+	if (priv->propproxy == NULL) {
+		return;
+	}
+
 	if (priv->layoutcall != NULL) {
 		return;
 	}
@@ -554,7 +558,8 @@ dbusmenu_client_new (const gchar * name, const gchar * object)
 	it could block longer.
 
 	Return value: A #DbusmenuMenuitem representing the root of
-		menu on the server.
+		menu on the server.  If there is no server or there is
+		an error receiving its layout it'll return #NULL.
 */
 DbusmenuMenuitem *
 dbusmenu_client_get_root (DbusmenuClient * client)
@@ -562,6 +567,10 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), NULL);
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->propproxy == NULL) {
+		return NULL;
+	}
 
 	if (priv->layoutcall != NULL) {
 		/* Will end the current call and block on it's completion */
