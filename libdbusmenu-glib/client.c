@@ -340,6 +340,27 @@ build_dbus_proxy (DbusmenuClient * client)
 	return;
 }
 
+/* A signal handler that gets called when a proxy is destoryed a
+   so it needs to clean up a little.  Make sure we don't think we
+   have a layout and setup the dbus watcher. */
+static void
+proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(userdata);
+
+	if (priv->root != NULL) {
+		g_object_unref(G_OBJECT(priv->root));
+		priv->root = NULL;
+	}
+
+	if ((gpointer)priv->menuproxy == (gpointer)gobj_proxy) {
+		priv->layoutcall = NULL;
+	}
+
+	build_dbus_proxy(DBUSMENU_CLIENT(userdata));
+	return;
+}
+
 /* When we have a name and an object, build the two proxies and get the
    first version of the layout */
 static void
@@ -369,7 +390,8 @@ build_proxies (DbusmenuClient * client)
 		g_error_free(error);
 		return;
 	}
-	// g_signal_connect(G_OBJECT(priv->propproxy), "destroy", proxy_destroyed, client);
+	g_object_add_weak_pointer(G_OBJECT(priv->propproxy), (gpointer *)&priv->propproxy);
+	g_signal_connect(G_OBJECT(priv->propproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
 
 	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
 	                                                  priv->dbus_name,
@@ -381,7 +403,8 @@ build_proxies (DbusmenuClient * client)
 		g_error_free(error);
 		return;
 	}
-	// g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", proxy_destroyed, client);
+	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
+	g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
 
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != NULL) {
