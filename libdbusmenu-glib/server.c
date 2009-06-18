@@ -490,6 +490,7 @@ dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 	g_value_init(&rootvalue, G_TYPE_OBJECT);
 	g_value_set_object(&rootvalue, root);
 	g_object_set_property(G_OBJECT(self), DBUSMENU_SERVER_PROP_ROOT_NODE, &rootvalue);
+	g_object_unref(G_OBJECT(root));
 	return;
 }
 
