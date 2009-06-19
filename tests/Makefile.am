@@ -84,36 +84,38 @@ test_glib_properties_client_LDADD = \
 
 
 
-test-gtk-label: test-gtk-label-client test-gtk-label-server
-	$(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --task-name Server --ignore-return
+test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json
+	$(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return
 
 test_gtk_label_server_SOURCES = \
-	test-gtk-label.h \
 	test-gtk-label-server.c
 
 test_gtk_label_server_CFLAGS = \
 	-I $(srcdir)/.. \
 	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
-	$(DBUSMENUGTK_LIBS)
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
 
 test_gtk_label_client_SOURCES = \
-	test-gtk-label.h \
 	test-gtk-label-client.c
 
 test_gtk_label_client_CFLAGS = \
 	-I $(srcdir)/.. \
 	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
-	$(DBUSMENUGTK_LIBS)
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
 
 
 
@@ -122,4 +124,6 @@ examplesdir = $(docdir)/examples/
 examples_DATA = \
 	$(glib_server_nomenu_SOURCES)
 
-EXTRA_DIST = $(examples_DATA)
+EXTRA_DIST = \
+	$(examples_DATA) \
+	test-gtk-label.json
