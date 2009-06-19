@@ -1,3 +1,10 @@
+libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath2) UNRELEASED; urgency=low
+
+  * debian/control: Adding in a build dependency on libjson-glib-dev
+    as it's now required to build the tests.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Jun 2009 23:03:15 -0500
+
 libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath1) jaunty; urgency=low
 
   * Dbus death branch.

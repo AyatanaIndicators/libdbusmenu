@@ -9,7 +9,8 @@ Build-Depends: debhelper (>= 5.0),
                gnome-doc-utils,
                libtool,
                intltool,
-               libxml2-dev
+               libxml2-dev,
+               libjson-glib-dev
 Standards-Version: 3.8.0
 Homepage: https://launchpad.net/libdbusmenu
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/libdbusmenu/ubuntu
