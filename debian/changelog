@@ -1,8 +1,8 @@
-libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath1) UNRELEASED; urgency=low
+libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath1) jaunty; urgency=low
 
   * Dbus death branch.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 18 Jun 2009 22:35:12 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Jun 2009 22:35:54 -0500
 
 libdbusmenu (0.0-0ubuntu1~ppa5) jaunty; urgency=low
 
