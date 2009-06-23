@@ -387,6 +387,7 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	if (priv->root != NULL) {
 		g_object_unref(G_OBJECT(priv->root));
 		priv->root = NULL;
+		g_signal_emit(G_OBJECT(userdata), signals[ROOT_CHANGED], 0, NULL, TRUE);
 		g_signal_emit(G_OBJECT(userdata), signals[LAYOUT_UPDATED], 0, TRUE);
 	}
 
@@ -589,12 +590,18 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
+	DbusmenuMenuitem * oldroot = priv->root;
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
+	xmlFreeDoc(xmldoc);
+
 	if (priv->root == NULL) {
 		g_warning("Unable to parse layout on client %s object %s: %s", priv->dbus_name, priv->dbus_object, layout);
 	}
 
-	xmlFreeDoc(xmldoc);
+	if (priv->root != oldroot) {
+		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
+	}
+
 	return;
 }
 
