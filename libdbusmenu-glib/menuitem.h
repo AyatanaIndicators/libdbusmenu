@@ -88,7 +88,7 @@ struct _DbusmenuMenuitemClass
 	void (*item_activated) (void);
 	void (*child_added) (DbusmenuMenuitem * child, guint position);
 	void (*child_removed) (DbusmenuMenuitem * child);
-	void (*child_moved) (DbusmenuMenuitem * child, guint oldpos, guint newpos);
+	void (*child_moved) (DbusmenuMenuitem * child, guint newpos, guint oldpos);
 
 	/* Virtual functions */
 	void (*buildxml) (GPtrArray * stringarray);

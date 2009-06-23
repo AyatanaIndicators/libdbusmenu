@@ -509,8 +509,20 @@ dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child,
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	gint oldpos = g_list_index(priv->children, child);
+
+	if (oldpos == -1) {
+		g_warning("Can not reorder child that isn't actually a child.");
+		return FALSE;
+	}
+	if (oldpos == position) {
+		return TRUE;
+	}
+
 	priv->children = g_list_remove(priv->children, child);
 	priv->children = g_list_insert(priv->children, child, position);
+
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_MOVED], 0, child, position, oldpos, TRUE);
 
 	return TRUE;
 }
