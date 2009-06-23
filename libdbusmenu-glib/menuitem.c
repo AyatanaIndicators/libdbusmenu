@@ -58,6 +58,7 @@ enum {
 	ITEM_ACTIVATED,
 	CHILD_ADDED,
 	CHILD_REMOVED,
+	CHILD_MOVED,
 	LAST_SIGNAL
 };
 
@@ -129,6 +130,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 		DbusmenuMenuitem::child-added:
 		@arg0: The #DbusmenuMenuitem which is the parent.
 		@arg1: The #DbusmenuMenuitem which is the child.
+		@arg2: The position that the child is being added in.
 
 		Signaled when the child menuitem has been added to
 		the parent.
@@ -138,8 +140,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_added),
 	                                           NULL, NULL,
-	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
-	                                           G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT_UINT,
+	                                           G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_UINT);
 	/**
 		DbusmenuMenuitem::child-removed:
 		@arg0: The #DbusmenuMenuitem which was the parent.
@@ -157,6 +159,23 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           NULL, NULL,
 	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
 	                                           G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	/**
+		DbusmenuMenuitem::child-moved:
+		@arg0: The #DbusmenuMenuitem which is the parent.
+		@arg1: The #DbusmenuMenuitem which is the child.
+		@arg2: The position that the child is being moved to.
+		@arg3: The position that the child is was in.
+
+		Signaled when the child menuitem has had it's location
+		in the list change.
+	*/
+	signals[CHILD_MOVED] =        g_signal_new(DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_moved),
+	                                           NULL, NULL,
+	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT_UINT_UINT,
+	                                           G_TYPE_NONE, 3, G_TYPE_OBJECT, G_TYPE_UINT, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_uint("id", "ID for the menu item",
@@ -398,7 +417,7 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_append(priv->children, child);
-	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, g_list_length(priv->children) - 1, TRUE);
 	return TRUE;
 }
 
@@ -420,7 +439,7 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_prepend(priv->children, child);
-	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, 0, TRUE);
 	return TRUE;
 }
 
@@ -467,7 +486,7 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_insert(priv->children, child, position);
-	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, position, TRUE);
 	return TRUE;
 }
 

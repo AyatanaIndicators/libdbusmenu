@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED      "item-activated"
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED         "child-added"
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED       "child-removed"
+#define DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED         "child-moved"
 
 /**
 	DbusmenuMenuitem:
@@ -69,6 +70,7 @@ struct _DbusmenuMenuitem
 	@item_activated: Slot for #DbusmenuMenuitem::item-activated.
 	@child_added: Slot for #DbusmenuMenuitem::child-added.
 	@child_removed: Slot for #DbusmenuMenuitem::child-removed.
+	@child_moved: Slot for #DbusmenuMenuitem::child-moved.
 	@buildxml: Virtual function that appends the strings required
 	           to represent this menu item in the menu XML file.
 	@reserved1: Reserved for future use.
@@ -84,8 +86,9 @@ struct _DbusmenuMenuitemClass
 	/* Signals */
 	void (*property_changed) (gchar * property, gchar * value);
 	void (*item_activated) (void);
-	void (*child_added) (DbusmenuMenuitem * child);
+	void (*child_added) (DbusmenuMenuitem * child, guint position);
 	void (*child_removed) (DbusmenuMenuitem * child);
+	void (*child_moved) (DbusmenuMenuitem * child, guint oldpos, guint newpos);
 
 	/* Virtual functions */
 	void (*buildxml) (GPtrArray * stringarray);
