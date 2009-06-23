@@ -34,6 +34,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "menu.h"
 #include "libdbusmenu-glib/client.h"
+#include "client.h"
 
 /* Properties */
 enum {
@@ -45,7 +46,7 @@ enum {
 /* Private */
 typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
 struct _DbusmenuGtkMenuPrivate {
-	DbusmenuClient * client;
+	DbusmenuGtkClient * client;
 
 	gchar * dbus_object;
 	gchar * dbus_name;
