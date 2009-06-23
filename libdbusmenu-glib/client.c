@@ -47,6 +47,8 @@ enum {
 /* Signals */
 enum {
 	LAYOUT_UPDATED,
+	ROOT_CHANGED,
+	NEW_MENUITEM,
 	LAST_SIGNAL
 };
 
@@ -120,6 +122,39 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        g_cclosure_marshal_VOID__VOID,
 	                                        G_TYPE_NONE, 0, G_TYPE_NONE);
+	/**
+		DbusmenuClient::root-changed:
+		@arg0: The #DbusmenuClient object
+		@arg1: The new root #DbusmenuMenuitem
+
+		The layout has changed in a way that can not be
+		represented by the individual items changing as the
+		root of this client has changed.
+	*/
+	signals[ROOT_CHANGED]    = g_signal_new(DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, root_changed),
+	                                        NULL, NULL,
+	                                        g_cclosure_marshal_VOID__OBJECT,
+	                                        G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	/**
+		DbusmenuClient::new-menuitem:
+		@arg0: The #DbusmenuClient object
+		@arg1: The new #DbusmenuMenuitem created
+
+		Signaled when the client creates a new menuitem.  This
+		doesn't mean that it's placed anywhere.  The parent that
+		it's applied to will signal #DbusmenuMenuitem::child-added
+		when it gets parented.
+	*/
+	signals[NEW_MENUITEM]    = g_signal_new(DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, new_menuitem),
+	                                        NULL, NULL,
+	                                        g_cclosure_marshal_VOID__OBJECT,
+	                                        G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
