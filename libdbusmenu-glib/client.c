@@ -86,7 +86,7 @@ static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gcha
 static void id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static guint parse_node_get_id (xmlNodePtr node);
-static DbusmenuMenuitem * parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
+static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
 static void parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data);
 static void update_layout (DbusmenuClient * client);
@@ -515,7 +515,7 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
-parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
+parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
 {
 	guint id = parse_node_get_id(node);
 	/* g_debug("Looking at node with id: %d", id); */
@@ -535,6 +535,7 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 
 		/* Build a new item */
 		item = dbusmenu_menuitem_new_with_id(id);
+		g_signal_emit(G_OBJECT(client), signals[NEW_MENUITEM], 0, item, TRUE);
 		/* Get the properties queued up for this item */
 		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, item);
 	} 
@@ -559,7 +560,7 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 			}
 		}
 
-		childmi = parse_layout_xml(children, childmi, item, proxy);
+		childmi = parse_layout_xml(client, children, childmi, item, proxy);
 		dbusmenu_menuitem_child_add_position(item, childmi, position);
 	}
 
@@ -588,7 +589,7 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
-	priv->root = parse_layout_xml(root, priv->root, NULL, priv->menuproxy);
+	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
 	if (priv->root == NULL) {
 		g_warning("Unable to parse layout on client %s object %s: %s", priv->dbus_name, priv->dbus_object, layout);
 	}
