@@ -139,7 +139,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_added),
 	                                           NULL, NULL,
 	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
-	                                           G_TYPE_NONE, 2, G_TYPE_OBJECT);
+	                                           G_TYPE_NONE, 1, G_TYPE_OBJECT);
 	/**
 		DbusmenuMenuitem::child-removed:
 		@arg0: The #DbusmenuMenuitem which was the parent.
@@ -156,7 +156,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_removed),
 	                                           NULL, NULL,
 	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
-	                                           G_TYPE_NONE, 2, G_TYPE_OBJECT);
+	                                           G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_uint("id", "ID for the menu item",
@@ -185,6 +185,14 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 static void
 dbusmenu_menuitem_dispose (GObject *object)
 {
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(object);
+
+	GList * child = NULL;
+	for (child = priv->children; child != NULL; child = g_list_next(child)) {
+		g_object_unref(G_OBJECT(child->data));
+	}
+	g_list_free(priv->children);
+	priv->children = NULL;
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_parent_class)->dispose (object);
 	return;
@@ -193,6 +201,7 @@ dbusmenu_menuitem_dispose (GObject *object)
 static void
 dbusmenu_menuitem_finalize (GObject *object)
 {
+	g_debug("Menuitem dying");
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(object);
 
 	if (priv->properties != NULL) {
@@ -394,6 +403,28 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 }
 
 /**
+	dbusmenu_menuitem_child_prepend:
+	@mi: The #DbusmenuMenuitem which will become a new parent
+	@child: The #DbusmenMenuitem that will be a child
+
+	This function adds @child to the list of children on @mi at
+	the beginning of that list.
+
+	Return value: Whether the child has been added successfully.
+*/
+gboolean
+dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->children = g_list_prepend(priv->children, child);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
+	return TRUE;
+}
+
+/**
 	dbusmenu_menuitem_child_delete:
 	@mi: The #DbusmenuMenuitem which has @child as a child
 	@child: The child #DbusmenuMenuitem that you want to no longer
@@ -437,6 +468,31 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_insert(priv->children, child, position);
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
+	return TRUE;
+}
+
+/**
+	dbusmenu_menuitem_child_reorder:
+	@base: The #DbusmenuMenuitem that has children needing realignment
+	@child: The #DbusmenuMenuitem that is a child needing to be moved
+	@position: The position in the list to place it in
+
+	This function moves a child on the list of children.  It is
+	for a child that is already in the list, but simply needs a 
+	new location.
+
+	Return value: Whether the move was successful.
+*/
+gboolean
+dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->children = g_list_remove(priv->children, child);
+	priv->children = g_list_insert(priv->children, child, position);
+
 	return TRUE;
 }
 
