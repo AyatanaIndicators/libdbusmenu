@@ -39,6 +39,10 @@ static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
 static void dbusmenu_gtkclient_init       (DbusmenuGtkClient *self);
 static void dbusmenu_gtkclient_dispose    (GObject *object);
 static void dbusmenu_gtkclient_finalize   (GObject *object);
+static void new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata);
+static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, gpointer userdata);
+static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, gpointer userdata);
+static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, gpointer userdata);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
@@ -57,7 +61,7 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
-
+	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
 	return;
 }
 
@@ -69,12 +73,10 @@ dbusmenu_gtkclient_dispose (GObject *object)
 	return;
 }
 
-static void process_layout_change (DbusmenuClient * client, DbusmenuGtkClient * gtkmenu);
-
 static void
 dbusmenu_gtkclient_finalize (GObject *object)
 {
-	process_layout_change(NULL, NULL);
+
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->finalize (object);
 	return;
 }
@@ -84,6 +86,8 @@ dbusmenu_gtkclient_finalize (GObject *object)
 static const gchar * data_menuitem = "dbusmenugtk-data-gtkmenuitem";
 static const gchar * data_menu =     "dbusmenugtk-data-gtkmenu";
 
+/* This is the call back for the GTK widget for when it gets
+   clicked on by the user to send it back across the bus. */
 static gboolean
 menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 {
@@ -91,6 +95,8 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 	return TRUE;
 }
 
+/* Whenever we have a property change on a DbusmenuMenuitem
+   we need to be responsive to that. */
 static void
 menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
 {
@@ -102,6 +108,9 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenu
 	return;
 }
 
+/* Call back that happens when the DbusmenuMenuitem
+   is destroyed.  We're making sure to clean up everything
+   else down the pipe. */
 static void
 destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 {
@@ -110,84 +119,62 @@ destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 	return;
 }
 
+/* This takes a new DbusmenuMenuitem and attaches the
+   various things that we need to make it work in a 
+   GTK World.  */
 static void
-connect_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi)
+new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 {
+	GtkWidget * gmi = gtk_menu_item_new();
+
+	/* Attach these two */
 	g_object_set_data(G_OBJECT(mi), data_menuitem, gmi);
 
+	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(mi),  DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED, G_CALLBACK(new_child), NULL);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), NULL);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED, G_CALLBACK(move_child), NULL);
+
+	/* GtkMenuitem signals */
 	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), mi);
 
+	/* Life insurance */
 	g_object_weak_ref(G_OBJECT(mi), destoryed_dbusmenuitem_cb, gmi);
 
 	return;
 }
 
 static void
-process_dbusmenu_menuitem (DbusmenuMenuitem * mi, GtkMenu * parentmenu)
+new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, gpointer userdata)
 {
-	gpointer unknown_menuitem = g_object_get_data(G_OBJECT(mi), data_menuitem);
-	if (unknown_menuitem == NULL) {
-		/* Oh, a virgin DbusmenuMenuitem, let's fix that. */
-		GtkWidget * menuitem = gtk_menu_item_new();
-		connect_menuitem(mi, GTK_MENU_ITEM(menuitem));
-		unknown_menuitem = menuitem;
-		gtk_menu_shell_append(GTK_MENU_SHELL(parentmenu), menuitem);
+	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
+	if (ann_menu == NULL) {
+		/* Oh, we don't have a submenu, build one! */
+
 	}
 
-	GList * children = dbusmenu_menuitem_get_children(mi);
-	if (children == NULL) {
-		/* If there are no children to process we are
-		   done and we can move along */
-		return;
-	}
-
-	/* Phase 0: Make a submenu if we don't have one */
-	gpointer unknown_menu = g_object_get_data(G_OBJECT(mi), data_menu);
-	if (unknown_menu == NULL) {
-		GtkWidget * gtkmenu = gtk_menu_new();
-		g_object_ref(gtkmenu);
-		g_object_set_data_full(G_OBJECT(mi), data_menu, gtkmenu, g_object_unref);
-		unknown_menu = gtkmenu;
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(unknown_menuitem), gtkmenu);
-		gtk_widget_show(gtkmenu);
-	}
-
-	/* Phase 1: Add missing children */
-	GList * child = NULL;
-	for (child = children; child != NULL; child = g_list_next(child)) {
-		process_dbusmenu_menuitem(DBUSMENU_MENUITEM(child->data), GTK_MENU(unknown_menu));	
-	}
-
-	/* Phase 2: Delete removed children */
-	/* Actually, we don't need to do this because of the weak
-	   reference that we've added above.  When the DbusmenuMenuitem
-	   gets destroyed it takes its GtkMenuItem with it.  Bye bye. */
-
-	/* Phase 3: Profit! */
 	return;
 }
 
-/* Processing the layout being updated and handling
-   that and making it into a menu */
 static void
-process_layout_change (DbusmenuClient * client, DbusmenuGtkClient * gtkmenu)
+delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, gpointer userdata)
 {
-	DbusmenuMenuitem * root = dbusmenu_client_get_root(client);
-
-	GList * children = dbusmenu_menuitem_get_children(root);
-	if (children == NULL) {
-		return;
-	}
-
-	GList * child = NULL;
-	for (child = children; child != NULL; child = g_list_next(child)) {
-		process_dbusmenu_menuitem(DBUSMENU_MENUITEM(child->data), GTK_MENU(gtkmenu));
-	}
 
 	return;
 }
 
+static void
+move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, gpointer userdata)
+{
+	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
+	if (ann_menu == NULL) {
+		g_warning("Moving a child when we don't have a submenu!");
+		return;
+	}
+
+	return;
+}
 
 /* Public API */
 
