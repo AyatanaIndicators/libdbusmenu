@@ -1,3 +1,5 @@
+SUBDIRS = dbusmenu-gtk
+
 check: tests
 
 DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
