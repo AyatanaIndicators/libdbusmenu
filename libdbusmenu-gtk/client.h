@@ -31,17 +31,18 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <glib.h>
 #include <glib-object.h>
+#include <libdbusmenu-glib/client.h>
 
 G_BEGIN_DECLS
 
-#define DBUSMENU_GTKCLIENT_TYPE            (dbusmenu_gtkmenu_get_type ())
+#define DBUSMENU_GTKCLIENT_TYPE            (dbusmenu_gtkclient_get_type ())
 #define DBUSMENU_GTKCLIENT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClient))
 #define DBUSMENU_GTKCLIENT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientClass))
 #define DBUSMENU_IS_GTKCLIENT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), DBUSMENU_GTKCLIENT_TYPE))
 #define DBUSMENU_IS_GTKCLIENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_GTKCLIENT_TYPE))
 #define DBUSMENU_GTKCLIENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientClass))
 
-#define DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED  "root-changed"
+#define DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED  DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED
 
 /**
 	DbusmenuGtkClientClass:
@@ -53,7 +54,10 @@ G_BEGIN_DECLS
 */
 typedef struct _DbusmenuGtkClientClass DbusmenuGtkClientClass;
 struct _DbusmenuGtkClientClass {
-	GtkMenuClass parent_class;
+	DbusmenuClientClass parent_class;
+
+	/* Signals */
+	void (*root_changed) (DbusmenuMenuitem * newroot);
 
 	/* Reserved */
 	void (*reserved1) (void);
@@ -68,7 +72,7 @@ struct _DbusmenuGtkClientClass {
 */
 typedef struct _DbusmenuGtkClient      DbusmenuGtkClient;
 struct _DbusmenuGtkClient {
-	GtkMenu parent;
+	DbusmenuClient parent;
 };
 
 GType dbusmenu_gtkclient_get_type (void);

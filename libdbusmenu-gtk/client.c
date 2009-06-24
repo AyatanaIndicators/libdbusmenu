@@ -43,39 +43,39 @@ enum {
 };
 
 /* Private */
-typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
-struct _DbusmenuGtkMenuPrivate {
+typedef struct _DbusmenuGtkClientPrivate DbusmenuGtkClientPrivate;
+struct _DbusmenuGtkClientPrivate {
 	DbusmenuClient * client;
 
 	gchar * dbus_object;
 	gchar * dbus_name;
 };
 
-#define DBUSMENU_GTKMENU_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuPrivate))
+#define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) \
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientPrivate))
 
 /* Prototypes */
-static void dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass);
-static void dbusmenu_gtkmenu_init       (DbusmenuGtkMenu *self);
-static void dbusmenu_gtkmenu_dispose    (GObject *object);
-static void dbusmenu_gtkmenu_finalize   (GObject *object);
+static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
+static void dbusmenu_gtkclient_init       (DbusmenuGtkClient *self);
+static void dbusmenu_gtkclient_dispose    (GObject *object);
+static void dbusmenu_gtkclient_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Internal */
-static void build_client (DbusmenuGtkMenu * self);
+static void build_client (DbusmenuGtkClient * self);
 
 /* GObject Stuff */
-G_DEFINE_TYPE (DbusmenuGtkMenu, dbusmenu_gtkmenu, GTK_TYPE_MENU);
+G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
 
 static void
-dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass)
+dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (DbusmenuGtkMenuPrivate));
+	g_type_class_add_private (klass, sizeof (DbusmenuGtkClientPrivate));
 
-	object_class->dispose = dbusmenu_gtkmenu_dispose;
-	object_class->finalize = dbusmenu_gtkmenu_finalize;
+	object_class->dispose = dbusmenu_gtkclient_dispose;
+	object_class->finalize = dbusmenu_gtkclient_finalize;
 	object_class->set_property = set_property;
 	object_class->get_property = get_property;
 
@@ -94,9 +94,9 @@ dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass)
 }
 
 static void
-dbusmenu_gtkmenu_init (DbusmenuGtkMenu *self)
+dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
-	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(self);
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(self);
 
 	priv->client = NULL;
 
@@ -107,23 +107,23 @@ dbusmenu_gtkmenu_init (DbusmenuGtkMenu *self)
 }
 
 static void
-dbusmenu_gtkmenu_dispose (GObject *object)
+dbusmenu_gtkclient_dispose (GObject *object)
 {
-	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(object);
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(object);
 
 	if (priv->client != NULL) {
 		g_object_unref(G_OBJECT(priv->client));
 		priv->client = NULL;
 	}
 
-	G_OBJECT_CLASS (dbusmenu_gtkmenu_parent_class)->dispose (object);
+	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->dispose (object);
 	return;
 }
 
 static void
-dbusmenu_gtkmenu_finalize (GObject *object)
+dbusmenu_gtkclient_finalize (GObject *object)
 {
-	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(object);
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(object);
 
 	g_free(priv->dbus_object);
 	priv->dbus_object = NULL;
@@ -131,26 +131,26 @@ dbusmenu_gtkmenu_finalize (GObject *object)
 	g_free(priv->dbus_name);
 	priv->dbus_name = NULL;
 
-	G_OBJECT_CLASS (dbusmenu_gtkmenu_parent_class)->finalize (object);
+	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->finalize (object);
 	return;
 }
 
 static void
 set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 {
-	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(obj);
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(obj);
 
 	switch (id) {
 	case PROP_DBUSNAME:
 		priv->dbus_name = g_value_dup_string(value);
 		if (priv->dbus_name != NULL && priv->dbus_object != NULL) {
-			build_client(DBUSMENU_GTKMENU(obj));
+			build_client(DBUSMENU_GTKCLIENT(obj));
 		}
 		break;
 	case PROP_DBUSOBJECT:
 		priv->dbus_object = g_value_dup_string(value);
 		if (priv->dbus_name != NULL && priv->dbus_object != NULL) {
-			build_client(DBUSMENU_GTKMENU(obj));
+			build_client(DBUSMENU_GTKCLIENT(obj));
 		}
 		break;
 	default:
@@ -164,7 +164,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 static void
 get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 {
-	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(obj);
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(obj);
 
 	switch (id) {
 	case PROP_DBUSNAME:
@@ -273,7 +273,7 @@ process_dbusmenu_menuitem (DbusmenuMenuitem * mi, GtkMenu * parentmenu)
 /* Processing the layout being updated and handling
    that and making it into a menu */
 static void
-process_layout_change (DbusmenuClient * client, DbusmenuGtkMenu * gtkmenu)
+process_layout_change (DbusmenuClient * client, DbusmenuGtkClient * gtkmenu)
 {
 	DbusmenuMenuitem * root = dbusmenu_client_get_root(client);
 
@@ -294,9 +294,9 @@ process_layout_change (DbusmenuClient * client, DbusmenuGtkMenu * gtkmenu)
 /* Builds the client and connects all of the signals
    up for it so that it's happy-happy */
 static void
-build_client (DbusmenuGtkMenu * self)
+build_client (DbusmenuGtkClient * self)
 {
-	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(self);
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(self);
 
 	if (priv->client == NULL) {
 		priv->client = dbusmenu_client_new(priv->dbus_name, priv->dbus_object);
@@ -312,19 +312,19 @@ build_client (DbusmenuGtkMenu * self)
 /* Public API */
 
 /**
-	dbusmenu_gtkmenu_new:
+	dbusmenu_gtkclient_new:
 	@dbus_name: Name of the #DbusmenuServer on DBus
 	@dbus_name: Name of the object on the #DbusmenuServer
 
-	Creates a new #DbusmenuGtkMenu object and creates a #DbusmenuClient
+	Creates a new #DbusmenuGtkClient object and creates a #DbusmenuClient
 	that connects across DBus to a #DbusmenuServer.
 
-	Return value: A new #DbusmenuGtkMenu sync'd with a server
+	Return value: A new #DbusmenuGtkClient sync'd with a server
 */
-DbusmenuGtkMenu *
-dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object)
+DbusmenuGtkClient *
+dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 {
-	return g_object_new(DBUSMENU_GTKMENU_TYPE,
+	return g_object_new(DBUSMENU_GTKCLIENT_TYPE,
 	                    DBUSMENU_CLIENT_PROP_DBUS_OBJECT, dbus_object,
 	                    DBUSMENU_CLIENT_PROP_DBUS_NAME, dbus_name,
 	                    NULL);
