@@ -8,7 +8,7 @@
     <method>testStaticMenu</method>
     <description>Simple check for a menu </description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/static.json</menu_schema>
+        <menu_schema>@srcdir@/data/static.json</menu_schema>
       <menu_item>value39</menu_item>
     </args>
   </case>
@@ -16,7 +16,7 @@
     <method>testStaticMenu</method>
     <description>Blank Label</description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/blank_label.json</menu_schema>
+        <menu_schema>@srcdir@/data/blank_label.json</menu_schema>
       <menu_item></menu_item>
     </args>
   </case>
@@ -24,7 +24,7 @@
     <method>testSubmenus</method>
     <description>Blank Submenus</description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/blank_submenus.json</menu_schema>
+        <menu_schema>@srcdir@/data/blank_submenus.json</menu_schema>
       <menu_item>value6</menu_item>
       <submenus></submenus>
     </args>
@@ -33,7 +33,7 @@
     <method>testStaticMenu</method>
     <description>Really Long Label (1000 chars)</description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/long_label.json</menu_schema>
+        <menu_schema>@srcdir@/data/long_label.json</menu_schema>
       <menu_item>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</menu_item>
     </args>
    </case>
@@ -41,7 +41,7 @@
     <method>testStaticMenu</method>
     <description>Search for a submenu that comes from a menu without ID</description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/no_id.json</menu_schema>
+        <menu_schema>@srcdir@/data/no_id.json</menu_schema>
       <menu_item>submenu_from_no_id</menu_item>
     </args>
    </case>
@@ -49,7 +49,7 @@
     <method>testStaticMenu</method>
     <description>Search for a submenu that comes from a menu with a blank label</description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/blank_label_2levels.json</menu_schema>
+        <menu_schema>@srcdir@/data/blank_label_2levels.json</menu_schema>
       <menu_item>value10</menu_item>
     </args>
    </case>
@@ -57,7 +57,7 @@
     <method>testStaticMenu</method>
     <description>Be sure that a submenu from a menu without label does not exist</description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/no_label.json</menu_schema>
+        <menu_schema>@srcdir@/data/no_label.json</menu_schema>
       <menu_item>submenu_from_no_label</menu_item>
       <notexists>True</notexists>
     </args>
@@ -66,7 +66,7 @@
     <method>testStaticMenu</method>
     <description>Check that a submenu is shown</description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/several_submenus.json</menu_schema>
+        <menu_schema>@srcdir@/data/several_submenus.json</menu_schema>
       <menu_item>value10</menu_item>
     </args>
    </case>
@@ -74,7 +74,7 @@
     <method>testStaticMenu</method>
     <description>Be sure that a submenu from a 4th level depth, is shown</description>
     <args>
-        <menu_schema>./dbusmenu-gtk/data/several_submenus_recursive.json</menu_schema>
+        <menu_schema>@srcdir@/data/several_submenus_recursive.json</menu_schema>
       <menu_item>value7001</menu_item>
     </args>
    </case>
@@ -82,7 +82,7 @@
     <method>testStaticMenu</method>
     <description>Be sure that a submenu, with a UTF-8 label, is shown</description>
     <args>
-      <menu_schema>./dbusmenu-gtk/data/several_submenus_utf8.json</menu_schema>
+      <menu_schema>@srcdir@/data/several_submenus_utf8.json</menu_schema>
       <menu_item>value5ス</menu_item>
     </args>
  </case>
