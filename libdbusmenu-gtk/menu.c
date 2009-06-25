@@ -185,8 +185,43 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 /* Internal Functions */
 
 static void
-root_changed (void) {
-	/* stub */
+root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, DbusmenuGtkMenu * menu)
+{
+
+	return;
+}
+
+static void
+root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newposition, guint oldposition, DbusmenuGtkMenu * menu)
+{
+
+	return;
+}
+
+static void
+root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGtkMenu * menu) {
+	if (newroot == NULL) {
+		gtk_widget_hide(GTK_WIDGET(menu));
+		return;
+	}
+
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED, G_CALLBACK(root_child_added), menu);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED, G_CALLBACK(root_child_moved), menu);
+
+	GList * child = NULL;
+	guint count = 0;
+	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child)) {
+		gtk_menu_append(menu, GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(client, child->data)));
+		count++;
+	}
+
+	if (count > 0) {
+		gtk_widget_show(GTK_WIDGET(menu));
+	} else {
+		gtk_widget_hide(GTK_WIDGET(menu));
+	}
+
+	return;
 }
 
 /* Builds the client and connects all of the signals
