@@ -187,14 +187,26 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 static void
 root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, DbusmenuGtkMenu * menu)
 {
-
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)), position);
+	gtk_widget_show(GTK_WIDGET(menu));
 	return;
 }
 
 static void
 root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newposition, guint oldposition, DbusmenuGtkMenu * menu)
 {
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+	gtk_menu_reorder_child(GTK_MENU(menu), GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)), newposition);
+	return;
+}
 
+static void
+root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGtkMenu * menu)
+{
+	if (g_list_length(dbusmenu_menuitem_get_children(root)) == 0) {
+		gtk_widget_hide(GTK_WIDGET(menu));
+	}
 	return;
 }
 
@@ -205,8 +217,9 @@ root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGt
 		return;
 	}
 
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED, G_CALLBACK(root_child_added), menu);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED, G_CALLBACK(root_child_moved), menu);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(root_child_added),  menu);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(root_child_moved),  menu);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(root_child_delete), menu);
 
 	GList * child = NULL;
 	guint count = 0;
