@@ -172,11 +172,11 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 		menu = GTK_MENU(gtk_menu_new());
 		g_object_set_data(G_OBJECT(mi), data_menu, menu);
 
-		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get (mi);
+		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get(gtkclient, mi);
 		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));
 	} 
 
-	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get (child);
+	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
 	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
 	gtk_widget_show(GTK_WIDGET(menu));
 	
@@ -212,7 +212,7 @@ move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint ol
 		return;
 	}
 
-	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get (child);
+	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
 	gtk_menu_reorder_child(GTK_MENU(ann_menu), GTK_WIDGET(childmi), new);
 
 	return;
@@ -241,6 +241,7 @@ dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 
 /**
 	dbusmenu_gtkclient_menuitem_get:
+	@client: A #DbusmenuGtkClient with the item in it.
 	@item: #DbusmenuMenuitem to get associated #GtkMenuItem on.
 
 	This grabs the #GtkMenuItem that is associated with the
@@ -249,8 +250,17 @@ dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 	Return value: The #GtkMenuItem that can be played with.
 */
 GtkMenuItem *
-dbusmenu_gtkclient_menuitem_get (DbusmenuMenuitem * item)
+dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * item)
 {
-	return GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(item), NULL);
+
+	GtkMenuItem * mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
+	if (mi == NULL) {
+		new_menuitem(DBUSMENU_CLIENT(client), item, NULL);
+		mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
+	}
+
+	return mi;
 }
 
