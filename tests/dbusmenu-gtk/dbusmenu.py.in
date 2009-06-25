@@ -4,7 +4,7 @@ from mago.application.main import Application
 import ldtp, ooldtp, ldtputils
 
 class DbusMenuGtkApp():
-    LAUNCHER = "./dbusMenuTest"
+    LAUNCHER = "@srcdir@/dbusMenuTest"
     WINDOW   = "frmlibdbusmenu-gtktest"
 
     def open(self, menu_schema=''):

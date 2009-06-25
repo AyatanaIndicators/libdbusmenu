@@ -3,13 +3,22 @@ check: tests
 
 tests: mago
 
-mago: dbusmenu.xml
-	PYTHONPATH=$(srcdir) mago -f $(builddir)/dbusmenu.xml
+mago: dbusmenu.xml dbusmenu.py
+	PYTHONPATH=$(builddir) mago -f $(builddir)/dbusmenu.xml
 
 dbusmenu.xml: dbusmenu.xml.in
 	sed -e "s|\@srcdir\@|$(srcdir)|" $< > $@
 
-EXTRA_DIST = dbusmenu.xml
+dbusmenu.py: dbusmenu.py.in
+	sed -e "s|\@srcdir\@|$(srcdir)|" $< > $@
 
-CLEANFILES = dbusmenu.xml
+EXTRA_DIST = \
+	dbusmenu.xml \
+	dbusmenu.xml.in \
+	dbusmenu.py \
+	dbusmenu.py.in
+
+CLEANFILES = \
+	dbusmenu.xml \
+	dbusmenu.py
 
