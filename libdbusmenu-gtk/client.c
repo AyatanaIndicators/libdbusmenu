@@ -154,9 +154,17 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 	return;
 }
 
+static gboolean
+is_root (DbusmenuGtkClient * gtkclient, DbusmenuMenuitem * mi)
+{
+	return mi == dbusmenu_client_get_root(DBUSMENU_CLIENT(gtkclient));
+}
+
 static void
 new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, DbusmenuGtkClient * gtkclient)
 {
+	if (is_root(gtkclient, mi)) { return; }
+
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	GtkMenu * menu = GTK_MENU(ann_menu);
 	if (menu == NULL) {
@@ -170,6 +178,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get (child);
 	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
+	gtk_widget_show(GTK_WIDGET(menu));
 	
 	return;
 }
@@ -177,6 +186,8 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 static void
 delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient)
 {
+	if (is_root(gtkclient, mi)) { return; }
+
 	if (g_list_length(dbusmenu_menuitem_get_children(mi)) == 0) {
 		gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 		GtkMenu * menu = GTK_MENU(ann_menu);
@@ -193,6 +204,8 @@ delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient
 static void
 move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient)
 {
+	if (is_root(gtkclient, mi)) { return; }
+
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	if (ann_menu == NULL) {
 		g_warning("Moving a child when we don't have a submenu!");
