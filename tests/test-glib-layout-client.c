@@ -88,6 +88,10 @@ layout_updated (DbusmenuClient * client, gpointer data)
 
 	layouton++;
 
+	if (layouts[layouton].id == 0) {
+		g_main_loop_quit(mainloop);
+	}
+
 	return;
 }
 
