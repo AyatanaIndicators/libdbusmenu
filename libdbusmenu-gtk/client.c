@@ -125,7 +125,16 @@ destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 static void
 new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 {
-	GtkWidget * gmi = gtk_menu_item_new();
+	gpointer ann_mi = g_object_get_data(G_OBJECT(mi), data_menuitem);
+	GtkMenuItem * gmi = GTK_MENU_ITEM(ann_mi);
+
+	if (gmi != NULL) {
+		/* It's possible we've already been looked at, that's
+		   okay, but we can just ignore this signal then. */
+		return;
+	}
+
+	gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 
 	/* Attach these two */
 	g_object_set_data(G_OBJECT(mi), data_menuitem, gmi);
@@ -149,17 +158,34 @@ static void
 new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, gpointer userdata)
 {
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
-	if (ann_menu == NULL) {
+	GtkMenu * menu = GTK_MENU(ann_menu);
+	if (menu == NULL) {
 		/* Oh, we don't have a submenu, build one! */
+		menu = GTK_MENU(gtk_menu_new());
+		g_object_set_data(G_OBJECT(mi), data_menu, menu);
 
-	}
+		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get (mi);
+		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));
+	} 
 
+	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get (child);
+	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
+	
 	return;
 }
 
 static void
 delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, gpointer userdata)
 {
+	if (g_list_length(dbusmenu_menuitem_get_children(mi)) == 0) {
+		gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
+		GtkMenu * menu = GTK_MENU(ann_menu);
+
+		if (menu != NULL) {
+			gtk_widget_destroy(GTK_WIDGET(menu));
+			g_object_set_data(G_OBJECT(mi), data_menu, NULL);
+		}
+	}
 
 	return;
 }
@@ -172,6 +198,9 @@ move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint ol
 		g_warning("Moving a child when we don't have a submenu!");
 		return;
 	}
+
+	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get (child);
+	gtk_menu_reorder_child(GTK_MENU(ann_menu), GTK_WIDGET(childmi), new);
 
 	return;
 }
@@ -195,5 +224,11 @@ dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 	                    DBUSMENU_CLIENT_PROP_DBUS_OBJECT, dbus_object,
 	                    DBUSMENU_CLIENT_PROP_DBUS_NAME, dbus_name,
 	                    NULL);
+}
+
+GtkMenuItem *
+dbusmenu_gtkclient_menuitem_get (DbusmenuMenuitem * item)
+{
+	return GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
 }
 
