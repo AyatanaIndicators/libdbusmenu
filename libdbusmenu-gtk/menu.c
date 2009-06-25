@@ -187,6 +187,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 static void
 root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, DbusmenuGtkMenu * menu)
 {
+	g_debug("Root new child");
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)), position);
 	gtk_widget_show(GTK_WIDGET(menu));
@@ -196,6 +197,7 @@ root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint posit
 static void
 root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newposition, guint oldposition, DbusmenuGtkMenu * menu)
 {
+	g_debug("Root child moved");
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 	gtk_menu_reorder_child(GTK_MENU(menu), GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)), newposition);
 	return;
@@ -204,6 +206,7 @@ root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newpo
 static void
 root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGtkMenu * menu)
 {
+	g_debug("Root child deleted");
 	if (g_list_length(dbusmenu_menuitem_get_children(root)) == 0) {
 		gtk_widget_hide(GTK_WIDGET(menu));
 	}
@@ -212,6 +215,7 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 
 static void
 root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGtkMenu * menu) {
+	g_debug("Root changed");
 	if (newroot == NULL) {
 		gtk_widget_hide(GTK_WIDGET(menu));
 		return;
@@ -250,6 +254,8 @@ build_client (DbusmenuGtkMenu * self)
 		/* Register for layout changes, this should come after the
 		   creation of the client pulls it from DBus */
 		g_signal_connect(G_OBJECT(priv->client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(root_changed), self);
+
+		root_changed(priv->client, dbusmenu_client_get_root(DBUSMENU_CLIENT(priv->client)), self);
 	}
 
 	return;
