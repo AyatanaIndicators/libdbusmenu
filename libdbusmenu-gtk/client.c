@@ -226,6 +226,15 @@ dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 	                    NULL);
 }
 
+/**
+	dbusmenu_gtkclient_menuitem_get:
+	@item: #DbusmenuMenuitem to get associated #GtkMenuItem on.
+
+	This grabs the #GtkMenuItem that is associated with the
+	#DbusmenuMenuitem.
+
+	Return value: The #GtkMenuItem that can be played with.
+*/
 GtkMenuItem *
 dbusmenu_gtkclient_menuitem_get (DbusmenuMenuitem * item)
 {
