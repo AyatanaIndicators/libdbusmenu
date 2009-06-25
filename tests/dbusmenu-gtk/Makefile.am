@@ -4,7 +4,7 @@ check: tests
 tests: mago
 
 mago: dbusmenu.xml dbusmenu.py
-	PYTHONPATH=$(builddir) mago -f $(builddir)/dbusmenu.xml
+	PYTHONPATH=$(builddir) mago -f $(builddir)/dbusmenu.xml -t $(builddir)/mago.results
 
 dbusmenu.xml: dbusmenu.xml.in
 	sed -e "s|\@srcdir\@|$(srcdir)|" $< > $@
