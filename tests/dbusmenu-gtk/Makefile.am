@@ -35,5 +35,8 @@ EXTRA_DIST = \
 
 CLEANFILES = \
 	dbusmenu.xml \
+	dbusmenu.pyc \
 	dbusmenu.py
 
+clean:
+	-rm -rf $(builddir)/mago.results
