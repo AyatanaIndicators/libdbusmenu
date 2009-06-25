@@ -40,9 +40,9 @@ static void dbusmenu_gtkclient_init       (DbusmenuGtkClient *self);
 static void dbusmenu_gtkclient_dispose    (GObject *object);
 static void dbusmenu_gtkclient_finalize   (GObject *object);
 static void new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata);
-static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, gpointer userdata);
-static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, gpointer userdata);
-static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, gpointer userdata);
+static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, DbusmenuGtkClient * gtkclient);
+static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient);
+static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
@@ -140,10 +140,10 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 	g_object_set_data(G_OBJECT(mi), data_menuitem, gmi);
 
 	/* DbusmenuMenuitem signals */
-	g_signal_connect(G_OBJECT(mi),  DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED, G_CALLBACK(new_child), NULL);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), NULL);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED, G_CALLBACK(move_child), NULL);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(new_child),    client);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
 
 	/* GtkMenuitem signals */
 	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), mi);
@@ -155,7 +155,7 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 }
 
 static void
-new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, gpointer userdata)
+new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, DbusmenuGtkClient * gtkclient)
 {
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	GtkMenu * menu = GTK_MENU(ann_menu);
@@ -175,7 +175,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, gpoi
 }
 
 static void
-delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, gpointer userdata)
+delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient)
 {
 	if (g_list_length(dbusmenu_menuitem_get_children(mi)) == 0) {
 		gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
@@ -191,7 +191,7 @@ delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, gpointer userdata
 }
 
 static void
-move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, gpointer userdata)
+move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient)
 {
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	if (ann_menu == NULL) {
