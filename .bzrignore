@@ -36,3 +36,4 @@ test-glib-properties-server
 libdbusmenu_gtk_la-menu.lo
 test-gtk-label-client
 test-gtk-label-server
+dbusmenu.xml
