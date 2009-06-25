@@ -1,10 +1,10 @@
-from desktoptesting.test_suite.main import SingleApplicationTestSuite 
-from desktoptesting.application.main import Application 
+from mago.test_suite.main import SingleApplicationTestSuite 
+from mago.application.main import Application 
 
 import ldtp, ooldtp, ldtputils
 
 class DbusMenuGtkApp():
-    LAUNCHER = "./mago_tests/dbusMenuTest"
+    LAUNCHER = "./dbusMenuTest"
     WINDOW   = "frmlibdbusmenu-gtktest"
 
     def open(self, menu_schema=''):
