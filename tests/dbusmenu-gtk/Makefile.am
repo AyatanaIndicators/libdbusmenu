@@ -13,9 +13,7 @@ dbusmenu.py: dbusmenu.py.in
 	sed -e "s|\@srcdir\@|$(srcdir)|" $< > $@
 
 EXTRA_DIST = \
-	dbusmenu.xml \
 	dbusmenu.xml.in \
-	dbusmenu.py \
 	dbusmenu.py.in \
 	dbusMenuTest \
 	data/blank_label_2levels.json \
