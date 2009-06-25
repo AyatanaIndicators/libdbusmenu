@@ -38,5 +38,6 @@ CLEANFILES = \
 	dbusmenu.pyc \
 	dbusmenu.py
 
-clean:
+distclean-local:
 	-rm -rf $(builddir)/mago.results
+
