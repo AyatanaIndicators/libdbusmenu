@@ -1,9 +1,9 @@
-libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3~glibresignal1) UNRELEASED; urgency=low
+libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3~glibresignal1) jaunty; urgency=low
 
   * Merging in the glibresignaling branch to change how
     signals move themselves up the stack.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 26 Jun 2009 14:33:13 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 26 Jun 2009 14:59:20 -0500
 
 libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath2) jaunty; urgency=low
 
