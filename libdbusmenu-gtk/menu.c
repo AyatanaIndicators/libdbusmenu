@@ -215,7 +215,6 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 
 static void
 root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGtkMenu * menu) {
-	g_debug("Root changed");
 	if (newroot == NULL) {
 		gtk_widget_hide(GTK_WIDGET(menu));
 		return;

@@ -154,16 +154,10 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 	return;
 }
 
-static gboolean
-is_root (DbusmenuGtkClient * gtkclient, DbusmenuMenuitem * mi)
-{
-	return mi == dbusmenu_client_get_root(DBUSMENU_CLIENT(gtkclient));
-}
-
 static void
 new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, DbusmenuGtkClient * gtkclient)
 {
-	if (is_root(gtkclient, mi)) { return; }
+	if (dbusmenu_menuitem_get_root(mi)) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	GtkMenu * menu = GTK_MENU(ann_menu);
@@ -186,7 +180,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 static void
 delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient)
 {
-	if (is_root(gtkclient, mi)) { return; }
+	if (dbusmenu_menuitem_get_root(mi)) { return; }
 
 	if (g_list_length(dbusmenu_menuitem_get_children(mi)) == 0) {
 		gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
@@ -204,7 +198,7 @@ delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient
 static void
 move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient)
 {
-	if (is_root(gtkclient, mi)) { return; }
+	if (dbusmenu_menuitem_get_root(mi)) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	if (ann_menu == NULL) {
