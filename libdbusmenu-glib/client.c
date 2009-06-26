@@ -538,6 +538,9 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 		/* Build a new item */
 		item = dbusmenu_menuitem_new_with_id(id);
+		if (parent == NULL) {
+			dbusmenu_menuitem_set_root(item, TRUE);
+		}
 		g_signal_emit(G_OBJECT(client), signals[NEW_MENUITEM], 0, item, TRUE);
 		/* Get the properties queued up for this item */
 		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, item);

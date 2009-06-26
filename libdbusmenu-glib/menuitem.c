@@ -39,6 +39,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 	@children: A list of #DbusmenuMenuitem objects that are
 	      children to this one.
 	@properties: All of the properties on this menu item.
+	@root: Whether this node is the root node
 
 	These are the little secrets that we don't want getting
 	out of data that we have.  They can still be gotten using
@@ -50,6 +51,7 @@ struct _DbusmenuMenuitemPrivate
 	guint id;
 	GList * children;
 	GHashTable * properties;
+	gboolean root;
 };
 
 /* Signals */
@@ -197,6 +199,8 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 	priv->children = NULL;
 
 	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
+
+	priv->root = FALSE;
 	
 	return;
 }
@@ -743,6 +747,43 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 
 	return ret;
 }
+
+/**
+	dbusmenu_menuitem_set_root:
+	@mi: #DbusmenuMenuitem to set whether it's root
+	@root: Whether @mi is a root node or not
+
+	This function sets the internal value of whether this is a
+	root node or not.
+
+	Return value: None
+*/
+void
+dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->root = root;
+	return;
+}
+
+/**
+	dbusmenu_menuitem_get_root:
+	@mi: #DbusmenuMenuitem to see whether it's root
+
+	This function returns the internal value of whether this is a
+	root node or not.
+
+	Return value: #TRUE if this is a root node
+*/
+gboolean
+dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return priv->root;
+}
+
 
 /**
 	dbusmenu_menuitem_buildxml:

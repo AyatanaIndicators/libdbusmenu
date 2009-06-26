@@ -123,6 +123,9 @@ gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * 
 GList * dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
 GHashTable * dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi);
 
+void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
+gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
+
 void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
 void dbusmenu_menuitem_activate (DbusmenuMenuitem * mi);
