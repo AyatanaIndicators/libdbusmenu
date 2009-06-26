@@ -8,9 +8,13 @@ lib_LTLIBRARIES = \
 libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-gtk/
 
 libdbusmenu_gtkinclude_HEADERS = \
+	client.h \
 	menu.h
 
 libdbusmenu_gtk_la_SOURCES = \
+	client.h \
+	client.c \
+	menu.h \
 	menu.c
 
 libdbusmenu_gtk_la_LDFLAGS = \

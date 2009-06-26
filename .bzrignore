@@ -36,3 +36,7 @@ test-glib-properties-server
 libdbusmenu_gtk_la-menu.lo
 test-gtk-label-client
 test-gtk-label-server
+libdbusmenu_gtk_la-client.lo
+dbusmenu.xml
+dbusmenu.py
+mago.results

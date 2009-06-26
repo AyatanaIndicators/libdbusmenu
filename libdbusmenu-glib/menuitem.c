@@ -39,6 +39,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 	@children: A list of #DbusmenuMenuitem objects that are
 	      children to this one.
 	@properties: All of the properties on this menu item.
+	@root: Whether this node is the root node
 
 	These are the little secrets that we don't want getting
 	out of data that we have.  They can still be gotten using
@@ -50,6 +51,7 @@ struct _DbusmenuMenuitemPrivate
 	guint id;
 	GList * children;
 	GHashTable * properties;
+	gboolean root;
 };
 
 /* Signals */
@@ -58,6 +60,7 @@ enum {
 	ITEM_ACTIVATED,
 	CHILD_ADDED,
 	CHILD_REMOVED,
+	CHILD_MOVED,
 	LAST_SIGNAL
 };
 
@@ -129,6 +132,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 		DbusmenuMenuitem::child-added:
 		@arg0: The #DbusmenuMenuitem which is the parent.
 		@arg1: The #DbusmenuMenuitem which is the child.
+		@arg2: The position that the child is being added in.
 
 		Signaled when the child menuitem has been added to
 		the parent.
@@ -138,8 +142,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_added),
 	                                           NULL, NULL,
-	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
-	                                           G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT_UINT,
+	                                           G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_UINT);
 	/**
 		DbusmenuMenuitem::child-removed:
 		@arg0: The #DbusmenuMenuitem which was the parent.
@@ -157,6 +161,23 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           NULL, NULL,
 	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT,
 	                                           G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	/**
+		DbusmenuMenuitem::child-moved:
+		@arg0: The #DbusmenuMenuitem which is the parent.
+		@arg1: The #DbusmenuMenuitem which is the child.
+		@arg2: The position that the child is being moved to.
+		@arg3: The position that the child is was in.
+
+		Signaled when the child menuitem has had it's location
+		in the list change.
+	*/
+	signals[CHILD_MOVED] =        g_signal_new(DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, child_moved),
+	                                           NULL, NULL,
+	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT_UINT_UINT,
+	                                           G_TYPE_NONE, 3, G_TYPE_OBJECT, G_TYPE_UINT, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_uint("id", "ID for the menu item",
@@ -178,6 +199,8 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 	priv->children = NULL;
 
 	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
+
+	priv->root = FALSE;
 	
 	return;
 }
@@ -201,7 +224,7 @@ dbusmenu_menuitem_dispose (GObject *object)
 static void
 dbusmenu_menuitem_finalize (GObject *object)
 {
-	g_debug("Menuitem dying");
+	/* g_debug("Menuitem dying"); */
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(object);
 
 	if (priv->properties != NULL) {
@@ -398,7 +421,7 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_append(priv->children, child);
-	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, g_list_length(priv->children) - 1, TRUE);
 	return TRUE;
 }
 
@@ -420,7 +443,7 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_prepend(priv->children, child);
-	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, 0, TRUE);
 	return TRUE;
 }
 
@@ -467,7 +490,7 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_insert(priv->children, child, position);
-	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, position, TRUE);
 	return TRUE;
 }
 
@@ -490,8 +513,20 @@ dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child,
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	gint oldpos = g_list_index(priv->children, child);
+
+	if (oldpos == -1) {
+		g_warning("Can not reorder child that isn't actually a child.");
+		return FALSE;
+	}
+	if (oldpos == position) {
+		return TRUE;
+	}
+
 	priv->children = g_list_remove(priv->children, child);
 	priv->children = g_list_insert(priv->children, child, position);
+
+	g_signal_emit(G_OBJECT(mi), signals[CHILD_MOVED], 0, child, position, oldpos, TRUE);
 
 	return TRUE;
 }
@@ -712,6 +747,43 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 
 	return ret;
 }
+
+/**
+	dbusmenu_menuitem_set_root:
+	@mi: #DbusmenuMenuitem to set whether it's root
+	@root: Whether @mi is a root node or not
+
+	This function sets the internal value of whether this is a
+	root node or not.
+
+	Return value: None
+*/
+void
+dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->root = root;
+	return;
+}
+
+/**
+	dbusmenu_menuitem_get_root:
+	@mi: #DbusmenuMenuitem to see whether it's root
+
+	This function returns the internal value of whether this is a
+	root node or not.
+
+	Return value: #TRUE if this is a root node
+*/
+gboolean
+dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return priv->root;
+}
+
 
 /**
 	dbusmenu_menuitem_buildxml:
