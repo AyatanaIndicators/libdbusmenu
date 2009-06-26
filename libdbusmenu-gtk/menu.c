@@ -253,8 +253,6 @@ build_client (DbusmenuGtkMenu * self)
 		/* Register for layout changes, this should come after the
 		   creation of the client pulls it from DBus */
 		g_signal_connect(G_OBJECT(priv->client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(root_changed), self);
-
-		root_changed(priv->client, dbusmenu_client_get_root(DBUSMENU_CLIENT(priv->client)), self);
 	}
 
 	return;
