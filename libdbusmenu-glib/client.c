@@ -460,6 +460,8 @@ build_proxies (DbusmenuClient * client)
 	dbus_g_proxy_add_signal(priv->menuproxy, "IdUpdate", G_TYPE_UINT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "IdUpdate", G_CALLBACK(id_update), client, NULL);
 
+	update_layout(client);
+
 	return;
 }
 
@@ -615,9 +617,9 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	GError * error = NULL;
 	GValue value = {0};
 
+	priv->layoutcall = NULL;
 	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
 		g_warning("Getting layout failed on client %s object %s: %s", priv->dbus_name, priv->dbus_object, error->message);
-		priv->layoutcall = NULL;
 		g_error_free(error);
 		return;
 	}
@@ -626,7 +628,6 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	/* g_debug("Got layout string: %s", xml); */
 	parse_layout(client, xml);
 
-	priv->layoutcall = NULL;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
 	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
 
@@ -681,7 +682,6 @@ dbusmenu_client_new (const gchar * name, const gchar * object)
 	                                     DBUSMENU_CLIENT_PROP_DBUS_NAME, name,
 	                                     DBUSMENU_CLIENT_PROP_DBUS_OBJECT, object,
 	                                     NULL);
-	update_layout(self);
 
 	return self;
 }
