@@ -424,7 +424,7 @@ build_proxies (DbusmenuClient * client)
 	                                                  DBUS_INTERFACE_PROPERTIES,
 	                                                  &error);
 	if (error != NULL) {
-		g_error("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
+		g_warning("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
 		return;
 	}
@@ -437,7 +437,7 @@ build_proxies (DbusmenuClient * client)
 	                                                  "org.freedesktop.dbusmenu",
 	                                                  &error);
 	if (error != NULL) {
-		g_error("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
+		g_warning("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
 		return;
 	}
