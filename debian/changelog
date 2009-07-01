@@ -1,3 +1,10 @@
+libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3~glibresignal2) UNRELEASED; urgency=low
+
+  * Fixing a prototype mismatch with the new newitems signal
+    also including the position.
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 01 Jul 2009 00:36:55 -0500
+
 libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3~glibresignal1) jaunty; urgency=low
 
   * Merging in the glibresignaling branch to change how

@@ -4,7 +4,7 @@ check: tests
 
 DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
 
-tests: test-glib-layout test-glib-properties test-gtk-label
+tests: test-glib-layout test-glib-properties test-gtk-label test-glib-simple-items
 
 libexec_PROGRAMS = \
 	glib-server-nomenu \
@@ -13,7 +13,8 @@ libexec_PROGRAMS = \
 	test-glib-properties-client \
 	test-glib-properties-server \
 	test-gtk-label-client \
-	test-gtk-label-server
+	test-gtk-label-server \
+	test-glib-simple-items
 
 glib_server_nomenu_SOURCES = \
 	glib-server-nomenu.c
@@ -84,6 +85,17 @@ test_glib_properties_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+
+test_glib_simple_items_SOURCES = \
+	test-glib-simple-items.c
+
+test_glib_simple_items_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_simple_items_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
 
 
 test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json
