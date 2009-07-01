@@ -40,3 +40,4 @@ libdbusmenu_gtk_la-client.lo
 dbusmenu.xml
 dbusmenu.py
 mago.results
+test-glib-simple-items
