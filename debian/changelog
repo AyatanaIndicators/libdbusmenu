@@ -1,3 +1,9 @@
+libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3+ihateppas~glibresignal2) UNRELEASED; urgency=low
+
+  * Version bump for PPA
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 02 Jul 2009 00:47:15 -0500
+
 libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3~glibresignal2) jaunty; urgency=low
 
   * Fixing a prototype mismatch with the new newitems signal
