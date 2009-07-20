@@ -515,6 +515,26 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	return;
 }
 
+static void
+menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
+{
+	DbusmenuMenuitem * mi = (DbusmenuMenuitem *)userdata;
+
+	if (error != NULL) {
+		g_warning("Unable to call menu item %d: %s", dbusmenu_menuitem_get_id(mi), error->message);
+	}
+
+	return;
+}
+
+static void
+menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	org_freedesktop_dbusmenu_call_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), menuitem_call_cb, mi);
+	return;
+}
+
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
@@ -541,6 +561,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		if (parent == NULL) {
 			dbusmenu_menuitem_set_root(item, TRUE);
 		}
+		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activate), client);
 		g_signal_emit(G_OBJECT(client), signals[NEW_MENUITEM], 0, item, TRUE);
 		/* Get the properties queued up for this item */
 		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, item);
