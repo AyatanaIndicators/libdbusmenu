@@ -32,6 +32,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <json-glib/json-glib.h>
 
 static void
+menuitem_click(DbusmenuMenuitem * mi, gpointer user_data)
+{
+	g_debug("Clicked on: %d", dbusmenu_menuitem_get_id(mi));
+	return;
+}
+
+static void
 set_props (DbusmenuMenuitem * mi, JsonObject * node)
 {
 	if (node == NULL) return;
@@ -68,6 +75,7 @@ layout2menuitem (JsonNode * inlayout)
 	} else {
 		local = dbusmenu_menuitem_new();
 	}
+	g_signal_connect(G_OBJECT(local), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_click), NULL);
 
 	set_props(local, layout);
 	
