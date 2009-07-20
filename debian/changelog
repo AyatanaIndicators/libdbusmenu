@@ -1,8 +1,8 @@
-libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3+ihateppas~glibresignal4) UNRELEASED; urgency=low
+libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3+ihateppas~glibresignal4) karmic; urgency=low
 
   * Support menu signalling in the glib client.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 20 Jul 2009 16:36:07 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 20 Jul 2009 16:36:31 -0500
 
 libdbusmenu (0.0-0ubuntu1~ppa6~dbusdeath3+ihateppas~glibresignal3) karmic; urgency=low
 
