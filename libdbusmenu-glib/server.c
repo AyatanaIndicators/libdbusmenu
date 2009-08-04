@@ -86,7 +86,7 @@ static void dbusmenu_server_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 static void menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * value, DbusmenuServer * server);
-static void menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server);
+static void menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint pos, DbusmenuServer * server);
 static void menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server);
 static void menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data);
 static void menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data);
@@ -306,7 +306,7 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * valu
 }
 
 static void
-menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
+menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint pos, DbusmenuServer * server)
 {
 	menuitem_signals_create(child, server);
 	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
@@ -490,6 +490,7 @@ dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 	g_value_init(&rootvalue, G_TYPE_OBJECT);
 	g_value_set_object(&rootvalue, root);
 	g_object_set_property(G_OBJECT(self), DBUSMENU_SERVER_PROP_ROOT_NODE, &rootvalue);
+	g_object_unref(G_OBJECT(root));
 	return;
 }
 

@@ -8,10 +8,14 @@ lib_LTLIBRARIES = \
 libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-gtk/
 
 libdbusmenu_gtkinclude_HEADERS = \
-	test.h
+	client.h \
+	menu.h
 
 libdbusmenu_gtk_la_SOURCES = \
-	test.c
+	client.h \
+	client.c \
+	menu.h \
+	menu.c
 
 libdbusmenu_gtk_la_LDFLAGS = \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
@@ -19,10 +23,11 @@ libdbusmenu_gtk_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_gtk_la_CFLAGS = \
-	$(LIBDBUSMENU_GTK_CFLAGS)
+	$(DBUSMENUGTK_CFLAGS) -I$(srcdir)/.. -Wall -Werror
 
 libdbusmenu_gtk_la_LIBADD = \
-	$(LIBDBUSMENU_GTK_LIBS)
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGTK_LIBS)
 
 pkgconfig_DATA = dbusmenu-gtk.pc
 pkgconfigdir = $(libdir)/pkgconfig

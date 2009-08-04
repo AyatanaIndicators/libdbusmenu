@@ -47,6 +47,8 @@ enum {
 /* Signals */
 enum {
 	LAYOUT_UPDATED,
+	ROOT_CHANGED,
+	NEW_MENUITEM,
 	LAST_SIGNAL
 };
 
@@ -64,6 +66,8 @@ struct _DbusmenuClientPrivate
 	DBusGProxy * menuproxy;
 	DBusGProxy * propproxy;
 	DBusGProxyCall * layoutcall;
+
+	DBusGProxy * dbusproxy;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -82,7 +86,7 @@ static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gcha
 static void id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static guint parse_node_get_id (xmlNodePtr node);
-static DbusmenuMenuitem * parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
+static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
 static void parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data);
 static void update_layout (DbusmenuClient * client);
@@ -118,6 +122,39 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        g_cclosure_marshal_VOID__VOID,
 	                                        G_TYPE_NONE, 0, G_TYPE_NONE);
+	/**
+		DbusmenuClient::root-changed:
+		@arg0: The #DbusmenuClient object
+		@arg1: The new root #DbusmenuMenuitem
+
+		The layout has changed in a way that can not be
+		represented by the individual items changing as the
+		root of this client has changed.
+	*/
+	signals[ROOT_CHANGED]    = g_signal_new(DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, root_changed),
+	                                        NULL, NULL,
+	                                        g_cclosure_marshal_VOID__OBJECT,
+	                                        G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	/**
+		DbusmenuClient::new-menuitem:
+		@arg0: The #DbusmenuClient object
+		@arg1: The new #DbusmenuMenuitem created
+
+		Signaled when the client creates a new menuitem.  This
+		doesn't mean that it's placed anywhere.  The parent that
+		it's applied to will signal #DbusmenuMenuitem::child-added
+		when it gets parented.
+	*/
+	signals[NEW_MENUITEM]    = g_signal_new(DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, new_menuitem),
+	                                        NULL, NULL,
+	                                        g_cclosure_marshal_VOID__OBJECT,
+	                                        G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
@@ -148,6 +185,8 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->propproxy = NULL;
 	priv->layoutcall = NULL;
 
+	priv->dbusproxy = NULL;
+
 	return;
 }
 
@@ -168,7 +207,16 @@ dbusmenu_client_dispose (GObject *object)
 		g_object_unref(G_OBJECT(priv->propproxy));
 		priv->propproxy = NULL;
 	}
+	if (priv->dbusproxy != NULL) {
+		g_object_unref(G_OBJECT(priv->dbusproxy));
+		priv->dbusproxy = NULL;
+	}
 	priv->session_bus = NULL;
+
+	if (priv->root != NULL) {
+		g_object_unref(G_OBJECT(priv->root));
+		priv->root = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->dispose (object);
 	return;
@@ -272,6 +320,85 @@ id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
 	return;
 }
 
+/* Watches to see if our DBus savior comes onto the bus */
+static void
+dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, DbusmenuClient * client)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (!(new != NULL && prev == NULL)) {
+		/* If it's not someone new getting on the bus, sorry we
+		   simply just don't care.  It's not that your service isn't
+		   important to someone, just not us.  You'll find the right
+		   process someday, there's lots of processes out there. */
+		return;
+	}
+
+	if (g_strcmp0(new, priv->dbus_name)) {
+		/* Again, someone else's service. */
+		return;
+	}
+
+	/* Woot!  A service for us to love and to hold for ever
+	   and ever and ever! */
+	return build_proxies(client);
+}
+
+/* This function builds the DBus proxy which will look out for
+   the service coming up. */
+static void
+build_dbus_proxy (DbusmenuClient * client)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	GError * error = NULL;
+
+	if (priv->dbusproxy != NULL) {
+		return;
+	}
+
+	priv->dbusproxy = dbus_g_proxy_new_for_name_owner (priv->session_bus,
+	                                                   DBUS_SERVICE_DBUS,
+	                                                   DBUS_PATH_DBUS,
+	                                                   DBUS_INTERFACE_DBUS,
+	                                                   &error);
+	if (error != NULL) {
+		g_debug("Oh, that's bad.  That's really bad.  We can't get a proxy to DBus itself?  Seriously?  Here's all I know: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	dbus_g_proxy_add_signal(priv->dbusproxy, "NameOwnerChanged",
+	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->dbusproxy, "NameOwnerChanged",
+	                            G_CALLBACK(dbus_owner_change), client, NULL);
+
+	return;
+}
+
+/* A signal handler that gets called when a proxy is destoryed a
+   so it needs to clean up a little.  Make sure we don't think we
+   have a layout and setup the dbus watcher. */
+static void
+proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(userdata);
+
+	if (priv->root != NULL) {
+		g_object_unref(G_OBJECT(priv->root));
+		priv->root = NULL;
+		g_signal_emit(G_OBJECT(userdata), signals[ROOT_CHANGED], 0, NULL, TRUE);
+		g_signal_emit(G_OBJECT(userdata), signals[LAYOUT_UPDATED], 0, TRUE);
+	}
+
+	if ((gpointer)priv->menuproxy == (gpointer)gobj_proxy) {
+		priv->layoutcall = NULL;
+	}
+
+	build_dbus_proxy(DBUSMENU_CLIENT(userdata));
+	return;
+}
+
 /* When we have a name and an object, build the two proxies and get the
    first version of the layout */
 static void
@@ -287,6 +414,7 @@ build_proxies (DbusmenuClient * client)
 	if (error != NULL) {
 		g_error("Unable to get session bus: %s", error->message);
 		g_error_free(error);
+		build_dbus_proxy(client);
 		return;
 	}
 
@@ -296,10 +424,12 @@ build_proxies (DbusmenuClient * client)
 	                                                  DBUS_INTERFACE_PROPERTIES,
 	                                                  &error);
 	if (error != NULL) {
-		g_error("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
+		g_warning("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
 		return;
 	}
+	g_object_add_weak_pointer(G_OBJECT(priv->propproxy), (gpointer *)&priv->propproxy);
+	g_signal_connect(G_OBJECT(priv->propproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
 
 	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
 	                                                  priv->dbus_name,
@@ -307,9 +437,17 @@ build_proxies (DbusmenuClient * client)
 	                                                  "org.freedesktop.dbusmenu",
 	                                                  &error);
 	if (error != NULL) {
-		g_error("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
+		g_warning("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
 		return;
+	}
+	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
+	g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
+
+	/* If we get here, we don't need the DBus proxy */
+	if (priv->dbusproxy != NULL) {
+		g_object_unref(G_OBJECT(priv->dbusproxy));
+		priv->dbusproxy = NULL;
 	}
 
 	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdate", G_TYPE_INVALID);
@@ -321,6 +459,8 @@ build_proxies (DbusmenuClient * client)
 
 	dbus_g_proxy_add_signal(priv->menuproxy, "IdUpdate", G_TYPE_UINT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "IdUpdate", G_CALLBACK(id_update), client, NULL);
+
+	update_layout(client);
 
 	return;
 }
@@ -375,10 +515,30 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	return;
 }
 
+static void
+menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
+{
+	DbusmenuMenuitem * mi = (DbusmenuMenuitem *)userdata;
+
+	if (error != NULL) {
+		g_warning("Unable to call menu item %d: %s", dbusmenu_menuitem_get_id(mi), error->message);
+	}
+
+	return;
+}
+
+static void
+menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	org_freedesktop_dbusmenu_call_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), menuitem_call_cb, mi);
+	return;
+}
+
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
-parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
+parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
 {
 	guint id = parse_node_get_id(node);
 	/* g_debug("Looking at node with id: %d", id); */
@@ -388,6 +548,7 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 				dbusmenu_menuitem_child_delete(parent, item);
 			}
 			g_object_unref(G_OBJECT(item));
+			item = NULL;
 		}
 
 		if (id == 0) {
@@ -397,6 +558,11 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 
 		/* Build a new item */
 		item = dbusmenu_menuitem_new_with_id(id);
+		if (parent == NULL) {
+			dbusmenu_menuitem_set_root(item, TRUE);
+		}
+		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activate), client);
+		g_signal_emit(G_OBJECT(client), signals[NEW_MENUITEM], 0, item, TRUE);
 		/* Get the properties queued up for this item */
 		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, item);
 	} 
@@ -404,6 +570,7 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 	xmlNodePtr children;
 	guint position;
 	GList * oldchildren = dbusmenu_menuitem_take_children(item);
+	/* g_debug("Starting old children: %d", g_list_length(oldchildren)); */
 
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
 		/* g_debug("Looking at child: %d", position); */
@@ -420,13 +587,15 @@ parse_layout_xml(xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * pa
 			}
 		}
 
-		childmi = parse_layout_xml(children, childmi, item, proxy);
+		childmi = parse_layout_xml(client, children, childmi, item, proxy);
 		dbusmenu_menuitem_child_add_position(item, childmi, position);
 	}
 
+	/* g_debug("Stopping old children: %d", g_list_length(oldchildren)); */
 	GList * oldchildleft = NULL;
 	for (oldchildleft = oldchildren; oldchildleft != NULL; oldchildleft = g_list_next(oldchildleft)) {
 		DbusmenuMenuitem * oldmi = DBUSMENU_MENUITEM(oldchildleft->data);
+		g_debug("Unref'ing menu item with layout update. ID: %d", dbusmenu_menuitem_get_id(oldmi));
 		g_object_unref(G_OBJECT(oldmi));
 	}
 	g_list_free(oldchildren);
@@ -447,12 +616,18 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
-	priv->root = parse_layout_xml(root, priv->root, NULL, priv->menuproxy);
+	DbusmenuMenuitem * oldroot = priv->root;
+	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
+	xmlFreeDoc(xmldoc);
+
 	if (priv->root == NULL) {
 		g_warning("Unable to parse layout on client %s object %s: %s", priv->dbus_name, priv->dbus_object, layout);
 	}
 
-	xmlFreeDoc(xmldoc);
+	if (priv->root != oldroot) {
+		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
+	}
+
 	return;
 }
 
@@ -466,9 +641,9 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	GError * error = NULL;
 	GValue value = {0};
 
+	priv->layoutcall = NULL;
 	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
 		g_warning("Getting layout failed on client %s object %s: %s", priv->dbus_name, priv->dbus_object, error->message);
-		priv->layoutcall = NULL;
 		g_error_free(error);
 		return;
 	}
@@ -477,7 +652,6 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	/* g_debug("Got layout string: %s", xml); */
 	parse_layout(client, xml);
 
-	priv->layoutcall = NULL;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
 	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
 
@@ -490,6 +664,10 @@ static void
 update_layout (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->propproxy == NULL) {
+		return;
+	}
 
 	if (priv->layoutcall != NULL) {
 		return;
@@ -528,7 +706,6 @@ dbusmenu_client_new (const gchar * name, const gchar * object)
 	                                     DBUSMENU_CLIENT_PROP_DBUS_NAME, name,
 	                                     DBUSMENU_CLIENT_PROP_DBUS_OBJECT, object,
 	                                     NULL);
-	update_layout(self);
 
 	return self;
 }
@@ -546,7 +723,8 @@ dbusmenu_client_new (const gchar * name, const gchar * object)
 	it could block longer.
 
 	Return value: A #DbusmenuMenuitem representing the root of
-		menu on the server.
+		menu on the server.  If there is no server or there is
+		an error receiving its layout it'll return #NULL.
 */
 DbusmenuMenuitem *
 dbusmenu_client_get_root (DbusmenuClient * client)
@@ -554,6 +732,10 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), NULL);
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->propproxy == NULL) {
+		return NULL;
+	}
 
 	if (priv->layoutcall != NULL) {
 		/* Will end the current call and block on it's completion */

@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED      "item-activated"
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED         "child-added"
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED       "child-removed"
+#define DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED         "child-moved"
 
 /**
 	DbusmenuMenuitem:
@@ -69,6 +70,7 @@ struct _DbusmenuMenuitem
 	@item_activated: Slot for #DbusmenuMenuitem::item-activated.
 	@child_added: Slot for #DbusmenuMenuitem::child-added.
 	@child_removed: Slot for #DbusmenuMenuitem::child-removed.
+	@child_moved: Slot for #DbusmenuMenuitem::child-moved.
 	@buildxml: Virtual function that appends the strings required
 	           to represent this menu item in the menu XML file.
 	@reserved1: Reserved for future use.
@@ -84,8 +86,9 @@ struct _DbusmenuMenuitemClass
 	/* Signals */
 	void (*property_changed) (gchar * property, gchar * value);
 	void (*item_activated) (void);
-	void (*child_added) (DbusmenuMenuitem * child);
+	void (*child_added) (DbusmenuMenuitem * child, guint position);
 	void (*child_removed) (DbusmenuMenuitem * child);
+	void (*child_moved) (DbusmenuMenuitem * child, guint newpos, guint oldpos);
 
 	/* Virtual functions */
 	void (*buildxml) (GPtrArray * stringarray);
@@ -107,8 +110,10 @@ GList * dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUS
 guint dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent);
 
 gboolean dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child);
+gboolean dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child);
 gboolean dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child);
 gboolean dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position);
+gboolean dbusmenu_menuitem_child_reorder (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position);
 DbusmenuMenuitem * dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id);
 DbusmenuMenuitem * dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, guint id);
 
@@ -117,6 +122,9 @@ const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 GList * dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
 GHashTable * dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi);
+
+void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
+gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
 void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);

@@ -44,6 +44,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_CLIENT, DbusmenuClientClass))
 
 #define DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED  "layout-updated"
+#define DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED    "root-changed"
+#define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
 
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
@@ -66,6 +68,8 @@ struct _DbusmenuClientClass {
 	GObjectClass parent_class;
 
 	void (*layout_updated)(void);
+	void (*root_changed) (DbusmenuMenuitem * newroot);
+	void (*new_menuitem) (DbusmenuMenuitem * newitem);
 
 	/* Reserved for future use */
 	void (*reserved1) (void);

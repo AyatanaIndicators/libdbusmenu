@@ -1,4 +1,0 @@
-
-void mysymbol (void) {
-	return;
-}
