@@ -1,10 +1,10 @@
-libdbusmenu (0.0-0ubuntu1~ppa7) UNRELEASED; urgency=low
+libdbusmenu (0.0-0ubuntu1~ppa7) karmic; urgency=low
 
   * Updating from trunk changes.
   * debian/control: Adding in a build dependency on libjson-glib-dev
     as it's now required to build the tests.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 04 Aug 2009 16:37:04 +0100
+ -- Ted Gould <ted@ubuntu.com>  Tue, 04 Aug 2009 16:38:20 +0100
 
 libdbusmenu (0.0-0ubuntu1~ppa5) jaunty; urgency=low
 
