@@ -49,6 +49,17 @@ AC_SUBST(DBUSMENUGTK_CFLAGS)
 AC_SUBST(DBUSMENUGTK_LIBS)
 
 ###########################
+# Dependencies - Testing
+###########################
+
+JSON_GLIB_REQUIRED_VERSION=0.6.0
+
+PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION)
+
+AC_SUBST(DBUSMENUTESTS_CFLAGS)
+AC_SUBST(DBUSMENUTESTS_LIBS)
+
+###########################
 # Lib versioning 
 ###########################
 
@@ -84,6 +95,7 @@ libdbusmenu-gtk/dbusmenu-gtk.pc
 libdbusmenu-qt/Makefile
 libdbusmenu-qt/dbusmenu-qt.pc
 tests/Makefile
+tests/dbusmenu-gtk/Makefile
 ])
 
 ###########################
