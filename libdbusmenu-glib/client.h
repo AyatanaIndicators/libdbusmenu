@@ -90,9 +90,15 @@ struct _DbusmenuClient {
 	GObject parent;
 };
 
-GType                dbusmenu_client_get_type   (void);
-DbusmenuClient *     dbusmenu_client_new        (const gchar * name, const gchar * object);
-DbusmenuMenuitem *   dbusmenu_client_get_root   (DbusmenuClient * client);
+typedef void (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent);
+
+GType                dbusmenu_client_get_type          (void);
+DbusmenuClient *     dbusmenu_client_new               (const gchar * name,
+                                                        const gchar * object);
+DbusmenuMenuitem *   dbusmenu_client_get_root          (DbusmenuClient * client);
+gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
+                                                        const gchar * type,
+                                                        DbusmenuClientTypeHandler newfunc);
 
 /**
 	SECTION:client

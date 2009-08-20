@@ -68,6 +68,8 @@ struct _DbusmenuClientPrivate
 	DBusGProxyCall * layoutcall;
 
 	DBusGProxy * dbusproxy;
+
+	GHashTable * type_handlers;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -187,6 +189,9 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->dbusproxy = NULL;
 
+	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
+	                                            g_free, NULL);
+
 	return;
 }
 
@@ -229,6 +234,10 @@ dbusmenu_client_finalize (GObject *object)
 
 	g_free(priv->dbus_name);
 	g_free(priv->dbus_object);
+
+	if (priv->type_handlers != NULL) {
+		g_hash_table_destroy(priv->type_handlers);
+	}
 
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
 	return;
@@ -515,6 +524,22 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	return;
 }
 
+/* This is a different get properites call back that also sends
+   new signals.  It basically is a small wrapper around the original. */
+static void
+menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+{
+	gpointer * unpackarray = (gpointer *)data;
+
+	menuitem_get_properties_cb (proxy, properties, error, unpackarray[1]);
+
+	g_signal_emit(G_OBJECT(unpackarray[0]), signals[NEW_MENUITEM], 0, unpackarray[1], TRUE);
+
+	g_free(unpackarray);
+
+	return;
+}
+
 static void
 menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 {
@@ -562,9 +587,14 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			dbusmenu_menuitem_set_root(item, TRUE);
 		}
 		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activate), client);
-		g_signal_emit(G_OBJECT(client), signals[NEW_MENUITEM], 0, item, TRUE);
+
 		/* Get the properties queued up for this item */
-		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, item);
+		/* Not happy about this, but I need both of these :( */
+		gpointer * packarray = g_new0(gpointer, 2);
+		packarray[0] = client;
+		packarray[1] = item;
+
+		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, packarray);
 	} 
 
 	xmlNodePtr children;
