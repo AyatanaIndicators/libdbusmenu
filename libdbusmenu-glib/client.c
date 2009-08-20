@@ -72,6 +72,14 @@ struct _DbusmenuClientPrivate
 	GHashTable * type_handlers;
 };
 
+typedef struct _newItemPropData newItemPropData;
+struct _newItemPropData
+{
+	DbusmenuClient * client;
+	DbusmenuMenuitem * item;
+	DbusmenuMenuitem * parent;
+};
+
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate))
 
@@ -529,30 +537,30 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 static void
 menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
-	gpointer * unpackarray = (gpointer *)data;
-	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(unpackarray[0]);
+	newItemPropData * propdata = (newItemPropData *)data;
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
 
-	menuitem_get_properties_cb (proxy, properties, error, unpackarray[1]);
+	menuitem_get_properties_cb (proxy, properties, error, propdata->item);
 
 	gboolean handled = FALSE;
 
 	const gchar * type;
 	DbusmenuClientTypeHandler newfunc = NULL;
 	
-	type = dbusmenu_menuitem_property_get(DBUSMENU_MENUITEM(unpackarray[1]), "type");
+	type = dbusmenu_menuitem_property_get(propdata->item, "type");
 	if (type != NULL) {
 		newfunc = g_hash_table_lookup(priv->type_handlers, type);
 	}
 
 	if (newfunc != NULL) {
-		handled = newfunc(DBUSMENU_MENUITEM(unpackarray[1]), DBUSMENU_MENUITEM(unpackarray[2]));
+		handled = newfunc(propdata->item, propdata->parent);
 	}
 
 	if (!handled) {
-		g_signal_emit(G_OBJECT(unpackarray[0]), signals[NEW_MENUITEM], 0, unpackarray[1], TRUE);
+		g_signal_emit(G_OBJECT(propdata->client), signals[NEW_MENUITEM], 0, propdata->item, TRUE);
 	}
 
-	g_free(unpackarray);
+	g_free(propdata);
 
 	return;
 }
@@ -606,13 +614,13 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activate), client);
 
 		/* Get the properties queued up for this item */
-		/* Not happy about this, but I need both of these :( */
-		gpointer * packarray = g_new0(gpointer, 3);
-		packarray[0] = client;
-		packarray[1] = item;
-		packarray[2] = parent;
+		/* Not happy about this, but I need these :( */
+		newItemPropData * propdata = g_new0(newItemPropData, 1);
+		propdata->client  = client;
+		propdata->item    = item;
+		propdata->parent  = parent;
 
-		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, packarray);
+		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
 	} 
 
 	xmlNodePtr children;
