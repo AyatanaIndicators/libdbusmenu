@@ -530,10 +530,27 @@ static void
 menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
 	gpointer * unpackarray = (gpointer *)data;
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(unpackarray[0]);
 
 	menuitem_get_properties_cb (proxy, properties, error, unpackarray[1]);
 
-	g_signal_emit(G_OBJECT(unpackarray[0]), signals[NEW_MENUITEM], 0, unpackarray[1], TRUE);
+	gboolean handled = FALSE;
+
+	const gchar * type;
+	DbusmenuClientTypeHandler newfunc = NULL;
+	
+	type = dbusmenu_menuitem_property_get(DBUSMENU_MENUITEM(unpackarray[1]), "type");
+	if (type != NULL) {
+		newfunc = g_hash_table_lookup(priv->type_handlers, type);
+	}
+
+	if (newfunc != NULL) {
+		handled = newfunc(DBUSMENU_MENUITEM(unpackarray[1]), DBUSMENU_MENUITEM(unpackarray[2]));
+	}
+
+	if (!handled) {
+		g_signal_emit(G_OBJECT(unpackarray[0]), signals[NEW_MENUITEM], 0, unpackarray[1], TRUE);
+	}
 
 	g_free(unpackarray);
 
@@ -590,9 +607,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 		/* Get the properties queued up for this item */
 		/* Not happy about this, but I need both of these :( */
-		gpointer * packarray = g_new0(gpointer, 2);
+		gpointer * packarray = g_new0(gpointer, 3);
 		packarray[0] = client;
 		packarray[1] = item;
+		packarray[2] = parent;
 
 		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, packarray);
 	} 
