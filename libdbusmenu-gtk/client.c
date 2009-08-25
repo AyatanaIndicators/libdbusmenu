@@ -44,6 +44,10 @@ static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint po
 static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient);
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
 
+static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent);
+static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent);
+static gboolean new_item_image      (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent);
+
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
 
@@ -62,6 +66,11 @@ static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
+
+	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
+	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPERATOR, new_item_seperator);
+	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_IMAGE,     new_item_image);
+
 	return;
 }
 
@@ -258,3 +267,24 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	return mi;
 }
 
+static gboolean
+new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent)
+{
+
+
+	return TRUE;
+}
+
+static gboolean
+new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent)
+{
+
+	return TRUE;
+}
+
+static gboolean
+new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent)
+{
+
+	return TRUE;
+}
