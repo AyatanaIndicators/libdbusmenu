@@ -58,6 +58,7 @@ G_BEGIN_DECLS
 	DbusmenuClientClass:
 	@parent_class: #GObjectClass
 	@layout_updated: Slot for #DbusmenuClient::layout-updated.
+	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
