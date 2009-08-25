@@ -831,7 +831,7 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
-	if (priv->type_handlers) {
+	if (priv->type_handlers == NULL) {
 		g_warning("Type handlers hashtable not built");
 		return FALSE;
 	}
