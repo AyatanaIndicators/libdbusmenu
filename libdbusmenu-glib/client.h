@@ -94,7 +94,7 @@ struct _DbusmenuClient {
 	GObject parent;
 };
 
-typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent);
+typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
 GType                dbusmenu_client_get_type          (void);
 DbusmenuClient *     dbusmenu_client_new               (const gchar * name,

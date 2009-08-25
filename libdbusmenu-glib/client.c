@@ -553,7 +553,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	}
 
 	if (newfunc != NULL) {
-		handled = newfunc(propdata->item, propdata->parent);
+		handled = newfunc(propdata->item, propdata->parent, propdata->client);
 	}
 
 	g_signal_emit(G_OBJECT(propdata->item), DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID, 0, TRUE);

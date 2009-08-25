@@ -44,9 +44,9 @@ static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint po
 static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient);
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
 
-static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent);
-static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent);
-static gboolean new_item_image      (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent);
+static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean new_item_image      (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
@@ -266,7 +266,7 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 }
 
 static gboolean
-new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent)
+new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
 	gpointer ann_mi = g_object_get_data(G_OBJECT(newitem), data_menuitem);
 	GtkMenuItem * gmi = GTK_MENU_ITEM(ann_mi);
@@ -279,21 +279,20 @@ new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent)
 
 	gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 
-	// Need client
-	base_new_menuitem(newitem, gmi, NULL);
+	base_new_menuitem(newitem, gmi, DBUSMENU_GTKCLIENT(client));
 
 	return TRUE;
 }
 
 static gboolean
-new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent)
+new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
 
 	return TRUE;
 }
 
 static gboolean
-new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent)
+new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
 
 	return TRUE;
