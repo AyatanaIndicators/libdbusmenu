@@ -802,3 +802,46 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 
 	return priv->root;
 }
+
+/**
+	dbusmenu_client_add_type_handler:
+	@client: Client where we're getting types coming in
+	@type: A text string that will be matched with the 'type'
+	    property on incoming menu items
+	@newfunc: The function that will be executed with those new
+	    items when they come in.
+
+	This function connects into the type handling of the #DbusmenuClient.
+	Every new menuitem that comes in immediately gets asked for it's
+	properties.  When we get those properties we check the 'type'
+	property and look to see if it matches a handler that is known
+	by the client.  If so, the @newfunc function is executed on that
+	#DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
+	signal is sent.
+
+	In the future the known types will be sent to the server so that it
+	can make choices about the menu item types availble.
+
+	Return value: If registering the new type was successful.
+*/
+gboolean
+dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
+
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->type_handlers) {
+		g_warning("Type handlers hashtable not built");
+		return FALSE;
+	}
+
+	gpointer value = g_hash_table_lookup(priv->type_handlers, type);
+	if (value != NULL) {
+		g_warning("Type '%s' already had a registered handler.", type);
+		return FALSE;
+	}
+
+	g_hash_table_insert(priv->type_handlers, g_strdup(type), newfunc);
+	return TRUE;
+}
