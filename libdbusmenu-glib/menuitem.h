@@ -47,6 +47,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED         "child-added"
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED       "child-removed"
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED         "child-moved"
+#define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
 
 /**
 	DbusmenuMenuitem:
@@ -71,6 +72,7 @@ struct _DbusmenuMenuitem
 	@child_added: Slot for #DbusmenuMenuitem::child-added.
 	@child_removed: Slot for #DbusmenuMenuitem::child-removed.
 	@child_moved: Slot for #DbusmenuMenuitem::child-moved.
+	@realized: Slot for #DbusmenuMenuitem::realized.
 	@buildxml: Virtual function that appends the strings required
 	           to represent this menu item in the menu XML file.
 	@reserved1: Reserved for future use.
@@ -89,6 +91,7 @@ struct _DbusmenuMenuitemClass
 	void (*child_added) (DbusmenuMenuitem * child, guint position);
 	void (*child_removed) (DbusmenuMenuitem * child);
 	void (*child_moved) (DbusmenuMenuitem * child, guint newpos, guint oldpos);
+	void (*realized) (void);
 
 	/* Virtual functions */
 	void (*buildxml) (GPtrArray * stringarray);
@@ -96,7 +99,7 @@ struct _DbusmenuMenuitemClass
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
-	void (*reserved4) (void);
+	/* void (*reserved4) (void); -- realized, realloc when bumping lib version */
 };
 
 GType dbusmenu_menuitem_get_type (void);
