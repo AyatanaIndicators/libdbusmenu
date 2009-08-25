@@ -134,17 +134,15 @@ destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 static void
 new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 {
-	gpointer ann_mi = g_object_get_data(G_OBJECT(mi), data_menuitem);
-	GtkMenuItem * gmi = GTK_MENU_ITEM(ann_mi);
+	g_warning("Got new menuitem signal, which means they want something");
+	g_warning("  that I simply don't have.");
 
-	if (gmi != NULL) {
-		/* It's possible we've already been looked at, that's
-		   okay, but we can just ignore this signal then. */
-		return;
-	}
+	return;
+}
 
-	gmi = GTK_MENU_ITEM(gtk_menu_item_new());
-
+static void
+base_new_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi, DbusmenuGtkClient * client)
+{
 	/* Attach these two */
 	g_object_set_data(G_OBJECT(mi), data_menuitem, gmi);
 
@@ -270,7 +268,19 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 static gboolean
 new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent)
 {
+	gpointer ann_mi = g_object_get_data(G_OBJECT(newitem), data_menuitem);
+	GtkMenuItem * gmi = GTK_MENU_ITEM(ann_mi);
 
+	if (gmi != NULL) {
+		/* It's possible we've already been looked at, that's
+		   okay, but we can just ignore this signal then. */
+		return TRUE;
+	}
+
+	gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+
+	// Need client
+	base_new_menuitem(newitem, gmi, NULL);
 
 	return TRUE;
 }
