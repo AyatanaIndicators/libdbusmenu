@@ -148,7 +148,6 @@ base_new_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi, DbusmenuGtkClient *
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(new_child),    client);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
 
@@ -266,7 +265,7 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 }
 
 static gboolean
-new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
 	gpointer ann_mi = g_object_get_data(G_OBJECT(newitem), data_menuitem);
 	GtkMenuItem * gmi = GTK_MENU_ITEM(ann_mi);
@@ -280,6 +279,9 @@ new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbus
 	gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 
 	base_new_menuitem(newitem, gmi, DBUSMENU_GTKCLIENT(client));
+	if (parent != NULL) {
+		new_child(parent, newitem, dbusmenu_menuitem_get_position(newitem, parent), DBUSMENU_GTKCLIENT(client));
+	}
 
 	return TRUE;
 }
