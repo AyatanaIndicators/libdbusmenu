@@ -550,6 +550,8 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	type = dbusmenu_menuitem_property_get(propdata->item, "type");
 	if (type != NULL) {
 		newfunc = g_hash_table_lookup(priv->type_handlers, type);
+	} else {
+		newfunc = g_hash_table_lookup(priv->type_handlers, DBUSMENU_CLIENT_TYPES_DEFAULT);
 	}
 
 	if (newfunc != NULL) {
