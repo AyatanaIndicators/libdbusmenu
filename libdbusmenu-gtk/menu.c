@@ -289,3 +289,19 @@ dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object)
 	                    NULL);
 }
 
+/**
+	dbusmenu_gtkmenu_get_client:
+	@menu: The #DbusmenuGtkMenu to get the client from
+
+	An accessor for the client that this menu is using to
+	communicate with the server.
+
+	Return value: A valid #DbusmenuGtkClient or NULL on error.
+*/
+DbusmenuGtkClient *
+dbusmenu_gtkmenu_get_client (DbusmenuGtkMenu * menu)
+{
+	g_return_val_if_fail(DBUSMENU_IS_GTKMENU(menu), NULL);
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+	return priv->client;
+}
