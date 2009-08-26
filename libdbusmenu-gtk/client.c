@@ -277,7 +277,7 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 		return TRUE;
 	}
 
-	gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+	gmi = GTK_MENU_ITEM(gtk_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, "label")));
 	gtk_widget_show(GTK_WIDGET(gmi));
 
 	base_new_menuitem(newitem, gmi, DBUSMENU_GTKCLIENT(client));
