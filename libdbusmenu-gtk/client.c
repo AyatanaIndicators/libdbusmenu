@@ -104,14 +104,27 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 	return TRUE;
 }
 
+/* Process the visible property */
+static void
+process_visible (GtkMenuItem * gmi, const gchar * value)
+{
+	if (value == NULL || !g_strcmp0(value, "true")) {
+		gtk_widget_show(GTK_WIDGET(gmi));
+	} else {
+		gtk_widget_hide(GTK_WIDGET(gmi));
+	}
+	return;
+}
+
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
 menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
 {
-	if (!g_strcmp0(prop, "label")) {
+	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
 		gtk_menu_item_set_label(gmi, value);
-		gtk_widget_show(GTK_WIDGET(gmi));
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
+		process_visible(gmi, value);
 	}
 
 	return;
@@ -156,6 +169,8 @@ base_new_menuitem (DbusmenuMenuitem * mi, GtkMenuItem * gmi, DbusmenuGtkClient *
 
 	/* Life insurance */
 	g_object_weak_ref(G_OBJECT(mi), destoryed_dbusmenuitem_cb, gmi);
+
+	process_visible(gmi, dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_VISIBLE));
 
 	return;
 }
@@ -271,7 +286,6 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 	GtkMenuItem * gmi;
 
 	gmi = GTK_MENU_ITEM(gtk_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, "label")));
-	gtk_widget_show(GTK_WIDGET(gmi));
 
 	base_new_menuitem(newitem, gmi, DBUSMENU_GTKCLIENT(client));
 	if (parent != NULL) {
@@ -287,7 +301,6 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 	GtkMenuItem * gmi;
 
 	gmi = GTK_MENU_ITEM(gtk_separator_menu_item_new());
-	gtk_widget_show(GTK_WIDGET(gmi));
 
 	base_new_menuitem(newitem, gmi, DBUSMENU_GTKCLIENT(client));
 	if (parent != NULL) {
