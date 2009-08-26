@@ -65,11 +65,11 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
-	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
-
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPERATOR, new_item_seperator);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_IMAGE,     new_item_image);
+
+	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
 
 	return;
 }
@@ -257,7 +257,8 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	GtkMenuItem * mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
 	if (mi == NULL) {
-		new_menuitem(DBUSMENU_CLIENT(client), item, NULL);
+		// new_menuitem(DBUSMENU_CLIENT(client), item, NULL);
+		g_warning("GTK not updated");
 		mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
 	}
 
@@ -277,6 +278,7 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 	}
 
 	gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+	gtk_widget_show(GTK_WIDGET(gmi));
 
 	base_new_menuitem(newitem, gmi, DBUSMENU_GTKCLIENT(client));
 	if (parent != NULL) {
