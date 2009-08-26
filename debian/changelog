@@ -1,8 +1,8 @@
-libdbusmenu (0.0.2-0ubuntu1~ppa3) UNRELEASED; urgency=low
+libdbusmenu (0.0.2-0ubuntu1~ppa3) karmic; urgency=low
 
   * Ah, forgot to merge :-/
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 26 Aug 2009 17:05:22 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Aug 2009 17:06:23 -0500
 
 libdbusmenu (0.0.2-0ubuntu1~ppa2) karmic; urgency=low
 
