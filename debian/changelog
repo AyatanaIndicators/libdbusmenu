@@ -1,3 +1,9 @@
+libdbusmenu (0.0-0ubuntu2~ppa3) UNRELEASED; urgency=low
+
+  * Processing children upon realization
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Aug 2009 16:25:10 -0500
+
 libdbusmenu (0.0-0ubuntu2~ppa2) karmic; urgency=low
 
   * Fix for default handlers.

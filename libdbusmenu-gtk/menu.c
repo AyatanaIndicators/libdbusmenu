@@ -64,6 +64,7 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Internal */
 static void build_client (DbusmenuGtkMenu * self);
+static void child_realized (DbusmenuMenuitem * child, gpointer userdata);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkMenu, dbusmenu_gtkmenu, GTK_TYPE_MENU);
@@ -188,9 +189,7 @@ static void
 root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, DbusmenuGtkMenu * menu)
 {
 	g_debug("Root new child");
-	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
-	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)), position);
-	gtk_widget_show(GTK_WIDGET(menu));
+	g_signal_connect(G_OBJECT(child), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(child_realized), menu);
 	return;
 }
 
