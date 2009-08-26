@@ -1,8 +1,8 @@
-libdbusmenu (0.0.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
 
   * Reflecting the upstream version change.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 26 Aug 2009 16:37:11 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Aug 2009 16:59:40 -0500
 
 libdbusmenu (0.0-0ubuntu2~ppa3) karmic; urgency=low
 
