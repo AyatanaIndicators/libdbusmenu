@@ -1,3 +1,9 @@
+libdbusmenu (0.0-0ubuntu2~ppa2) UNRELEASED; urgency=low
+
+  * Fix for default handlers.
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Aug 2009 15:42:40 -0500
+
 libdbusmenu (0.0-0ubuntu2~ppa1) karmic; urgency=low
 
   * Show hide stuff
