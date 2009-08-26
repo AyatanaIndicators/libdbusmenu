@@ -66,7 +66,7 @@ static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
-	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPERATOR, new_item_seperator);
+	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_IMAGE,     new_item_image);
 
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
@@ -268,14 +268,7 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 static gboolean
 new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
-	gpointer ann_mi = g_object_get_data(G_OBJECT(newitem), data_menuitem);
-	GtkMenuItem * gmi = GTK_MENU_ITEM(ann_mi);
-
-	if (gmi != NULL) {
-		/* It's possible we've already been looked at, that's
-		   okay, but we can just ignore this signal then. */
-		return TRUE;
-	}
+	GtkMenuItem * gmi;
 
 	gmi = GTK_MENU_ITEM(gtk_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, "label")));
 	gtk_widget_show(GTK_WIDGET(gmi));
@@ -291,6 +284,15 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 static gboolean
 new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
+	GtkMenuItem * gmi;
+
+	gmi = GTK_MENU_ITEM(gtk_separator_menu_item_new());
+	gtk_widget_show(GTK_WIDGET(gmi));
+
+	base_new_menuitem(newitem, gmi, DBUSMENU_GTKCLIENT(client));
+	if (parent != NULL) {
+		new_child(parent, newitem, dbusmenu_menuitem_get_position(newitem, parent), DBUSMENU_GTKCLIENT(client));
+	}
 
 	return TRUE;
 }
