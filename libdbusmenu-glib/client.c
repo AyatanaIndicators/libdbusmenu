@@ -537,6 +537,8 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 static void
 menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
+	g_return_if_fail(data != NULL);
+
 	newItemPropData * propdata = (newItemPropData *)data;
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
 
@@ -620,11 +622,15 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		/* Get the properties queued up for this item */
 		/* Not happy about this, but I need these :( */
 		newItemPropData * propdata = g_new0(newItemPropData, 1);
-		propdata->client  = client;
-		propdata->item    = item;
-		propdata->parent  = parent;
+		if (propdata != NULL) {
+			propdata->client  = client;
+			propdata->item    = item;
+			propdata->parent  = parent;
 
-		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
+			org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
+		} else {
+			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
+		}
 	} 
 
 	xmlNodePtr children;
@@ -830,6 +836,7 @@ gboolean
 dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc)
 {
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
+	g_return_val_if_fail(type != NULL, FALSE);
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 

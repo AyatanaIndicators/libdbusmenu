@@ -1,3 +1,9 @@
+libdbusmenu (0.0.2-0ubuntu1~ppa5) UNRELEASED; urgency=low
+
+  * Changes from Neil's code review.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 09:00:43 -0500
+
 libdbusmenu (0.0.2-0ubuntu1~ppa4) karmic; urgency=low
 
   * Public accessor for the GtkMenu's client

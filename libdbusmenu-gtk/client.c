@@ -287,11 +287,18 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 static gboolean
 new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
-	GtkMenuItem * gmi;
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
+	/* Note: not checking parent, it's reasonable for it to be NULL */
 
+	GtkMenuItem * gmi;
 	gmi = GTK_MENU_ITEM(gtk_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL)));
 
-	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+	if (gmi != NULL) {
+		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+	} else {
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -299,11 +306,18 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 static gboolean
 new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
-	GtkMenuItem * gmi;
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
+	/* Note: not checking parent, it's reasonable for it to be NULL */
 
+	GtkMenuItem * gmi;
 	gmi = GTK_MENU_ITEM(gtk_separator_menu_item_new());
 
-	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+	if (gmi != NULL) {
+		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+	} else {
+		return FALSE;
+	}
 
 	return TRUE;
 }

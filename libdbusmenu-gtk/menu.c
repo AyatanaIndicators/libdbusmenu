@@ -215,6 +215,8 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 static void
 child_realized (DbusmenuMenuitem * child, gpointer userdata)
 {
+	g_return_if_fail(DBUSMENU_IS_GTKMENU(userdata));
+
 	DbusmenuGtkMenu * menu = DBUSMENU_GTKMENU(userdata);
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 
