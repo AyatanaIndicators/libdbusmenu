@@ -21,7 +21,7 @@ libdbusmenu (0.1.0-0ubuntu1) karmic; urgency=low
   * Add bzr-builddep configuration for merge mode.
   * debian/control: Fix Vcs-* links.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 09:59:48 -0500
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 27 Aug 2009 20:55:55 +0200
 
 libdbusmenu (0.1~bzr5-0ubuntu1) karmic; urgency=low
 
