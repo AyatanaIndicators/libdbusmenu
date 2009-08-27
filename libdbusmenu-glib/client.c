@@ -836,6 +836,7 @@ gboolean
 dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc)
 {
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
+	g_return_val_if_fail(type != NULL, FALSE);
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
