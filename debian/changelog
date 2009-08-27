@@ -1,12 +1,6 @@
-libdbusmenu (0.1.0-0ubuntu1~ppa1) karmic; urgency=low
+libdbusmenu (0.1.0-0ubuntu1) UNRELEASED; urgency=low
 
   * Upstream release 0.1.0
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 13:30:06 -0500
-
-libdbusmenu (0.0.2-0ubuntu1) UNRELEASED; urgency=low
-
-  * New upsream release 0.0.2
   * debian/watch: Added for tarball
   * debian/control: 
     - Specify both Vcs-Bzr and Vcs-Browser
