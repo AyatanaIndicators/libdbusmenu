@@ -537,6 +537,8 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 static void
 menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
+	g_return_if_fail(data != NULL);
+
 	newItemPropData * propdata = (newItemPropData *)data;
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
 
