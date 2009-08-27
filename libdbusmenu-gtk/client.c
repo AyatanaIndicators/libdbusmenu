@@ -44,6 +44,10 @@ static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint po
 static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient);
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
 
+static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean new_item_image      (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
 
@@ -61,7 +65,12 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
+	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
+	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
+	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_IMAGE,     new_item_image);
+
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
+
 	return;
 }
 
@@ -95,14 +104,27 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 	return TRUE;
 }
 
+/* Process the visible property */
+static void
+process_visible (GtkMenuItem * gmi, const gchar * value)
+{
+	if (value == NULL || !g_strcmp0(value, "true")) {
+		gtk_widget_show(GTK_WIDGET(gmi));
+	} else {
+		gtk_widget_hide(GTK_WIDGET(gmi));
+	}
+	return;
+}
+
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
 menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
 {
-	if (!g_strcmp0(prop, "label")) {
+	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
 		gtk_menu_item_set_label(gmi, value);
-		gtk_widget_show(GTK_WIDGET(gmi));
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
+		process_visible(gmi, value);
 	}
 
 	return;
@@ -125,31 +147,34 @@ destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 static void
 new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 {
-	gpointer ann_mi = g_object_get_data(G_OBJECT(mi), data_menuitem);
-	GtkMenuItem * gmi = GTK_MENU_ITEM(ann_mi);
+	g_warning("Got new menuitem signal, which means they want something");
+	g_warning("  that I simply don't have.");
 
-	if (gmi != NULL) {
-		/* It's possible we've already been looked at, that's
-		   okay, but we can just ignore this signal then. */
-		return;
-	}
+	return;
+}
 
-	gmi = GTK_MENU_ITEM(gtk_menu_item_new());
-
+void
+dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * item, GtkMenuItem * gmi, DbusmenuMenuitem * parent)
+{
 	/* Attach these two */
-	g_object_set_data(G_OBJECT(mi), data_menuitem, gmi);
+	g_object_set_data(G_OBJECT(item), data_menuitem, gmi);
 
 	/* DbusmenuMenuitem signals */
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(new_child),    client);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
+	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
+	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
 
 	/* GtkMenuitem signals */
-	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), mi);
+	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), item);
 
 	/* Life insurance */
-	g_object_weak_ref(G_OBJECT(mi), destoryed_dbusmenuitem_cb, gmi);
+	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
+
+	process_visible(gmi, dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
+
+	if (parent != NULL) {
+		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
+	}
 
 	return;
 }
@@ -251,10 +276,55 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	GtkMenuItem * mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
 	if (mi == NULL) {
-		new_menuitem(DBUSMENU_CLIENT(client), item, NULL);
+		// new_menuitem(DBUSMENU_CLIENT(client), item, NULL);
+		g_warning("GTK not updated");
 		mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
 	}
 
 	return mi;
 }
 
+static gboolean
+new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
+	/* Note: not checking parent, it's reasonable for it to be NULL */
+
+	GtkMenuItem * gmi;
+	gmi = GTK_MENU_ITEM(gtk_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL)));
+
+	if (gmi != NULL) {
+		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+	} else {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
+	/* Note: not checking parent, it's reasonable for it to be NULL */
+
+	GtkMenuItem * gmi;
+	gmi = GTK_MENU_ITEM(gtk_separator_menu_item_new());
+
+	if (gmi != NULL) {
+		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+	} else {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+{
+
+	return TRUE;
+}

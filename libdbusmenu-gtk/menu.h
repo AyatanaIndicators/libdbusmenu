@@ -31,6 +31,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <glib.h>
 #include <glib-object.h>
+#include "client.h"
 
 G_BEGIN_DECLS
 
@@ -71,6 +72,7 @@ struct _DbusmenuGtkMenu {
 
 GType dbusmenu_gtkmenu_get_type (void);
 DbusmenuGtkMenu * dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object);
+DbusmenuGtkClient * dbusmenu_gtkmenu_get_client (DbusmenuGtkMenu * menu);
 
 /**
 	SECTION:gtkmenu

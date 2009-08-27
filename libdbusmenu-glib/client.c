@@ -68,6 +68,16 @@ struct _DbusmenuClientPrivate
 	DBusGProxyCall * layoutcall;
 
 	DBusGProxy * dbusproxy;
+
+	GHashTable * type_handlers;
+};
+
+typedef struct _newItemPropData newItemPropData;
+struct _newItemPropData
+{
+	DbusmenuClient * client;
+	DbusmenuMenuitem * item;
+	DbusmenuMenuitem * parent;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -187,6 +197,9 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->dbusproxy = NULL;
 
+	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
+	                                            g_free, NULL);
+
 	return;
 }
 
@@ -229,6 +242,10 @@ dbusmenu_client_finalize (GObject *object)
 
 	g_free(priv->dbus_name);
 	g_free(priv->dbus_object);
+
+	if (priv->type_handlers != NULL) {
+		g_hash_table_destroy(priv->type_handlers);
+	}
 
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
 	return;
@@ -515,6 +532,45 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	return;
 }
 
+/* This is a different get properites call back that also sends
+   new signals.  It basically is a small wrapper around the original. */
+static void
+menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+{
+	g_return_if_fail(data != NULL);
+
+	newItemPropData * propdata = (newItemPropData *)data;
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
+
+	menuitem_get_properties_cb (proxy, properties, error, propdata->item);
+
+	gboolean handled = FALSE;
+
+	const gchar * type;
+	DbusmenuClientTypeHandler newfunc = NULL;
+	
+	type = dbusmenu_menuitem_property_get(propdata->item, "type");
+	if (type != NULL) {
+		newfunc = g_hash_table_lookup(priv->type_handlers, type);
+	} else {
+		newfunc = g_hash_table_lookup(priv->type_handlers, DBUSMENU_CLIENT_TYPES_DEFAULT);
+	}
+
+	if (newfunc != NULL) {
+		handled = newfunc(propdata->item, propdata->parent, propdata->client);
+	}
+
+	g_signal_emit(G_OBJECT(propdata->item), DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID, 0, TRUE);
+
+	if (!handled) {
+		g_signal_emit(G_OBJECT(propdata->client), signals[NEW_MENUITEM], 0, propdata->item, TRUE);
+	}
+
+	g_free(propdata);
+
+	return;
+}
+
 static void
 menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 {
@@ -562,9 +618,19 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			dbusmenu_menuitem_set_root(item, TRUE);
 		}
 		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activate), client);
-		g_signal_emit(G_OBJECT(client), signals[NEW_MENUITEM], 0, item, TRUE);
+
 		/* Get the properties queued up for this item */
-		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, item);
+		/* Not happy about this, but I need these :( */
+		newItemPropData * propdata = g_new0(newItemPropData, 1);
+		if (propdata != NULL) {
+			propdata->client  = client;
+			propdata->item    = item;
+			propdata->parent  = parent;
+
+			org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
+		} else {
+			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
+		}
 	} 
 
 	xmlNodePtr children;
@@ -743,4 +809,48 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 	}
 
 	return priv->root;
+}
+
+/**
+	dbusmenu_client_add_type_handler:
+	@client: Client where we're getting types coming in
+	@type: A text string that will be matched with the 'type'
+	    property on incoming menu items
+	@newfunc: The function that will be executed with those new
+	    items when they come in.
+
+	This function connects into the type handling of the #DbusmenuClient.
+	Every new menuitem that comes in immediately gets asked for it's
+	properties.  When we get those properties we check the 'type'
+	property and look to see if it matches a handler that is known
+	by the client.  If so, the @newfunc function is executed on that
+	#DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
+	signal is sent.
+
+	In the future the known types will be sent to the server so that it
+	can make choices about the menu item types availble.
+
+	Return value: If registering the new type was successful.
+*/
+gboolean
+dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
+	g_return_val_if_fail(type != NULL, FALSE);
+
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->type_handlers == NULL) {
+		g_warning("Type handlers hashtable not built");
+		return FALSE;
+	}
+
+	gpointer value = g_hash_table_lookup(priv->type_handlers, type);
+	if (value != NULL) {
+		g_warning("Type '%s' already had a registered handler.", type);
+		return FALSE;
+	}
+
+	g_hash_table_insert(priv->type_handlers, g_strdup(type), newfunc);
+	return TRUE;
 }
