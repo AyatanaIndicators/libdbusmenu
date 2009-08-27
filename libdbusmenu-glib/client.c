@@ -622,11 +622,15 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		/* Get the properties queued up for this item */
 		/* Not happy about this, but I need these :( */
 		newItemPropData * propdata = g_new0(newItemPropData, 1);
-		propdata->client  = client;
-		propdata->item    = item;
-		propdata->parent  = parent;
+		if (propdata != NULL) {
+			propdata->client  = client;
+			propdata->item    = item;
+			propdata->parent  = parent;
 
-		org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
+			org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
+		} else {
+			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
+		}
 	} 
 
 	xmlNodePtr children;
