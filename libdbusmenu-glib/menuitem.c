@@ -61,6 +61,7 @@ enum {
 	CHILD_ADDED,
 	CHILD_REMOVED,
 	CHILD_MOVED,
+	REALIZED,
 	LAST_SIGNAL
 };
 
@@ -178,6 +179,22 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           NULL, NULL,
 	                                           _dbusmenu_menuitem_marshal_VOID__OBJECT_UINT_UINT,
 	                                           G_TYPE_NONE, 3, G_TYPE_OBJECT, G_TYPE_UINT, G_TYPE_UINT);
+	/**
+		DbusmenuMenuitem::realized:
+		@arg0: The #DbusmenuMenuitem object.
+
+		Emitted when the initial request for properties
+		is complete on the item.  If there is a type
+		handler configured for the "type" parameter
+		that will be executed before this is signaled.
+	*/
+	signals[REALIZED] =           g_signal_new(DBUSMENU_MENUITEM_SIGNAL_REALIZED,
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, realized),
+	                                           NULL, NULL,
+	                                           _dbusmenu_menuitem_marshal_VOID__VOID,
+	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_uint("id", "ID for the menu item",

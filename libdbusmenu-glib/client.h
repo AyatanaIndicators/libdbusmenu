@@ -50,10 +50,15 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
 
+#define DBUSMENU_CLIENT_TYPES_DEFAULT      "menuitem"
+#define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
+#define DBUSMENU_CLIENT_TYPES_IMAGE        "imageitem"
+
 /**
 	DbusmenuClientClass:
 	@parent_class: #GObjectClass
 	@layout_updated: Slot for #DbusmenuClient::layout-updated.
+	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
@@ -90,9 +95,15 @@ struct _DbusmenuClient {
 	GObject parent;
 };
 
-GType                dbusmenu_client_get_type   (void);
-DbusmenuClient *     dbusmenu_client_new        (const gchar * name, const gchar * object);
-DbusmenuMenuitem *   dbusmenu_client_get_root   (DbusmenuClient * client);
+typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+
+GType                dbusmenu_client_get_type          (void);
+DbusmenuClient *     dbusmenu_client_new               (const gchar * name,
+                                                        const gchar * object);
+DbusmenuMenuitem *   dbusmenu_client_get_root          (DbusmenuClient * client);
+gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
+                                                        const gchar * type,
+                                                        DbusmenuClientTypeHandler newfunc);
 
 /**
 	SECTION:client
