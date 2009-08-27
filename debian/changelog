@@ -1,9 +1,9 @@
-libdbusmenu (0.0.2-0ubuntu1~ppa6) UNRELEASED; urgency=low
+libdbusmenu (0.0.2-0ubuntu1~ppa6) karmic; urgency=low
 
   * New upsream release 0.0.2
   * debian/watch: Added for tarball
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 09:48:45 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 09:59:48 -0500
 
 libdbusmenu (0.0-0ubuntu1) karmic; urgency=low
 
