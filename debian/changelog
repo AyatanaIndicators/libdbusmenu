@@ -10,11 +10,15 @@ libdbusmenu (0.1.2-0ubuntu1) UNRELEASED; urgency=low
 
 libdbusmenu (0.1.0-0ubuntu1) karmic; urgency=low
 
+  [ Ted Gould ]
   * Upstream release 0.1.0
   * debian/watch: Added for tarball
   * debian/control: 
     - Specify both Vcs-Bzr and Vcs-Browser
     - Fixed the project name
+
+  [ Martin Pitt ]
+  * Add bzr-builddep configuration for merge mode.
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 09:59:48 -0500
 
