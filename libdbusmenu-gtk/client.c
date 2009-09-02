@@ -285,6 +285,8 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	return mi;
 }
 
+/* The base type handler that builds a plain ol'
+   GtkMenuItem to represent, well, the GtkMenuItem */
 static gboolean
 new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
@@ -304,6 +306,8 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 	return TRUE;
 }
 
+/* Type handler for the seperators where it builds
+   a GtkSeparator to act as the GtkMenuItem */
 static gboolean
 new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
