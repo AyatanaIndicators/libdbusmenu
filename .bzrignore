@@ -41,3 +41,4 @@ dbusmenu.xml
 dbusmenu.py
 mago.results
 test-glib-simple-items
+libdbusmenu-gtk/libdbusmenu_gtk_la-menuitem.lo
