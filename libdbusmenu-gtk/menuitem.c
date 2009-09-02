@@ -28,6 +28,19 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "menuitem.h"
 
+/**
+	dbusmenu_menuitem_property_set_image:
+	@menuitem: The #DbusmenuMenuitem to set the property on.
+	@property: Name of the property to set.
+	@data: The image to place on the property.
+
+	This function takes the pixbuf that is stored in @data and
+	turns it into a base64 encoded PNG so that it can be placed
+	onto a standard #DbusmenuMenuitem property.
+
+	Return value: Whether the function was able to set the property
+		or not.
+*/
 gboolean
 dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar * property, const GdkPixbuf * data)
 {
@@ -61,6 +74,18 @@ dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar *
 	return propreturn;
 }
 
+/**
+	dbusmenu_menuitem_property_get_image:
+	@menuitem: The #DbusmenuMenuite to look for the property on
+	@property: The name of the property to look for.
+
+	This function looks on the menu item for a property by the
+	name of @property.  If one exists it tries to turn it into
+	a #GdkPixbuf.  It assumes that the property is a base64 encoded
+	PNG file like the one created by #dbusmenu_menuite_property_set_image.
+
+	Return value: A pixbuf or #NULL to signal error.
+*/
 GdkPixbuf *
 dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar * property)
 {
