@@ -64,8 +64,42 @@ dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar *
 GdkPixbuf *
 dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar * property)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), NULL);
+	g_return_val_if_fail(property != NULL && property[0] != '\0', NULL);
 
+	const gchar * value = dbusmenu_menuitem_property_get(menuitem, property);
 
-	return NULL;
+	/* There is no icon */
+	if (value == NULL || value[0] == '\0') {
+		return NULL;
+	}
+
+	gsize length = 0;
+	guchar * icondata = g_base64_decode(value, &length);
+	
+	GInputStream * input = g_memory_input_stream_new_from_data(icondata, length, NULL);
+	if (input == NULL) {
+		g_warning("Cound not create input stream from icon property data");
+		g_free(icondata);
+		return NULL;
+	}
+
+	GError * error = NULL;
+	GdkPixbuf * icon = gdk_pixbuf_new_from_stream(input, NULL, &error);
+
+	if (error != NULL) {
+		g_warning("Unable to build Pixbuf from icon data: %s", error->message);
+		g_error_free(error);
+	}
+
+	error = NULL;
+	g_input_stream_close(input, NULL, &error);
+	if (error != NULL) {
+		g_warning("Unable to close input stream: %s", error->message);
+		g_error_free(error);
+	}
+	g_free(icondata);
+
+	return icon;
 }
 
