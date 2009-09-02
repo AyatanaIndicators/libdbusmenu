@@ -48,6 +48,9 @@ static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuite
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_item_image      (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
+static void process_visible (GtkMenuItem * gmi, const gchar * value);
+static void process_sensitive (GtkMenuItem * gmi, const gchar * value);
+
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
 
@@ -116,6 +119,18 @@ process_visible (GtkMenuItem * gmi, const gchar * value)
 	return;
 }
 
+/* Process the sensitive property */
+static void
+process_sensitive (GtkMenuItem * gmi, const gchar * value)
+{
+	if (value == NULL || !g_strcmp0(value, "true")) {
+		gtk_widget_set_sensitive(GTK_WIDGET(gmi), TRUE);
+	} else {
+		gtk_widget_set_sensitive(GTK_WIDGET(gmi), FALSE);
+	}
+	return;
+}
+
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
@@ -125,6 +140,8 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenu
 		gtk_menu_item_set_label(gmi, value);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
 		process_visible(gmi, value);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SENSITIVE)) {
+		process_sensitive(gmi, value);
 	}
 
 	return;
@@ -171,6 +188,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
 	process_visible(gmi, dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
+	process_sensitive(gmi, dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
 
 	if (parent != NULL) {
 		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
