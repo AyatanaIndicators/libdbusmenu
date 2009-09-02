@@ -322,9 +322,42 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 	return TRUE;
 }
 
+static void
+image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gchar * value, gpointer user_data)
+{
+
+
+	return;
+}
+
 static gboolean
 new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
+	/* Note: not checking parent, it's reasonable for it to be NULL */
+
+	GtkMenuItem * gmi;
+	gmi = GTK_MENU_ITEM(gtk_image_menu_item_new());
+
+	if (gmi != NULL) {
+		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+	} else {
+		return FALSE;
+	}
+
+	image_property_handle(newitem,
+	                      DBUSMENU_MENUITEM_PROP_ICON,
+	                      dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_ICON),
+	                      NULL);
+	image_property_handle(newitem,
+	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
+	                      dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
+	                      NULL);
+	g_signal_connect(G_OBJECT(newitem),
+	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+	                 G_CALLBACK(image_property_handle),
+	                 NULL);
 
 	return TRUE;
 }
