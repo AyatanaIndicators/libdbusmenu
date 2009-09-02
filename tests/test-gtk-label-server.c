@@ -156,7 +156,7 @@ main (int argc, char ** argv)
 	server = dbusmenu_server_new("/org/test");
 
 	timer_func(NULL);
-	g_timeout_add_seconds(15, timer_func, NULL);
+	g_timeout_add_seconds(5, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
