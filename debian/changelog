@@ -1,6 +1,6 @@
-libdbusmenu (0.1.1-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.1.2-0ubuntu1) UNRELEASED; urgency=low
 
-  * Upstream release 0.1.1 (LP: #423958)
+  * Upstream release 0.1.2 (LP: #423958)
 
   [ Ken VanDine ]
   * debian/control
