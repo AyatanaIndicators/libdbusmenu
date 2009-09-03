@@ -1,5 +1,6 @@
 compile
 m4
+debian/compat
 libdbusmenu-glib/.deps
 libdbusmenu-glib/.libs
 libdbusmenu-glib/dbusmenu-glib.pc
@@ -41,4 +42,4 @@ dbusmenu.xml
 dbusmenu.py
 mago.results
 test-glib-simple-items
-debian/compat
+libdbusmenu-gtk/libdbusmenu_gtk_la-menuitem.lo

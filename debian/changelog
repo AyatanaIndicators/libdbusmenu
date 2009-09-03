@@ -1,3 +1,9 @@
+libdbusmenu (0.1.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Upstream release 0.1.1
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 14:25:57 -0500
+
 libdbusmenu (0.1.0-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream release 0.1.0
