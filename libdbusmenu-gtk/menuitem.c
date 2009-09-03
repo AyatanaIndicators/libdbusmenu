@@ -54,7 +54,7 @@ dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar *
 
 	if (!gdk_pixbuf_save_to_buffer((GdkPixbuf *)data, &png_data, &png_data_len, "png", &error, NULL)) {
 		if (error == NULL) {
-			g_warning("Unable to create pixbuf data stream: %d", png_data_len);
+			g_warning("Unable to create pixbuf data stream: %d", (gint)png_data_len);
 		} else {
 			g_warning("Unable to create pixbuf data stream: %s", error->message);
 			g_error_free(error);
