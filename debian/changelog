@@ -1,8 +1,8 @@
-libdbusmenu (0.1.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.1.2-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream release 0.1.2 for build failure on 64-bit
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 15:35:53 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 15:37:27 -0500
 
 libdbusmenu (0.1.1-0ubuntu1~ppa1) karmic; urgency=low
 
