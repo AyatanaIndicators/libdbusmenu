@@ -6,7 +6,7 @@ libdbusmenu (0.1.2-0ubuntu1) UNRELEASED; urgency=low
   * debian/control
     - Specify full urls for Vcs-Bzr
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 14:28:11 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 15:37:27 -0500
 
 libdbusmenu (0.1.0-0ubuntu1) karmic; urgency=low
 
