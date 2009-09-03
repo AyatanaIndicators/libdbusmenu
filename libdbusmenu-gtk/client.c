@@ -332,11 +332,8 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 static void
 image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gchar * value, gpointer userdata)
 {
-	if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON) ||
-	        g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA)) {
-		/* We're only looking at these two properties here */
-		return;
-	}
+	/* We're only looking at these two properties here */
+	g_return_if_fail(!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON) || !g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA));
 
 	if (value == NULL || value[0] == '\0') {
 		/* This means that we're unsetting a value. */
@@ -358,7 +355,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gc
 	GtkWidget * gtkimage = gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(gimi));
 
 	/* Now figure out what to change */
-	if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON)) {
+	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON)) {
 		const gchar * iconname = dbusmenu_menuitem_property_get(item, property);
 		if (iconname == NULL) {
 			/* If there is no name, by golly we want no
