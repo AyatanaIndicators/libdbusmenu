@@ -426,7 +426,7 @@ new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuC
 	/* Note: not checking parent, it's reasonable for it to be NULL */
 
 	GtkMenuItem * gmi;
-	gmi = GTK_MENU_ITEM(gtk_image_menu_item_new());
+	gmi = GTK_MENU_ITEM(gtk_image_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL)));
 
 	if (gmi != NULL) {
 		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
