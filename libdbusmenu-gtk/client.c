@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <gtk/gtk.h>
 
 #include "client.h"
+#include "menuitem.h"
 
 /* Prototypes */
 static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
@@ -302,6 +303,8 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	return mi;
 }
 
+/* The base type handler that builds a plain ol'
+   GtkMenuItem to represent, well, the GtkMenuItem */
 static gboolean
 new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
@@ -321,6 +324,8 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 	return TRUE;
 }
 
+/* Type handler for the seperators where it builds
+   a GtkSeparator to act as the GtkMenuItem */
 static gboolean
 new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
@@ -340,9 +345,124 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 	return TRUE;
 }
 
+/* This handler looks at property changes for items that are
+   image menu items. */
+static void
+image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gchar * value, gpointer userdata)
+{
+	/* We're only looking at these two properties here */
+	g_return_if_fail(!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON) || !g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA));
+
+	if (value == NULL || value[0] == '\0') {
+		/* This means that we're unsetting a value. */
+		/* Try to use the other one */
+		if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON)) {
+			property = DBUSMENU_MENUITEM_PROP_ICON_DATA;
+		} else {
+			property = DBUSMENU_MENUITEM_PROP_ICON;
+		}
+	}
+
+	/* Grab the data of the items that we've got, so that
+	   we can know how things need to change. */
+	GtkMenuItem * gimi = dbusmenu_gtkclient_menuitem_get (DBUSMENU_GTKCLIENT(userdata), item);
+	if (gimi == NULL) {
+		g_warning("Oddly we're handling image properties on a menuitem that doesn't have any GTK structures associated with it.");
+		return;
+	}
+	GtkWidget * gtkimage = gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(gimi));
+
+	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA)) {
+		/* If we have an image already built from a name that is
+		   way better than a pixbuf.  Keep it. */
+		if (gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_ICON_NAME) {
+			return;
+		}
+	}
+
+	/* Now figure out what to change */
+	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON)) {
+		const gchar * iconname = dbusmenu_menuitem_property_get(item, property);
+		if (iconname == NULL) {
+			/* If there is no name, by golly we want no
+			   icon either. */
+			gtkimage = NULL;
+		} else {
+			/* If we don't have an image, we need to build
+			   one so that we can set the name.  Otherwise we
+			   can just convert it to this name. */
+			if (gtkimage == NULL) {
+				gtkimage = gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU);
+			} else {
+				gtk_image_set_from_icon_name(GTK_IMAGE(gtkimage), iconname, GTK_ICON_SIZE_MENU);
+			}
+		}
+	} else {
+		GdkPixbuf * image = dbusmenu_menuitem_property_get_image(item, property);
+		if (image == NULL) {
+			/* If there is no pixbuf, by golly we want no
+			   icon either. */
+			gtkimage = NULL;
+		} else {
+			/* Resize the pixbuf */
+			gint width, height;
+			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
+			if (gdk_pixbuf_get_width(image) > width ||
+					gdk_pixbuf_get_height(image) > height) {
+				GdkPixbuf * newimage = gdk_pixbuf_scale_simple(image,
+				                                               width,
+				                                               height,
+				                                               GDK_INTERP_BILINEAR);
+				g_object_unref(image);
+				image = newimage;
+			}
+			
+			/* If we don't have an image, we need to build
+			   one so that we can set the pixbuf. */
+			if (gtkimage == NULL) {
+				gtkimage = gtk_image_new_from_pixbuf(image);
+			} else {
+				gtk_image_set_from_pixbuf(GTK_IMAGE(gtkimage), image);
+			}
+		}
+
+	}
+
+	gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(gimi), gtkimage);
+
+	return;
+}
+
+/* This is a type call back for the image type where
+   it uses the GtkImageMenuitem to create the menu item. */
 static gboolean
 new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
+	/* Note: not checking parent, it's reasonable for it to be NULL */
+
+	GtkMenuItem * gmi;
+	gmi = GTK_MENU_ITEM(gtk_image_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL)));
+
+	if (gmi != NULL) {
+		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+	} else {
+		return FALSE;
+	}
+
+	image_property_handle(newitem,
+	                      DBUSMENU_MENUITEM_PROP_ICON,
+	                      dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_ICON),
+	                      client);
+	image_property_handle(newitem,
+	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
+	                      dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
+	                      client);
+	g_signal_connect(G_OBJECT(newitem),
+	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+	                 G_CALLBACK(image_property_handle),
+	                 client);
 
 	return TRUE;
 }

@@ -9,13 +9,16 @@ libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-gtk/
 
 libdbusmenu_gtkinclude_HEADERS = \
 	client.h \
-	menu.h
+	menu.h \
+	menuitem.h
 
 libdbusmenu_gtk_la_SOURCES = \
 	client.h \
 	client.c \
 	menu.h \
-	menu.c
+	menu.c \
+	menuitem.h \
+	menuitem.c
 
 libdbusmenu_gtk_la_LDFLAGS = \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
