@@ -354,6 +354,14 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gc
 	}
 	GtkWidget * gtkimage = gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(gimi));
 
+	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA)) {
+		/* If we have an image already built from a name that is
+		   way better than a pixbuf.  Keep it. */
+		if (gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_ICON_NAME) {
+			return;
+		}
+	}
+
 	/* Now figure out what to change */
 	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON)) {
 		const gchar * iconname = dbusmenu_menuitem_property_get(item, property);
@@ -396,13 +404,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gc
 			if (gtkimage == NULL) {
 				gtkimage = gtk_image_new_from_pixbuf(image);
 			} else {
-				/* If we have an image already built from a name that is
-				   way better than a pixbuf.  Keep it. */
-				if (gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) != GTK_IMAGE_ICON_NAME) {
-					gtk_image_set_from_pixbuf(GTK_IMAGE(gtkimage), image);
-				} else {
-					g_debug("Blocking icon image data as already set by name.");
-				}
+				gtk_image_set_from_pixbuf(GTK_IMAGE(gtkimage), image);
 			}
 		}
 
