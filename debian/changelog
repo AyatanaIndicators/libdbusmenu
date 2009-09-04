@@ -1,12 +1,16 @@
-libdbusmenu (0.1.2-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.1.2-0ubuntu1) karmic; urgency=low
 
+  * debian/rules:
+    - updated shlib version
+
+  [ Ted Gould ]
   * Upstream release 0.1.2 (LP: #423958)
 
   [ Ken VanDine ]
   * debian/control
     - Specify full urls for Vcs-Bzr
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 15:37:27 -0500
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 04 Sep 2009 11:12:38 +0200
 
 libdbusmenu (0.1.0-0ubuntu1) karmic; urgency=low
 
