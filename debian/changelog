@@ -1,8 +1,8 @@
-libdbusmenu (0.1.2-0ubuntu1~ppa2~reorder1) UNRELEASED; urgency=low
+libdbusmenu (0.1.2-0ubuntu1~ppa2~reorder1) karmic; urgency=low
 
   * Reordering fixes.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 09 Sep 2009 17:10:03 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 09 Sep 2009 17:15:43 -0500
 
 libdbusmenu (0.1.2-0ubuntu1~ppa1) karmic; urgency=low
 
