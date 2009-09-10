@@ -55,6 +55,7 @@ static void process_sensitive (GtkMenuItem * gmi, const gchar * value);
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
 
+/* Basic build for the class.  Only a finalize and dispose handler. */
 static void
 dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 {
@@ -66,6 +67,8 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 	return;
 }
 
+/* Registers the three times of menuitems that we're going to handle
+   for the gtk world.  And tracks when a new item gets added. */
 static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
@@ -78,6 +81,7 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	return;
 }
 
+/* Just calling the super class.  Future use. */
 static void
 dbusmenu_gtkclient_dispose (GObject *object)
 {
@@ -86,6 +90,7 @@ dbusmenu_gtkclient_dispose (GObject *object)
 	return;
 }
 
+/* Just calling the super class.  Future use. */
 static void
 dbusmenu_gtkclient_finalize (GObject *object)
 {
@@ -159,9 +164,9 @@ destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 	return;
 }
 
-/* This takes a new DbusmenuMenuitem and attaches the
-   various things that we need to make it work in a 
-   GTK World.  */
+/* The new menuitem signal only happens if we don't have a type handler
+   for the type of the item.  This should be an error condition and we're
+   printing out a message. */
 static void
 new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 {
@@ -171,6 +176,22 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 	return;
 }
 
+/**
+	dbusmenu_gtkclient_newitem_base:
+	@client: The client handling everything on this connection
+	@item: The #DbusmenuMenuitem to attach the GTK-isms to
+	@gmi: A #GtkMenuItem representing the GTK world's view of this menuitem
+	@parent: The parent #DbusmenuMenuitem
+
+	This function provides some of the basic connectivity for being in
+	the GTK world.  Things like visibility and sensitivity of the item are
+	handled here so that the subclasses don't have to.  If you're building
+	your on GTK menu item you can use this function to apply those basic
+	attributes so that you don't have to deal with them either.
+
+	This also handles passing the "activate" signal back to the
+	#DbusmenuMenuitem side of thing.
+*/
 void
 dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * item, GtkMenuItem * gmi, DbusmenuMenuitem * parent)
 {
@@ -224,6 +245,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 static void
 delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient)
 {
+	/* If it's a root item, we shouldn't be dealing with it here. */
 	if (dbusmenu_menuitem_get_root(mi)) { return; }
 
 	if (g_list_length(dbusmenu_menuitem_get_children(mi)) == 0) {
@@ -242,6 +264,7 @@ delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient
 static void
 move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient)
 {
+	/* If it's a root item, we shouldn't be dealing with it here. */
 	if (dbusmenu_menuitem_get_root(mi)) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
