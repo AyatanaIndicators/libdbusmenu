@@ -185,6 +185,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal Functions */
 
+/* Called when a new child of the root item is
+   added.  Sets up a signal for when it's actually
+   realized. */
 static void
 root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, DbusmenuGtkMenu * menu)
 {
@@ -193,6 +196,8 @@ root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint posit
 	return;
 }
 
+/* When one of the children move we need to react to that and
+   move it on the GTK side as well. */
 static void
 root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newposition, guint oldposition, DbusmenuGtkMenu * menu)
 {
@@ -202,6 +207,7 @@ root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newpo
 	return;
 }
 
+/* When a root child item disappears. */
 static void
 root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGtkMenu * menu)
 {
@@ -212,6 +218,8 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 	return;
 }
 
+/* Called when the child is realized, and thus has all of it's
+   properties and GTK-isms.  We can put it in our menu here. */
 static void
 child_realized (DbusmenuMenuitem * child, gpointer userdata)
 {
@@ -220,10 +228,20 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 	DbusmenuGtkMenu * menu = DBUSMENU_GTKMENU(userdata);
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 
-	gtk_menu_append(menu, GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)));
+	GtkWidget * child_widget = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
+
+	if (child_widget != NULL) {
+		gtk_menu_append(menu, child_widget);
+		gtk_menu_reorder_child(GTK_MENU(menu), child_widget, dbusmenu_menuitem_get_position(child, dbusmenu_client_get_root(DBUSMENU_CLIENT(priv->client))));
+	} else {
+		g_warning("Child is realized, but doesn't have a GTK Widget!");
+	}
+
 	return;
 }
 
+/* When the root menuitem changes we need to resetup things so that
+   we're back in the game. */
 static void
 root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGtkMenu * menu) {
 	if (newroot == NULL) {
