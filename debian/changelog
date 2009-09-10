@@ -1,9 +1,9 @@
-libdbusmenu (0.1.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.1.3-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream update 0.1.3
     * Fixes reordering of menu item issue
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Sep 2009 08:40:06 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Sep 2009 08:43:47 -0500
 
 libdbusmenu (0.1.2-0ubuntu1~ppa1) karmic; urgency=low
 
