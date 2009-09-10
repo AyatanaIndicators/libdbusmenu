@@ -13,8 +13,8 @@ Build-Depends: debhelper (>= 5.0),
                libjson-glib-dev
 Standards-Version: 3.8.0
 Homepage: https://launchpad.net/libdbusmenu
-Vcs-Bzr: lp:~ubuntu-core-dev/dbusmenu/ubuntu
-Vcs-Browser: http://code.launchpad.net/~ubuntu-core-dev/dbusmenu/ubuntu
+Vcs-Bzr: https://code.launchpad.net/~ubuntu-desktop/dbusmenu/ubuntu
+Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/dbusmenu/ubuntu
 
 Package: libdbusmenu-glib0
 Section: libs
