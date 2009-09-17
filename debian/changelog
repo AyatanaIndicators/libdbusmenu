@@ -1,6 +1,8 @@
 libdbusmenu (0.1.4-0ubuntu1) karmic; urgency=low
 
   * Upstream release (LP: #432003)
+    - Applying a fix by not blocking if we're calling for the root.  Everyone 
+      should be listening for root changes anyway
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 11:29:40 -0500
 
