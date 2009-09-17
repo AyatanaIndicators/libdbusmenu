@@ -1,8 +1,8 @@
-libdbusmenu (0.1.4-0ubuntu2~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.1.4-0ubuntu2~ppa1) karmic; urgency=low
 
   * Signaling layout update on child moved
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 13:49:15 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 13:52:13 -0500
 
 libdbusmenu (0.1.4-0ubuntu1) UNRELEASED; urgency=low
 
