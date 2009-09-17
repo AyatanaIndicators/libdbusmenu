@@ -66,6 +66,7 @@ struct _DbusmenuClientPrivate
 	DBusGProxy * menuproxy;
 	DBusGProxy * propproxy;
 	DBusGProxyCall * layoutcall;
+	gboolean check_layout;
 
 	DBusGProxy * dbusproxy;
 
@@ -194,6 +195,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->menuproxy = NULL;
 	priv->propproxy = NULL;
 	priv->layoutcall = NULL;
+	priv->check_layout = FALSE;
 
 	priv->dbusproxy = NULL;
 
@@ -721,6 +723,11 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
 	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
 
+	if (priv->check_layout) {
+		priv->check_layout = FALSE;
+		update_layout(client);
+	}
+
 	return;
 }
 
@@ -736,6 +743,7 @@ update_layout (DbusmenuClient * client)
 	}
 
 	if (priv->layoutcall != NULL) {
+		priv->check_layout = TRUE;
 		return;
 	}
 
@@ -803,16 +811,9 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 		return NULL;
 	}
 
-#if 0
-/* Seems to be a bug in dbus-glib that assert here, I think because
-   multiple people try and grab it.  We're going to comment this out
-   for now as everyone should be listening to the root changed signal
-   anyway. */
 	if (priv->layoutcall != NULL) {
-		/* Will end the current call and block on it's completion */
-		update_layout_cb(priv->propproxy, priv->layoutcall, client);
+		priv->check_layout = TRUE;
 	}
-#endif
 
 	return priv->root;
 }
