@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.1.3, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.1.4, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.1.3)
+AM_INIT_AUTOMAKE(libdbusmenu, 0.1.4)
 
 AM_MAINTAINER_MODE
 
@@ -66,7 +66,7 @@ AC_SUBST(DBUSMENUTESTS_LIBS)
 ###########################
 
 LIBDBUSMENU_CURRENT=0
-LIBDBUSMENU_REVISION=1
+LIBDBUSMENU_REVISION=4
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
