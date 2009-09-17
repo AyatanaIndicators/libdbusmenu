@@ -1,4 +1,4 @@
-libdbusmenu (0.1.4-0ubuntu1) karmic; urgency=low
+libdbusmenu (0.1.4-0ubuntu1) UNRELEASED; urgency=low
 
   * Upstream release (LP: #432003)
     - Applying a fix by not blocking if we're calling for the root.  Everyone 
