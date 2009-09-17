@@ -1,8 +1,8 @@
-libdbusmenu (0.1.4-0ubuntu2~ppa2) UNRELEASED; urgency=low
+libdbusmenu (0.1.4-0ubuntu2~ppa2) karmic; urgency=low
 
   * Trying to double check the layout
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 16:13:03 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 16:14:16 -0500
 
 libdbusmenu (0.1.4-0ubuntu2~ppa1) karmic; urgency=low
 
