@@ -803,10 +803,16 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 		return NULL;
 	}
 
+#if 0
+/* Seems to be a bug in dbus-glib that assert here, I think because
+   multiple people try and grab it.  We're going to comment this out
+   for now as everyone should be listening to the root changed signal
+   anyway. */
 	if (priv->layoutcall != NULL) {
 		/* Will end the current call and block on it's completion */
 		update_layout_cb(priv->propproxy, priv->layoutcall, client);
 	}
+#endif
 
 	return priv->root;
 }
