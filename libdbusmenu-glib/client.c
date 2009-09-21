@@ -94,7 +94,7 @@ static void dbusmenu_client_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
-static void layout_update (DBusGProxy * proxy, DbusmenuClient * client);
+static void layout_update (DBusGProxy * proxy, gint revision, DbusmenuClient * client);
 static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client);
 static void id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
@@ -307,9 +307,13 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Annoying little wrapper to make the right function update */
 static void
-layout_update (DBusGProxy * proxy, DbusmenuClient * client)
+layout_update (DBusGProxy * proxy, gint revision, DbusmenuClient * client)
 {
-	update_layout(client);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	priv->current_revision = revision;
+	if (priv->current_revision > priv->my_revision) {
+		update_layout(client);
+	}
 	return;
 }
 
