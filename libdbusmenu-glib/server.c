@@ -280,9 +280,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		GPtrArray * xmlarray = g_ptr_array_new();
 		if (priv->root == NULL) {
 			/* g_debug("Getting layout without root node!"); */
-			g_ptr_array_add(xmlarray, g_strdup("<menu />"));
+			g_ptr_array_add(xmlarray, g_strdup_printf("<menu revision=\"%d\" />", priv->layout_revision));
 		} else {
-			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
+			dbusmenu_menuitem_buildxml(priv->root, xmlarray, priv->layout_revision);
 		}
 		g_ptr_array_add(xmlarray, NULL);
 
