@@ -1,8 +1,8 @@
-libdbusmenu (0.1.4-0ubuntu2~ppa3) UNRELEASED; urgency=low
+libdbusmenu (0.1.4-0ubuntu2~ppa3) karmic; urgency=low
 
   * Trying a revision ID
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 21 Sep 2009 15:39:15 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Sep 2009 15:40:48 -0500
 
 libdbusmenu (0.1.4-0ubuntu2~ppa2) karmic; urgency=low
 
