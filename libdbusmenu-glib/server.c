@@ -143,6 +143,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	/**
 		DbusmenuServer::layout-update:
 		@arg0: The #DbusmenuServer emitting the signal.
+		@arg1: A revision number representing which revision the update
+		       represents itself as.
 
 		This signal is emitted any time the layout of the
 		menuitems under this server is changed.
