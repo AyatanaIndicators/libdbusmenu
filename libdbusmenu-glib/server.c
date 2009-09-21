@@ -47,6 +47,7 @@ struct _DbusmenuServerPrivate
 {
 	DbusmenuMenuitem * root;
 	gchar * dbusobject;
+	gint layout_revision;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) \
@@ -151,8 +152,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, layout_update),
 	                                         NULL, NULL,
-	                                         g_cclosure_marshal_VOID__VOID,
-	                                         G_TYPE_NONE, 0);
+	                                         g_cclosure_marshal_VOID__INT,
+	                                         G_TYPE_NONE, 1, G_TYPE_INT);
 
 
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
@@ -183,6 +184,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 
 	priv->root = NULL;
 	priv->dbusobject = NULL;
+	priv->layout_revision = 1;
 
 	return;
 }
@@ -235,7 +237,8 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		} else {
 			g_debug("Setting root node to NULL");
 		}
-		g_signal_emit(obj, signals[LAYOUT_UPDATE], 0, TRUE);
+		priv->layout_revision++;
+		g_signal_emit(obj, signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
 		break;
 	case PROP_LAYOUT:
 		/* Can't set this, fall through to error */
@@ -310,7 +313,9 @@ menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 {
 	menuitem_signals_create(child, server);
 	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, TRUE);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	priv->layout_revision++;
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
 	return;
 }
 
@@ -319,14 +324,18 @@ menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, Dbu
 {
 	menuitem_signals_remove(child, server);
 	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, TRUE);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	priv->layout_revision++;
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
 	return;
 }
 
 static void 
 menuitem_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos, DbusmenuServer * server)
 {
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, TRUE);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	priv->layout_revision++;
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
 	return;
 }
 
