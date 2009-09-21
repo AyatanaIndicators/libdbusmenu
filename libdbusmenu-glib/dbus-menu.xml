@@ -57,6 +57,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			<arg type="u" name="id" direction="out" />
 		</signal>
 		<signal name="LayoutUpdate">
+			<arg type="i" name="revision" direction="out" />
 		</signal>
 
 <!-- End of interesting stuff -->
