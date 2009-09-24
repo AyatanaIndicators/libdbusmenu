@@ -71,7 +71,7 @@ struct _DbusmenuServerClass {
 	/* Signals */
 	void (*id_prop_update)(guint id, gchar * property, gchar * value);
 	void (*id_update)(guint id);
-	void (*layout_update)(void);
+	void (*layout_update)(gint revision);
 
 	/* Reserved */
 	void (*dbusmenu_server_reserved1)(void);
