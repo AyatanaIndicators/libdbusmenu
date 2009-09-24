@@ -67,6 +67,9 @@ struct _DbusmenuClientPrivate
 	DBusGProxy * propproxy;
 	DBusGProxyCall * layoutcall;
 
+	gint current_revision;
+	gint my_revision;
+
 	DBusGProxy * dbusproxy;
 
 	GHashTable * type_handlers;
@@ -91,13 +94,13 @@ static void dbusmenu_client_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
-static void layout_update (DBusGProxy * proxy, DbusmenuClient * client);
+static void layout_update (DBusGProxy * proxy, gint revision, DbusmenuClient * client);
 static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client);
 static void id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static guint parse_node_get_id (xmlNodePtr node);
 static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
-static void parse_layout (DbusmenuClient * client, const gchar * layout);
+static gint parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data);
 static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
@@ -194,6 +197,9 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->menuproxy = NULL;
 	priv->propproxy = NULL;
 	priv->layoutcall = NULL;
+
+	priv->current_revision = 0;
+	priv->my_revision = 0;
 
 	priv->dbusproxy = NULL;
 
@@ -301,9 +307,13 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Annoying little wrapper to make the right function update */
 static void
-layout_update (DBusGProxy * proxy, DbusmenuClient * client)
+layout_update (DBusGProxy * proxy, gint revision, DbusmenuClient * client)
 {
-	update_layout(client);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	priv->current_revision = revision;
+	if (priv->current_revision > priv->my_revision) {
+		update_layout(client);
+	}
 	return;
 }
 
@@ -467,7 +477,7 @@ build_proxies (DbusmenuClient * client)
 		priv->dbusproxy = NULL;
 	}
 
-	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdate", G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdate", G_TYPE_INT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "LayoutUpdate", G_CALLBACK(layout_update), client, NULL);
 
 	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__UINT_STRING_STRING, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
@@ -480,6 +490,34 @@ build_proxies (DbusmenuClient * client)
 	update_layout(client);
 
 	return;
+}
+
+/* Get the "revision" attribute of the node, parse it and
+   return it.  Also we're checking to ensure the node
+   is a 'menu' here. */
+static gint
+parse_node_get_revision (xmlNodePtr node)
+{
+	if (g_strcmp0((gchar *)node->name, "menu") != 0) {
+		/* This kills some nodes early */
+		g_warning("XML Node is not 'menu' it is '%s'", node->name);
+		return 0;
+	}
+
+	xmlAttrPtr attrib;
+	for (attrib = node->properties; attrib != NULL; attrib = attrib->next) {
+		if (g_strcmp0((gchar *)attrib->name, "revision") == 0) {
+			if (attrib->children != NULL) {
+				guint revision = (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
+				/* g_debug ("Found ID: %d", id); */
+				return revision;
+			}
+			break;
+		}
+	}
+
+	g_warning("Unable to find a revision on the node");
+	return 0;
 }
 
 /* Get the ID attribute of the node, parse it and
@@ -671,7 +709,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 /* Take the layout passed to us over DBus and turn it into
    a set of beautiful objects */
-static void
+static gint
 parse_layout (DbusmenuClient * client, const gchar * layout)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
@@ -681,6 +719,7 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 16*1024), "dbusmenu.xml", NULL, 0);
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
+	gint revision = parse_node_get_revision(root);
 
 	DbusmenuMenuitem * oldroot = priv->root;
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
@@ -694,7 +733,7 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 
-	return;
+	return revision;
 }
 
 /* When the layout property returns, here's where we take care of that. */
@@ -716,10 +755,20 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 
 	const gchar * xml = g_value_get_string(&value);
 	/* g_debug("Got layout string: %s", xml); */
-	parse_layout(client, xml);
+	gint rev = parse_layout(client, xml);
 
+	if (rev == 0) {
+		g_warning("Unable to parse layout!");
+		return;
+	}
+
+	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
 	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
+
+	if (priv->my_revision < priv->current_revision) {
+		update_layout(client);
+	}
 
 	return;
 }
@@ -802,17 +851,6 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 	if (priv->propproxy == NULL) {
 		return NULL;
 	}
-
-#if 0
-/* Seems to be a bug in dbus-glib that assert here, I think because
-   multiple people try and grab it.  We're going to comment this out
-   for now as everyone should be listening to the root changed signal
-   anyway. */
-	if (priv->layoutcall != NULL) {
-		/* Will end the current call and block on it's completion */
-		update_layout_cb(priv->propproxy, priv->layoutcall, client);
-	}
-#endif
 
 	return priv->root;
 }

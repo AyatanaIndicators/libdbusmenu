@@ -47,6 +47,7 @@ struct _DbusmenuServerPrivate
 {
 	DbusmenuMenuitem * root;
 	gchar * dbusobject;
+	gint layout_revision;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) \
@@ -142,6 +143,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	/**
 		DbusmenuServer::layout-update:
 		@arg0: The #DbusmenuServer emitting the signal.
+		@arg1: A revision number representing which revision the update
+		       represents itself as.
 
 		This signal is emitted any time the layout of the
 		menuitems under this server is changed.
@@ -151,8 +154,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, layout_update),
 	                                         NULL, NULL,
-	                                         g_cclosure_marshal_VOID__VOID,
-	                                         G_TYPE_NONE, 0);
+	                                         g_cclosure_marshal_VOID__INT,
+	                                         G_TYPE_NONE, 1, G_TYPE_INT);
 
 
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
@@ -183,6 +186,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 
 	priv->root = NULL;
 	priv->dbusobject = NULL;
+	priv->layout_revision = 1;
 
 	return;
 }
@@ -235,7 +239,8 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		} else {
 			g_debug("Setting root node to NULL");
 		}
-		g_signal_emit(obj, signals[LAYOUT_UPDATE], 0, TRUE);
+		priv->layout_revision++;
+		g_signal_emit(obj, signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
 		break;
 	case PROP_LAYOUT:
 		/* Can't set this, fall through to error */
@@ -275,9 +280,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		GPtrArray * xmlarray = g_ptr_array_new();
 		if (priv->root == NULL) {
 			/* g_debug("Getting layout without root node!"); */
-			g_ptr_array_add(xmlarray, g_strdup("<menu />"));
+			g_ptr_array_add(xmlarray, g_strdup_printf("<menu revision=\"%d\" />", priv->layout_revision));
 		} else {
-			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
+			dbusmenu_menuitem_buildxml(priv->root, xmlarray, priv->layout_revision);
 		}
 		g_ptr_array_add(xmlarray, NULL);
 
@@ -310,7 +315,9 @@ menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 {
 	menuitem_signals_create(child, server);
 	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, TRUE);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	priv->layout_revision++;
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
 	return;
 }
 
@@ -319,7 +326,18 @@ menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, Dbu
 {
 	menuitem_signals_remove(child, server);
 	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, TRUE);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	priv->layout_revision++;
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
+	return;
+}
+
+static void 
+menuitem_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos, DbusmenuServer * server)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	priv->layout_revision++;
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
 	return;
 }
 
@@ -330,6 +348,7 @@ menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data)
 {
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED, G_CALLBACK(menuitem_child_added), data);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(menuitem_child_removed), data);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED, G_CALLBACK(menuitem_child_moved), data);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menuitem_property_changed), data);
 	return;
 }
@@ -341,6 +360,7 @@ menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data)
 {
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_added), data);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_removed), data);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_moved), data);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_property_changed), data);
 	return;
 }

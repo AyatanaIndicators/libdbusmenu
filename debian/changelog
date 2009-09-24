@@ -1,3 +1,27 @@
+libdbusmenu (0.1.4-0ubuntu2~ppa4) UNRELEASED; urgency=low
+
+  * Hooking up with trunk.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 24 Sep 2009 15:54:03 -0500
+
+libdbusmenu (0.1.4-0ubuntu2~ppa3) karmic; urgency=low
+
+  * Trying a revision ID
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Sep 2009 15:40:48 -0500
+
+libdbusmenu (0.1.4-0ubuntu2~ppa2) karmic; urgency=low
+
+  * Trying to double check the layout
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 16:14:16 -0500
+
+libdbusmenu (0.1.4-0ubuntu2~ppa1) karmic; urgency=low
+
+  * Signaling layout update on child moved
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 13:52:13 -0500
+
 libdbusmenu (0.1.4-0ubuntu1) UNRELEASED; urgency=low
 
   * Upstream release (LP: #432003)
