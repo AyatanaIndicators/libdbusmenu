@@ -4,7 +4,7 @@ libdbusmenu (0.1.5-0ubuntu1) UNRELEASED; urgency=low
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 24 Sep 2009 17:12:25 -0400
 
-libdbusmenu (0.1.4-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.1.4-0ubuntu1) karmic; urgency=low
 
   * Upstream release (LP: #432003)
     - Applying a fix by not blocking if we're calling for the root.  Everyone 
