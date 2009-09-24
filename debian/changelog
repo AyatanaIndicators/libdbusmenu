@@ -1,4 +1,4 @@
-libdbusmenu (0.1.5-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.1.5-0ubuntu1) karmic; urgency=low
 
   * New upstream release (LP: #436185) 
 
