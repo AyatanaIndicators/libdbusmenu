@@ -1,3 +1,9 @@
+libdbusmenu (0.1.5-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Upstream release 0.1.5
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 24 Sep 2009 16:09:47 -0500
+
 libdbusmenu (0.1.4-0ubuntu2~ppa4) karmic; urgency=low
 
   * Hooking up with trunk.
