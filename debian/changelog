@@ -1,8 +1,8 @@
-libdbusmenu (0.1.4-0ubuntu2~ppa4) UNRELEASED; urgency=low
+libdbusmenu (0.1.4-0ubuntu2~ppa4) karmic; urgency=low
 
   * Hooking up with trunk.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Sep 2009 15:54:03 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 24 Sep 2009 15:57:34 -0500
 
 libdbusmenu (0.1.4-0ubuntu2~ppa3) karmic; urgency=low
 
