@@ -42,3 +42,7 @@ dbusmenu.py
 mago.results
 test-glib-simple-items
 libdbusmenu-gtk/libdbusmenu_gtk_la-menuitem.lo
+tests/test-glib-layout
+tests/test-glib-properties
+tests/test-gtk-label
+tests/test-gtk-reorder-server.c
