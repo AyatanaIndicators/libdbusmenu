@@ -29,12 +29,25 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 
-static void
-menuitem_click(DbusmenuMenuitem * mi, gpointer user_data)
-{
-	g_debug("Clicked on: %d", dbusmenu_menuitem_get_id(mi));
-	return;
-}
+#define NUMBER_TESTS    5
+#define NUMBER_ENTRIES  5
+
+guint ordering [NUMBER_TESTS][NUMBER_ENTRIES] = {
+	{0, 1, 2, 3, 4},
+	{1, 2, 3, 4, 0},
+	{3, 1, 4, 2, 0},
+	{4, 3, 2, 1, 0},
+	{0, 1, 2, 3, 4}
+};
+
+gchar * names [NUMBER_ENTRIES] = {
+	"One", "Two", "Three", "Four", "Five"
+};
+
+DbusmenuMenuitem * entries[NUMBER_ENTRIES] = {0};
+DbusmenuMenuitem * root = NULL;
+
+gint test = 0;
 
 static DbusmenuServer * server = NULL;
 static GMainLoop * mainloop = NULL;
@@ -42,8 +55,21 @@ static GMainLoop * mainloop = NULL;
 static gboolean
 timer_func (gpointer data)
 {
-	menuitem_click(NULL, NULL);
-	return FALSE;
+	if (test == NUMBER_TESTS) {
+		g_main_quit(mainloop);
+		return FALSE;
+	}
+
+	g_debug("Testing pattern %d", test);
+
+	int i;
+	for (i = 0; i < NUMBER_ENTRIES; i++) {
+		dbusmenu_menuitem_child_reorder(root, entries[i], ordering[test][i]);
+		dbusmenu_menuitem_property_set(entries[i], "label", names[i]);
+	}
+
+	test++;
+	return TRUE;
 }
 
 int
@@ -70,6 +96,14 @@ main (int argc, char ** argv)
 	}
 
 	server = dbusmenu_server_new("/org/test");
+	root = dbusmenu_menuitem_new();
+	dbusmenu_server_set_root(server, root);
+
+	int i;
+	for (i = 0; i < NUMBER_ENTRIES; i++) {
+		entries[i] = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_child_append(root, entries[i]);
+	}
 
 	timer_func(NULL);
 	g_timeout_add_seconds(5, timer_func, NULL);
