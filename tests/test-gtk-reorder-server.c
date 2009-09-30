@@ -64,6 +64,7 @@ timer_func (gpointer data)
 
 	int i;
 	for (i = 0; i < NUMBER_ENTRIES; i++) {
+		g_debug("Putting entry '%d' at position '%d'", i, ordering[test][i]);
 		dbusmenu_menuitem_child_reorder(root, entries[i], ordering[test][i]);
 		dbusmenu_menuitem_property_set(entries[i], "label", names[i]);
 	}
