@@ -6,7 +6,8 @@ TESTS = \
 	test-glib-layout \
 	test-glib-properties \
 	test-gtk-label \
-	test-glib-simple-items
+	test-glib-simple-items \
+	test-gtk-reorder
 
 check_PROGRAMS = \
 	glib-server-nomenu \
@@ -16,7 +17,8 @@ check_PROGRAMS = \
 	test-glib-properties-server \
 	test-gtk-label-client \
 	test-gtk-label-server \
-	test-glib-simple-items
+	test-glib-simple-items \
+	test-gtk-reorder-server
 
 glib_server_nomenu_SOURCES = \
 	glib-server-nomenu.c
@@ -145,6 +147,30 @@ test_gtk_label_client_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+#########################
+# Test GTK Reorder
+#########################
+
+test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server
+	@echo "#!/bin/sh" > test-gtk-reorder
+	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> test-gtk-reorder
+	@chmod +x test-gtk-reorder
+
+test_gtk_reorder_server_SOURCES = \
+	test-gtk-reorder-server.c
+
+test_gtk_reorder_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_reorder_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
 	$(DBUSMENUGTK_LIBS) \
