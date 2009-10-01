@@ -677,7 +677,7 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 
 	g_hash_table_insert(priv->properties, lprop, lval);
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Menuitem %d signalling property '%s' changed to '%s'", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), property, value);
+	g_debug("Menuitem %d signalling property '%s' changed to '%s'", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), property, g_utf8_strlen(value, 50) < 25 ? value : "<too long>");
 	#endif
 	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, value, TRUE);
 
