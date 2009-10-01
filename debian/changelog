@@ -1,3 +1,9 @@
+libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix11) UNRELEASED; urgency=low
+
+  * Killing some bad looking warnings that are stupid
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 15:50:41 -0500
+
 libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix10) karmic; urgency=low
 
   * Removing from the container
