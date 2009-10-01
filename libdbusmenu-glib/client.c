@@ -880,6 +880,10 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 		return NULL;
 	}
 
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Client get root: %X", (guint)priv->root);
+	#endif
+
 	return priv->root;
 }
 
@@ -911,6 +915,10 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
 	g_return_val_if_fail(type != NULL, FALSE);
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Adding a type handler for '%s'", type);
+	#endif
 
 	if (priv->type_handlers == NULL) {
 		g_warning("Type handlers hashtable not built");
