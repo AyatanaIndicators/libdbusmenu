@@ -610,7 +610,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	}
 
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Client has realized a menuitem: %d", dbusmenu_meunitem_get_id(propdata->item));
+	g_debug("Client has realized a menuitem: %d", dbusmenu_menuitem_get_id(propdata->item));
 	#endif
 	g_signal_emit(G_OBJECT(propdata->item), DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID, 0, TRUE);
 
