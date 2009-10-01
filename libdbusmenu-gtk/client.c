@@ -195,6 +195,10 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 void
 dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * item, GtkMenuItem * gmi, DbusmenuMenuitem * parent)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("GTK Client new item base for %d", dbusmenu_menuitem_get_id(item));
+	#endif
+
 	/* Attach these two */
 	g_object_set_data(G_OBJECT(item), data_menuitem, gmi);
 
@@ -222,6 +226,10 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 static void
 new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, DbusmenuGtkClient * gtkclient)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("GTK Client new child for %d on %d at %d", dbusmenu_menuitem_get_id(mi), dbusmenu_menuitem_get_id(child), position);
+	#endif
+
 	if (dbusmenu_menuitem_get_root(mi)) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
