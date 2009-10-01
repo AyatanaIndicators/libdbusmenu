@@ -1,8 +1,8 @@
-libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix10) UNRELEASED; urgency=low
+libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix10) karmic; urgency=low
 
   * Removing from the container
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 15:05:20 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 15:10:04 -0500
 
 libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix9) karmic; urgency=low
 
