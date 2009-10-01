@@ -323,7 +323,7 @@ static void
 id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Property change sent to client for item %d property %s value %s", id, property, value);
+	g_debug("Property change sent to client for item %d property %s value %s", id, property, g_utf8_strlen(value, 50) < 25 ? value : "<too long>");
 	#endif
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
