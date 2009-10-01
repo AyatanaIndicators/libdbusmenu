@@ -363,7 +363,7 @@ static void
 take_children_signal (gpointer data, gpointer user_data)
 {
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Menuitem %d signalling child removed %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(data)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(user_data)));
+	g_debug("Menuitem %d signalling child removed %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(user_data)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(data)));
 	#endif
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
 	return;
