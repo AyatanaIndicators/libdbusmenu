@@ -442,7 +442,7 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_append(priv->children, child);
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Menuitem %d signalling child added %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	g_debug("Menuitem %d signalling child added %d at %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)), g_list_length(priv->children) - 1);
 	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, g_list_length(priv->children) - 1, TRUE);
 	return TRUE;
@@ -467,7 +467,7 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_prepend(priv->children, child);
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Menuitem %d signalling child added %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	g_debug("Menuitem %d signalling child added %d at %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)), 0);
 	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, 0, TRUE);
 	return TRUE;
@@ -520,7 +520,7 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_insert(priv->children, child, position);
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Menuitem %d signalling child added %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	g_debug("Menuitem %d signalling child added %d at %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)), position);
 	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, position, TRUE);
 	return TRUE;
@@ -559,7 +559,7 @@ dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child,
 	priv->children = g_list_insert(priv->children, child, position);
 
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Menuitem %d signalling child moved %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	g_debug("Menuitem %d signalling child %d moved from %d to %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)), oldpos, position);
 	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_MOVED], 0, child, position, oldpos, TRUE);
 
