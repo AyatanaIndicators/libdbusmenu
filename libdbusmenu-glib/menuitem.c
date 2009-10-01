@@ -362,6 +362,9 @@ dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 static void
 take_children_signal (gpointer data, gpointer user_data)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d signalling child removed %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(data)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(user_data)));
+	#endif
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
 	return;
 }
@@ -438,6 +441,9 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_append(priv->children, child);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d signalling child added %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, g_list_length(priv->children) - 1, TRUE);
 	return TRUE;
 }
@@ -460,6 +466,9 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_prepend(priv->children, child);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d signalling child added %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, 0, TRUE);
 	return TRUE;
 }
@@ -483,6 +492,9 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_remove(priv->children, child);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d signalling child removed %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_REMOVED], 0, child, TRUE);
 	return TRUE;
 }
@@ -507,6 +519,9 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_insert(priv->children, child, position);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d signalling child added %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, position, TRUE);
 	return TRUE;
 }
@@ -543,6 +558,9 @@ dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child,
 	priv->children = g_list_remove(priv->children, child);
 	priv->children = g_list_insert(priv->children, child, position);
 
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d signalling child moved %d", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(child)));
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_MOVED], 0, child, position, oldpos, TRUE);
 
 	return TRUE;
@@ -658,6 +676,9 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 	gchar * lval = g_strdup(value);
 
 	g_hash_table_insert(priv->properties, lprop, lval);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d signalling property '%s' changed to '%s'", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)), property, value);
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, value, TRUE);
 
 	return TRUE;
@@ -882,6 +903,9 @@ void
 dbusmenu_menuitem_activate (DbusmenuMenuitem * mi)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d activated", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(mi)));
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, TRUE);
 	return;
 }
