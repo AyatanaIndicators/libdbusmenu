@@ -220,6 +220,12 @@ static void
 root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGtkMenu * menu)
 {
 	g_debug("Root child deleted");
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+	GtkWidget * item = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
+	if (item != NULL) {
+		gtk_container_remove(GTK_CONTAINER(menu), item);
+	}
+
 	if (g_list_length(dbusmenu_menuitem_get_children(root)) == 0) {
 		gtk_widget_hide(GTK_WIDGET(menu));
 	}
