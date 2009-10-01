@@ -1,8 +1,8 @@
-libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix6) UNRELEASED; urgency=low
+libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix6) karmic; urgency=low
 
   * get_position messages
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 13:51:39 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 13:54:20 -0500
 
 libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix5) karmic; urgency=low
 
