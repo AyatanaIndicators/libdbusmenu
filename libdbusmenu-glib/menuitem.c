@@ -412,7 +412,7 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 guint
 dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
 {
-	#ifdef MASSIVEDEBUG
+	#ifdef MASSIVEDEBUGGING
 	if (!DBUSMENU_IS_MENUITEM(mi))     g_warning("Getting position of %d (%s), it's at: %d (mi fail)", ID(mi), LABEL(mi), 0);
 	if (!DBUSMENU_IS_MENUITEM(parent)) g_warning("Getting position of %d (%s), it's at: %d (parent fail)", ID(mi), LABEL(mi), 0);
 	#endif
@@ -430,7 +430,7 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 
 	if (childs == NULL) return 0;
 
-	#ifdef MASSIVEDEBUG
+	#ifdef MASSIVEDEBUGGING
 	g_debug("Getting position of %d (%s), it's at: %d", ID(mi), LABEL(mi), count);
 	#endif
 
