@@ -84,6 +84,16 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Name of the default get
 AM_GLIB_GNU_GETTEXT
 
 ###########################
+# Massive Debugging
+###########################
+
+with_massivedebugging="no"
+AC_ARG_ENABLE(massivedebugging, AS_HELP_STRING([--enable-massivedebugging], [Print out so much information your brain will hurt]), with_massivedebugging=$enableval, with_massivedebugging=no)
+if test "x$with_massivedebugging" = "xyes"; then
+	AC_DEFINE([MASSIVEDBUGGING], [1], [Print everyting])
+fi
+
+###########################
 # Files
 ###########################
 
@@ -109,5 +119,6 @@ AC_MSG_NOTICE([
 libdbusmenu Configuration:
 
 	Prefix:                 $prefix
+	Massive Debugging:      $with_massivedebugging
 ])
 
