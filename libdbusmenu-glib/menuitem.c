@@ -425,6 +425,10 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 
 	if (childs == NULL) return 0;
 
+	#ifdef MASSIVEDEBUG
+	g_debug("Getting position of %d (%s), it's at: %d", ID(mi), LABEL(mi), count);
+	#endif
+
 	return count;
 }
 
