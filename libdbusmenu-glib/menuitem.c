@@ -412,6 +412,11 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 guint
 dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
 {
+	#ifdef MASSIVEDEBUG
+	if (!DBUSMENU_IS_MENUITEM(mi))     g_warning("Getting position of %d (%s), it's at: %d (mi fail)", ID(mi), LABEL(mi), 0);
+	if (!DBUSMENU_IS_MENUITEM(parent)) g_warning("Getting position of %d (%s), it's at: %d (parent fail)", ID(mi), LABEL(mi), 0);
+	#endif
+
 	/* TODO: I'm not too happy returning zeros here.  But that's all I've got */
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), 0);
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(parent), 0);
