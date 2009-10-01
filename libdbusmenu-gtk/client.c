@@ -324,14 +324,13 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(item), NULL);
 
-	GtkMenuItem * mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
-	if (mi == NULL) {
-		// new_menuitem(DBUSMENU_CLIENT(client), item, NULL);
+	gpointer data = g_object_get_data(G_OBJECT(item), data_menuitem);
+	if (data == NULL) {
 		g_warning("GTK not updated");
-		mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
+		return NULL;
 	}
 
-	return mi;
+	return GTK_MENU_ITEM(data);
 }
 
 /* The base type handler that builds a plain ol'
