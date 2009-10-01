@@ -90,7 +90,7 @@ AM_GLIB_GNU_GETTEXT
 with_massivedebugging="no"
 AC_ARG_ENABLE(massivedebugging, AS_HELP_STRING([--enable-massivedebugging], [Print out so much information your brain will hurt]), with_massivedebugging=$enableval, with_massivedebugging=no)
 if test "x$with_massivedebugging" = "xyes"; then
-	AC_DEFINE([MASSIVEDBUGGING], [1], [Print everyting])
+	AC_DEFINE([MASSIVEDEBUGGING], [1], [Print everyting])
 fi
 
 ###########################
