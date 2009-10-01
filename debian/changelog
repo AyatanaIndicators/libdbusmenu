@@ -1,8 +1,8 @@
-libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix12) UNRELEASED; urgency=low
+libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix12) karmic; urgency=low
 
   * Adding a little reffing in.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 16:51:33 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 16:57:46 -0500
 
 libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix11) karmic; urgency=low
 
