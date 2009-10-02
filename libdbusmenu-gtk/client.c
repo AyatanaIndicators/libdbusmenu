@@ -159,7 +159,9 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenu
 static void
 destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 {
-	/* g_debug("DbusmenuMenuitem was destroyed"); */
+	#ifdef MASSIVEDEBUGGING
+	g_debug("DbusmenuMenuitem was destroyed");
+	#endif
 	gtk_widget_destroy(GTK_WIDGET(udata));
 	return;
 }
@@ -175,6 +177,15 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 
 	return;
 }
+
+#ifdef MASSIVEDEBUGGING
+static void
+destroy_gmi (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
+{
+	g_debug("Destorying GTK Menuitem for %d", dbusmenu_menuitem_get_id(mi));
+	return;
+}
+#endif
 
 /**
 	dbusmenu_gtkclient_newitem_base:
@@ -202,6 +213,9 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	/* Attach these two */
 	g_object_set_data(G_OBJECT(item), data_menuitem, gmi);
 	g_object_ref(G_OBJECT(gmi));
+	#ifdef MASSIVEDEBUGGING
+	g_signal_connect(G_OBJECT(gmi), "destroy", G_CALLBACK(destroy_gmi), item);
+	#endif
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);

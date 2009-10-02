@@ -1,3 +1,9 @@
+libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix14) UNRELEASED; urgency=low
+
+  * Adding destroy messages
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 02 Oct 2009 15:01:34 -0500
+
 libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix13) karmic; urgency=low
 
   * Reporting on request version vs. actual
