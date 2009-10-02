@@ -1,8 +1,8 @@
-libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix13) UNRELEASED; urgency=low
+libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix13) karmic; urgency=low
 
   * Reporting on request version vs. actual
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 20:45:11 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 20:47:30 -0500
 
 libdbusmenu (0.1.5-0ubuntu1~ppa2~bugfix12) karmic; urgency=low
 
