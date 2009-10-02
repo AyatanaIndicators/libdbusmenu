@@ -185,6 +185,28 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal Functions */
 
+#ifdef MASSIVEDEBUGGING
+typedef struct {
+	GtkMenuItem * mi;
+	gint finalpos;
+	gboolean found;
+} menu_pos_t;
+
+static void
+find_pos (GtkWidget * widget, gpointer data)
+{
+	menu_pos_t * menu_pos = (menu_pos_t *)data;
+	if (menu_pos->found) return;
+	if ((gpointer)(menu_pos->mi) == (gpointer)widget) {
+		menu_pos->found = TRUE;
+	} else {
+		menu_pos->finalpos++;
+	}
+	return;
+}
+#endif
+
+
 /* Called when a new child of the root item is
    added.  Sets up a signal for when it's actually
    realized. */
@@ -199,8 +221,16 @@ root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint posit
 	GtkMenuItem * mi = dbusmenu_gtkclient_menuitem_get(priv->client, child);
 	if (mi != NULL) {
 		GtkWidget * item = GTK_WIDGET(mi);
-		gtk_menu_append(GTK_MENU(menu), item);
-		gtk_menu_reorder_child(GTK_MENU(menu), item, dbusmenu_menuitem_get_position(root, child));
+		gtk_menu_insert(GTK_MENU(menu), item, position);
+		#ifdef MASSIVEDEBUGGING
+		menu_pos_t menu_pos;
+		menu_pos.mi = mi;
+		menu_pos.finalpos = 0;
+		menu_pos.found = FALSE;
+
+		gtk_container_foreach(GTK_CONTAINER(menu), find_pos, &menu_pos);
+		g_debug("Menu position requested was %d but got %d", position, menu_pos.finalpos);
+		#endif
 	}
 	return;
 }
