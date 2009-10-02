@@ -1,10 +1,13 @@
-libdbusmenu (0.1.5-0ubuntu1~ppa2) karmic; urgency=low
+libdbusmenu (0.1.6-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Managing the life-cycle of the GTK Menu item better to
-    ensure that it is positioned correctly and dies
-    appropriately. (LP: #430904 and LP: #419953)
+  * Upstream release 0.1.6
+    * Managing the life-cycle of the GTK Menu item better to
+      ensure that it is positioned correctly and dies
+      appropriately. (LP: #430904 and LP: #419953)
+    * Checking returned properties to ensure that there wasn't
+      DBus errors. (LP: #433719)
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 02 Oct 2009 16:58:16 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 02 Oct 2009 16:58:29 -0500
 
 libdbusmenu (0.1.5-0ubuntu1~ppa1) karmic; urgency=low
 
