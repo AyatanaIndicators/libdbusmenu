@@ -565,6 +565,10 @@ get_properties_helper (gpointer key, gpointer value, gpointer data)
 static void
 menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
+	if (error != NULL) {
+		g_warning("Error getting properties on a menuitem: %s", error->message);
+		return;
+	}
 	g_hash_table_foreach(properties, get_properties_helper, data);
 	g_hash_table_destroy(properties);
 	return;
@@ -575,6 +579,10 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 static void
 menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
+	if (error != NULL) {
+		g_warning("Error getting properties on a new menuitem: %s", error->message);
+		return;
+	}
 	g_return_if_fail(data != NULL);
 
 	newItemPropData * propdata = (newItemPropData *)data;
