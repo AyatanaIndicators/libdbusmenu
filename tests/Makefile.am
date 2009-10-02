@@ -189,3 +189,6 @@ examples_DATA = \
 EXTRA_DIST = \
 	$(examples_DATA) \
 	test-gtk-label.json
+
+DISTCLEANFILES = \
+	$(TESTS)
