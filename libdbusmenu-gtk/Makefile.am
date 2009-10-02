@@ -26,7 +26,7 @@ libdbusmenu_gtk_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_gtk_la_CFLAGS = \
-	$(DBUSMENUGTK_CFLAGS) -I$(srcdir)/.. -Wall -Werror
+	$(DBUSMENUGTK_CFLAGS) -I$(srcdir)/.. -Wall -Werror -DG_DISABLE_DEPRECATED -DG_LOG_DOMAIN="\"LIBDBUSMENU-GTK\""
 
 libdbusmenu_gtk_la_LIBADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \

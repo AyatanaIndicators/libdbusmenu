@@ -185,6 +185,28 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal Functions */
 
+#ifdef MASSIVEDEBUGGING
+typedef struct {
+	GtkMenuItem * mi;
+	gint finalpos;
+	gboolean found;
+} menu_pos_t;
+
+static void
+find_pos (GtkWidget * widget, gpointer data)
+{
+	menu_pos_t * menu_pos = (menu_pos_t *)data;
+	if (menu_pos->found) return;
+	if ((gpointer)(menu_pos->mi) == (gpointer)widget) {
+		menu_pos->found = TRUE;
+	} else {
+		menu_pos->finalpos++;
+	}
+	return;
+}
+#endif
+
+
 /* Called when a new child of the root item is
    added.  Sets up a signal for when it's actually
    realized. */
@@ -192,7 +214,24 @@ static void
 root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, DbusmenuGtkMenu * menu)
 {
 	g_debug("Root new child");
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+
 	g_signal_connect(G_OBJECT(child), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(child_realized), menu);
+
+	GtkMenuItem * mi = dbusmenu_gtkclient_menuitem_get(priv->client, child);
+	if (mi != NULL) {
+		GtkWidget * item = GTK_WIDGET(mi);
+		gtk_menu_insert(GTK_MENU(menu), item, position);
+		#ifdef MASSIVEDEBUGGING
+		menu_pos_t menu_pos;
+		menu_pos.mi = mi;
+		menu_pos.finalpos = 0;
+		menu_pos.found = FALSE;
+
+		gtk_container_foreach(GTK_CONTAINER(menu), find_pos, &menu_pos);
+		g_debug("Menu position requested was %d but got %d", position, menu_pos.finalpos);
+		#endif
+	}
 	return;
 }
 
@@ -212,6 +251,12 @@ static void
 root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGtkMenu * menu)
 {
 	g_debug("Root child deleted");
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+	GtkWidget * item = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
+	if (item != NULL) {
+		gtk_container_remove(GTK_CONTAINER(menu), item);
+	}
+
 	if (g_list_length(dbusmenu_menuitem_get_children(root)) == 0) {
 		gtk_widget_hide(GTK_WIDGET(menu));
 	}
@@ -223,6 +268,7 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 static void
 child_realized (DbusmenuMenuitem * child, gpointer userdata)
 {
+	g_debug("Root child realized");
 	g_return_if_fail(DBUSMENU_IS_GTKMENU(userdata));
 
 	DbusmenuGtkMenu * menu = DBUSMENU_GTKMENU(userdata);

@@ -322,6 +322,10 @@ layout_update (DBusGProxy * proxy, gint revision, DbusmenuClient * client)
 static void
 id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Property change sent to client for item %d property %s value %s", id, property, g_utf8_strlen(value, 50) < 25 ? value : "<too long>");
+	#endif
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	g_return_if_fail(priv->root != NULL);
 
@@ -337,6 +341,10 @@ id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, D
 static void
 id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Client side ID update: %d", id);
+	#endif 
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	g_return_if_fail(priv->root != NULL);
 
@@ -414,6 +422,9 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	if (priv->root != NULL) {
 		g_object_unref(G_OBJECT(priv->root));
 		priv->root = NULL;
+		#ifdef MASSIVEDEBUGGING
+		g_debug("Proxies destroyed, signaling a root change and a layout update.");
+		#endif
 		g_signal_emit(G_OBJECT(userdata), signals[ROOT_CHANGED], 0, NULL, TRUE);
 		g_signal_emit(G_OBJECT(userdata), signals[LAYOUT_UPDATED], 0, TRUE);
 	}
@@ -606,6 +617,9 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 		handled = newfunc(propdata->item, propdata->parent, propdata->client);
 	}
 
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Client has realized a menuitem: %d", dbusmenu_menuitem_get_id(propdata->item));
+	#endif
 	g_signal_emit(G_OBJECT(propdata->item), DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID, 0, TRUE);
 
 	if (!handled) {
@@ -643,7 +657,9 @@ static DbusmenuMenuitem *
 parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
 {
 	guint id = parse_node_get_id(node);
-	/* g_debug("Looking at node with id: %d", id); */
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Client looking at node with id: %d", id);
+	#endif
 	if (item == NULL || dbusmenu_menuitem_get_id(item) != id || id == 0) {
 		if (item != NULL) {
 			if (parent != NULL) {
@@ -707,7 +723,9 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	GList * oldchildleft = NULL;
 	for (oldchildleft = oldchildren; oldchildleft != NULL; oldchildleft = g_list_next(oldchildleft)) {
 		DbusmenuMenuitem * oldmi = DBUSMENU_MENUITEM(oldchildleft->data);
+		#ifdef MASSIVEDEBUGGING
 		g_debug("Unref'ing menu item with layout update. ID: %d", dbusmenu_menuitem_get_id(oldmi));
+		#endif
 		g_object_unref(G_OBJECT(oldmi));
 	}
 	g_list_free(oldchildren);
@@ -720,6 +738,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 static gint
 parse_layout (DbusmenuClient * client, const gchar * layout)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Client Parsing a new layout");
+	#endif 
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	xmlDocPtr xmldoc;
@@ -738,6 +760,9 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	}
 
 	if (priv->root != oldroot) {
+		#ifdef MASSIVEDEBUGGING
+		g_debug("Client signaling root changed.");
+		#endif 
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 
@@ -772,6 +797,9 @@ update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 
 	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Client signaling layout has changed.");
+	#endif 
 	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
 
 	if (priv->my_revision < priv->current_revision) {
@@ -860,6 +888,10 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 		return NULL;
 	}
 
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Client get root: %X", (guint)priv->root);
+	#endif
+
 	return priv->root;
 }
 
@@ -891,6 +923,10 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
 	g_return_val_if_fail(type != NULL, FALSE);
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Adding a type handler for '%s'", type);
+	#endif
 
 	if (priv->type_handlers == NULL) {
 		g_warning("Type handlers hashtable not built");

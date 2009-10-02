@@ -25,6 +25,13 @@ dummy_users (DbusmenuMenuitem * root) {
 	return;
 }
 
+static gboolean
+quititall (gpointer data)
+{
+	g_main_quit(mainloop);
+	return FALSE;
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -36,6 +43,8 @@ main (int argc, char ** argv)
 	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));
 
 	dummy_users(root_menuitem);
+
+	g_timeout_add_seconds(1, quititall, NULL);
 
     mainloop = g_main_loop_new(NULL, FALSE);
     g_main_loop_run(mainloop);
