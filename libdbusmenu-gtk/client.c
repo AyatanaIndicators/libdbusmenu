@@ -159,7 +159,9 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenu
 static void
 destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 {
-	/* g_debug("DbusmenuMenuitem was destroyed"); */
+	#ifdef MASSIVEDEBUGGING
+	g_debug("DbusmenuMenuitem was destroyed");
+	#endif
 	gtk_widget_destroy(GTK_WIDGET(udata));
 	return;
 }
