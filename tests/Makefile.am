@@ -1,12 +1,15 @@
 SUBDIRS = dbusmenu-gtk
 
-check: tests
-
 DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
 
-tests: test-glib-layout test-glib-properties test-gtk-label test-glib-simple-items
+TESTS = \
+	test-glib-layout \
+	test-glib-properties \
+	test-gtk-label \
+	test-glib-simple-items \
+	test-gtk-reorder
 
-libexec_PROGRAMS = \
+check_PROGRAMS = \
 	glib-server-nomenu \
 	test-glib-layout-client \
 	test-glib-layout-server \
@@ -14,7 +17,8 @@ libexec_PROGRAMS = \
 	test-glib-properties-server \
 	test-gtk-label-client \
 	test-gtk-label-server \
-	test-glib-simple-items
+	test-glib-simple-items \
+	test-gtk-reorder-server
 
 glib_server_nomenu_SOURCES = \
 	glib-server-nomenu.c
@@ -27,10 +31,14 @@ glib_server_nomenu_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
-
+######################
+# Test Glib Layout
+######################
 
 test-glib-layout: test-glib-layout-client test-glib-layout-server
-	$(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return
+	@echo "#!/bin/sh" > test-glib-layout
+	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> test-glib-layout
+	@chmod +x test-glib-layout
 
 test_glib_layout_server_SOURCES = \
 	test-glib-layout.h \
@@ -57,9 +65,14 @@ test_glib_layout_client_LDADD = \
 	$(DBUSMENUGLIB_LIBS)
 
 
+######################
+# Test Glib Properties
+######################
 
 test-glib-properties: test-glib-properties-client test-glib-properties-server
-	$(DBUS_RUNNER) --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return
+	@echo "#!/bin/sh" > test-glib-properties
+	@echo $(DBUS_RUNNER) --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return >> test-glib-properties
+	@chmod +x test-glib-properties
 
 test_glib_properties_server_SOURCES = \
 	test-glib-properties.h \
@@ -85,6 +98,9 @@ test_glib_properties_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+#########################
+# Test Glib Simple Items
+#########################
 
 test_glib_simple_items_SOURCES = \
 	test-glib-simple-items.c
@@ -97,9 +113,14 @@ test_glib_simple_items_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+#########################
+# Test GTK Label
+#########################
 
 test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json
-	$(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return
+	@echo "#!/bin/sh" > test-gtk-label
+	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> test-gtk-label
+	@chmod +x test-gtk-label
 
 test_gtk_label_server_SOURCES = \
 	test-gtk-label-server.c
@@ -131,7 +152,34 @@ test_gtk_label_client_LDADD = \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
+#########################
+# Test GTK Reorder
+#########################
 
+test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server
+	@echo "#!/bin/sh" > test-gtk-reorder
+	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> test-gtk-reorder
+	@chmod +x test-gtk-reorder
+
+test_gtk_reorder_server_SOURCES = \
+	test-gtk-reorder-server.c
+
+test_gtk_reorder_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_reorder_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+
+#########################
+# Other
+#########################
 
 examplesdir = $(docdir)/examples/
 
@@ -141,3 +189,6 @@ examples_DATA = \
 EXTRA_DIST = \
 	$(examples_DATA) \
 	test-gtk-label.json
+
+DISTCLEANFILES = \
+	$(TESTS)

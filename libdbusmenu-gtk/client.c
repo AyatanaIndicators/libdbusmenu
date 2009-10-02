@@ -159,7 +159,9 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenu
 static void
 destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
 {
-	/* g_debug("DbusmenuMenuitem was destroyed"); */
+	#ifdef MASSIVEDEBUGGING
+	g_debug("DbusmenuMenuitem was destroyed");
+	#endif
 	gtk_widget_destroy(GTK_WIDGET(udata));
 	return;
 }
@@ -175,6 +177,15 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 
 	return;
 }
+
+#ifdef MASSIVEDEBUGGING
+static void
+destroy_gmi (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
+{
+	g_debug("Destorying GTK Menuitem for %d", dbusmenu_menuitem_get_id(mi));
+	return;
+}
+#endif
 
 /**
 	dbusmenu_gtkclient_newitem_base:
@@ -195,8 +206,16 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 void
 dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * item, GtkMenuItem * gmi, DbusmenuMenuitem * parent)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("GTK Client new item base for %d", dbusmenu_menuitem_get_id(item));
+	#endif
+
 	/* Attach these two */
 	g_object_set_data(G_OBJECT(item), data_menuitem, gmi);
+	g_object_ref(G_OBJECT(gmi));
+	#ifdef MASSIVEDEBUGGING
+	g_signal_connect(G_OBJECT(gmi), "destroy", G_CALLBACK(destroy_gmi), item);
+	#endif
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
@@ -222,6 +241,10 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 static void
 new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, DbusmenuGtkClient * gtkclient)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("GTK Client new child for %d on %d at %d", dbusmenu_menuitem_get_id(mi), dbusmenu_menuitem_get_id(child), position);
+	#endif
+
 	if (dbusmenu_menuitem_get_root(mi)) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
@@ -316,14 +339,13 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(item), NULL);
 
-	GtkMenuItem * mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
-	if (mi == NULL) {
-		// new_menuitem(DBUSMENU_CLIENT(client), item, NULL);
+	gpointer data = g_object_get_data(G_OBJECT(item), data_menuitem);
+	if (data == NULL) {
 		g_warning("GTK not updated");
-		mi = GTK_MENU_ITEM(g_object_get_data(G_OBJECT(item), data_menuitem));
+		return NULL;
 	}
 
-	return mi;
+	return GTK_MENU_ITEM(data);
 }
 
 /* The base type handler that builds a plain ol'
