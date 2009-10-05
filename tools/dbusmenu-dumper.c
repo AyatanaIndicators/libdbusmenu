@@ -52,6 +52,13 @@ option_dbusobject (const gchar * arg, const gchar * value, gpointer data, GError
 	return TRUE;
 }
 
+void
+usage (void)
+{
+	g_print("dbusmenu-dumper --dbus-name=<name> --dbus-object=<object>\n");
+	return;
+}
+
 static GOptionEntry general_options[] = {
 	{"dbus-name",     'd',  0,                        G_OPTION_ARG_CALLBACK,  option_dbusname, "The name of the program to connect to (i.e. org.test.bob", "dbusname"},
 	{"dbus-object",   'o',  0,                        G_OPTION_ARG_CALLBACK,  option_dbusobject, "The path to the Dbus object (i.e /org/test/bob/alvin)", "dbusobject"}
@@ -70,6 +77,18 @@ main (int argc, char ** argv)
 	if (!g_option_context_parse(context, &argc, &argv, &error)) {
 		g_print("option parsing failed: %s\n", error->message);
 		g_error_free(error);
+		return 1;
+	}
+
+	if (dbusname == NULL) {
+		g_print("ERROR: dbus-name not specified\n");
+		usage();
+		return 1;
+	}
+
+	if (dbusobject == NULL) {
+		g_print("ERROR: dbus-object not specified\n");
+		usage();
 		return 1;
 	}
 
