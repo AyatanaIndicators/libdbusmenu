@@ -1,3 +1,14 @@
+libdbusmenu (0.1.6-0ubuntu1) UNRELEASED; urgency=low
+
+  * Upstream release 0.1.6 (LP: #442822)
+    * Managing the life-cycle of the GTK Menu item better to
+      ensure that it is positioned correctly and dies
+      appropriately. (LP: #430904) and (LP: #419953)
+    * Checking returned properties to ensure that there wasn't
+      DBus errors. (LP: #433719)
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 02 Oct 2009 17:00:45 -0500
+
 libdbusmenu (0.1.5-0ubuntu1) karmic; urgency=low
 
   * New upstream release (LP: #436185) 

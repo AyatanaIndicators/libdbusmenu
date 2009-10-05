@@ -32,6 +32,11 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "menuitem-marshal.h"
 
+#ifdef MASSIVEDEBUGGING
+#define LABEL(x)  dbusmenu_menuitem_property_get(DBUSMENU_MENUITEM(x), DBUSMENU_MENUITEM_PROP_LABEL)
+#define ID(x)     dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(x))
+#endif
+
 /* Private */
 /**
 	DbusmenuMenuitemPrivate:
@@ -362,6 +367,9 @@ dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 static void
 take_children_signal (gpointer data, gpointer user_data)
 {
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(user_data), LABEL(user_data), ID(data), LABEL(data));
+	#endif
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
 	return;
 }
@@ -404,6 +412,11 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 guint
 dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
 {
+	#ifdef MASSIVEDEBUGGING
+	if (!DBUSMENU_IS_MENUITEM(mi))     g_warning("Getting position of %d (%s), it's at: %d (mi fail)", ID(mi), LABEL(mi), 0);
+	if (!DBUSMENU_IS_MENUITEM(parent)) g_warning("Getting position of %d (%s), it's at: %d (parent fail)", ID(mi), LABEL(mi), 0);
+	#endif
+
 	/* TODO: I'm not too happy returning zeros here.  But that's all I've got */
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), 0);
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(parent), 0);
@@ -416,6 +429,10 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 	}
 
 	if (childs == NULL) return 0;
+
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Getting position of %d (%s), it's at: %d", ID(mi), LABEL(mi), count);
+	#endif
 
 	return count;
 }
@@ -438,6 +455,9 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_append(priv->children, child);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), g_list_length(priv->children) - 1);
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, g_list_length(priv->children) - 1, TRUE);
 	return TRUE;
 }
@@ -460,6 +480,9 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_prepend(priv->children, child);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), 0);
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, 0, TRUE);
 	return TRUE;
 }
@@ -483,6 +506,9 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_remove(priv->children, child);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(mi), LABEL(mi), ID(child), LABEL(child));
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_REMOVED], 0, child, TRUE);
 	return TRUE;
 }
@@ -507,6 +533,9 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_insert(priv->children, child, position);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), position);
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, position, TRUE);
 	return TRUE;
 }
@@ -543,6 +572,9 @@ dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child,
 	priv->children = g_list_remove(priv->children, child);
 	priv->children = g_list_insert(priv->children, child, position);
 
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d (%s) signalling child %d (%s) moved from %d to %d", ID(mi), LABEL(mi), ID(child), LABEL(child), oldpos, position);
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_MOVED], 0, child, position, oldpos, TRUE);
 
 	return TRUE;
@@ -658,6 +690,9 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 	gchar * lval = g_strdup(value);
 
 	g_hash_table_insert(priv->properties, lprop, lval);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d (%s) signalling property '%s' changed to '%s'", ID(mi), LABEL(mi), property, g_utf8_strlen(value, 50) < 25 ? value : "<too long>");
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, value, TRUE);
 
 	return TRUE;
@@ -882,6 +917,9 @@ void
 dbusmenu_menuitem_activate (DbusmenuMenuitem * mi)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Menuitem %d (%s) activated", ID(mi), LABEL(mi));
+	#endif
 	g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, TRUE);
 	return;
 }
