@@ -106,6 +106,7 @@ libdbusmenu-gtk/Makefile
 libdbusmenu-gtk/dbusmenu-gtk.pc
 libdbusmenu-qt/Makefile
 libdbusmenu-qt/dbusmenu-qt.pc
+tools/Makefile
 tests/Makefile
 tests/dbusmenu-gtk/Makefile
 ])
