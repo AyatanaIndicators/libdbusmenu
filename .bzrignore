@@ -48,3 +48,4 @@ tests/test-gtk-label
 tests/test-gtk-reorder-server.c
 tests/test-gtk-reorder-server
 tests/test-gtk-reorder
+tools/dbusmenu-dumper
