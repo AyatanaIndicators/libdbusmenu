@@ -92,6 +92,22 @@ main (int argc, char ** argv)
 		return 1;
 	}
 
+	DbusmenuClient * client = dbusmenu_client_new (dbusname, dbusobject);
+	if (client == NULL) {
+		g_print("ERROR: Unable to create Dbusmenu Client\n");
+		return 1;
+	}
+
+	DbusmenuMenuitem * root = dbusmenu_client_get_root(client);
+	if (root == NULL) {
+		g_print("ERROR: Unable to create Dbusmenu Root\n");
+		return 1;
+	}
+
+	g_print("{\n");
+
+	g_print("}\n");
+
 	return 0;
 }
 
