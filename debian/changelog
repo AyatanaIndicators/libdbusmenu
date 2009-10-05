@@ -1,49 +1,25 @@
-libdbusmenu (0.1.6-0ubuntu1~ppa1) karmic; urgency=low
+libdbusmenu (0.1.6-0ubuntu1) karmic; urgency=low
 
-  * Upstream release 0.1.6
+  * Upstream release 0.1.6 (LP: #442822)
     * Managing the life-cycle of the GTK Menu item better to
       ensure that it is positioned correctly and dies
-      appropriately. (LP: #430904 and LP: #419953)
+      appropriately. (LP: #430904) and (LP: #419953)
     * Checking returned properties to ensure that there wasn't
       DBus errors. (LP: #433719)
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 02 Oct 2009 17:00:45 -0500
 
-libdbusmenu (0.1.5-0ubuntu1~ppa1) karmic; urgency=low
+libdbusmenu (0.1.5-0ubuntu1) karmic; urgency=low
 
-  * Upstream release 0.1.5
+  * New upstream release (LP: #436185) 
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Sep 2009 16:11:42 -0500
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 24 Sep 2009 17:12:25 -0400
 
-libdbusmenu (0.1.4-0ubuntu2~ppa4) karmic; urgency=low
-
-  * Hooking up with trunk.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Sep 2009 15:57:34 -0500
-
-libdbusmenu (0.1.4-0ubuntu2~ppa3) karmic; urgency=low
-
-  * Trying a revision ID
-
- -- Ted Gould <ted@ubuntu.com>  Mon, 21 Sep 2009 15:40:48 -0500
-
-libdbusmenu (0.1.4-0ubuntu2~ppa2) karmic; urgency=low
-
-  * Trying to double check the layout
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 16:14:16 -0500
-
-libdbusmenu (0.1.4-0ubuntu2~ppa1) karmic; urgency=low
-
-  * Signaling layout update on child moved
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 13:52:13 -0500
-
-libdbusmenu (0.1.4-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.1.4-0ubuntu1) karmic; urgency=low
 
   * Upstream release (LP: #432003)
     - Applying a fix by not blocking if we're calling for the root.  Everyone 
-      should be listening for root changes anyway
+      should be listening for root changes anyway (lp: #427819)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 11:29:40 -0500
 
