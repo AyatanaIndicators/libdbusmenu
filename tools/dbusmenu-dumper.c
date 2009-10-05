@@ -55,7 +55,7 @@ option_dbusobject (const gchar * arg, const gchar * value, gpointer data, GError
 void
 usage (void)
 {
-	g_print("dbusmenu-dumper --dbus-name=<name> --dbus-object=<object>\n");
+	g_printerr("dbusmenu-dumper --dbus-name=<name> --dbus-object=<object>\n");
 	return;
 }
 
@@ -75,32 +75,32 @@ main (int argc, char ** argv)
 	g_option_context_add_main_entries(context, general_options, "dbusmenu-dumper");
 
 	if (!g_option_context_parse(context, &argc, &argv, &error)) {
-		g_print("option parsing failed: %s\n", error->message);
+		g_printerr("option parsing failed: %s\n", error->message);
 		g_error_free(error);
 		return 1;
 	}
 
 	if (dbusname == NULL) {
-		g_print("ERROR: dbus-name not specified\n");
+		g_printerr("ERROR: dbus-name not specified\n");
 		usage();
 		return 1;
 	}
 
 	if (dbusobject == NULL) {
-		g_print("ERROR: dbus-object not specified\n");
+		g_printerr("ERROR: dbus-object not specified\n");
 		usage();
 		return 1;
 	}
 
 	DbusmenuClient * client = dbusmenu_client_new (dbusname, dbusobject);
 	if (client == NULL) {
-		g_print("ERROR: Unable to create Dbusmenu Client\n");
+		g_printerr("ERROR: Unable to create Dbusmenu Client\n");
 		return 1;
 	}
 
 	DbusmenuMenuitem * root = dbusmenu_client_get_root(client);
 	if (root == NULL) {
-		g_print("ERROR: Unable to create Dbusmenu Root\n");
+		g_printerr("ERROR: Unable to create Dbusmenu Root\n");
 		return 1;
 	}
 
