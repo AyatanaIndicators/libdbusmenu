@@ -25,6 +25,27 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-glib/menuitem.h>
 
+static GMainLoop * mainloop = NULL;
+
+static void
+new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
+{
+	if (newroot == NULL) {
+		g_printerr("ERROR: Unable to create Dbusmenu Root\n");
+		g_main_loop_quit(mainloop);
+		return;
+	}
+
+	g_print("{\n");
+
+	g_print("}\n");
+
+
+
+	return;
+}
+
+
 static gchar * dbusname = NULL;
 static gchar * dbusobject = NULL;
 
@@ -98,15 +119,10 @@ main (int argc, char ** argv)
 		return 1;
 	}
 
-	DbusmenuMenuitem * root = dbusmenu_client_get_root(client);
-	if (root == NULL) {
-		g_printerr("ERROR: Unable to create Dbusmenu Root\n");
-		return 1;
-	}
+	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(new_root_cb), NULL);
 
-	g_print("{\n");
-
-	g_print("}\n");
+	mainloop = g_main_loop_new(NULL, FALSE);
+	g_main_loop_run(mainloop);
 
 	return 0;
 }
