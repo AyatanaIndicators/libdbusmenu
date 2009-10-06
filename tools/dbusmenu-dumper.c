@@ -43,12 +43,12 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	GList * children = dbusmenu_menuitem_get_children(item);
 	if (children != NULL) {
 		gchar * childspace = g_strnfill(depth + 4, ' ');
-		g_print("\n%s\"submenu\": [\n%s{", space, childspace);
+		g_print("\n%s\"submenu\": [\n%s{\n", space, childspace);
 		GList * child;
 		for (child = children; child != NULL; child = g_list_next(child)) {
 			print_menuitem(DBUSMENU_MENUITEM(child->data), depth + 4 + 2);
 			if (child->next != NULL) {
-				g_print("\n%s},\n%s{", childspace, childspace);
+				g_print("\n%s},\n%s{\n", childspace, childspace);
 			}
 		}
 		g_print("\n%s}\n%s]", childspace, space);
@@ -71,8 +71,9 @@ new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
 
 	g_print("{\n");
 	print_menuitem(newroot, 2);
-	g_print("}\n");
+	g_print("\n}\n");
 
+	g_main_quit(mainloop);
 	return;
 }
 
