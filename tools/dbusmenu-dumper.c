@@ -28,6 +28,39 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 static GMainLoop * mainloop = NULL;
 
 static void
+print_menuitem (DbusmenuMenuitem * item, int depth)
+{
+	gchar * space = g_strnfill(depth, ' ');
+	g_print("%s\"id\": %d", space, dbusmenu_menuitem_get_id(item));
+
+	GList * properties = dbusmenu_menuitem_properties_list(item);
+	GList * property;
+	for (property = properties; property != NULL; property = g_list_next(property)) {
+		g_print("\n%s\"%s\": %s", space, (gchar *)property->data, dbusmenu_menuitem_property_get(item, (gchar *)property->data));
+	}
+	g_list_free(properties);
+
+	GList * children = dbusmenu_menuitem_get_children(item);
+	if (children != NULL) {
+		gchar * childspace = g_strnfill(depth + 4, ' ');
+		g_print("\n%s\"submenu\": [\n%s{", space, childspace);
+		GList * child;
+		for (child = children; child != NULL; child = g_list_next(child)) {
+			print_menuitem(DBUSMENU_MENUITEM(child->data), depth + 4 + 2);
+			if (child->next != NULL) {
+				g_print("\n%s},\n%s{", childspace, childspace);
+			}
+		}
+		g_print("\n%s}\n%s]", childspace, space);
+		g_free(childspace);
+	}
+
+	g_free(space);
+
+	return;
+}
+
+static void
 new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
 {
 	if (newroot == NULL) {
@@ -37,10 +70,8 @@ new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
 	}
 
 	g_print("{\n");
-
+	print_menuitem(newroot, 2);
 	g_print("}\n");
-
-
 
 	return;
 }
