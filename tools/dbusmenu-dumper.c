@@ -36,14 +36,14 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	GList * properties = dbusmenu_menuitem_properties_list(item);
 	GList * property;
 	for (property = properties; property != NULL; property = g_list_next(property)) {
-		g_print("\n%s\"%s\": \"%s\"", space, (gchar *)property->data, dbusmenu_menuitem_property_get(item, (gchar *)property->data));
+		g_print(",\n%s\"%s\": \"%s\"", space, (gchar *)property->data, dbusmenu_menuitem_property_get(item, (gchar *)property->data));
 	}
 	g_list_free(properties);
 
 	GList * children = dbusmenu_menuitem_get_children(item);
 	if (children != NULL) {
 		gchar * childspace = g_strnfill(depth + 4, ' ');
-		g_print("\n%s\"submenu\": [\n%s{\n", space, childspace);
+		g_print(",\n%s\"submenu\": [\n%s{\n", space, childspace);
 		GList * child;
 		for (child = children; child != NULL; child = g_list_next(child)) {
 			print_menuitem(DBUSMENU_MENUITEM(child->data), depth + 4 + 2);
