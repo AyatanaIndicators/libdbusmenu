@@ -60,6 +60,19 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	return;
 }
 
+static gboolean
+root_timeout (gpointer data)
+{
+	DbusmenuMenuitem * newroot = DBUSMENU_MENUITEM(data);
+
+	g_print("{\n");
+	print_menuitem(newroot, 2);
+	g_print("\n}\n");
+
+	g_main_quit(mainloop);
+	return FALSE;
+}
+
 static void
 new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
 {
@@ -69,11 +82,7 @@ new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
 		return;
 	}
 
-	g_print("{\n");
-	print_menuitem(newroot, 2);
-	g_print("\n}\n");
-
-	g_main_quit(mainloop);
+	g_timeout_add_seconds(2, root_timeout, newroot);
 	return;
 }
 
