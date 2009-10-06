@@ -36,7 +36,7 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	GList * properties = dbusmenu_menuitem_properties_list(item);
 	GList * property;
 	for (property = properties; property != NULL; property = g_list_next(property)) {
-		g_print("\n%s\"%s\": %s", space, (gchar *)property->data, dbusmenu_menuitem_property_get(item, (gchar *)property->data));
+		g_print("\n%s\"%s\": \"%s\"", space, (gchar *)property->data, dbusmenu_menuitem_property_get(item, (gchar *)property->data));
 	}
 	g_list_free(properties);
 
