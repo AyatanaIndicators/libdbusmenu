@@ -3,13 +3,10 @@ check: tests
 
 tests: mago
 
-mago: dbusmenu.xml dbusmenu.py
+mago: dbusmenu.xml mago_tests/dbusmenu.py
 	PYTHONPATH=$(builddir) mago -f dbusmenu.xml -t $(builddir)/mago.results
 
 dbusmenu.xml: dbusmenu.xml.in
-	sed -e "s|\@srcdir\@|$(srcdir)|" $< > mago_tests/$@
-
-dbusmenu.py: dbusmenu.py.in
 	sed -e "s|\@srcdir\@|$(srcdir)|" $< > mago_tests/$@
 
 EXTRA_DIST = \
@@ -35,8 +32,7 @@ EXTRA_DIST = \
 
 CLEANFILES = \
 	mago_tests/dbusmenu.xml \
-	mago_tests/dbusmenu.pyc \
-	mago_tests/dbusmenu.py
+	mago_tests/dbusmenu.pyc
 
 distclean-local:
 	-rm -rf $(builddir)/mago.results
