@@ -183,7 +183,9 @@ test_gtk_reorder_server_LDADD = \
 test-mago: test-gtk-label-client test-gtk-label-server $(srcdir)/dbusmenu-gtk/mago_tests/dbusmenu.xml Makefile.am
 	@echo "#!/bin/sh" > test-mago
 	@echo cd $(srcdir)/dbusmenu-gtk >> test-mago
-	@echo PYTHONPATH=$(srcdir)/dbusmenu-gtk/maga_tests:$(PYTHONPATH) mago -f dbusmenu.xml -t $(builddir)/mago.results >> test-mago
+	@echo echo Mago Results dir: $(abs_builddir)/mago.results >> test-mago
+	@echo echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests >> test-mago
+	@echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests mago -f dbusmenu.xml -t $(abs_builddir)/mago.results --log-level=debug >> test-mago
 	@chmod +x test-mago
 
 #########################
@@ -199,6 +201,8 @@ EXTRA_DIST = \
 	$(examples_DATA) \
 	test-gtk-label.json \
 	dbusmenu-gtk/dbusMenuTest \
+	dbusmenu-gtk/mago_tests/dbusmenu.xml \
+	dbusmenu-gtk/mago_tests/dbusmenu.py \
 	dbusmenu-gtk/mago_tests/data/blank_label_2levels.json \
 	dbusmenu-gtk/mago_tests/data/blank_label.json \
 	dbusmenu-gtk/mago_tests/data/blank_submenus.json \
