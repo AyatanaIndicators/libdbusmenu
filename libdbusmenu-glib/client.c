@@ -472,7 +472,7 @@ build_proxies (DbusmenuClient * client)
 	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
 	                                                  priv->dbus_name,
 	                                                  priv->dbus_object,
-	                                                  "org.freedesktop.dbusmenu",
+	                                                  "org.ayatana.dbusmenu",
 	                                                  &error);
 	if (error != NULL) {
 		g_warning("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
@@ -829,7 +829,7 @@ update_layout (DbusmenuClient * client)
 	                                            update_layout_cb,
 	                                            client,
 	                                            NULL,
-	                                            G_TYPE_STRING, "org.freedesktop.dbusmenu",
+	                                            G_TYPE_STRING, "org.ayatana.dbusmenu",
 	                                            G_TYPE_STRING, "layout",
 	                                            G_TYPE_INVALID, G_TYPE_VALUE, G_TYPE_INVALID);
 
