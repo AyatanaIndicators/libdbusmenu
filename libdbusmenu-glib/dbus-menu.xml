@@ -48,7 +48,10 @@ XML syntax:
   ...
 </menu>
 -->
+
 		<property name="layout" type="s" access="read"/>
+
+		<property name="version" type="u" access="read"/>
 
 <!-- Functions -->
 
