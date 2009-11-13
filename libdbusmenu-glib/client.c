@@ -34,6 +34,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <libxml/tree.h>
 
 #include "client.h"
+#include "menuitem.h"
 #include "dbusmenu-client.h"
 #include "server-marshal.h"
 
@@ -606,7 +607,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	const gchar * type;
 	DbusmenuClientTypeHandler newfunc = NULL;
 	
-	type = dbusmenu_menuitem_property_get(propdata->item, "type");
+	type = dbusmenu_menuitem_property_get(propdata->item, DBUSMENU_MENUITEM_PROP_TYPE);
 	if (type != NULL) {
 		newfunc = g_hash_table_lookup(priv->type_handlers, type);
 	} else {

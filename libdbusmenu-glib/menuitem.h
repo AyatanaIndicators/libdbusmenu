@@ -50,6 +50,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID         (g_signal_lookup(DBUSMENU_MENUITEM_SIGNAL_REALIZED, DBUSMENU_TYPE_MENUITEM))
 
+#define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
 #define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
 #define DBUSMENU_MENUITEM_PROP_SENSITIVE             "sensitive"
 #define DBUSMENU_MENUITEM_PROP_LABEL                 "label"
