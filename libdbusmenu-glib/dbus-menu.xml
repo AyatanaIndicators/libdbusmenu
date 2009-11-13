@@ -138,29 +138,6 @@ for item @a id.
 			<arg type="u" name="id" direction="out" />
 		</signal>
 
-<!--
-Triggered by the application to notify applet that an item has been added.
-
-@param id unsigned id of the added item
-@param parentid unsigned id of the added item parent. O if the item is
-added to the root list
-@param row unsigned position the item has been added
--->
-		<signal name="ItemAdded">
-			<arg type="u" name="id" direction="out" />
-			<arg type="u" name="parentId" direction="out" />
-			<arg type="u" name="row" direction="out" />
-		</signal>
-
-<!--
-Triggered by the application to notify applet that an item has been removed.
-
-@param id unsigned id of the removed item
--->
-		<signal name="ItemRemoved">
-			<arg type="u" name="id" direction="out" />
-		</signal>
-
 <!-- End of interesting stuff -->
 
 	</interface>
