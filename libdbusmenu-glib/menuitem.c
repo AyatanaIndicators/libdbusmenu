@@ -31,6 +31,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #endif
 #include "menuitem.h"
 #include "menuitem-marshal.h"
+#include "menuitem-private.h"
 
 #ifdef MASSIVEDEBUGGING
 #define LABEL(x)  dbusmenu_menuitem_property_get(DBUSMENU_MENUITEM(x), DBUSMENU_MENUITEM_PROP_LABEL)

@@ -30,6 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include "menuitem-private.h"
 #include "server.h"
 #include "server-marshal.h"
 
