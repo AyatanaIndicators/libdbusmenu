@@ -119,7 +119,7 @@ from item @a id has changed to @a value.
 		<signal name="ItemPropertyUpdated">
 			<arg type="u" name="id" direction="out" />
 			<arg type="s" name="prop" direction="out" />
-			<arg type="s" name="value" direction="out" />
+			<arg type="v" name="value" direction="out" />
 		</signal>
 
 <!--
