@@ -212,6 +212,7 @@ test-mago-xvfb: test-mago
 test-mago: test-gtk-label-client test-gtk-label-server $(srcdir)/dbusmenu-gtk/mago_tests/dbusmenu.xml Makefile.am
 	@echo "#!/bin/sh" > test-mago
 	@echo cd $(srcdir)/dbusmenu-gtk >> test-mago
+	@echo /usr/lib/at-spi/at-spi-registryd & >> test-mago
 	@echo echo Mago Results dir: $(abs_builddir)/mago.results >> test-mago
 	@echo echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests >> test-mago
 	@echo export INDICATOR_BUILD_DIR=$(abs_builddir) >> test-mago
