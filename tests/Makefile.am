@@ -210,6 +210,7 @@ examples_DATA = \
 
 EXTRA_DIST = \
 	$(examples_DATA) \
+	run-xvfb.sh \
 	test-gtk-label.json \
 	dbusmenu-gtk/dbusMenuTest \
 	dbusmenu-gtk/mago_tests/dbusmenu.xml \
