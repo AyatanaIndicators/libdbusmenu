@@ -20,7 +20,7 @@ check_PROGRAMS = \
 	test-glib-simple-items \
 	test-gtk-reorder-server
 
-XVFB_RUN=". run-xvfb.sh"
+XVFB_RUN=". $(srcdir)/run-xvfb.sh"
 
 ######################
 # Test GLib server
