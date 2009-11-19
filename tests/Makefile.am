@@ -233,7 +233,6 @@ EXTRA_DIST = \
 	dbusmenu-gtk/mago_tests/data/test-gtk-label.json
 
 CLEANFILES = \
-	dbusmenu-gtk/mago_tests/dbusmenu.xml \
 	dbusmenu-gtk/mago_tests/dbusmenu.pyc
 
 distclean-local:
