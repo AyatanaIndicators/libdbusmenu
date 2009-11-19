@@ -5,11 +5,9 @@ TESTS = \
 	test-glib-layout \
 	test-glib-properties \
 	test-glib-simple-items \
-	test-mago
-
-GTK_TESTS = \
 	test-gtk-label \
-	test-gtk-reorder
+	test-gtk-reorder \
+	test-mago
 
 check_PROGRAMS = \
 	glib-server-nomenu \
@@ -127,6 +125,7 @@ test_glib_simple_items_LDADD = \
 
 test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json Makefile.am
 	@echo "#!/bin/bash" > test-gtk-label
+	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> test-gtk-label
 	@chmod +x test-gtk-label
 
@@ -166,6 +165,7 @@ test_gtk_label_client_LDADD = \
 
 test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server Makefile.am
 	@echo "#!/bin/bash" > test-gtk-reorder
+	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> test-gtk-reorder
 	@chmod +x test-gtk-reorder
 
