@@ -236,7 +236,7 @@ CLEANFILES = \
 	dbusmenu-gtk/mago_tests/dbusmenu.pyc
 
 distclean-local:
-	-rm -rf $(builddir)/dbusmenu-gtk/mago.results
+	-rm -rf $(builddir)/mago.results
 
 DISTCLEANFILES = \
 	$(TESTS)
