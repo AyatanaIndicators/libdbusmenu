@@ -351,7 +351,7 @@ id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, menuitem);
+	org_ayatana_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, menuitem);
 	return;
 }
 
@@ -472,7 +472,7 @@ build_proxies (DbusmenuClient * client)
 	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
 	                                                  priv->dbus_name,
 	                                                  priv->dbus_object,
-	                                                  "org.freedesktop.dbusmenu",
+	                                                  "org.ayatana.dbusmenu",
 	                                                  &error);
 	if (error != NULL) {
 		g_warning("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
@@ -647,7 +647,7 @@ static void
 menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	org_freedesktop_dbusmenu_call_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), menuitem_call_cb, mi);
+	org_ayatana_dbusmenu_call_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), menuitem_call_cb, mi);
 	return;
 }
 
@@ -689,7 +689,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			propdata->item    = item;
 			propdata->parent  = parent;
 
-			org_freedesktop_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
+			org_ayatana_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
 		}
@@ -829,7 +829,7 @@ update_layout (DbusmenuClient * client)
 	                                            update_layout_cb,
 	                                            client,
 	                                            NULL,
-	                                            G_TYPE_STRING, "org.freedesktop.dbusmenu",
+	                                            G_TYPE_STRING, "org.ayatana.dbusmenu",
 	                                            G_TYPE_STRING, "layout",
 	                                            G_TYPE_INVALID, G_TYPE_VALUE, G_TYPE_INVALID);
 
