@@ -6,8 +6,7 @@ TESTS = \
 	test-glib-properties \
 	test-glib-simple-items \
 	test-gtk-label \
-	test-gtk-reorder \
-	test-mago
+	test-gtk-reorder
 
 check_PROGRAMS = \
 	glib-server-nomenu \
