@@ -30,91 +30,112 @@ License version 3 and version 2.1 along with this program.  If not, see
 <node name="/">
 	<interface name="org.ayatana.dbusmenu">
 
-<!-- Properties -->
-<!--
-Provides an XML representation of the menu hierarchy
-
-XML syntax:
-
-<menu id="1" revision="2"> # Root container
-  <menu id="2" revision="2"> # First level menu, for example "File"
-    <menu id="3" revision="2"/> ~ Second level menu, for example "Open"
-    <menu id="4" revision="3"/>
-    ...
-  </menu>
-  <menu id="5" revision="2"> # Another first level menu, say "Edit"
-    ...
-  </menu>
-  ...
-</menu>
--->
-		<property name="layout" type="s" access="read"/>
-
 <!-- Functions -->
+
+<!--
+Returns the list of items which are children of @a parentId.
+
+@param parentid unsigned the parent id for the list. If it is 0, returns the root
+item list;
+@param propertyNames list of string the list of item properties we are interested in
+
+An item is represented as a struct following this format:
+@li id unsigned the item id
+@li properties map(string => variant) the requested item properties
+
+-->
+		<method name="GetChildren">
+			<arg type="u" name="parentId" direction="in" />
+			<arg type="as" name="propertyNames" direction="in" />
+			<arg type="a(ua{sv})" name="children" direction="out" />
+		</method>
 
 <!--
 Each menu item has a set of properties. Property keys are in menuitem.h:
 
-- visible
-- sensitive
-- label
-- icon
-- icon-data
-- type
+@li type string Type of the item (see below)
+@li label string Text of the item
+@li icon-data binary Raw data of the icon (TODO: define format)
+@li icon string Icon name of the item, following icon spec
+@li sensitive boolean Whether the item can be activated or not
+@li visible boolean Whether the item is visible or not (XXX: Is this necessary?)
+@li checked boolean Whether a checkbox or radio item is checked
+@li shortcut string The keyboard shortcut
 
-"type" property is an enum which can take the following values (client.h):
+@c type property is an enum which can take the following values (client.h):
 
-- menuitem
-- separator
-- imageitem
+@li action An item which can be clicked to trigger an action
+@li checkbox An item which can be checked or unchecked
+@li radio An item which can be checked or unchecked as part of a group
+@li separator A separator
+@li menu An item which contains more items
 -->
 		<method name="GetProperty">
 			<arg type="u" name="id" direction="in" />
-			<arg type="s" name="property" direction="in" />
-			<arg type="s" name="value" direction="out" />
+			<arg type="s" name="name" direction="in" />
+			<arg type="v" name="value" direction="out" />
 		</method>
 
 <!--
-Convenience method to retrieve all properties in one call (more efficient)
+Returns multiple properties in one call. This is more efficient than
+GetProperty.
+
+@param id unsigned the item whose properties we want to retrieve.
+@param propertyNames list of string name of the properties we want.
 -->
 		<method name="GetProperties">
+			<annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
 			<arg type="u" name="id" direction="in" />
-			<arg type="a{ss}" name="properties" direction="out" />
+			<arg type="as" name="propertyNames" direction="in" />
+			<arg type="a{sv}" name="properties" direction="out" />
 		</method>
 
 <!--
-This is called by the display to notify the application it should trigger
-the action associated with a specific menu id
+This is called by the applet to notify the application an event happened on a
+menu item.
+
+@param id the id of the item which received the event
+@param type the type of event
+@param data event-specific data
+
+@a type can be one of the following:
+
+@li "clicked"
+@li "hovered"
+
+Vendor specific events can be added by prefixing them with "x-<vendor>-"
 -->
-		<method name="Call">
+		<method name="Event">
 			<arg type="u" name="id" direction="in" />
+			<arg type="s" name="eventId" direction="in" />
+			<arg type="v" name="data" direction="in" />
 		</method>
 
 <!-- Signals -->
 <!--
-Triggered by the application to notify display that the property prop from menu id
-as changed to value.
+Triggered by the application to notify the applet that the property @a property
+from item @a id has changed to @a value.
 -->
-		<signal name="IdPropUpdate">
+		<signal name="ItemPropertyUpdated">
 			<arg type="u" name="id" direction="out" />
 			<arg type="s" name="prop" direction="out" />
-			<arg type="s" name="value" direction="out" />
+			<arg type="v" name="value" direction="out" />
 		</signal>
 
 <!--
-Triggered by the application to notify display that all properties of menu id
-should be considered outdated
+Triggered by the application to notify the applet that all properties of item
+@a id should be considered outdated
 -->
-		<signal name="IdUpdate">
+		<signal name="ItemUpdated">
 			<arg type="u" name="id" direction="out" />
 		</signal>
 
 <!--
-Triggered by the application to notify display of a layout update, up to
-revision
+Triggered by the application to notify applet it should retrieve the children
+for item @a id.
 -->
-		<signal name="LayoutUpdate">
-			<arg type="i" name="revision" direction="out" />
+		<signal name="ChildrenUpdated">
+			<arg type="u" name="id" direction="out" />
 		</signal>
 
 <!-- End of interesting stuff -->
