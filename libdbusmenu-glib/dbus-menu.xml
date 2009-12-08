@@ -28,34 +28,91 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 -->
 <node name="/">
-	<interface name="org.freedesktop.dbusmenu">
+	<interface name="org.ayatana.dbusmenu">
 
 <!-- Properties -->
+<!--
+Provides an XML representation of the menu hierarchy
+
+XML syntax:
+
+<menu id="1" revision="2"> # Root container
+  <menu id="2" revision="2"> # First level menu, for example "File"
+    <menu id="3" revision="2"/> ~ Second level menu, for example "Open"
+    <menu id="4" revision="3"/>
+    ...
+  </menu>
+  <menu id="5" revision="2"> # Another first level menu, say "Edit"
+    ...
+  </menu>
+  ...
+</menu>
+-->
 		<property name="layout" type="s" access="read"/>
 
 <!-- Functions -->
+
+<!--
+Each menu item has a set of properties. Property keys are in menuitem.h:
+
+- visible
+- sensitive
+- label
+- icon
+- icon-data
+- type
+
+"type" property is an enum which can take the following values (client.h):
+
+- menuitem
+- separator
+- imageitem
+-->
 		<method name="GetProperty">
 			<arg type="u" name="id" direction="in" />
 			<arg type="s" name="property" direction="in" />
 			<arg type="s" name="value" direction="out" />
 		</method>
+
+<!--
+Convenience method to retrieve all properties in one call (more efficient)
+-->
 		<method name="GetProperties">
 			<arg type="u" name="id" direction="in" />
 			<arg type="a{ss}" name="properties" direction="out" />
 		</method>
+
+<!--
+This is called by the display to notify the application it should trigger
+the action associated with a specific menu id
+-->
 		<method name="Call">
 			<arg type="u" name="id" direction="in" />
 		</method>
 
 <!-- Signals -->
+<!--
+Triggered by the application to notify display that the property prop from menu id
+as changed to value.
+-->
 		<signal name="IdPropUpdate">
 			<arg type="u" name="id" direction="out" />
 			<arg type="s" name="prop" direction="out" />
 			<arg type="s" name="value" direction="out" />
 		</signal>
+
+<!--
+Triggered by the application to notify display that all properties of menu id
+should be considered outdated
+-->
 		<signal name="IdUpdate">
 			<arg type="u" name="id" direction="out" />
 		</signal>
+
+<!--
+Triggered by the application to notify display of a layout update, up to
+revision
+-->
 		<signal name="LayoutUpdate">
 			<arg type="i" name="revision" direction="out" />
 		</signal>

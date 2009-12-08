@@ -2,12 +2,12 @@
 DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
 
 TESTS = \
-	test-mago \
 	test-glib-layout \
 	test-glib-properties \
-	test-gtk-label \
 	test-glib-simple-items \
-	test-gtk-reorder
+	test-gtk-label \
+	test-gtk-reorder \
+	test-mago
 
 check_PROGRAMS = \
 	glib-server-nomenu \
@@ -19,6 +19,12 @@ check_PROGRAMS = \
 	test-gtk-label-server \
 	test-glib-simple-items \
 	test-gtk-reorder-server
+
+XVFB_RUN=". $(srcdir)/run-xvfb.sh"
+
+######################
+# Test GLib server
+######################
 
 glib_server_nomenu_SOURCES = \
 	glib-server-nomenu.c
@@ -36,9 +42,9 @@ glib_server_nomenu_LDADD = \
 ######################
 
 test-glib-layout: test-glib-layout-client test-glib-layout-server Makefile.am
-	@echo "#!/bin/sh" > test-glib-layout
-	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> test-glib-layout
-	@chmod +x test-glib-layout
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
 
 test_glib_layout_server_SOURCES = \
 	test-glib-layout.h \
@@ -70,9 +76,9 @@ test_glib_layout_client_LDADD = \
 ######################
 
 test-glib-properties: test-glib-properties-client test-glib-properties-server Makefile.am
-	@echo "#!/bin/sh" > test-glib-properties
-	@echo $(DBUS_RUNNER) --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return >> test-glib-properties
-	@chmod +x test-glib-properties
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
 
 test_glib_properties_server_SOURCES = \
 	test-glib-properties.h \
@@ -118,9 +124,10 @@ test_glib_simple_items_LDADD = \
 #########################
 
 test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json Makefile.am
-	@echo "#!/bin/sh" > test-gtk-label
-	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> test-gtk-label
-	@chmod +x test-gtk-label
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
+	@chmod +x $@
 
 test_gtk_label_server_SOURCES = \
 	test-gtk-label-server.c
@@ -157,9 +164,10 @@ test_gtk_label_client_LDADD = \
 #########################
 
 test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server Makefile.am
-	@echo "#!/bin/sh" > test-gtk-reorder
-	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> test-gtk-reorder
-	@chmod +x test-gtk-reorder
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
+	@chmod +x $@
 
 test_gtk_reorder_server_SOURCES = \
 	test-gtk-reorder-server.c
@@ -181,13 +189,15 @@ test_gtk_reorder_server_LDADD = \
 #########################
 
 test-mago: test-gtk-label-client test-gtk-label-server $(srcdir)/dbusmenu-gtk/mago_tests/dbusmenu.xml Makefile.am
-	@echo "#!/bin/sh" > test-mago
-	@echo cd $(srcdir)/dbusmenu-gtk >> test-mago
-	@echo echo Mago Results dir: $(abs_builddir)/mago.results >> test-mago
-	@echo echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests >> test-mago
-	@echo export INDICATOR_BUILD_DIR=$(abs_builddir) >> test-mago
-	@echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests mago -f dbusmenu.xml -t $(abs_builddir)/mago.results --log-level=debug >> test-mago
-	@chmod +x test-mago
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo cd $(srcdir)/dbusmenu-gtk >> $@
+	@echo /usr/lib/at-spi/at-spi-registryd \& >> $@
+	@echo echo Mago Results dir: $(abs_builddir)/mago.results >> $@
+	@echo echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests >> $@
+	@echo export INDICATOR_BUILD_DIR=$(abs_builddir) >> $@
+	@echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests mago -f dbusmenu.xml -t $(abs_builddir)/mago.results --log-level=debug >> $@
+	@chmod +x $@
 
 #########################
 # Other
@@ -200,6 +210,7 @@ examples_DATA = \
 
 EXTRA_DIST = \
 	$(examples_DATA) \
+	run-xvfb.sh \
 	test-gtk-label.json \
 	dbusmenu-gtk/dbusMenuTest \
 	dbusmenu-gtk/mago_tests/dbusmenu.xml \
@@ -222,11 +233,10 @@ EXTRA_DIST = \
 	dbusmenu-gtk/mago_tests/data/test-gtk-label.json
 
 CLEANFILES = \
-	dbusmenu-gtk/mago_tests/dbusmenu.xml \
 	dbusmenu-gtk/mago_tests/dbusmenu.pyc
 
 distclean-local:
-	-rm -rf $(builddir)/dbusmenu-gtk/mago.results
+	-rm -rf $(builddir)/mago.results
 
 DISTCLEANFILES = \
 	$(TESTS)
