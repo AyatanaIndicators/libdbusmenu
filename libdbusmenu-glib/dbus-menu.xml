@@ -30,24 +30,62 @@ License version 3 and version 2.1 along with this program.  If not, see
 <node name="/">
 	<interface name="org.ayatana.dbusmenu">
 
+<!-- Properties -->
+<!--
+Provides the version of the DBusmenu API that this API is
+implementing.
+-->
+		<property name="version" type="u" access="read"/>
+
 <!-- Functions -->
+
+<!--
+Provides an XML representation of the menu hierarchy
+
+@param parentId The ID of the parent node for the layout.  For
+	grabbing the layout from the root node use zero.
+@param revision The revision number of the layout.  For matching
+	with layoutUpdated signals.
+@param layout The layout as an XML string of IDs.
+
+XML syntax:
+
+<menu id="1" revision="2"> # Root container
+  <menu id="2" revision="2"> # First level menu, for example "File"
+    <menu id="3" revision="2"/> ~ Second level menu, for example "Open"
+    <menu id="4" revision="3"/>
+    ...
+  </menu>
+  <menu id="5" revision="2"> # Another first level menu, say "Edit"
+    ...
+  </menu>
+  ...
+</menu>
+-->
+		<method name="GetLayout">
+			<arg type="u" name="parentId" direction="in" />
+			<arg type="u" name="revision" direction="out" />
+			<arg type="s" name="layout" direction="out" />
+		</method>
 
 <!--
 Returns the list of items which are children of @a parentId.
 
-@param parentid unsigned the parent id for the list. If it is 0, returns the root
-item list;
-@param propertyNames list of string the list of item properties we are interested in
+@param Ids A list of ids that we should be finding the properties
+	on.  If the list is empty, all menu items should be sent.
+@param propertyNames list of string the list of item properties we
+	are interested in.  If there are no entries in the list all of
+	the properties will be sent.
 
 An item is represented as a struct following this format:
 @li id unsigned the item id
 @li properties map(string => variant) the requested item properties
 
 -->
-		<method name="GetChildren">
-			<arg type="u" name="parentId" direction="in" />
+		<method name="GetGroupProperties">
+			<arg type="au" name="Ids" direction="in" />
 			<arg type="as" name="propertyNames" direction="in" />
-			<arg type="a(ua{sv})" name="children" direction="out" />
+			<arg type="a(ua{sv})" name="properties" direction="out" />
 		</method>
 
 <!--
@@ -81,7 +119,7 @@ Returns multiple properties in one call. This is more efficient than
 GetProperty.
 
 @param id unsigned the item whose properties we want to retrieve.
-@param propertyNames list of string name of the properties we want.
+@param propertyNames list of string name of the properties we want.  If the list contains no entries, all properties are sent.
 -->
 		<method name="GetProperties">
 			<annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
@@ -131,11 +169,16 @@ Triggered by the application to notify the applet that all properties of item
 		</signal>
 
 <!--
-Triggered by the application to notify applet it should retrieve the children
-for item @a id.
+Triggered by the application to notify display of a layout update, up to
+revision
+@param revsion The revision of the layout that we're currently on
+@param parent  If the layout update is only of a subtree, this is the parent
+         item for the entries that have changed.  It is zero if the
+		 whole layout should be considered invalid.
 -->
-		<signal name="ChildrenUpdated">
-			<arg type="u" name="id" direction="out" />
+		<signal name="LayoutUpdate">
+			<arg type="i" name="revision" direction="out" />
+			<arg type="u" name="parent" direction="out" />
 		</signal>
 
 <!-- End of interesting stuff -->
