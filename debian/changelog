@@ -1,4 +1,4 @@
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa1) karmic; urgency=low
 
   * Updating to trunk
     * Test suite fixes and automation support
@@ -7,7 +7,7 @@ libdbusmenu (0.2.0~dev-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * debian/control, debian/libdbusmenu-tools.install: Setting
     up a package for the new dbusmenu-dumper tool.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 08 Dec 2009 14:07:44 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 08 Dec 2009 14:16:37 -0600
 
 libdbusmenu (0.1.7-0ubuntu1~ppa1) karmic; urgency=low
 
