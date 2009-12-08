@@ -58,3 +58,11 @@ Description: Menus over DBus shared library for GTK
  This package contains files that are needed to build applications.
  .
  This package provides the development files.
+
+Package: libdbusmenu-tools
+Section: devel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libdbusmenu-glib0 (= ${binary:Version})
+Description: Need a better description.

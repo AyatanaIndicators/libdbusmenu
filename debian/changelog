@@ -4,6 +4,8 @@ libdbusmenu (0.2.0~dev-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Test suite fixes and automation support
     * dbus-dumper tool
     * Switch to org.ayatana
+  * debian/control, debian/libdbusmenu-tools.install: Setting
+    up a package for the new dbusmenu-dumper tool.
 
  -- Ted Gould <ted@ubuntu.com>  Tue, 08 Dec 2009 14:07:44 -0600
 
