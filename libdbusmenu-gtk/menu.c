@@ -213,7 +213,9 @@ find_pos (GtkWidget * widget, gpointer data)
 static void
 root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, DbusmenuGtkMenu * menu)
 {
+	#ifdef MASSIVEDEBUGGING
 	g_debug("Root new child");
+	#endif
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 
 	g_signal_connect(G_OBJECT(child), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(child_realized), menu);
@@ -240,7 +242,9 @@ root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint posit
 static void
 root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newposition, guint oldposition, DbusmenuGtkMenu * menu)
 {
+	#ifdef MASSIVEDEBUGGING
 	g_debug("Root child moved");
+	#endif
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 	gtk_menu_reorder_child(GTK_MENU(menu), GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)), newposition);
 	return;
@@ -250,7 +254,9 @@ root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newpo
 static void
 root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGtkMenu * menu)
 {
+	#ifdef MASSIVEDEBUGGING
 	g_debug("Root child deleted");
+	#endif
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 	GtkWidget * item = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
 	if (item != NULL) {
@@ -268,7 +274,9 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 static void
 child_realized (DbusmenuMenuitem * child, gpointer userdata)
 {
+	#ifdef MASSIVEDEBUGGING
 	g_debug("Root child realized");
+	#endif
 	g_return_if_fail(DBUSMENU_IS_GTKMENU(userdata));
 
 	DbusmenuGtkMenu * menu = DBUSMENU_GTKMENU(userdata);

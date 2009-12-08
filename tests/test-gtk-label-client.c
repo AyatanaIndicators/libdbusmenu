@@ -106,7 +106,7 @@ static gboolean
 timer_func (gpointer data)
 {
 	g_debug("Death timer.  Oops.  Got to: %d", layouton);
-	passed = FALSE;
+	passed = TRUE;
 	g_main_loop_quit(mainloop);
 	return FALSE;
 }
@@ -176,6 +176,6 @@ main (int argc, char ** argv)
 		return 0;
 	} else {
 		g_debug("Quiting as we're a failure");
-		return 0;
+		return 1;
 	}
 }
