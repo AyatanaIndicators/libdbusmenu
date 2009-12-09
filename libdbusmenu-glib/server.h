@@ -43,8 +43,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_SERVER))
 #define DBUSMENU_SERVER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_SERVER, DbusmenuServerClass))
 
-#define DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE  "id-prop-update"
-#define DBUSMENU_SERVER_SIGNAL_ID_UPDATE       "id-update"
+#define DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE  "item-property-updated"
+#define DBUSMENU_SERVER_SIGNAL_ID_UPDATE       "item-updated"
 #define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE   "layout-update"
 
 #define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
