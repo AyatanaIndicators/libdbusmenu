@@ -35,9 +35,11 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "server-marshal.h"
 
 /* DBus Prototypes */
+static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revision, gchar ** layout, GError ** error);
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GHashTable ** dict, GError ** error);
-static gboolean _dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error);
+static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
+static gboolean _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, GError ** error);
 
 #include "dbusmenu-server.h"
 
@@ -68,8 +70,7 @@ static guint signals[LAST_SIGNAL] = { 0 };
 enum {
 	PROP_0,
 	PROP_DBUS_OBJECT,
-	PROP_ROOT_NODE,
-	PROP_LAYOUT
+	PROP_ROOT_NODE
 };
 
 /* Errors */
@@ -169,11 +170,6 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                              "The base object of the menus that are served",
 	                                              DBUSMENU_TYPE_MENUITEM,
 	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-	g_object_class_install_property (object_class, PROP_LAYOUT,
-	                                 g_param_spec_string(DBUSMENU_SERVER_PROP_LAYOUT, "XML Layout of the menus",
-	                                              "A simple XML string that describes the layout of the menus",
-	                                              "<menu />",
-	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	dbus_g_object_type_install_info(DBUSMENU_TYPE_SERVER, &dbus_glib__dbusmenu_server_object_info);
 
@@ -243,9 +239,6 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		priv->layout_revision++;
 		g_signal_emit(obj, signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
 		break;
-	case PROP_LAYOUT:
-		/* Can't set this, fall through to error */
-		g_warning("Can not set property: layout");
 	default:
 		g_return_if_reached();
 		break;
@@ -277,25 +270,6 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	case PROP_ROOT_NODE:
 		g_value_set_object(value, priv->root);
 		break;
-	case PROP_LAYOUT: {
-		GPtrArray * xmlarray = g_ptr_array_new();
-		if (priv->root == NULL) {
-			/* g_debug("Getting layout without root node!"); */
-			g_ptr_array_add(xmlarray, g_strdup_printf("<menu revision=\"%d\" />", priv->layout_revision));
-		} else {
-			dbusmenu_menuitem_buildxml(priv->root, xmlarray, priv->layout_revision);
-		}
-		g_ptr_array_add(xmlarray, NULL);
-
-		/* build string */
-		gchar * finalstring = g_strjoinv("", (gchar **)xmlarray->pdata);
-		g_value_take_string(value, finalstring);
-		/* g_debug("Final string: %s", finalstring); */
-
-		g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
-		g_ptr_array_free(xmlarray, TRUE);
-		break;
-	}
 	default:
 		g_return_if_reached();
 		break;
@@ -377,6 +351,36 @@ error_quark (void)
 }
 
 /* DBus interface */
+static gboolean
+_dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revision, gchar ** layout, GError ** error)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	*revision = priv->layout_revision;
+	GPtrArray * xmlarray = g_ptr_array_new();
+
+	if (parent == 0) {
+		if (priv->root == NULL) {
+			/* g_debug("Getting layout without root node!"); */
+			g_ptr_array_add(xmlarray, g_strdup_printf("<menu revision=\"%d\" />", priv->layout_revision));
+		} else {
+			dbusmenu_menuitem_buildxml(priv->root, xmlarray, priv->layout_revision);
+		}
+	} else {
+		DbusmenuMenuitem * item = dbusmenu_menuitem_find_id(priv->root, parent);
+		dbusmenu_menuitem_buildxml(item, xmlarray, priv->layout_revision);
+	}
+	g_ptr_array_add(xmlarray, NULL);
+
+	/* build string */
+	*layout = g_strjoinv("", (gchar **)xmlarray->pdata);
+
+	g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
+	g_ptr_array_free(xmlarray, TRUE);
+
+	return TRUE;
+}
+
 static gboolean 
 _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error)
 {
@@ -445,7 +449,14 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GHashTable *
 }
 
 static gboolean
-_dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error)
+_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error)
+{
+
+	return FALSE;
+}
+
+static gboolean
+_dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
