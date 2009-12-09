@@ -95,8 +95,8 @@ static void dbusmenu_client_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
-static void layout_update (DBusGProxy * proxy, gint revision, DbusmenuClient * client);
-static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client);
+static void layout_update (DBusGProxy * proxy, gint revision, guint parent, DbusmenuClient * client);
+static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, DbusmenuClient * client);
 static void id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static guint parse_node_get_id (xmlNodePtr node);
@@ -308,7 +308,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Annoying little wrapper to make the right function update */
 static void
-layout_update (DBusGProxy * proxy, gint revision, DbusmenuClient * client)
+layout_update (DBusGProxy * proxy, gint revision, guint parent, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	priv->current_revision = revision;
@@ -321,7 +321,7 @@ layout_update (DBusGProxy * proxy, gint revision, DbusmenuClient * client)
 /* Signal from the server that a property has changed
    on one of our menuitems */
 static void
-id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, DbusmenuClient * client)
+id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Property change sent to client for item %d property %s value %s", id, property, g_utf8_strlen(value, 50) < 25 ? value : "<too long>");
@@ -333,7 +333,7 @@ id_prop_update (DBusGProxy * proxy, guint id, gchar * property, gchar * value, D
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	dbusmenu_menuitem_property_set(menuitem, property, value);
+	dbusmenu_menuitem_property_set(menuitem, property, g_value_get_string(value));
 	return;
 }
 
@@ -490,15 +490,15 @@ build_proxies (DbusmenuClient * client)
 		priv->dbusproxy = NULL;
 	}
 
-	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdate", G_TYPE_INT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdate", G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "LayoutUpdate", G_CALLBACK(layout_update), client, NULL);
 
 	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__UINT_STRING_STRING, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "IdPropUpdate", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "IdPropUpdate", G_CALLBACK(id_prop_update), client, NULL);
+	dbus_g_proxy_add_signal(priv->menuproxy, "ItemPropertyUpdated", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemPropertyUpdated", G_CALLBACK(id_prop_update), client, NULL);
 
-	dbus_g_proxy_add_signal(priv->menuproxy, "IdUpdate", G_TYPE_UINT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "IdUpdate", G_CALLBACK(id_update), client, NULL);
+	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemUpdated", G_CALLBACK(id_update), client, NULL);
 
 	update_layout(client);
 
