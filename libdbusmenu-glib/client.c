@@ -789,6 +789,8 @@ update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, vo
 		return;
 	}
 
+	g_debug("Got layout: %s", xml);
+
 	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
 	#ifdef MASSIVEDEBUGGING
