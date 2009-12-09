@@ -102,7 +102,7 @@ static void build_proxies (DbusmenuClient * client);
 static guint parse_node_get_id (xmlNodePtr node);
 static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
 static gint parse_layout (DbusmenuClient * client, const gchar * layout);
-static void update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data);
+static void update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
 static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
 
@@ -774,26 +774,17 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 /* When the layout property returns, here's where we take care of that. */
 static void
-update_layout_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
+update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, void * data)
 {
 	DbusmenuClient * client = DBUSMENU_CLIENT(data);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
-	GError * error = NULL;
-	GValue value = {0};
-
-	priv->layoutcall = NULL;
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
+	if (error != NULL) {
 		g_warning("Getting layout failed on client %s object %s: %s", priv->dbus_name, priv->dbus_object, error->message);
-		g_error_free(error);
 		return;
 	}
 
-	const gchar * xml = g_value_get_string(&value);
-	/* g_debug("Got layout string: %s", xml); */
-	gint rev = parse_layout(client, xml);
-
-	if (rev == 0) {
+	if (!parse_layout(client, xml)) {
 		g_warning("Unable to parse layout!");
 		return;
 	}
@@ -827,14 +818,10 @@ update_layout (DbusmenuClient * client)
 		return;
 	}
 
-	priv->layoutcall = dbus_g_proxy_begin_call (priv->propproxy,
-	                                            "Get",
-	                                            update_layout_cb,
-	                                            client,
-	                                            NULL,
-	                                            G_TYPE_STRING, "org.ayatana.dbusmenu",
-	                                            G_TYPE_STRING, "layout",
-	                                            G_TYPE_INVALID, G_TYPE_VALUE, G_TYPE_INVALID);
+	priv->layoutcall = org_ayatana_dbusmenu_get_layout_async(priv->menuproxy,
+	                                                         0, /* Parent is the root */
+	                                                         update_layout_cb,
+	                                                         client);
 
 	return;
 }
