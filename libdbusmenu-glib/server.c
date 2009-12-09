@@ -125,8 +125,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, id_prop_update),
 	                                         NULL, NULL,
-	                                         _dbusmenu_server_marshal_VOID__UINT_STRING_STRING,
-	                                         G_TYPE_NONE, 3, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING);
+	                                         _dbusmenu_server_marshal_VOID__UINT_STRING_POINTER,
+	                                         G_TYPE_NONE, 3, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_VALUE);
 	/**
 		DbusmenuServer::id-update:
 		@arg0: The #DbusmenuServer emitting the signal.
@@ -280,9 +280,12 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 }
 
 static void 
-menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * value, DbusmenuServer * server)
+menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * strvalue, DbusmenuServer * server)
 {
-	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, value, TRUE);
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_value_set_static_string(&value, strvalue);
+	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, &value, TRUE);
 	return;
 }
 
