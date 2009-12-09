@@ -216,7 +216,7 @@ dbusmenu_client_dispose (GObject *object)
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(object);
 
 	if (priv->layoutcall != NULL) {
-		dbus_g_proxy_cancel_call(priv->propproxy, priv->layoutcall);
+		dbus_g_proxy_cancel_call(priv->menuproxy, priv->layoutcall);
 		priv->layoutcall = NULL;
 	}
 	if (priv->menuproxy != NULL) {
@@ -794,6 +794,7 @@ update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, vo
 
 	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
+	priv->layoutcall = NULL;
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client signaling layout has changed.");
 	#endif 
@@ -813,7 +814,7 @@ update_layout (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
-	if (priv->propproxy == NULL) {
+	if (priv->menuproxy == NULL) {
 		return;
 	}
 
