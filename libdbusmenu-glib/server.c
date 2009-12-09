@@ -43,6 +43,8 @@ static gboolean _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar
 
 #include "dbusmenu-server.h"
 
+#define DBUSMENU_VERSION_NUMBER  1
+
 /* Privates, I'll show you mine... */
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 
@@ -70,7 +72,8 @@ static guint signals[LAST_SIGNAL] = { 0 };
 enum {
 	PROP_0,
 	PROP_DBUS_OBJECT,
-	PROP_ROOT_NODE
+	PROP_ROOT_NODE,
+	PROP_VERSION
 };
 
 /* Errors */
@@ -172,6 +175,11 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                              "The base object of the menus that are served",
 	                                              DBUSMENU_TYPE_MENUITEM,
 	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_VERSION,
+	                                 g_param_spec_uint(DBUSMENU_SERVER_PROP_VERSION, "Dbusmenu API version",
+	                                              "The version of the DBusmenu API that we're implementing.",
+	                                              DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER,
+	                                              G_PARAM_READABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	dbus_g_object_type_install_info(DBUSMENU_TYPE_SERVER, &dbus_glib__dbusmenu_server_object_info);
 
@@ -271,6 +279,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_ROOT_NODE:
 		g_value_set_object(value, priv->root);
+		break;
+	case PROP_VERSION:
+		g_value_set_uint(value, DBUSMENU_VERSION_NUMBER);
 		break;
 	default:
 		g_return_if_reached();

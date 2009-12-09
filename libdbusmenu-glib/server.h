@@ -49,7 +49,7 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
-#define DBUSMENU_SERVER_PROP_LAYOUT            "layout"
+#define DBUSMENU_SERVER_PROP_VERSION           "version"
 
 /**
 	DbusmenuServerClass:
