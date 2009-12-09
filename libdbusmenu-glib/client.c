@@ -352,7 +352,8 @@ id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	org_ayatana_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_cb, menuitem);
+	gchar * properties[1] = {NULL}; /* This gets them all */
+	org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
 	return;
 }
 
@@ -648,7 +649,7 @@ static void
 menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	org_ayatana_dbusmenu_call_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), menuitem_call_cb, mi);
+	org_ayatana_dbusmenu_event_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), "clicked", NULL, menuitem_call_cb, mi);
 	return;
 }
 
@@ -690,7 +691,8 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			propdata->item    = item;
 			propdata->parent  = parent;
 
-			org_ayatana_dbusmenu_get_properties_async(proxy, id, menuitem_get_properties_new_cb, propdata);
+			gchar * properties[1] = {NULL}; /* This gets them all */
+			org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
 		}
