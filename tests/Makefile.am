@@ -42,7 +42,7 @@ glib_server_nomenu_LDADD = \
 
 test-glib-layout: test-glib-layout-client test-glib-layout-server Makefile.am
 	@echo "#!/bin/bash" > $@
-	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
+	@echo $(DBUS_RUNNER) -b test-glib-layout.bustle --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 test_glib_layout_server_SOURCES = \
@@ -238,4 +238,5 @@ distclean-local:
 	-rm -rf $(builddir)/mago.results
 
 DISTCLEANFILES = \
-	$(TESTS)
+	$(TESTS) \
+	test-glib-layout.bustle
