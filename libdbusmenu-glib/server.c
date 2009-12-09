@@ -78,6 +78,7 @@ enum {
 	INVALID_MENUITEM_ID,
 	INVALID_PROPERTY_NAME,
 	UNKNOWN_DBUS_ERROR,
+	NOT_IMPLEMENTED,
 	LAST_ERROR
 };
 
@@ -451,7 +452,12 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * 
 static gboolean
 _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error)
 {
-
+	if (error != NULL) {
+		g_set_error(error,
+					error_quark(),
+					NOT_IMPLEMENTED,
+					"The GetGroupProperties function is not implemented, sorry.");
+	}
 	return FALSE;
 }
 
