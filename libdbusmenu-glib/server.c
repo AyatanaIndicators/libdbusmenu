@@ -161,7 +161,7 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
 	                                 g_param_spec_string(DBUSMENU_SERVER_PROP_DBUS_OBJECT, "DBus object path",
 	                                              "The object that represents this set of menus on DBus",
-	                                              "/org/freedesktop/dbusmenu",
+	                                              "/org/ayatana/dbusmenu",
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property (object_class, PROP_ROOT_NODE,
 	                                 g_param_spec_object(DBUSMENU_SERVER_PROP_ROOT_NODE, "Root menu node",
@@ -472,7 +472,7 @@ _dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error)
 
 	Creates a new #DbusmenuServer object with a specific object
 	path on DBus.  If @object is set to NULL the default object
-	name of "/org/freedesktop/dbusmenu" will be used.
+	name of "/org/ayatana/dbusmenu" will be used.
 
 	Return value: A brand new #DbusmenuServer
 */
@@ -480,7 +480,7 @@ DbusmenuServer *
 dbusmenu_server_new (const gchar * object)
 {
 	if (object == NULL) {
-		object = "/org/freedesktop/dbusmenu";
+		object = "/org/ayatana/dbusmenu";
 	}
 
 	DbusmenuServer * self = g_object_new(DBUSMENU_TYPE_SERVER,
