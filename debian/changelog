@@ -1,3 +1,10 @@
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa2) UNRELEASED; urgency=low
+
+  * Updating to trunk
+    * Adding underline support
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:01:58 -0600
+
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa1) karmic; urgency=low
 
   * Updating to trunk
