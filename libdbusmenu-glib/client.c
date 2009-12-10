@@ -353,6 +353,7 @@ id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
 	g_return_if_fail(menuitem != NULL);
 
 	gchar * properties[1] = {NULL}; /* This gets them all */
+	g_debug("Getting properties");
 	org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
 	return;
 }
