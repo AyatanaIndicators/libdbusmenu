@@ -47,10 +47,10 @@ static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint n
 
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
-static gboolean new_item_image      (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
 static void process_visible (GtkMenuItem * gmi, const GValue * value);
 static void process_sensitive (GtkMenuItem * gmi, const GValue * value);
+static void image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
@@ -74,7 +74,6 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
-	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_IMAGE,     new_item_image);
 
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
 
@@ -367,6 +366,19 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 		return FALSE;
 	}
 
+	image_property_handle(newitem,
+	                      DBUSMENU_MENUITEM_PROP_ICON,
+	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON),
+	                      client);
+	image_property_handle(newitem,
+	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
+	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
+	                      client);
+	g_signal_connect(G_OBJECT(newitem),
+	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+	                 G_CALLBACK(image_property_handle),
+	                 client);
+
 	return TRUE;
 }
 
@@ -481,37 +493,3 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 	return;
 }
 
-/* This is a type call back for the image type where
-   it uses the GtkImageMenuitem to create the menu item. */
-static gboolean
-new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
-{
-	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
-	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
-	/* Note: not checking parent, it's reasonable for it to be NULL */
-
-	GtkMenuItem * gmi;
-	gmi = GTK_MENU_ITEM(gtk_image_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL)));
-        gtk_menu_item_set_use_underline (gmi, TRUE);
-
-	if (gmi != NULL) {
-		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-	} else {
-		return FALSE;
-	}
-
-	image_property_handle(newitem,
-	                      DBUSMENU_MENUITEM_PROP_ICON,
-	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON),
-	                      client);
-	image_property_handle(newitem,
-	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
-	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
-	                      client);
-	g_signal_connect(G_OBJECT(newitem),
-	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
-	                 G_CALLBACK(image_property_handle),
-	                 client);
-
-	return TRUE;
-}
