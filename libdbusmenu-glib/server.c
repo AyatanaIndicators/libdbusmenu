@@ -442,6 +442,16 @@ _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * proper
 	return TRUE;
 }
 
+static void
+value_table (gpointer pkey, gpointer pvalue, gpointer phash)
+{
+	GValue * value = g_new0(GValue, 1);
+	g_value_init(value, G_TYPE_STRING);
+	g_value_set_string(value, (gchar *)pvalue);
+	g_hash_table_insert((GHashTable *)phash, g_strdup((gchar *)pkey), value);
+	return;
+}
+
 static gboolean
 _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * properties, GHashTable ** dict, GError ** error)
 {
@@ -460,6 +470,12 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * 
 	}
 
 	*dict = dbusmenu_menuitem_properties_copy(mi);
+
+	GHashTable * newtable = g_hash_table_new(g_str_hash, g_str_equal);
+	g_hash_table_foreach(*dict, value_table, newtable);
+	g_hash_table_destroy(*dict);
+
+	*dict = newtable;
 
 	return TRUE;
 }
