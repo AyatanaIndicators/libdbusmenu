@@ -52,3 +52,4 @@ tools/dbusmenu-dumper
 libdbusmenu-[0-9].[0-9].[0-9].tar.gz
 libdbusmenu-[0-9].[0-9].[0-9].tar.gz.asc
 tests/test-mago
+tests/*.bustle
