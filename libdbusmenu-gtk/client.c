@@ -49,8 +49,8 @@ static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuite
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_item_image      (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
-static void process_visible (GtkMenuItem * gmi, const gchar * value);
-static void process_sensitive (GtkMenuItem * gmi, const gchar * value);
+static void process_visible (GtkMenuItem * gmi, const GValue * value);
+static void process_sensitive (GtkMenuItem * gmi, const GValue * value);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
@@ -115,9 +115,9 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 
 /* Process the visible property */
 static void
-process_visible (GtkMenuItem * gmi, const gchar * value)
+process_visible (GtkMenuItem * gmi, const GValue * value)
 {
-	if (value == NULL || !g_strcmp0(value, "true")) {
+	if (value == NULL || !g_strcmp0(g_value_get_string(value), "true")) {
 		gtk_widget_show(GTK_WIDGET(gmi));
 	} else {
 		gtk_widget_hide(GTK_WIDGET(gmi));
@@ -127,9 +127,9 @@ process_visible (GtkMenuItem * gmi, const gchar * value)
 
 /* Process the sensitive property */
 static void
-process_sensitive (GtkMenuItem * gmi, const gchar * value)
+process_sensitive (GtkMenuItem * gmi, const GValue * value)
 {
-	if (value == NULL || !g_strcmp0(value, "true")) {
+	if (value == NULL || !g_strcmp0(g_value_get_string(value), "true")) {
 		gtk_widget_set_sensitive(GTK_WIDGET(gmi), TRUE);
 	} else {
 		gtk_widget_set_sensitive(GTK_WIDGET(gmi), FALSE);
@@ -140,10 +140,10 @@ process_sensitive (GtkMenuItem * gmi, const gchar * value)
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
-menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
+menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMenuItem * gmi)
 {
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
-		gtk_menu_item_set_label(gmi, value);
+		gtk_menu_item_set_label(gmi, g_value_get_string(value));
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
 		process_visible(gmi, value);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SENSITIVE)) {
@@ -228,8 +228,8 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	/* Life insurance */
 	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
-	process_visible(gmi, dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
-	process_sensitive(gmi, dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
+	process_visible(gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
+	process_sensitive(gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
 
 	if (parent != NULL) {
 		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
@@ -395,10 +395,11 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 /* This handler looks at property changes for items that are
    image menu items. */
 static void
-image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gchar * value, gpointer userdata)
+image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata)
 {
 	/* We're only looking at these two properties here */
 	g_return_if_fail(!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON) || !g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA));
+	const gchar * value = g_value_get_string(invalue);
 
 	if (value == NULL || value[0] == '\0') {
 		/* This means that we're unsetting a value. */
@@ -501,11 +502,11 @@ new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuC
 
 	image_property_handle(newitem,
 	                      DBUSMENU_MENUITEM_PROP_ICON,
-	                      dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_ICON),
+	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON),
 	                      client);
 	image_property_handle(newitem,
 	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
-	                      dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
+	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
 	                      client);
 	g_signal_connect(G_OBJECT(newitem),
 	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
