@@ -29,8 +29,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #ifndef __DBUSMENU_GTKCLIENT_H__
 #define __DBUSMENU_GTKCLIENT_H__
 
-#include <glib.h>
-#include <glib-object.h>
+#include <gtk/gtk.h>
 #include <libdbusmenu-glib/client.h>
 
 G_BEGIN_DECLS
