@@ -56,6 +56,11 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_PROP_LABEL                 "label"
 #define DBUSMENU_MENUITEM_PROP_ICON                  "icon"
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
+#define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
+#define DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED        "toggle-checked"
+
+#define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
+#define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
 
 /**
 	DbusmenuMenuitem:

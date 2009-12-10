@@ -52,7 +52,7 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_CLIENT_TYPES_DEFAULT      "menuitem"
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
-#define DBUSMENU_CLIENT_TYPES_IMAGE        "imageitem"
+#define DBUSMENU_CLIENT_TYPES_IMAGE        "menuitem"
 
 /**
 	DbusmenuClientClass:
