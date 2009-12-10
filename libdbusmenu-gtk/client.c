@@ -381,7 +381,6 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 
 	GtkMenuItem * gmi;
 	gmi = GTK_MENU_ITEM(gtk_separator_menu_item_new());
-        gtk_menu_item_set_use_underline (gmi, TRUE);
 
 	if (gmi != NULL) {
 		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
