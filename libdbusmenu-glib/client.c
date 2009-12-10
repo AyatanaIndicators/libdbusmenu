@@ -567,7 +567,7 @@ parse_node_get_id (xmlNodePtr node)
 static void
 get_properties_helper (gpointer key, gpointer value, gpointer data)
 {
-	dbusmenu_menuitem_property_set((DbusmenuMenuitem *)data, (gchar *)key, (gchar *)value);
+	dbusmenu_menuitem_property_set((DbusmenuMenuitem *)data, (gchar *)key, g_value_get_string((GValue *)value));
 	return;
 }
 
