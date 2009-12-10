@@ -1,4 +1,4 @@
-libdbusmenu (0.1.8-0ubuntu1) karmic; urgency=low
+libdbusmenu (0.1.8-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.1.8
     * Changing the name to org.ayatana
