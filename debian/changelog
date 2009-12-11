@@ -16,21 +16,15 @@ libdbusmenu (0.2.0~dev-0ubuntu1~ppa1) karmic; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Tue, 08 Dec 2009 14:16:37 -0600
 
-libdbusmenu (0.1.8-0ubuntu1~ppa1) karmic; urgency=low
+libdbusmenu (0.1.8-0ubuntu1) karmic; urgency=low
 
   * Upstream release 0.1.8
     * Changing the name to org.ayatana
     * Underline fixes
     * Documenation of the DBus API 
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 12:55:07 -0600
-
-libdbusmenu (0.1.7-0ubuntu1~ppa1) karmic; urgency=low
-
-  * Upstream release 0.1.7
     * Adding the GPL v3 Copying file so that we're all legal.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 05 Oct 2009 11:32:05 -0400
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 12:55:07 -0600
 
 libdbusmenu (0.1.6-0ubuntu1) karmic; urgency=low
 
