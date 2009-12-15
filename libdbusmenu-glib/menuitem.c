@@ -885,7 +885,16 @@ dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * proper
 {
 	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
 	if (value == NULL) return FALSE;
-	if (G_VALUE_TYPE(value) != G_TYPE_BOOLEAN) return FALSE;
+	if (G_VALUE_TYPE(value) != G_TYPE_BOOLEAN) {
+		if (g_value_type_transformable(G_VALUE_TYPE(value), G_TYPE_BOOLEAN)) {
+			GValue boolval = {0};
+			g_value_init(&boolval, G_TYPE_BOOLEAN);
+			g_value_transform(value, &boolval);
+			return g_value_get_boolean(&boolval);
+		} else {
+			return FALSE;
+		}
+	}
 	return g_value_get_boolean(value);
 }
 
@@ -904,7 +913,16 @@ dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * propert
 {
 	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
 	if (value == NULL) return 0;
-	if (G_VALUE_TYPE(value) != G_TYPE_INT) return 0;
+	if (G_VALUE_TYPE(value) != G_TYPE_INT) {
+		if (g_value_type_transformable(G_VALUE_TYPE(value), G_TYPE_INT)) {
+			GValue intval = {0};
+			g_value_init(&intval, G_TYPE_INT);
+			g_value_transform(value, &intval);
+			return g_value_get_int(&intval);
+		} else {
+			return 0;
+		}
+	}
 	return g_value_get_int(value);
 }
 
