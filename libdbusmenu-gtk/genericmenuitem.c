@@ -112,6 +112,18 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 
 	item->priv->check_type = check_type;
 
+	switch (item->priv->check_type) {
+	case GENERICMENUITEM_CHECK_TYPE_NONE:
+		break;
+	case GENERICMENUITEM_CHECK_TYPE_CHECKBOX:
+		break;
+	case GENERICMENUITEM_CHECK_TYPE_RADIO:
+		break;
+	default:
+		g_warning("Generic Menuitem invalid check type: %d", check_type);
+		return;
+	}
+
 	gtk_widget_queue_draw(GTK_WIDGET(item));
 
 	return;
@@ -134,6 +146,18 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	}
 
 	item->priv->state = state;
+
+	switch (item->priv->state) {
+	case GENERICMENUITEM_STATE_UNCHECKED:
+		break;
+	case GENERICMENUITEM_STATE_CHECKED:
+		break;
+	case GENERICMENUITEM_STATE_INDETERMINATE:
+		break;
+	default:
+		g_warning("Generic Menuitem invalid check state: %d", state);
+		return;
+	}
 
 	gtk_widget_queue_draw(GTK_WIDGET(item));
 

@@ -40,7 +40,7 @@ struct _Genericmenuitem {
 enum _GenericmenuitemCheckType {
 	GENERICMENUITEM_CHECK_TYPE_NONE,
 	GENERICMENUITEM_CHECK_TYPE_CHECKBOX,
-	GENErICMENUITEM_CHECK_TYPE_RADIO
+	GENERICMENUITEM_CHECK_TYPE_RADIO
 };
 
 enum _GenericmenuitemState {
