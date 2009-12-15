@@ -694,6 +694,24 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 	return dbusmenu_menuitem_property_set_value(mi, property, &val);
 }
 
+gboolean
+dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value)
+{
+	GValue val = {0};
+	g_value_init(&val, G_TYPE_BOOLEAN);
+	g_value_set_boolean(&val, value);
+	return dbusmenu_menuitem_property_set_value(mi, property, &val);
+}
+
+gboolean
+dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value)
+{
+	GValue val = {0};
+	g_value_init(&val, G_TYPE_INT);
+	g_value_set_int(&val, value);
+	return dbusmenu_menuitem_property_set_value(mi, property, &val);
+}
+
 /**
 	dbusmenu_menuitem_property_set:
 	@mi: The #DbusmenuMenuitem to set the property on.
@@ -786,6 +804,24 @@ dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * prope
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
 	return (const GValue *)g_hash_table_lookup(priv->properties, property);
+}
+
+gboolean
+dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property)
+{
+	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
+	if (value == NULL) return FALSE;
+	if (G_VALUE_TYPE(value) != G_TYPE_BOOLEAN) return FALSE;
+	return g_value_get_boolean(value);
+}
+
+gint
+dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property)
+{
+	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
+	if (value == NULL) return 0;
+	if (G_VALUE_TYPE(value) != G_TYPE_INT) return 0;
+	return g_value_get_int(value);
 }
 
 
