@@ -15,6 +15,8 @@ libdbusmenu_gtkinclude_HEADERS = \
 libdbusmenu_gtk_la_SOURCES = \
 	client.h \
 	client.c \
+	genericmenuitem.h \
+	genericmenuitem.c \
 	menu.h \
 	menu.c \
 	menuitem.h \
