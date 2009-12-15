@@ -48,8 +48,8 @@ static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint n
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
-static void process_visible (GtkMenuItem * gmi, const GValue * value);
-static void process_sensitive (GtkMenuItem * gmi, const GValue * value);
+static void process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value);
+static void process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value);
 static void image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata);
 
 /* GObject Stuff */
@@ -114,9 +114,14 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 
 /* Process the visible property */
 static void
-process_visible (GtkMenuItem * gmi, const GValue * value)
+process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
-	if (value == NULL || !g_strcmp0(g_value_get_string(value), "true")) {
+	gboolean val = TRUE;
+	if (value != NULL) {
+		val = dbusmenu_menuitem_property_get_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE);
+	}
+
+	if (val) {
 		gtk_widget_show(GTK_WIDGET(gmi));
 	} else {
 		gtk_widget_hide(GTK_WIDGET(gmi));
@@ -126,13 +131,13 @@ process_visible (GtkMenuItem * gmi, const GValue * value)
 
 /* Process the sensitive property */
 static void
-process_sensitive (GtkMenuItem * gmi, const GValue * value)
+process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
-	if (value == NULL || !g_strcmp0(g_value_get_string(value), "true")) {
-		gtk_widget_set_sensitive(GTK_WIDGET(gmi), TRUE);
-	} else {
-		gtk_widget_set_sensitive(GTK_WIDGET(gmi), FALSE);
+	gboolean val = TRUE;
+	if (value != NULL) {
+		val = dbusmenu_menuitem_property_get_bool(mi, DBUSMENU_MENUITEM_PROP_SENSITIVE);
 	}
+	gtk_widget_set_sensitive(GTK_WIDGET(gmi), val);
 	return;
 }
 
@@ -144,9 +149,9 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMen
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
 		gtk_menu_item_set_label(gmi, g_value_get_string(value));
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
-		process_visible(gmi, value);
+		process_visible(mi, gmi, value);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SENSITIVE)) {
-		process_sensitive(gmi, value);
+		process_sensitive(mi, gmi, value);
 	}
 
 	return;
@@ -227,8 +232,8 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	/* Life insurance */
 	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
-	process_visible(gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
-	process_sensitive(gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
+	process_visible(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
+	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
 
 	if (parent != NULL) {
 		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
