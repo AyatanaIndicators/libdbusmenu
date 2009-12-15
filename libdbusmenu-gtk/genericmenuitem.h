@@ -14,9 +14,11 @@ G_BEGIN_DECLS
 #define IS_GENERICMENUITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GENERICMENUITEM_TYPE))
 #define GENERICMENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GENERICMENUITEM_TYPE, GenericmenuitemClass))
 
-typedef struct _Genericmenuitem        Genericmenuitem;
-typedef struct _GenericmenuitemClass   GenericmenuitemClass;
-typedef struct _GenericmenuitemPrivate GenericmenuitemPrivate;
+typedef struct _Genericmenuitem           Genericmenuitem;
+typedef struct _GenericmenuitemClass      GenericmenuitemClass;
+typedef struct _GenericmenuitemPrivate    GenericmenuitemPrivate;
+typedef enum   _GenericmenuitemCheckType  GenericmenuitemCheckType;
+typedef enum   _GenericmenuitemState      GenericmenuitemState;
 
 /**
 	GenericmenuitemClass:
@@ -33,6 +35,18 @@ struct _GenericmenuitemClass {
 struct _Genericmenuitem {
 	GtkCheckMenuItem parent;
 	GenericmenuitemPrivate * priv;
+};
+
+enum _GenericmenuitemCheckType {
+	GENERICMENUITEM_CHECK_TYPE_NONE,
+	GENERICMENUITEM_CHECK_TYPE_CHECKBOX,
+	GENErICMENUITEM_CHECK_TYPE_RADIO
+};
+
+enum _GenericmenuitemState {
+	GENERICMENUITEM_STATE_UNCHECKED,
+	GENERICMENUITEM_STATE_CHECKED,
+	GENERICMENUITEM_STATE_INDETERMINATE
 };
 
 GType genericmenuitem_get_type (void);

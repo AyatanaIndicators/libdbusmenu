@@ -5,8 +5,8 @@
 #include "genericmenuitem.h"
 
 struct _GenericmenuitemPrivate {
-	int checkbox_type;
-	int state;
+	GenericmenuitemCheckType   check_type;
+	GenericmenuitemState       state;
 };
 
 #define GENERICMENUITEM_GET_PRIVATE(o) \
@@ -45,6 +45,9 @@ static void
 genericmenuitem_init (Genericmenuitem *self)
 {
 	self->priv = GENERICMENUITEM_GET_PRIVATE(self);
+
+	self->priv->check_type = GENERICMENUITEM_CHECK_TYPE_NONE;
+	self->priv->state = GENERICMENUITEM_STATE_UNCHECKED;
 
 	return;
 }
