@@ -694,6 +694,21 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 	return dbusmenu_menuitem_property_set_value(mi, property, &val);
 }
 
+/**
+	dbusmenu_menuitem_property_set_bool:
+	@mi: The #DbusmenuMenuitem to set the property on.
+	@property: Name of the property to set.
+	@value: The value of the property.
+
+	Takes a boolean @value and sets it on @property as a
+	property on @mi.  If a property already exists by that name,
+	then the value is set to the new value.  If not, the property
+	is added.  If the value is changed or the property was previously
+	unset then the signal #DbusmenuMenuitem::prop-changed will be
+	emitted by this function.
+
+	Return value:  A boolean representing if the property value was set.
+*/
 gboolean
 dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value)
 {
@@ -703,6 +718,21 @@ dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * proper
 	return dbusmenu_menuitem_property_set_value(mi, property, &val);
 }
 
+/**
+	dbusmenu_menuitem_property_set_int:
+	@mi: The #DbusmenuMenuitem to set the property on.
+	@property: Name of the property to set.
+	@value: The value of the property.
+
+	Takes a boolean @value and sets it on @property as a
+	property on @mi.  If a property already exists by that name,
+	then the value is set to the new value.  If not, the property
+	is added.  If the value is changed or the property was previously
+	unset then the signal #DbusmenuMenuitem::prop-changed will be
+	emitted by this function.
+
+	Return value:  A boolean representing if the property value was set.
+*/
 gboolean
 dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value)
 {
@@ -806,6 +836,16 @@ dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * prope
 	return (const GValue *)g_hash_table_lookup(priv->properties, property);
 }
 
+/**
+	dbusmenu_menuitem_property_get_bool:
+	@mi: The #DbusmenuMenuitem to look for the property on.
+	@property: The property to grab.
+
+	Look up a property on @mi and return the value of it if
+	it exits.  Returns #FALSE if the property doesn't exist.
+
+	Return value: The value of the property or #FALSE.
+*/
 gboolean
 dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property)
 {
@@ -815,6 +855,16 @@ dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * proper
 	return g_value_get_boolean(value);
 }
 
+/**
+	dbusmenu_menuitem_property_get_int:
+	@mi: The #DbusmenuMenuitem to look for the property on.
+	@property: The property to grab.
+
+	Look up a property on @mi and return the value of it if
+	it exits.  Returns zero if the property doesn't exist.
+
+	Return value: The value of the property or zero.
+*/
 gint
 dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property)
 {
