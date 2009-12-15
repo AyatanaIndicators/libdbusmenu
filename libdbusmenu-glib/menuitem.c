@@ -26,6 +26,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 */
 
+#include <stdlib.h>
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -89,6 +90,8 @@ static void dbusmenu_menuitem_dispose    (GObject *object);
 static void dbusmenu_menuitem_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
+static void g_value_transform_STRING_BOOLEAN (const GValue * in, GValue * out);
+static void g_value_transform_STRING_INT (const GValue * in, GValue * out);
 
 /* GObject stuff */
 G_DEFINE_TYPE (DbusmenuMenuitem, dbusmenu_menuitem, G_TYPE_OBJECT);
@@ -208,6 +211,37 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 												  0, 30000, 0,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
+	/* Check transfer functions for GValue */
+	if (!g_value_type_transformable(G_TYPE_STRING, G_TYPE_BOOLEAN)) {
+		g_value_register_transform_func(G_TYPE_STRING, G_TYPE_BOOLEAN, g_value_transform_STRING_BOOLEAN);
+	}
+	if (!g_value_type_transformable(G_TYPE_STRING, G_TYPE_INT)) {
+		g_value_register_transform_func(G_TYPE_STRING, G_TYPE_INT, g_value_transform_STRING_INT);
+	}
+
+	return;
+}
+
+/* A little helper function to translate a string into
+   a boolean value */
+static void
+g_value_transform_STRING_BOOLEAN (const GValue * in, GValue * out)
+{
+	const gchar * string = g_value_get_string(in);
+	if (!g_strcmp0(string, "TRUE") || !g_strcmp0(string, "true") || !g_strcmp0(string, "True")) {
+		g_value_set_boolean(out, TRUE);
+	} else {
+		g_value_set_boolean(out, FALSE);
+	}
+	return;
+}
+
+/* A little helper function to translate a string into
+   a integer value */
+static void
+g_value_transform_STRING_INT (const GValue * in, GValue * out)
+{
+	g_value_set_int(out, atoi(g_value_get_string(in)));
 	return;
 }
 
