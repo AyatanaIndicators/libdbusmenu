@@ -94,3 +94,48 @@ draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area)
 	}
 	return;
 }
+
+/**
+	genericmenuitem_set_check_type:
+	@item: #Genericmenuitem to set the type on
+	@check_type: Which type of check should be displayed
+
+	This function changes the type of the checkmark that
+	appears in the left hand gutter for the menuitem.
+*/
+void
+genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType check_type)
+{
+	if (item->priv->check_type == check_type) {
+		return;
+	}
+
+	item->priv->check_type = check_type;
+
+	gtk_widget_queue_draw(GTK_WIDGET(item));
+
+	return;
+}
+
+/**
+	genericmenuitem_set_state:
+	@item: #Genericmenuitem to set the type on
+	@check_type: What is the state of the check 
+
+	Sets the state of the check in the menu item.  It does
+	not require, but isn't really useful if the type of
+	check that the menuitem is set to #GENERICMENUITEM_CHECK_TYPE_NONE.
+*/
+void
+genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
+{
+	if (item->priv->state == state) {
+		return;
+	}
+
+	item->priv->state = state;
+
+	gtk_widget_queue_draw(GTK_WIDGET(item));
+
+	return;
+}
