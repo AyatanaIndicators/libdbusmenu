@@ -211,6 +211,13 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	return;
 }
 
+/**
+	genericmenuitem_set_image:
+	@item: A #Genericmenuitem
+	@image: The image to set as the image of @item
+
+	Sets the image of the menu item.
+*/
 void
 genericmenuitem_set_image (Genericmenuitem * item, GtkWidget * image)
 {
@@ -219,6 +226,15 @@ genericmenuitem_set_image (Genericmenuitem * item, GtkWidget * image)
 	return;
 }
 
+/**
+	genericmenuitem_get_image:
+	@item: A #Genericmenuitem
+
+	Returns the image if there is one.
+
+	Return value: A pointer to the image of the item or #NULL
+		if there isn't one.
+*/
 GtkWidget *
 genericmenuitem_get_image (Genericmenuitem * item)
 {
