@@ -101,10 +101,50 @@ draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area)
 	return;
 }
 
+/* A small helper to look through the widgets in the
+   box and find the one that is the label. */
+static void
+set_label_helper (GtkWidget * widget, gpointer data)
+{
+	GtkWidget ** labelval = (GtkWidget **)data;
+	if (GTK_IS_LABEL(widget)) {
+		*labelval = widget;
+	}
+	return;
+}
+
 /* Set the label on the item */
 static void
 set_label (GtkMenuItem * menu_item, const gchar * label)
 {
+	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
+
+	if (child == NULL) {
+		GtkWidget * labelw = gtk_label_new(label);
+		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
+		gtk_container_add(GTK_CONTAINER(menu_item), labelw);
+	} else if (GTK_IS_LABEL(child)) {
+		gtk_label_set_label(GTK_LABEL(child), label);
+	} else if (GTK_IS_BOX(child)) {
+		GtkWidget * labelw = NULL;
+		/* Look for the label */
+		gtk_container_foreach(GTK_CONTAINER(child), set_label_helper, &labelw);
+		
+		if (labelw == NULL) {
+			/* We don't have a label, so we need to build */
+			labelw = gtk_label_new(label);
+			gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
+			gtk_box_pack_end(GTK_BOX(child), labelw, TRUE, TRUE, 0);
+		} else {
+			/* We can reset the label that we have. */
+			gtk_label_set_label(GTK_LABEL(labelw), label);
+		}
+	} else {
+		g_error("Generic item in an indeterminate state.");
+		return;
+	}
+
+	g_object_notify(G_OBJECT(menu_item), "label");
 
 	return;
 }
