@@ -24,6 +24,8 @@ static void genericmenuitem_init       (Genericmenuitem *self);
 static void genericmenuitem_dispose    (GObject *object);
 static void genericmenuitem_finalize   (GObject *object);
 static void draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area);
+static void set_label (GtkMenuItem * menu_item, const gchar * label);
+static const gchar * get_label (GtkMenuItem * menu_item);
 
 /* GObject stuff */
 G_DEFINE_TYPE (Genericmenuitem, genericmenuitem, GTK_TYPE_CHECK_MENU_ITEM);
@@ -47,6 +49,10 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 
 	parent_draw_indicator = check_class->draw_indicator;
 	check_class->draw_indicator = draw_indicator;
+
+	GtkMenuItemClass * menuitem_class = GTK_MENU_ITEM_CLASS (klass);
+	menuitem_class->set_label = set_label;
+	menuitem_class->get_label = get_label;
 
 	return;
 }
@@ -93,6 +99,23 @@ draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area)
 		parent_draw_indicator(check_menu_item, area);
 	}
 	return;
+}
+
+/* Set the label on the item */
+static void
+set_label (GtkMenuItem * menu_item, const gchar * label)
+{
+
+	return;
+}
+
+/* Get the text of the label for the item */
+static const gchar *
+get_label (GtkMenuItem * menu_item)
+{
+
+
+	return NULL;
 }
 
 /**
@@ -186,4 +209,20 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	gtk_widget_queue_draw(GTK_WIDGET(item));
 
 	return;
+}
+
+void
+genericmenuitem_set_image (Genericmenuitem * item, GtkWidget * image)
+{
+
+
+	return;
+}
+
+GtkWidget *
+genericmenuitem_get_image (Genericmenuitem * item)
+{
+
+
+	return NULL;
 }
