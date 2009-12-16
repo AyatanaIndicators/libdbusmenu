@@ -111,13 +111,23 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 	}
 
 	item->priv->check_type = check_type;
+	GValue value = {0};
 
 	switch (item->priv->check_type) {
 	case GENERICMENUITEM_CHECK_TYPE_NONE:
+		/* We don't need to do anything here as we're queuing the
+		   draw and then when it draws it'll avoid drawing the
+		   check on the item. */
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_CHECKBOX:
+		g_value_init(&value, G_TYPE_BOOLEAN);
+		g_value_set_boolean(&value, FALSE);
+		g_object_set_property(G_OBJECT(item), "draw-as-radio", &value);
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_RADIO:
+		g_value_init(&value, G_TYPE_BOOLEAN);
+		g_value_set_boolean(&value, TRUE);
+		g_object_set_property(G_OBJECT(item), "draw-as-radio", &value);
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check type: %d", check_type);
@@ -146,13 +156,27 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	}
 
 	item->priv->state = state;
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_BOOLEAN);
 
 	switch (item->priv->state) {
 	case GENERICMENUITEM_STATE_UNCHECKED:
+		g_value_set_boolean(&value, FALSE);
+		g_object_set_property(G_OBJECT(item), "active", &value);
+		g_value_set_boolean(&value, FALSE);
+		g_object_set_property(G_OBJECT(item), "inconsistent", &value);
 		break;
 	case GENERICMENUITEM_STATE_CHECKED:
+		g_value_set_boolean(&value, TRUE);
+		g_object_set_property(G_OBJECT(item), "active", &value);
+		g_value_set_boolean(&value, FALSE);
+		g_object_set_property(G_OBJECT(item), "inconsistent", &value);
 		break;
 	case GENERICMENUITEM_STATE_INDETERMINATE:
+		g_value_set_boolean(&value, TRUE);
+		g_object_set_property(G_OBJECT(item), "active", &value);
+		g_value_set_boolean(&value, TRUE);
+		g_object_set_property(G_OBJECT(item), "inconsistent", &value);
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check state: %d", state);
