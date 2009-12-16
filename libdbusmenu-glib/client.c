@@ -333,7 +333,7 @@ id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, 
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	dbusmenu_menuitem_property_set(menuitem, property, g_value_get_string(value));
+	dbusmenu_menuitem_property_set_value(menuitem, property, value);
 	return;
 }
 
@@ -568,7 +568,7 @@ parse_node_get_id (xmlNodePtr node)
 static void
 get_properties_helper (gpointer key, gpointer value, gpointer data)
 {
-	dbusmenu_menuitem_property_set((DbusmenuMenuitem *)data, (gchar *)key, g_value_get_string((GValue *)value));
+	dbusmenu_menuitem_property_set_value((DbusmenuMenuitem *)data, (gchar *)key, (GValue *)value);
 	return;
 }
 
