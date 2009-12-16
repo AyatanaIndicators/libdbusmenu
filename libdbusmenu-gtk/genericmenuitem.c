@@ -123,6 +123,7 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 		GtkWidget * labelw = gtk_label_new(label);
 		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
 		gtk_container_add(GTK_CONTAINER(menu_item), labelw);
+		gtk_widget_show(labelw);
 	} else if (GTK_IS_LABEL(child)) {
 		gtk_label_set_label(GTK_LABEL(child), label);
 	} else if (GTK_IS_BOX(child)) {
@@ -135,6 +136,7 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 			labelw = gtk_label_new(label);
 			gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
 			gtk_box_pack_end(GTK_BOX(child), labelw, TRUE, TRUE, 0);
+			gtk_widget_show(labelw);
 		} else {
 			/* We can reset the label that we have. */
 			gtk_label_set_label(GTK_LABEL(labelw), label);
