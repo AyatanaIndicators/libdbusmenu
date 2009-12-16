@@ -49,14 +49,14 @@ enum _GenericmenuitemState {
 	GENERICMENUITEM_STATE_INDETERMINATE
 };
 
-GType genericmenuitem_get_type              (void);
-void  genericmenuitem_set_check_type        (Genericmenuitem * item,
-                                             GenericmenuitemCheckType check_type);
-void  genericmenuitem_set_state             (Genericmenuitem * item,
-                                             GenericmenuitemState state);
-void  genericmenuitem_set_image             (Genericmenuitem * item,
-                                             GtkWidget * image);
-GtkWidget * genericmenuitem_get_image       (Genericmenuitem * item);
+GType        genericmenuitem_get_type        (void);
+void         genericmenuitem_set_check_type  (Genericmenuitem *         item,
+                                              GenericmenuitemCheckType  check_type);
+void         genericmenuitem_set_state       (Genericmenuitem *         item,
+                                              GenericmenuitemState      state);
+void         genericmenuitem_set_image       (Genericmenuitem *         item,
+                                              GtkWidget *               image);
+GtkWidget *  genericmenuitem_get_image       (Genericmenuitem *         item);
 
 G_END_DECLS
 
