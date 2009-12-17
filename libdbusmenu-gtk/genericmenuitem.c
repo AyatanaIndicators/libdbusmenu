@@ -26,6 +26,7 @@ static void genericmenuitem_finalize   (GObject *object);
 static void draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area);
 static void set_label (GtkMenuItem * menu_item, const gchar * label);
 static const gchar * get_label (GtkMenuItem * menu_item);
+static void activate (GtkMenuItem * menu_item);
 
 /* GObject stuff */
 G_DEFINE_TYPE (Genericmenuitem, genericmenuitem, GTK_TYPE_CHECK_MENU_ITEM);
@@ -53,6 +54,7 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 	GtkMenuItemClass * menuitem_class = GTK_MENU_ITEM_CLASS (klass);
 	menuitem_class->set_label = set_label;
 	menuitem_class->get_label = get_label;
+	menuitem_class->activate = activate;
 
 	return;
 }
@@ -162,6 +164,14 @@ get_label (GtkMenuItem * menu_item)
 	return NULL;
 }
 
+/* Make sure we don't toggle when there is an
+   activate like a normal check menu item. */
+static void
+activate (GtkMenuItem * menu_item)
+{
+	return;
+}
+
 /**
 	genericmenuitem_set_check_type:
 	@item: #Genericmenuitem to set the type on
@@ -223,31 +233,36 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	}
 
 	item->priv->state = state;
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_BOOLEAN);
+
+	GtkCheckMenuItem * check = GTK_CHECK_MENU_ITEM(item);
+
+	gboolean old_active = check->active;
+	gboolean old_inconsist = check->inconsistent;
 
 	switch (item->priv->state) {
 	case GENERICMENUITEM_STATE_UNCHECKED:
-		g_value_set_boolean(&value, FALSE);
-		g_object_set_property(G_OBJECT(item), "active", &value);
-		g_value_set_boolean(&value, FALSE);
-		g_object_set_property(G_OBJECT(item), "inconsistent", &value);
+		check->active = FALSE;
+		check->inconsistent = FALSE;
 		break;
 	case GENERICMENUITEM_STATE_CHECKED:
-		g_value_set_boolean(&value, TRUE);
-		g_object_set_property(G_OBJECT(item), "active", &value);
-		g_value_set_boolean(&value, FALSE);
-		g_object_set_property(G_OBJECT(item), "inconsistent", &value);
+		check->active = TRUE;
+		check->inconsistent = FALSE;
 		break;
 	case GENERICMENUITEM_STATE_INDETERMINATE:
-		g_value_set_boolean(&value, TRUE);
-		g_object_set_property(G_OBJECT(item), "active", &value);
-		g_value_set_boolean(&value, TRUE);
-		g_object_set_property(G_OBJECT(item), "inconsistent", &value);
+		check->active = TRUE;
+		check->inconsistent = TRUE;
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check state: %d", state);
 		return;
+	}
+
+	if (old_active != check->active) {
+		g_object_notify(G_OBJECT(item), "active");
+	}
+
+	if (old_inconsist != check->inconsistent) {
+		g_object_notify(G_OBJECT(item), "inconsistent");
 	}
 
 	gtk_widget_queue_draw(GTK_WIDGET(item));
