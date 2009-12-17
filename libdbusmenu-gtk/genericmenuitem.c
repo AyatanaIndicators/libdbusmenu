@@ -148,37 +148,66 @@ static void
 set_label (GtkMenuItem * menu_item, const gchar * label)
 {
 	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
+	GtkLabel * labelw = NULL;
+	gboolean suppress_update = FALSE;
 
-	if (child == NULL) {
-		GtkWidget * labelw = gtk_label_new(label);
-		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
-		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
-		gtk_container_add(GTK_CONTAINER(menu_item), labelw);
-		gtk_widget_show(labelw);
-	} else if (GTK_IS_LABEL(child)) {
-		gtk_label_set_label(GTK_LABEL(child), label);
-	} else if (GTK_IS_BOX(child)) {
-		GtkWidget * labelw = NULL;
-		/* Look for the label */
-		gtk_container_foreach(GTK_CONTAINER(child), set_label_helper, &labelw);
-		
-		if (labelw == NULL) {
-			/* We don't have a label, so we need to build */
-			labelw = gtk_label_new(label);
-			gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
-			gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
-			gtk_box_pack_end(GTK_BOX(child), labelw, TRUE, TRUE, 0);
-			gtk_widget_show(labelw);
+	/* Try to find if we have a label already */
+	if (child != NULL) {
+		if (GTK_IS_LABEL(child)) {
+			/* We've got a label, let's update it. */
+			labelw = GTK_LABEL(child);
+		} else if (GTK_IS_BOX(child)) {
+			/* Look for the label in the box */
+			gtk_container_foreach(GTK_CONTAINER(child), set_label_helper, &labelw);
 		} else {
-			/* We can reset the label that we have. */
-			gtk_label_set_label(GTK_LABEL(labelw), label);
+			/* We need to put the child into a new box and
+			   make the box the child of the menu item.  Basically
+			   we're inserting a box in the middle. */
+			GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+			g_object_ref(child);
+			gtk_container_remove(GTK_CONTAINER(menu_item), child);
+			gtk_box_pack_start(GTK_BOX(hbox), child, FALSE, FALSE, 0);
+			gtk_container_add(GTK_CONTAINER(menu_item), hbox);
+			gtk_widget_show(hbox);
+			g_object_unref(child);
+			child = hbox;
+			/* It's important to notice that labelw is not set
+			   by this condition.  There was no label to find. */
 		}
-	} else {
-		g_error("Generic item in an indeterminate state.");
-		return;
 	}
 
-	g_object_notify(G_OBJECT(menu_item), "label");
+	/* No we can see if we need to ethier build a label or just
+	   update the one that we already have. */
+	if (labelw == NULL) {
+		/* Build it */
+		labelw = GTK_LABEL(gtk_label_new(label));
+		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
+		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
+		gtk_widget_show(GTK_WIDGET(labelw));
+
+		/* Check to see if it needs to be in the bin for this
+		   menu item or whether it gets packed in a box. */
+		if (child == NULL) {
+			gtk_container_add(GTK_CONTAINER(menu_item), GTK_WIDGET(labelw));
+		} else {
+			gtk_box_pack_end(GTK_BOX(child), GTK_WIDGET(labelw), TRUE, TRUE, 0);
+		}
+	} else {
+		/* Oh, just an update.  No biggie. */
+		if (!g_strcmp0(label, gtk_label_get_label(labelw))) {
+			/* The only reason to suppress the update is if we had
+			   a label and the value was the same as the one we're
+			   getting in. */
+			suppress_update = TRUE;
+		} else {
+			gtk_label_set_label(labelw, label);
+		}
+	}
+
+	/* If we changed the value, tell folks. */
+	if (!suppress_update) {
+		g_object_notify(G_OBJECT(menu_item), "label");
+	}
 
 	return;
 }
@@ -187,7 +216,23 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 static const gchar *
 get_label (GtkMenuItem * menu_item)
 {
+	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
+	GtkLabel * labelw = NULL;
 
+	/* Try to find if we have a label already */
+	if (child != NULL) {
+		if (GTK_IS_LABEL(child)) {
+			/* We've got a label, let's update it. */
+			labelw = GTK_LABEL(child);
+		} else if (GTK_IS_BOX(child)) {
+			/* Look for the label in the box */
+			gtk_container_foreach(GTK_CONTAINER(child), set_label_helper, &labelw);
+		}
+	}
+
+	if (labelw != NULL) {
+		return gtk_label_get_label(labelw);
+	}
 
 	return NULL;
 }
