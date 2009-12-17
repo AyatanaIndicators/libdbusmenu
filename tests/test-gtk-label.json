@@ -319,4 +319,53 @@ QmCC",
 		 "label": "down"}
 	 ]
 	},
+	{"id": 1, "type": "menuitem",
+	 "label": "value1",
+	 "submenu": [
+	 	{"id": 30,
+		 "label": "No check (empty)",
+		 "toggle-type": "none"
+		 },
+	 	{"id": 31,
+		 "label": "No check (checked)",
+		 "toggle-type": "none",
+		 "toggle-checked": "checked"
+		 },
+	 	{"id": 32,
+		 "label": "No check (????)",
+		 "toggle-type": "none",
+		 "toggle-checked": "indeterminate"
+		 },
+	 	{"id": 33,
+		 "label": "Check (empty)",
+		 "toggle-type": "checkbox",
+		 "toggle-checked": "unchecked"
+		 },
+	 	{"id": 34,
+		 "label": "Check (checked)",
+		 "toggle-type": "checkbox",
+		 "toggle-checked": "checked"
+		 },
+	 	{"id": 35,
+		 "label": "Check (?????)",
+		 "toggle-type": "checkbox",
+		 "toggle-checked": "indeterminate"
+		 },
+	 	{"id": 36,
+		 "label": "Radio (empty)",
+		 "toggle-type": "radio",
+		 "toggle-checked": "unchecked"
+		 },
+	 	{"id": 37,
+		 "label": "Radio (checked)",
+		 "toggle-type": "radio",
+		 "toggle-checked": "checked"
+		 },
+	 	{"id": 38,
+		 "label": "Radio (?????)",
+		 "toggle-type": "radio",
+		 "toggle-checked": "indeterminate"
+		 }
+	 ]
+	},
 ]
