@@ -376,7 +376,7 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 		} else if (GTK_IS_BOX(child)) {
 			/* Look for the label in the box */
 			gtk_container_foreach(GTK_CONTAINER(child), set_image_helper, &imagew);
-		} else {
+		} else if (image != NULL) {
 			/* We need to put the child into a new box and
 			   make the box the child of the menu item.  Basically
 			   we're inserting a box in the middle. */
@@ -401,10 +401,14 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 
 	/* Check to see if it needs to be in the bin for this
 	   menu item or whether it gets packed in a box. */
-	if (child == NULL) {
-		gtk_container_add(GTK_CONTAINER(menu_item), GTK_WIDGET(image));
-	} else {
-		gtk_box_pack_start(GTK_BOX(child), GTK_WIDGET(image), FALSE, FALSE, 0);
+	if (image != NULL) {
+		if (child == NULL) {
+			gtk_container_add(GTK_CONTAINER(menu_item), GTK_WIDGET(image));
+		} else {
+			gtk_box_pack_start(GTK_BOX(child), GTK_WIDGET(image), FALSE, FALSE, 0);
+		}
+
+		gtk_widget_show(image);
 	}
 
 	return;
