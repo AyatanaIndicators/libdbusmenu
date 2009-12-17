@@ -152,9 +152,11 @@ main (int argc, char ** argv)
 {
 	gtk_init(&argc, &argv);
 
+	g_debug("Client Initialized.  Waiting.");
 	/* Make sure the server starts up and all that */
 	g_usleep(500000);
 
+	g_debug("Building Window");
 	GtkWidget * window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	GtkWidget * menubar = gtk_menu_bar_new();
 	GtkWidget * menuitem = gtk_menu_item_new_with_label("Test");
@@ -168,6 +170,7 @@ main (int argc, char ** argv)
 
 	death_timer = g_timeout_add_seconds(60, timer_func, window);
 
+	g_debug("Entering Mainloop");
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
 
