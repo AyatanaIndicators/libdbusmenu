@@ -205,43 +205,43 @@
 	 "label": "value1",
 	 "submenu": [
 	 	{"id": 80,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-angel",
 		 "label": "angel"},
 	 	{"id": 81,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-angry",
 		 "label": "angry"},
 	 	{"id": 82,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-cool",
 		 "label": "cool"},
 	 	{"id": 83,
-		 "type":"imageitem",
+		 "type":"menuitem",
 		 "icon": "face-devilish",
 		 "label": "devilish"},
 	 	{"id": 84,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-embarrassed",
 		 "label": "embarrassed"},
 	 	{"id": 85,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-kiss",
 		 "label": "kiss"},
 	 	{"id": 86,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-laugh",
 		 "label": "laugh"},
 	 	{"id": 87,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-monkey",
 		 "label": "monkey"},
 	 	{"id": 88,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-sad",
 		 "label": "sad"},
 	 	{"id": 89,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "face-sick",
 		 "label": "sick"}
 	 ]
@@ -250,7 +250,7 @@
 	 "label": "value1",
 	 "submenu": [
 	 	{"id": 90,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon-data":
 "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACPUlEQVR4nGJgoBAAAAAA///Ch1gW
 BzK0LQ5iaGNgYGDBpQgAAAD//8KpeY4/Q9+DCV7/H/S4/p8byDABlyEAAAAA///CqnluAMOEx5O8
@@ -266,7 +266,7 @@ Bi8YEIEIBwAAAAD//8JmAAcDA4MAlEYGPxgYGD5AaTgAAAAA//8DAD6xjTP5Y+A7AAAAAElFTkSu
 QmCC",
 		 "label": "up"},
 	 	{"id": 91,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon-data":
 "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACl0lEQVR4nGJgoBAAAAAA//9ixCLG
 sSWS4bs0B1QWip/+YGDwWcLAycDA8ANZMQAAAP//YsFigIA0JwODdvIsBob/fxgY/vxk+P/7OwPD
@@ -283,7 +283,7 @@ AwODR18kw4UJ0QyX8WkGAAAA///ClpkYoAolGBgYFKBqHjAwMDxnYGD4ha4QAAAA///CZQDMEG4o
 +ys2zQwMDAwAAAAA//8DAAF5nhyE7tENAAAAAElFTkSuQmCC",
 		 "label": "down"},
 	 	{"id": 92,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "up",
 		 "icon-data":
 "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACl0lEQVR4nGJgoBAAAAAA//9ixCLG
@@ -301,7 +301,7 @@ AwODR18kw4UJ0QyX8WkGAAAA///ClpkYoAolGBgYFKBqHjAwMDxnYGD4ha4QAAAA///CZQDMEG4o
 +ys2zQwMDAwAAAAA//8DAAF5nhyE7tENAAAAAElFTkSuQmCC",
 		 "label": "up"},
 	 	{"id": 93,
-		 "type": "imageitem",
+		 "type": "menuitem",
 		 "icon": "down",
 		 "icon-data":
 "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACPUlEQVR4nGJgoBAAAAAA///Ch1gW
