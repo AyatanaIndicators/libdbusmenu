@@ -343,6 +343,18 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	return;
 }
 
+/* A small helper to look through the widgets in the
+   box and find the one that is the image. */
+static void
+set_image_helper (GtkWidget * widget, gpointer data)
+{
+	GtkWidget ** labelval = (GtkWidget **)data;
+	if (GTK_IS_IMAGE(widget)) {
+		*labelval = widget;
+	}
+	return;
+}
+
 /**
 	genericmenuitem_set_image:
 	@item: A #Genericmenuitem
@@ -351,9 +363,49 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	Sets the image of the menu item.
 */
 void
-genericmenuitem_set_image (Genericmenuitem * item, GtkWidget * image)
+genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 {
+	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
+	GtkImage * imagew = NULL;
 
+	/* Try to find if we have a label already */
+	if (child != NULL) {
+		if (GTK_IS_IMAGE(child)) {
+			/* We've got a label, let's update it. */
+			imagew = GTK_IMAGE(child);
+		} else if (GTK_IS_BOX(child)) {
+			/* Look for the label in the box */
+			gtk_container_foreach(GTK_CONTAINER(child), set_image_helper, &imagew);
+		} else {
+			/* We need to put the child into a new box and
+			   make the box the child of the menu item.  Basically
+			   we're inserting a box in the middle. */
+			GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+			g_object_ref(child);
+			gtk_container_remove(GTK_CONTAINER(menu_item), child);
+			gtk_box_pack_end(GTK_BOX(hbox), child, TRUE, TRUE, 0);
+			gtk_container_add(GTK_CONTAINER(menu_item), hbox);
+			gtk_widget_show(hbox);
+			g_object_unref(child);
+			child = hbox;
+			/* It's important to notice that imagew is not set
+			   by this condition.  There was no label to find. */
+		}
+	}
+
+	/* No we can see if we need to ethier replace and image or
+	   just put ourselves into the structures */
+	if (imagew != NULL) {
+		gtk_widget_destroy(GTK_WIDGET(imagew));
+	}
+
+	/* Check to see if it needs to be in the bin for this
+	   menu item or whether it gets packed in a box. */
+	if (child == NULL) {
+		gtk_container_add(GTK_CONTAINER(menu_item), GTK_WIDGET(image));
+	} else {
+		gtk_box_pack_start(GTK_BOX(child), GTK_WIDGET(image), FALSE, FALSE, 0);
+	}
 
 	return;
 }
@@ -368,9 +420,21 @@ genericmenuitem_set_image (Genericmenuitem * item, GtkWidget * image)
 		if there isn't one.
 */
 GtkWidget *
-genericmenuitem_get_image (Genericmenuitem * item)
+genericmenuitem_get_image (Genericmenuitem * menu_item)
 {
+	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
+	GtkWidget * imagew = NULL;
 
+	/* Try to find if we have a label already */
+	if (child != NULL) {
+		if (GTK_IS_IMAGE(child)) {
+			/* We've got a label, let's update it. */
+			imagew = child;
+		} else if (GTK_IS_BOX(child)) {
+			/* Look for the label in the box */
+			gtk_container_foreach(GTK_CONTAINER(child), set_image_helper, &imagew);
+		}
+	}
 
-	return NULL;
+	return imagew;
 }
