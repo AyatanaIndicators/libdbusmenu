@@ -142,6 +142,47 @@ process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * valu
 	return;
 }
 
+/* Process the sensitive property */
+static void
+process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+{
+	if (!IS_GENERICMENUITEM(gmi)) return;
+	if (G_VALUE_TYPE(value) != G_TYPE_STRING) return;
+
+	const gchar * strval = g_value_get_string(value);
+	GenericmenuitemCheckType type = GENERICMENUITEM_CHECK_TYPE_NONE;
+
+	if (!g_strcmp0(strval, "checkbox")) {
+		type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
+	} else if (!g_strcmp0(strval, "radio")) {
+		type = GENERICMENUITEM_CHECK_TYPE_RADIO;
+	}
+
+	genericmenuitem_set_check_type(GENERICMENUITEM(gmi), type);
+	
+	return;
+}
+
+/* Process the sensitive property */
+static void
+process_toggle_checked (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+{
+	if (!IS_GENERICMENUITEM(gmi)) return;
+	if (G_VALUE_TYPE(value) != G_TYPE_STRING) return;
+
+	const gchar * strval = g_value_get_string(value);
+	GenericmenuitemState state = GENERICMENUITEM_STATE_UNCHECKED;
+
+	if (!g_strcmp0(strval, "checked")) {
+		state = GENERICMENUITEM_STATE_CHECKED;
+	} else if (!g_strcmp0(strval, "indeterminate")) {
+		state = GENERICMENUITEM_STATE_INDETERMINATE;
+	}
+
+	genericmenuitem_set_state(GENERICMENUITEM(gmi), state);
+	return;
+}
+
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
@@ -153,6 +194,10 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMen
 		process_visible(mi, gmi, value);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SENSITIVE)) {
 		process_sensitive(mi, gmi, value);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE)) {
+		process_toggle_type(mi, gmi, value);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED)) {
+		process_toggle_checked(mi, gmi, value);
 	}
 
 	return;
@@ -233,9 +278,13 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	/* Life insurance */
 	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
+	/* Check our set of props to see if any are set already */
 	process_visible(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
 	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
+	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
+	process_toggle_checked(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED));
 
+	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
 		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
 	}
