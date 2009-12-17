@@ -147,15 +147,17 @@ static void
 process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
-	if (G_VALUE_TYPE(value) != G_TYPE_STRING) return;
 
-	const gchar * strval = g_value_get_string(value);
 	GenericmenuitemCheckType type = GENERICMENUITEM_CHECK_TYPE_NONE;
 
-	if (!g_strcmp0(strval, "checkbox")) {
-		type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
-	} else if (!g_strcmp0(strval, "radio")) {
-		type = GENERICMENUITEM_CHECK_TYPE_RADIO;
+	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
+		const gchar * strval = g_value_get_string(value);
+
+		if (!g_strcmp0(strval, "checkbox")) {
+			type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
+		} else if (!g_strcmp0(strval, "radio")) {
+			type = GENERICMENUITEM_CHECK_TYPE_RADIO;
+		}
 	}
 
 	genericmenuitem_set_check_type(GENERICMENUITEM(gmi), type);
@@ -168,15 +170,17 @@ static void
 process_toggle_checked (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
-	if (G_VALUE_TYPE(value) != G_TYPE_STRING) return;
 
-	const gchar * strval = g_value_get_string(value);
 	GenericmenuitemState state = GENERICMENUITEM_STATE_UNCHECKED;
 
-	if (!g_strcmp0(strval, "checked")) {
-		state = GENERICMENUITEM_STATE_CHECKED;
-	} else if (!g_strcmp0(strval, "indeterminate")) {
-		state = GENERICMENUITEM_STATE_INDETERMINATE;
+	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
+		const gchar * strval = g_value_get_string(value);
+
+		if (!g_strcmp0(strval, "checked")) {
+			state = GENERICMENUITEM_STATE_CHECKED;
+		} else if (!g_strcmp0(strval, "indeterminate")) {
+			state = GENERICMENUITEM_STATE_INDETERMINATE;
+		}
 	}
 
 	genericmenuitem_set_state(GENERICMENUITEM(gmi), state);
