@@ -30,15 +30,20 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include "menuitem-private.h"
 #include "server.h"
 #include "server-marshal.h"
 
 /* DBus Prototypes */
+static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revision, gchar ** layout, GError ** error);
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error);
-static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GHashTable ** dict, GError ** error);
-static gboolean _dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error);
+static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * properties, GHashTable ** dict, GError ** error);
+static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
+static gboolean _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, GError ** error);
 
 #include "dbusmenu-server.h"
+
+#define DBUSMENU_VERSION_NUMBER  1
 
 /* Privates, I'll show you mine... */
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
@@ -68,7 +73,7 @@ enum {
 	PROP_0,
 	PROP_DBUS_OBJECT,
 	PROP_ROOT_NODE,
-	PROP_LAYOUT
+	PROP_VERSION
 };
 
 /* Errors */
@@ -76,6 +81,7 @@ enum {
 	INVALID_MENUITEM_ID,
 	INVALID_PROPERTY_NAME,
 	UNKNOWN_DBUS_ERROR,
+	NOT_IMPLEMENTED,
 	LAST_ERROR
 };
 
@@ -122,8 +128,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, id_prop_update),
 	                                         NULL, NULL,
-	                                         _dbusmenu_server_marshal_VOID__UINT_STRING_STRING,
-	                                         G_TYPE_NONE, 3, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING);
+	                                         _dbusmenu_server_marshal_VOID__UINT_STRING_POINTER,
+	                                         G_TYPE_NONE, 3, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_VALUE);
 	/**
 		DbusmenuServer::id-update:
 		@arg0: The #DbusmenuServer emitting the signal.
@@ -145,6 +151,7 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 		@arg0: The #DbusmenuServer emitting the signal.
 		@arg1: A revision number representing which revision the update
 		       represents itself as.
+		@arg2: The ID of the parent for this update.
 
 		This signal is emitted any time the layout of the
 		menuitems under this server is changed.
@@ -154,8 +161,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, layout_update),
 	                                         NULL, NULL,
-	                                         g_cclosure_marshal_VOID__INT,
-	                                         G_TYPE_NONE, 1, G_TYPE_INT);
+	                                         _dbusmenu_server_marshal_VOID__INT_UINT,
+	                                         G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
 
 
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
@@ -168,10 +175,10 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                              "The base object of the menus that are served",
 	                                              DBUSMENU_TYPE_MENUITEM,
 	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-	g_object_class_install_property (object_class, PROP_LAYOUT,
-	                                 g_param_spec_string(DBUSMENU_SERVER_PROP_LAYOUT, "XML Layout of the menus",
-	                                              "A simple XML string that describes the layout of the menus",
-	                                              "<menu />",
+	g_object_class_install_property (object_class, PROP_VERSION,
+	                                 g_param_spec_uint(DBUSMENU_SERVER_PROP_VERSION, "Dbusmenu API version",
+	                                              "The version of the DBusmenu API that we're implementing.",
+	                                              DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER,
 	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	dbus_g_object_type_install_info(DBUSMENU_TYPE_SERVER, &dbus_glib__dbusmenu_server_object_info);
@@ -240,11 +247,8 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			g_debug("Setting root node to NULL");
 		}
 		priv->layout_revision++;
-		g_signal_emit(obj, signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
+		g_signal_emit(obj, signals[LAYOUT_UPDATE], 0, priv->layout_revision, 0, TRUE);
 		break;
-	case PROP_LAYOUT:
-		/* Can't set this, fall through to error */
-		g_warning("Can not set property: layout");
 	default:
 		g_return_if_reached();
 		break;
@@ -276,25 +280,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	case PROP_ROOT_NODE:
 		g_value_set_object(value, priv->root);
 		break;
-	case PROP_LAYOUT: {
-		GPtrArray * xmlarray = g_ptr_array_new();
-		if (priv->root == NULL) {
-			/* g_debug("Getting layout without root node!"); */
-			g_ptr_array_add(xmlarray, g_strdup_printf("<menu revision=\"%d\" />", priv->layout_revision));
-		} else {
-			dbusmenu_menuitem_buildxml(priv->root, xmlarray, priv->layout_revision);
-		}
-		g_ptr_array_add(xmlarray, NULL);
-
-		/* build string */
-		gchar * finalstring = g_strjoinv("", (gchar **)xmlarray->pdata);
-		g_value_take_string(value, finalstring);
-		/* g_debug("Final string: %s", finalstring); */
-
-		g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
-		g_ptr_array_free(xmlarray, TRUE);
+	case PROP_VERSION:
+		g_value_set_uint(value, DBUSMENU_VERSION_NUMBER);
 		break;
-	}
 	default:
 		g_return_if_reached();
 		break;
@@ -304,9 +292,12 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 }
 
 static void 
-menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * value, DbusmenuServer * server)
+menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, gchar * strvalue, DbusmenuServer * server)
 {
-	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, value, TRUE);
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_value_set_static_string(&value, strvalue);
+	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, &value, TRUE);
 	return;
 }
 
@@ -317,7 +308,7 @@ menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, 0, TRUE);
 	return;
 }
 
@@ -328,7 +319,7 @@ menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, Dbu
 	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, 0, TRUE);
 	return;
 }
 
@@ -337,7 +328,7 @@ menuitem_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, TRUE);
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATE], 0, priv->layout_revision, 0, TRUE);
 	return;
 }
 
@@ -376,6 +367,36 @@ error_quark (void)
 }
 
 /* DBus interface */
+static gboolean
+_dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revision, gchar ** layout, GError ** error)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	*revision = priv->layout_revision;
+	GPtrArray * xmlarray = g_ptr_array_new();
+
+	if (parent == 0) {
+		if (priv->root == NULL) {
+			/* g_debug("Getting layout without root node!"); */
+			g_ptr_array_add(xmlarray, g_strdup_printf("<menu revision=\"%d\" />", priv->layout_revision));
+		} else {
+			dbusmenu_menuitem_buildxml(priv->root, xmlarray, priv->layout_revision);
+		}
+	} else {
+		DbusmenuMenuitem * item = dbusmenu_menuitem_find_id(priv->root, parent);
+		dbusmenu_menuitem_buildxml(item, xmlarray, priv->layout_revision);
+	}
+	g_ptr_array_add(xmlarray, NULL);
+
+	/* build string */
+	*layout = g_strjoinv("", (gchar **)xmlarray->pdata);
+
+	g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
+	g_ptr_array_free(xmlarray, TRUE);
+
+	return TRUE;
+}
+
 static gboolean 
 _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error)
 {
@@ -422,7 +443,7 @@ _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * proper
 }
 
 static gboolean
-_dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GHashTable ** dict, GError ** error)
+_dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * properties, GHashTable ** dict, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
@@ -444,7 +465,19 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GHashTable *
 }
 
 static gboolean
-_dbusmenu_server_call (DbusmenuServer * server, guint id, GError ** error)
+_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error)
+{
+	if (error != NULL) {
+		g_set_error(error,
+					error_quark(),
+					NOT_IMPLEMENTED,
+					"The GetGroupProperties function is not implemented, sorry.");
+	}
+	return FALSE;
+}
+
+static gboolean
+_dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);

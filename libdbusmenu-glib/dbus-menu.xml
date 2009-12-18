@@ -32,7 +32,21 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 <!-- Properties -->
 <!--
+Provides the version of the DBusmenu API that this API is
+implementing.
+-->
+		<property name="version" type="u" access="read"/>
+
+<!-- Functions -->
+
+<!--
 Provides an XML representation of the menu hierarchy
+
+@param parentId The ID of the parent node for the layout.  For
+	grabbing the layout from the root node use zero.
+@param revision The revision number of the layout.  For matching
+	with layoutUpdated signals.
+@param layout The layout as an XML string of IDs.
 
 XML syntax:
 
@@ -48,73 +62,123 @@ XML syntax:
   ...
 </menu>
 -->
-		<property name="layout" type="s" access="read"/>
+		<method name="GetLayout">
+			<arg type="u" name="parentId" direction="in" />
+			<arg type="u" name="revision" direction="out" />
+			<arg type="s" name="layout" direction="out" />
+		</method>
 
-<!-- Functions -->
+<!--
+Returns the list of items which are children of @a parentId.
+
+@param Ids A list of ids that we should be finding the properties
+	on.  If the list is empty, all menu items should be sent.
+@param propertyNames list of string the list of item properties we
+	are interested in.  If there are no entries in the list all of
+	the properties will be sent.
+
+An item is represented as a struct following this format:
+@li id unsigned the item id
+@li properties map(string => variant) the requested item properties
+
+-->
+		<method name="GetGroupProperties">
+			<arg type="au" name="Ids" direction="in" />
+			<arg type="as" name="propertyNames" direction="in" />
+			<arg type="a(ua{sv})" name="properties" direction="out" />
+		</method>
 
 <!--
 Each menu item has a set of properties. Property keys are in menuitem.h:
 
-- visible
-- sensitive
-- label
-- icon
-- icon-data
-- type
+@li type string Type of the item (see below)
+@li label string Text of the item
+@li icon-data binary Raw data of the icon (TODO: define format)
+@li icon string Icon name of the item, following icon spec
+@li sensitive boolean Whether the item can be activated or not
+@li visible boolean Whether the item is visible or not (XXX: Is this necessary?)
+@li checked boolean Whether a checkbox or radio item is checked
+@li shortcut string The keyboard shortcut
 
-"type" property is an enum which can take the following values (client.h):
+@c type property is an enum which can take the following values (client.h):
 
-- menuitem
-- separator
-- imageitem
+@li action An item which can be clicked to trigger an action
+@li checkbox An item which can be checked or unchecked
+@li radio An item which can be checked or unchecked as part of a group
+@li separator A separator
+@li menu An item which contains more items
 -->
 		<method name="GetProperty">
 			<arg type="u" name="id" direction="in" />
-			<arg type="s" name="property" direction="in" />
-			<arg type="s" name="value" direction="out" />
+			<arg type="s" name="name" direction="in" />
+			<arg type="v" name="value" direction="out" />
 		</method>
 
 <!--
-Convenience method to retrieve all properties in one call (more efficient)
+Returns multiple properties in one call. This is more efficient than
+GetProperty.
+
+@param id unsigned the item whose properties we want to retrieve.
+@param propertyNames list of string name of the properties we want.  If the list contains no entries, all properties are sent.
 -->
 		<method name="GetProperties">
+			<annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
 			<arg type="u" name="id" direction="in" />
-			<arg type="a{ss}" name="properties" direction="out" />
+			<arg type="as" name="propertyNames" direction="in" />
+			<arg type="a{sv}" name="properties" direction="out" />
 		</method>
 
 <!--
-This is called by the display to notify the application it should trigger
-the action associated with a specific menu id
+This is called by the applet to notify the application an event happened on a
+menu item.
+
+@param id the id of the item which received the event
+@param type the type of event
+@param data event-specific data
+
+@a type can be one of the following:
+
+@li "clicked"
+@li "hovered"
+
+Vendor specific events can be added by prefixing them with "x-<vendor>-"
 -->
-		<method name="Call">
+		<method name="Event">
 			<arg type="u" name="id" direction="in" />
+			<arg type="s" name="eventId" direction="in" />
+			<arg type="v" name="data" direction="in" />
 		</method>
 
 <!-- Signals -->
 <!--
-Triggered by the application to notify display that the property prop from menu id
-as changed to value.
+Triggered by the application to notify the applet that the property @a property
+from item @a id has changed to @a value.
 -->
-		<signal name="IdPropUpdate">
+		<signal name="ItemPropertyUpdated">
 			<arg type="u" name="id" direction="out" />
 			<arg type="s" name="prop" direction="out" />
-			<arg type="s" name="value" direction="out" />
+			<arg type="v" name="value" direction="out" />
 		</signal>
 
 <!--
-Triggered by the application to notify display that all properties of menu id
-should be considered outdated
+Triggered by the application to notify the applet that all properties of item
+@a id should be considered outdated
 -->
-		<signal name="IdUpdate">
+		<signal name="ItemUpdated">
 			<arg type="u" name="id" direction="out" />
 		</signal>
 
 <!--
 Triggered by the application to notify display of a layout update, up to
 revision
+@param revsion The revision of the layout that we're currently on
+@param parent  If the layout update is only of a subtree, this is the parent
+         item for the entries that have changed.  It is zero if the
+		 whole layout should be considered invalid.
 -->
 		<signal name="LayoutUpdate">
 			<arg type="i" name="revision" direction="out" />
+			<arg type="u" name="parent" direction="out" />
 		</signal>
 
 <!-- End of interesting stuff -->

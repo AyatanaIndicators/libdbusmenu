@@ -50,11 +50,17 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID         (g_signal_lookup(DBUSMENU_MENUITEM_SIGNAL_REALIZED, DBUSMENU_TYPE_MENUITEM))
 
+#define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
 #define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
 #define DBUSMENU_MENUITEM_PROP_SENSITIVE             "sensitive"
 #define DBUSMENU_MENUITEM_PROP_LABEL                 "label"
 #define DBUSMENU_MENUITEM_PROP_ICON                  "icon"
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
+#define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
+#define DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED        "toggle-checked"
+
+#define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
+#define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
 
 /**
 	DbusmenuMenuitem:
@@ -93,7 +99,7 @@ struct _DbusmenuMenuitemClass
 	GObjectClass parent_class;
 
 	/* Signals */
-	void (*property_changed) (gchar * property, gchar * value);
+	void (*property_changed) (gchar * property, GValue * value);
 	void (*item_activated) (void);
 	void (*child_added) (DbusmenuMenuitem * child, guint position);
 	void (*child_removed) (DbusmenuMenuitem * child);
@@ -128,7 +134,13 @@ DbusmenuMenuitem * dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id
 DbusmenuMenuitem * dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, guint id);
 
 gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value);
+gboolean dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * property, const GValue * value);
+gboolean dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value);
+gboolean dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value);
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
+const GValue * dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * property);
+gboolean dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property);
+gint dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 GList * dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
 GHashTable * dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi);
@@ -136,7 +148,6 @@ GHashTable * dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi);
 void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
 gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
-void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array, gint revision);
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
 void dbusmenu_menuitem_activate (DbusmenuMenuitem * mi);
 
