@@ -2,6 +2,9 @@ libdbusmenu (0.2.0~dev-0ubuntu1~ppa3) UNRELEASED; urgency=low
 
   * Updating trunk
     * Changing API to be V0.2 for reals
+  * debian/control: Mentioning nicely that this will cause
+    indicator-messages << 0.3 and indicator-session << 0.2 to
+    break.
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 13:21:40 -0600
 
