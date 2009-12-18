@@ -1,4 +1,4 @@
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa3) UNRELEASED; urgency=low
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa3) karmic; urgency=low
 
   * Updating trunk
     * Changing API to be V0.2 for reals
@@ -6,7 +6,7 @@ libdbusmenu (0.2.0~dev-0ubuntu1~ppa3) UNRELEASED; urgency=low
     indicator-messages << 0.3 and indicator-session << 0.2 to
     break.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 13:21:40 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 14:31:45 -0600
 
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
 
