@@ -123,7 +123,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
 	                                           NULL, NULL,
 	                                           _dbusmenu_menuitem_marshal_VOID__STRING_POINTER,
-	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_VALUE);
+	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_POINTER);
 	/**
 		DbusmenuMenuitem::item-activated:
 		@arg0: The #DbusmenuMenuitem object.
