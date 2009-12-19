@@ -21,8 +21,8 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Breaks: indicator-messages (<< 0.3.0),
-        indicator-session (<< 0.2.0)
+Breaks: indicator-messages (<< 0.3.0~dev),
+        indicator-session (<< 0.2.0~dev)
 Description: Menus over DBus shared library for glib
  This package contains shared libraries to be used by applications.
 
