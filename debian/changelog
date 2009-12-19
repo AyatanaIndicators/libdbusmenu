@@ -1,9 +1,9 @@
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix1) UNRELEASED; urgency=low
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix1) karmic; urgency=low
 
   * Upstream
     * Fixing the signal prototypes.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 21:59:03 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 22:03:56 -0600
 
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa5) karmic; urgency=low
 
