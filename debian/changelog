@@ -1,8 +1,8 @@
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix3) UNRELEASED; urgency=low
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix3) karmic; urgency=low
 
   * debian/rules: Massive debugging
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 22:19:52 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 22:21:44 -0600
 
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix2) karmic; urgency=low
 
