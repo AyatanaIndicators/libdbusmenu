@@ -122,8 +122,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
 	                                           NULL, NULL,
-	                                           _dbusmenu_menuitem_marshal_VOID__STRING_STRING,
-	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+	                                           _dbusmenu_menuitem_marshal_VOID__STRING_POINTER,
+	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_VALUE);
 	/**
 		DbusmenuMenuitem::item-activated:
 		@arg0: The #DbusmenuMenuitem object.
