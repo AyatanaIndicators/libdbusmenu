@@ -815,12 +815,13 @@ dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * prope
 	g_value_init(lval, G_VALUE_TYPE(value));
 	g_value_copy(value, lval);
 
-	g_hash_table_insert(priv->properties, lprop, lval);
+	g_hash_table_replace(priv->properties, lprop, lval);
 	#ifdef MASSIVEDEBUGGING
 	gchar * valstr = g_strdup_value_contents(lval);
 	g_debug("Menuitem %d (%s) signalling property '%s' changed to '%s'", ID(mi), LABEL(mi), property, g_utf8_strlen(valstr, 50) < 25 ? valstr : "<too long>");
 	g_free(valstr);
 	#endif
+
 	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, lprop, lval, TRUE);
 
 	return TRUE;
