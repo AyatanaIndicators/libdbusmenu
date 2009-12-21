@@ -151,6 +151,60 @@ test_object_menuitem_props_swap (void)
 	return;
 }
 
+/* A helper to put a value into a pointer for eval. */
+void
+test_object_menuitem_props_signals_helper (DbusmenuMenuitem * mi, gchar * property, GValue * value, GValue ** out)
+{
+	if (!g_strcmp0(property, "swapper")) {
+		*out = value;
+	}
+	return;
+}
+
+/* Set the same property several times with
+   different types. */
+void
+test_object_menuitem_props_signals (void)
+{
+	/* Build a menu item */
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+	GValue * out;
+
+	/* Test to make sure it's a happy object */
+	g_assert(item != NULL);
+
+	/* Setting up our callback */
+	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(test_object_menuitem_props_signals_helper), &out);
+
+	/* Setting a boolean */
+	dbusmenu_menuitem_property_set_bool(item, "swapper", TRUE);
+	g_assert(out != NULL);
+	g_assert(g_value_get_boolean(out));
+	out = NULL;
+
+	/* Setting a int */
+	dbusmenu_menuitem_property_set_int(item, "swapper", 5432);
+	g_assert(out != NULL);
+	g_assert(g_value_get_int(out) == 5432);
+	out = NULL;
+
+	/* Setting a string */
+	dbusmenu_menuitem_property_set(item, "swapper", "mystring");
+	g_assert(out != NULL);
+	g_assert(!g_strcmp0(g_value_get_string(out), "mystring"));
+	out = NULL;
+
+	/* Setting a boolean */
+	dbusmenu_menuitem_property_set_bool(item, "swapper", FALSE);
+	g_assert(out != NULL);
+	g_assert(g_value_get_boolean(out));
+	out = NULL;
+
+	g_object_unref(item);
+
+	return;
+}
+
 /* Build the test suite */
 void
 test_glib_objects_suite (void)
@@ -160,6 +214,7 @@ test_glib_objects_suite (void)
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_int",     test_object_menuitem_props_int);
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_bool",    test_object_menuitem_props_bool);
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_swap",    test_object_menuitem_props_swap);
+	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_signals", test_object_menuitem_props_signals);
 	return;
 }
 
