@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* Building the basic menu item, make sure we didn't break
    any core GObject stuff */
-void
+static void
 test_object_menuitem (void)
 {
 	/* Build a menu item */
@@ -48,7 +48,7 @@ test_object_menuitem (void)
 }
 
 /* Set a string prop, make sure it's stored as one */
-void
+static void
 test_object_menuitem_props_string (void)
 {
 	/* Build a menu item */
@@ -72,7 +72,7 @@ test_object_menuitem_props_string (void)
 }
 
 /* Set an integer prop, make sure it's stored as one */
-void
+static void
 test_object_menuitem_props_int (void)
 {
 	/* Build a menu item */
@@ -96,7 +96,7 @@ test_object_menuitem_props_int (void)
 }
 
 /* Set a boolean prop, make sure it's stored as one */
-void
+static void
 test_object_menuitem_props_bool (void)
 {
 	/* Build a menu item */
@@ -121,7 +121,7 @@ test_object_menuitem_props_bool (void)
 
 /* Set the same property several times with
    different types. */
-void
+static void
 test_object_menuitem_props_swap (void)
 {
 	/* Build a menu item */
@@ -152,7 +152,7 @@ test_object_menuitem_props_swap (void)
 }
 
 /* A helper to put a value into a pointer for eval. */
-void
+static void
 test_object_menuitem_props_signals_helper (DbusmenuMenuitem * mi, gchar * property, GValue * value, GValue ** out)
 {
 	if (!g_strcmp0(property, "swapper")) {
@@ -163,12 +163,12 @@ test_object_menuitem_props_signals_helper (DbusmenuMenuitem * mi, gchar * proper
 
 /* Set the same property several times with
    different types. */
-void
+static void
 test_object_menuitem_props_signals (void)
 {
 	/* Build a menu item */
 	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
-	GValue * out;
+	GValue * out = NULL;
 
 	/* Test to make sure it's a happy object */
 	g_assert(item != NULL);
@@ -206,7 +206,7 @@ test_object_menuitem_props_signals (void)
 }
 
 /* Build the test suite */
-void
+static void
 test_glib_objects_suite (void)
 {
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/base",          test_object_menuitem);
