@@ -2,6 +2,7 @@
 DBUS_RUNNER=dbus-test-runner
 
 TESTS = \
+	test-glib-objects-test \
 	test-glib-layout \
 	test-glib-properties \
 	test-glib-simple-items \
@@ -10,6 +11,7 @@ TESTS = \
 
 check_PROGRAMS = \
 	glib-server-nomenu \
+	test-glib-objects \
 	test-glib-layout-client \
 	test-glib-layout-server \
 	test-glib-properties-client \
@@ -69,6 +71,26 @@ test_glib_layout_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+
+######################
+# Test Glib Object
+######################
+
+test-glib-objects-test: test-glib-objects Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) -b $@.bustle --task gtester --parameter ./test-glib-objects >> $@
+	@chmod +x $@
+
+test_glib_objects_SOURCES = \
+	test-glib-objects.c
+
+test_glib_objects_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_objects_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
 
 ######################
 # Test Glib Properties
@@ -239,6 +261,7 @@ distclean-local:
 
 DISTCLEANFILES = \
 	$(TESTS) \
+	test-glib-objects-test.bustle \
 	test-glib-layout.bustle \
 	test-glib-properties.bustle \
 	test-glib-simple-items.bustle \
