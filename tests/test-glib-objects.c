@@ -155,6 +155,7 @@ test_object_menuitem_props_swap (void)
 static void
 test_object_menuitem_props_signals_helper (DbusmenuMenuitem * mi, gchar * property, GValue * value, GValue ** out)
 {
+	/* g_debug("Signal handler got: %s", property); */
 	if (!g_strcmp0(property, "swapper")) {
 		*out = value;
 	}
@@ -197,7 +198,7 @@ test_object_menuitem_props_signals (void)
 	/* Setting a boolean */
 	dbusmenu_menuitem_property_set_bool(item, "swapper", FALSE);
 	g_assert(out != NULL);
-	g_assert(g_value_get_boolean(out));
+	g_assert(!g_value_get_boolean(out));
 	out = NULL;
 
 	g_object_unref(item);
