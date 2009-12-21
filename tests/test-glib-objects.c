@@ -46,17 +46,81 @@ test_object_menuitem (void)
 }
 
 void
-test_object_menuitem_props (void)
+test_object_menuitem_props_string (void)
 {
+	/* Build a menu item */
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+	const GValue * out = NULL;
 
+	/* Test to make sure it's a happy object */
+	g_assert(item != NULL);
 
+	/* Setting a string */
+	dbusmenu_menuitem_property_set(item, "string", "value");
+	out = dbusmenu_menuitem_property_get_value(item, "string");
+	g_assert(out != NULL);
+	g_assert(G_VALUE_TYPE(out) == G_TYPE_STRING);
+	g_assert(!g_strcmp0(g_value_get_string(out), "value"));
+	g_assert(!g_strcmp0(dbusmenu_menuitem_property_get(item, "string"), "value"));
+
+	g_object_unref(item);
+
+	return;
+}
+
+void
+test_object_menuitem_props_int (void)
+{
+	/* Build a menu item */
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+	const GValue * out = NULL;
+
+	/* Test to make sure it's a happy object */
+	g_assert(item != NULL);
+
+	/* Setting a string */
+	dbusmenu_menuitem_property_set_int(item, "int", 12345);
+	out = dbusmenu_menuitem_property_get_value(item, "int");
+	g_assert(out != NULL);
+	g_assert(G_VALUE_TYPE(out) == G_TYPE_INT);
+	g_assert(g_value_get_int(out) == 12345);
+	g_assert(dbusmenu_menuitem_property_get_int(item, "int") == 12345);
+
+	g_object_unref(item);
+
+	return;
+}
+
+void
+test_object_menuitem_props_bool (void)
+{
+	/* Build a menu item */
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+	const GValue * out = NULL;
+
+	/* Test to make sure it's a happy object */
+	g_assert(item != NULL);
+
+	/* Setting a string */
+	dbusmenu_menuitem_property_set_bool(item, "boolean", TRUE);
+	out = dbusmenu_menuitem_property_get_value(item, "boolean");
+	g_assert(out != NULL);
+	g_assert(G_VALUE_TYPE(out) == G_TYPE_BOOLEAN);
+	g_assert(g_value_get_boolean(out));
+	g_assert(dbusmenu_menuitem_property_get_int(item, "boolean"));
+
+	g_object_unref(item);
+
+	return;
 }
 
 void
 test_glib_objects_suite (void)
 {
-	g_test_add_func ("/dbusmenu/glib/objects/menuitem",          test_object_menuitem);
-	g_test_add_func ("/dbusmenu/glib/objects/menuitem-props",    test_object_menuitem_props);
+	g_test_add_func ("/dbusmenu/glib/objects/menuitem/base",          test_object_menuitem);
+	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_string",  test_object_menuitem_props_string);
+	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_int",     test_object_menuitem_props_int);
+	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_bool",    test_object_menuitem_props_bool);
 	return;
 }
 
