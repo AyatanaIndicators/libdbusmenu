@@ -206,6 +206,49 @@ test_object_menuitem_props_signals (void)
 	return;
 }
 
+/* Set a boolean prop, as a string too! */
+static void
+test_object_menuitem_props_boolstr (void)
+{
+	/* Build a menu item */
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+
+	/* Test to make sure it's a happy object */
+	g_assert(item != NULL);
+
+	/* Setting a bool */
+	dbusmenu_menuitem_property_set_bool(item, "boolean", TRUE);
+	g_assert(dbusmenu_menuitem_property_get_bool(item, "boolean"));
+
+	/* Setting "true" */
+	dbusmenu_menuitem_property_set(item, "boolean", "true");
+	g_assert(dbusmenu_menuitem_property_get_bool(item, "boolean"));
+
+	/* Setting "True" */
+	dbusmenu_menuitem_property_set(item, "boolean", "True");
+	g_assert(dbusmenu_menuitem_property_get_bool(item, "boolean"));
+
+	/* Setting "TRUE" */
+	dbusmenu_menuitem_property_set(item, "boolean", "TRUE");
+	g_assert(dbusmenu_menuitem_property_get_bool(item, "boolean"));
+
+	/* Setting "false" */
+	dbusmenu_menuitem_property_set(item, "boolean", "false");
+	g_assert(!dbusmenu_menuitem_property_get_bool(item, "boolean"));
+
+	/* Setting "False" */
+	dbusmenu_menuitem_property_set(item, "boolean", "False");
+	g_assert(!dbusmenu_menuitem_property_get_bool(item, "boolean"));
+
+	/* Setting "FALSE" */
+	dbusmenu_menuitem_property_set(item, "boolean", "FALSE");
+	g_assert(!dbusmenu_menuitem_property_get_bool(item, "boolean"));
+
+	g_object_unref(item);
+
+	return;
+}
+
 /* Build the test suite */
 static void
 test_glib_objects_suite (void)
@@ -216,6 +259,7 @@ test_glib_objects_suite (void)
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_bool",    test_object_menuitem_props_bool);
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_swap",    test_object_menuitem_props_swap);
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_signals", test_object_menuitem_props_signals);
+	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_boolstr", test_object_menuitem_props_boolstr);
 	return;
 }
 
