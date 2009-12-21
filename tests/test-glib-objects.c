@@ -24,6 +24,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <libdbusmenu-glib/menuitem.h>
 
+/* Building the basic menu item, make sure we didn't break
+   any core GObject stuff */
 void
 test_object_menuitem (void)
 {
@@ -45,6 +47,7 @@ test_object_menuitem (void)
 	return;
 }
 
+/* Set a string prop, make sure it's stored as one */
 void
 test_object_menuitem_props_string (void)
 {
@@ -68,6 +71,7 @@ test_object_menuitem_props_string (void)
 	return;
 }
 
+/* Set an integer prop, make sure it's stored as one */
 void
 test_object_menuitem_props_int (void)
 {
@@ -91,6 +95,7 @@ test_object_menuitem_props_int (void)
 	return;
 }
 
+/* Set a boolean prop, make sure it's stored as one */
 void
 test_object_menuitem_props_bool (void)
 {
@@ -114,6 +119,8 @@ test_object_menuitem_props_bool (void)
 	return;
 }
 
+/* Set the same property several times with
+   different types. */
 void
 test_object_menuitem_props_swap (void)
 {
@@ -144,6 +151,7 @@ test_object_menuitem_props_swap (void)
 	return;
 }
 
+/* Build the test suite */
 void
 test_glib_objects_suite (void)
 {
