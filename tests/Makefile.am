@@ -76,9 +76,11 @@ test_glib_layout_client_LDADD = \
 # Test Glib Object
 ######################
 
+OBJECT_XML_REPORT = test-glib-objects.xml
+
 test-glib-objects-test: test-glib-objects Makefile.am
 	@echo "#!/bin/bash" > $@
-	@echo $(DBUS_RUNNER) -b $@.bustle --task gtester --parameter ./test-glib-objects >> $@
+	@echo $(DBUS_RUNNER) -b $@.bustle --task gtester --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
 	@chmod +x $@
 
 test_glib_objects_SOURCES = \
@@ -261,6 +263,7 @@ distclean-local:
 
 DISTCLEANFILES = \
 	$(TESTS) \
+	$(OBJECT_XML_FILE) \
 	test-glib-objects-test.bustle \
 	test-glib-layout.bustle \
 	test-glib-properties.bustle \
