@@ -1,3 +1,9 @@
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix6) UNRELEASED; urgency=low
+
+  * Signal change
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Dec 2009 21:52:10 -0600
+
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix5) karmic; urgency=low
 
   * string to value fix
