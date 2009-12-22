@@ -1,8 +1,8 @@
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa6) UNRELEASED; urgency=low
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa6) karmic; urgency=low
 
   * Fixing the handling of typed properties, especially bools.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Dec 2009 14:38:00 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Dec 2009 14:40:21 -0600
 
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa5) karmic; urgency=low
 
