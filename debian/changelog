@@ -1,3 +1,9 @@
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix5) UNRELEASED; urgency=low
+
+  * string to value fix
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Dec 2009 21:19:11 -0600
+
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix4) karmic; urgency=low
 
   * Using a hash table replace
