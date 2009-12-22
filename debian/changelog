@@ -1,8 +1,8 @@
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix7) UNRELEASED; urgency=low
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix7) karmic; urgency=low
 
   * Nope, bad idea.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Dec 2009 08:01:39 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Dec 2009 08:10:08 -0600
 
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa6~sigfix6) karmic; urgency=low
 
