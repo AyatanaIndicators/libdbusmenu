@@ -122,8 +122,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
 	                                           NULL, NULL,
-	                                           _dbusmenu_menuitem_marshal_VOID__STRING_STRING,
-	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+	                                           _dbusmenu_menuitem_marshal_VOID__STRING_POINTER,
+	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_POINTER);
 	/**
 		DbusmenuMenuitem::item-activated:
 		@arg0: The #DbusmenuMenuitem object.
@@ -250,7 +250,7 @@ static guint menuitem_next_id = 1;
 /* A small little function to both clear the insides of a 
    value as well as the memory it itself uses. */
 static void
-g_value_free (gpointer data)
+_g_value_free (gpointer data)
 {
 	if (data == NULL) return;
 	GValue * value = (GValue*)data;
@@ -269,7 +269,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 	priv->id = 0; 
 	priv->children = NULL;
 
-	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_value_free);
+	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, _g_value_free);
 
 	priv->root = FALSE;
 	
@@ -815,12 +815,13 @@ dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * prope
 	g_value_init(lval, G_VALUE_TYPE(value));
 	g_value_copy(value, lval);
 
-	g_hash_table_insert(priv->properties, lprop, lval);
+	g_hash_table_replace(priv->properties, lprop, lval);
 	#ifdef MASSIVEDEBUGGING
 	gchar * valstr = g_strdup_value_contents(lval);
 	g_debug("Menuitem %d (%s) signalling property '%s' changed to '%s'", ID(mi), LABEL(mi), property, g_utf8_strlen(valstr, 50) < 25 ? valstr : "<too long>");
 	g_free(valstr);
 	#endif
+
 	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, lprop, lval, TRUE);
 
 	return TRUE;
