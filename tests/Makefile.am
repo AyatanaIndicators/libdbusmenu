@@ -44,7 +44,7 @@ glib_server_nomenu_LDADD = \
 
 test-glib-layout: test-glib-layout-client test-glib-layout-server Makefile.am
 	@echo "#!/bin/bash" > $@
-	@echo $(DBUS_RUNNER) -b $@.bustle --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 test_glib_layout_server_SOURCES = \
@@ -80,7 +80,7 @@ OBJECT_XML_REPORT = test-glib-objects.xml
 
 test-glib-objects-test: test-glib-objects Makefile.am
 	@echo "#!/bin/bash" > $@
-	@echo $(DBUS_RUNNER) -b $@.bustle --task gtester --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
+	@echo $(DBUS_RUNNER) --task gtester --parameter --verbose --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
 	@chmod +x $@
 
 test_glib_objects_SOURCES = \
@@ -100,7 +100,7 @@ test_glib_objects_LDADD = \
 
 test-glib-properties: test-glib-properties-client test-glib-properties-server Makefile.am
 	@echo "#!/bin/bash" > $@
-	@echo $(DBUS_RUNNER) -b $@.bustle --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 test_glib_properties_server_SOURCES = \
@@ -149,7 +149,7 @@ test_glib_simple_items_LDADD = \
 test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) -b $@.bustle --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 test_gtk_label_server_SOURCES = \
@@ -189,7 +189,7 @@ test_gtk_label_client_LDADD = \
 test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) -b $@.bustle --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 test_gtk_reorder_server_SOURCES = \
@@ -263,10 +263,5 @@ distclean-local:
 
 DISTCLEANFILES = \
 	$(TESTS) \
-	$(OBJECT_XML_FILE) \
-	test-glib-objects-test.bustle \
-	test-glib-layout.bustle \
-	test-glib-properties.bustle \
-	test-glib-simple-items.bustle \
-	test-gtk-label.bustle \
-	test-gtk-reorder.bustle
+	$(OBJECT_XML_FILE)
+

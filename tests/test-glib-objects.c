@@ -155,9 +155,10 @@ test_object_menuitem_props_swap (void)
 static void
 test_object_menuitem_props_signals_helper (DbusmenuMenuitem * mi, gchar * property, GValue * value, GValue ** out)
 {
-	/* g_debug("Signal handler got: %s", property); */
 	if (!g_strcmp0(property, "swapper")) {
 		*out = value;
+	} else {
+		g_warning("Signal handler got: %s", property);
 	}
 	return;
 }
