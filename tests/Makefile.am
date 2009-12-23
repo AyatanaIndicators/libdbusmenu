@@ -263,5 +263,5 @@ distclean-local:
 
 DISTCLEANFILES = \
 	$(TESTS) \
-	$(OBJECT_XML_FILE)
+	$(OBJECT_XML_REPORT)
 
