@@ -88,6 +88,12 @@ An item is represented as a struct following this format:
 			<arg type="a(ua{sv})" name="properties" direction="out" />
 		</method>
 
+		<method name="GetChildren">
+			<arg type="u" name="id" direction="in" />
+			<arg type="as" name="propertyNames" direction="in" />
+			<arg type="a(ua{sv})" name="properties" direction="out" />
+		</method>
+
 <!--
 Each menu item has a set of properties. Property keys are in menuitem.h:
 
