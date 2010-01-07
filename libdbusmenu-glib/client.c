@@ -367,7 +367,7 @@ static void
 dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	g_debug("Owner change: %s %s %s", name, prev, new);
+	/* g_debug("Owner change: %s %s %s", name, prev, new); */
 
 	if (!(new[0] != '\0' && prev[0] == '\0')) {
 		/* If it's not someone new getting on the bus, sorry we
