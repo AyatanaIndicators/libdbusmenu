@@ -176,9 +176,9 @@ process_toggle_checked (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue *
 	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
 		const gchar * strval = g_value_get_string(value);
 
-		if (!g_strcmp0(strval, "checked")) {
+		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED)) {
 			state = GENERICMENUITEM_STATE_CHECKED;
-		} else if (!g_strcmp0(strval, "indeterminate")) {
+		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN)) {
 			state = GENERICMENUITEM_STATE_INDETERMINATE;
 		}
 	}
