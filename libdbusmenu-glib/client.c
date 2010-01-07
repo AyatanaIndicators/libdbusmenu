@@ -369,7 +369,7 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	g_debug("Owner change: %s %s %s", name, prev, new);
 
-	if (!(new != NULL && prev == NULL)) {
+	if (!(new[0] != '\0' && prev[0] == '\0')) {
 		/* If it's not someone new getting on the bus, sorry we
 		   simply just don't care.  It's not that your service isn't
 		   important to someone, just not us.  You'll find the right
