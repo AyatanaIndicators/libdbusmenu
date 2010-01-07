@@ -367,8 +367,9 @@ static void
 dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	/* g_debug("Owner change: %s %s %s", name, prev, new); */
 
-	if (!(new != NULL && prev == NULL)) {
+	if (!(new[0] != '\0' && prev[0] == '\0')) {
 		/* If it's not someone new getting on the bus, sorry we
 		   simply just don't care.  It's not that your service isn't
 		   important to someone, just not us.  You'll find the right
@@ -376,7 +377,7 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 		return;
 	}
 
-	if (g_strcmp0(new, priv->dbus_name)) {
+	if (g_strcmp0(name, priv->dbus_name)) {
 		/* Again, someone else's service. */
 		return;
 	}
@@ -471,6 +472,7 @@ build_proxies (DbusmenuClient * client)
 	if (error != NULL) {
 		g_warning("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
+		build_dbus_proxy(client);
 		return;
 	}
 	g_object_add_weak_pointer(G_OBJECT(priv->propproxy), (gpointer *)&priv->propproxy);
@@ -484,6 +486,7 @@ build_proxies (DbusmenuClient * client)
 	if (error != NULL) {
 		g_warning("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
+		build_dbus_proxy(client);
 		return;
 	}
 	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
