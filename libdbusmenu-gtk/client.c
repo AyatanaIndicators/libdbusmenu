@@ -153,9 +153,9 @@ process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * va
 	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
 		const gchar * strval = g_value_get_string(value);
 
-		if (!g_strcmp0(strval, "checkbox")) {
+		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_CHECK)) {
 			type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
-		} else if (!g_strcmp0(strval, "radio")) {
+		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_RADIO)) {
 			type = GENERICMENUITEM_CHECK_TYPE_RADIO;
 		}
 	}
