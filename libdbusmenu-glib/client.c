@@ -376,7 +376,7 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 		return;
 	}
 
-	if (g_strcmp0(new, priv->dbus_name)) {
+	if (g_strcmp0(name, priv->dbus_name)) {
 		/* Again, someone else's service. */
 		return;
 	}
