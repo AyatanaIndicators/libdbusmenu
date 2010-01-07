@@ -1,3 +1,3 @@
 
-SUBDIRS = libdbusmenu-glib libdbusmenu-gtk libdbusmenu-qt tools tests po
+SUBDIRS = libdbusmenu-glib libdbusmenu-gtk tools tests po
 
