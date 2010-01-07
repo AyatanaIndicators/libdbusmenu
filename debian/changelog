@@ -1,3 +1,10 @@
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa8~light2) UNRELEASED; urgency=low
+
+  * Upstream update:
+    * Looking at the dbus name
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 06 Jan 2010 22:37:07 -0600
+
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa8~light1) karmic; urgency=low
 
   * Upstream update:
