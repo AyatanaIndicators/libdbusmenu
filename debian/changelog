@@ -1,3 +1,10 @@
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa8~light3) UNRELEASED; urgency=low
+
+  * Upstream update:
+    * Debug message
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 06 Jan 2010 23:18:22 -0600
+
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa8~light2) karmic; urgency=low
 
   * Upstream update:
