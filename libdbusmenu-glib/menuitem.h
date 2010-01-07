@@ -62,6 +62,10 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
 #define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
 
+#define DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED     "unchecked"
+#define DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED       "checked"
+#define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       "indeterminate"
+
 /**
 	DbusmenuMenuitem:
 

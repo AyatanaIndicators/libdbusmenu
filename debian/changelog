@@ -1,3 +1,11 @@
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa9) UNRELEASED; urgency=low
+
+  * Upstream update:
+    * Fixing the consistency between the #defines and what
+      was used in the code.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 11:01:21 -0600
+
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa8) karmic; urgency=low
 
   * Upstream update:
