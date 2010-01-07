@@ -471,6 +471,7 @@ build_proxies (DbusmenuClient * client)
 	if (error != NULL) {
 		g_warning("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
+		build_dbus_proxy(client);
 		return;
 	}
 	g_object_add_weak_pointer(G_OBJECT(priv->propproxy), (gpointer *)&priv->propproxy);
@@ -484,6 +485,7 @@ build_proxies (DbusmenuClient * client)
 	if (error != NULL) {
 		g_warning("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		g_error_free(error);
+		build_dbus_proxy(client);
 		return;
 	}
 	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
