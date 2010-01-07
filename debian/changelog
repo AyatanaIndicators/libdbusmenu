@@ -1,3 +1,11 @@
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa7) UNRELEASED; urgency=low
+
+  * Upstream update:
+    * Adding GetChildren function for getting a single submenu
+    * Test suite fixes
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 06 Jan 2010 22:14:49 -0600
+
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa6) karmic; urgency=low
 
   * Fixing the handling of typed properties, especially bools.

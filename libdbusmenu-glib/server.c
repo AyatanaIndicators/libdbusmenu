@@ -40,6 +40,7 @@ static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, guint id
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * properties, GHashTable ** dict, GError ** error);
 static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, GError ** error);
+static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, guint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 
 #include "dbusmenu-server.h"
 
@@ -471,6 +472,68 @@ _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GA
 					"The GetGroupProperties function is not implemented, sorry.");
 	}
 	return FALSE;
+}
+
+static void
+_gvalue_array_append_uint(GValueArray *array, guint i)
+{
+	GValue value = {0};
+
+	g_value_init(&value, G_TYPE_UINT);
+	g_value_set_uint(&value, i);
+	g_value_array_append(array, &value);
+	g_value_unset(&value);
+}
+
+static void
+_gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict)
+{
+	GValue value = {0};
+
+	g_value_init(&value, dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE));
+	g_value_set_boxed(&value, dict);
+	g_value_array_append(array, &value);
+	g_value_unset(&value);
+}
+
+static void
+serialize_menuitem(gpointer data, gpointer user_data)
+{
+	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
+	GPtrArray * output = (GPtrArray *)(user_data);
+
+	guint id = dbusmenu_menuitem_get_id(mi);
+	GHashTable * dict = dbusmenu_menuitem_properties_copy(mi);
+
+	GValueArray * item = g_value_array_new(1);
+	_gvalue_array_append_uint(item, id);
+	_gvalue_array_append_hashtable(item, dict);
+
+	g_ptr_array_add(output, item);
+}
+
+static gboolean
+_dbusmenu_server_get_children (DbusmenuServer * server, guint id, GPtrArray * properties, GPtrArray ** output, GError ** error)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	DbusmenuMenuitem * mi = id == 0 ? priv->root : dbusmenu_menuitem_find_id(priv->root, id);
+
+	if (mi == NULL) {
+		if (error != NULL) {
+			g_set_error(error,
+			            error_quark(),
+			            INVALID_MENUITEM_ID,
+			            "The ID supplied %d does not refer to a menu item we have",
+			            id);
+		}
+		return FALSE;
+	}
+
+	*output = g_ptr_array_new();
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	g_list_foreach(children, serialize_menuitem, *output);
+
+	return TRUE;
 }
 
 static gboolean
