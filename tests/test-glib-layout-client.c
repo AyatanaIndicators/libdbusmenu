@@ -109,9 +109,7 @@ main (int argc, char ** argv)
 {
 	g_type_init();
 
-	g_usleep(500000);
-
-	DbusmenuClient * client = dbusmenu_client_new(":1.0", "/org/test");
+	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
 	g_timeout_add_seconds(10, timer_func, client);
