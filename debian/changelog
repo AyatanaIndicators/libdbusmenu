@@ -1,9 +1,9 @@
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa8) UNRELEASED; urgency=low
+libdbusmenu (0.2.0~dev-0ubuntu1~ppa8) karmic; urgency=low
 
   * Upstream update:
     * Starting to watch DBus if the proxy builds fail.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 10:47:12 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 10:54:21 -0600
 
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa7) karmic; urgency=low
 
