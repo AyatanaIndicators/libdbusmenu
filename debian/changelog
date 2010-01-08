@@ -1,3 +1,10 @@
+libdbusmenu (0.2.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Upstream official 0.2.0
+    * Remove unused libdbusmenu-qt
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 08:40:50 -0600
+
 libdbusmenu (0.2.0~dev-0ubuntu1~ppa9) karmic; urgency=low
 
   * Upstream update:
