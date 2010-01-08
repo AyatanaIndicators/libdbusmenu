@@ -34,6 +34,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "client.h"
 #include "menuitem.h"
+#include "genericmenuitem.h"
 
 /* Prototypes */
 static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
@@ -47,10 +48,10 @@ static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint n
 
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
-static gboolean new_item_image      (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
-static void process_visible (GtkMenuItem * gmi, const gchar * value);
-static void process_sensitive (GtkMenuItem * gmi, const gchar * value);
+static void process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value);
+static void process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value);
+static void image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
@@ -74,7 +75,6 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
-	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_IMAGE,     new_item_image);
 
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
 
@@ -115,9 +115,14 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 
 /* Process the visible property */
 static void
-process_visible (GtkMenuItem * gmi, const gchar * value)
+process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
-	if (value == NULL || !g_strcmp0(value, "true")) {
+	gboolean val = TRUE;
+	if (value != NULL) {
+		val = dbusmenu_menuitem_property_get_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE);
+	}
+
+	if (val) {
 		gtk_widget_show(GTK_WIDGET(gmi));
 	} else {
 		gtk_widget_hide(GTK_WIDGET(gmi));
@@ -127,27 +132,76 @@ process_visible (GtkMenuItem * gmi, const gchar * value)
 
 /* Process the sensitive property */
 static void
-process_sensitive (GtkMenuItem * gmi, const gchar * value)
+process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
-	if (value == NULL || !g_strcmp0(value, "true")) {
-		gtk_widget_set_sensitive(GTK_WIDGET(gmi), TRUE);
-	} else {
-		gtk_widget_set_sensitive(GTK_WIDGET(gmi), FALSE);
+	gboolean val = TRUE;
+	if (value != NULL) {
+		val = dbusmenu_menuitem_property_get_bool(mi, DBUSMENU_MENUITEM_PROP_SENSITIVE);
 	}
+	gtk_widget_set_sensitive(GTK_WIDGET(gmi), val);
+	return;
+}
+
+/* Process the sensitive property */
+static void
+process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+{
+	if (!IS_GENERICMENUITEM(gmi)) return;
+
+	GenericmenuitemCheckType type = GENERICMENUITEM_CHECK_TYPE_NONE;
+
+	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
+		const gchar * strval = g_value_get_string(value);
+
+		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_CHECK)) {
+			type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
+		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_RADIO)) {
+			type = GENERICMENUITEM_CHECK_TYPE_RADIO;
+		}
+	}
+
+	genericmenuitem_set_check_type(GENERICMENUITEM(gmi), type);
+	
+	return;
+}
+
+/* Process the sensitive property */
+static void
+process_toggle_checked (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+{
+	if (!IS_GENERICMENUITEM(gmi)) return;
+
+	GenericmenuitemState state = GENERICMENUITEM_STATE_UNCHECKED;
+
+	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
+		const gchar * strval = g_value_get_string(value);
+
+		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED)) {
+			state = GENERICMENUITEM_STATE_CHECKED;
+		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN)) {
+			state = GENERICMENUITEM_STATE_INDETERMINATE;
+		}
+	}
+
+	genericmenuitem_set_state(GENERICMENUITEM(gmi), state);
 	return;
 }
 
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
-menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, gchar * value, GtkMenuItem * gmi)
+menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMenuItem * gmi)
 {
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
-		gtk_menu_item_set_label(gmi, value);
+		gtk_menu_item_set_label(gmi, g_value_get_string(value));
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
-		process_visible(gmi, value);
+		process_visible(mi, gmi, value);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SENSITIVE)) {
-		process_sensitive(gmi, value);
+		process_sensitive(mi, gmi, value);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE)) {
+		process_toggle_type(mi, gmi, value);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED)) {
+		process_toggle_checked(mi, gmi, value);
 	}
 
 	return;
@@ -228,9 +282,13 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	/* Life insurance */
 	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
-	process_visible(gmi, dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
-	process_sensitive(gmi, dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
+	/* Check our set of props to see if any are set already */
+	process_visible(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
+	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
+	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
+	process_toggle_checked(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED));
 
+	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
 		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
 	}
@@ -358,14 +416,27 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 	/* Note: not checking parent, it's reasonable for it to be NULL */
 
 	GtkMenuItem * gmi;
-	gmi = GTK_MENU_ITEM(gtk_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL)));
-        gtk_menu_item_set_use_underline (gmi, TRUE);
+	gmi = GTK_MENU_ITEM(g_object_new(GENERICMENUITEM_TYPE, NULL));
+	gtk_menu_item_set_label(gmi, dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL));
 
 	if (gmi != NULL) {
 		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
 	} else {
 		return FALSE;
 	}
+
+	image_property_handle(newitem,
+	                      DBUSMENU_MENUITEM_PROP_ICON,
+	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON),
+	                      client);
+	image_property_handle(newitem,
+	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
+	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
+	                      client);
+	g_signal_connect(G_OBJECT(newitem),
+	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+	                 G_CALLBACK(image_property_handle),
+	                 client);
 
 	return TRUE;
 }
@@ -394,10 +465,16 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 /* This handler looks at property changes for items that are
    image menu items. */
 static void
-image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gchar * value, gpointer userdata)
+image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata)
 {
 	/* We're only looking at these two properties here */
 	g_return_if_fail(!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON) || !g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA));
+
+	const gchar * value = NULL;
+	
+	if (invalue != NULL && G_VALUE_TYPE(invalue) == G_TYPE_STRING) {
+		value = g_value_get_string(invalue);
+	}
 
 	if (value == NULL || value[0] == '\0') {
 		/* This means that we're unsetting a value. */
@@ -416,12 +493,12 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gc
 		g_warning("Oddly we're handling image properties on a menuitem that doesn't have any GTK structures associated with it.");
 		return;
 	}
-	GtkWidget * gtkimage = gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(gimi));
+	GtkWidget * gtkimage = genericmenuitem_get_image(GENERICMENUITEM(gimi));
 
 	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA)) {
 		/* If we have an image already built from a name that is
 		   way better than a pixbuf.  Keep it. */
-		if (gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_ICON_NAME) {
+		if (gtkimage != NULL && gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_ICON_NAME) {
 			return;
 		}
 	}
@@ -474,42 +551,8 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const gc
 
 	}
 
-	gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(gimi), gtkimage);
+	genericmenuitem_set_image(GENERICMENUITEM(gimi), gtkimage);
 
 	return;
 }
 
-/* This is a type call back for the image type where
-   it uses the GtkImageMenuitem to create the menu item. */
-static gboolean
-new_item_image (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
-{
-	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
-	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
-	/* Note: not checking parent, it's reasonable for it to be NULL */
-
-	GtkMenuItem * gmi;
-	gmi = GTK_MENU_ITEM(gtk_image_menu_item_new_with_label(dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL)));
-        gtk_menu_item_set_use_underline (gmi, TRUE);
-
-	if (gmi != NULL) {
-		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-	} else {
-		return FALSE;
-	}
-
-	image_property_handle(newitem,
-	                      DBUSMENU_MENUITEM_PROP_ICON,
-	                      dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_ICON),
-	                      client);
-	image_property_handle(newitem,
-	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
-	                      dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
-	                      client);
-	g_signal_connect(G_OBJECT(newitem),
-	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
-	                 G_CALLBACK(image_property_handle),
-	                 client);
-
-	return TRUE;
-}

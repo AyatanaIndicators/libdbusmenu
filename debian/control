@@ -21,6 +21,8 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
+Breaks: indicator-messages (<< 0.3.0),
+        indicator-session (<< 0.2.0)
 Description: Menus over DBus shared library for glib
  This package contains shared libraries to be used by applications.
 
@@ -58,3 +60,11 @@ Description: Menus over DBus shared library for GTK
  This package contains files that are needed to build applications.
  .
  This package provides the development files.
+
+Package: libdbusmenu-tools
+Section: devel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libdbusmenu-glib0 (= ${binary:Version})
+Description: Need a better description.
