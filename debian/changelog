@@ -1,3 +1,11 @@
+libdbusmenu (0.2.0-0ubuntu2) lucid; urgency=low
+
+  * Added debian/libdbusmenu-tools.install
+  * debian/control
+    - improved description for libdbusmenu-tools
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Sat, 09 Jan 2010 09:05:47 -0500
+
 libdbusmenu (0.2.0-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.0
