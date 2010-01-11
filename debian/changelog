@@ -1,82 +1,27 @@
-libdbusmenu (0.2.0-0ubuntu1~ppa1) karmic; urgency=low
+libdbusmenu (0.2.0-0ubuntu1) lucid; urgency=low
 
-  * Upstream official 0.2.0
-    * Remove unused libdbusmenu-qt
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 08:42:59 -0600
-
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa9) karmic; urgency=low
-
-  * Upstream update:
-    * Fixing the consistency between the #defines and what
+  * Upstream release 0.2.0
+    - Remove unused libdbusmenu-qt
+    - Changing API to be V0.2 for reals
+    - Adding underline support
+    - Test suite fixes and automation support
+    - dbus-dumper tool
+    - Switch to org.ayatana
+    - Fixing the handling of typed properties, especially bools.
+    - Adding GetChildren function for getting a single submenu
+    - Starting to watch DBus if the proxy builds fail.
+    - Test suite fixes
+    - Fixing the consistency between the #defines and what
       was used in the code.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 11:03:16 -0600
-
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa8) karmic; urgency=low
-
-  * Upstream update:
-    * Starting to watch DBus if the proxy builds fail.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 10:54:21 -0600
-
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa7) karmic; urgency=low
-
-  * Upstream update:
-    * Adding GetChildren function for getting a single submenu
-    * Test suite fixes
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 06 Jan 2010 22:17:16 -0600
-
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa6) karmic; urgency=low
-
-  * Fixing the handling of typed properties, especially bools.
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Dec 2009 14:40:21 -0600
-
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa5) karmic; urgency=low
-
-  * debian/control: Switching the breaks to be ~dev as those
-    versions are not yet released.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 21:21:12 -0600
-
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa4) karmic; urgency=low
-
-  * Updating trunk
-    * Setting version numbers
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 15:31:08 -0600
-
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa3) karmic; urgency=low
-
-  * Updating trunk
-    * Changing API to be V0.2 for reals
+  * debian/control, debian/libdbusmenu-tools.install: Setting
+    up a package for the new dbusmenu-dumper tool.
   * debian/control: Mentioning nicely that this will cause
     indicator-messages << 0.3 and indicator-session << 0.2 to
     break.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 14:31:45 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 08:42:59 -0600
 
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
-
-  * Updating to trunk
-    * Adding underline support
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:03:41 -0600
-
-libdbusmenu (0.2.0~dev-0ubuntu1~ppa1) karmic; urgency=low
-
-  * Updating to trunk
-    * Test suite fixes and automation support
-    * dbus-dumper tool
-    * Switch to org.ayatana
-  * debian/control, debian/libdbusmenu-tools.install: Setting
-    up a package for the new dbusmenu-dumper tool.
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 08 Dec 2009 14:16:37 -0600
-
-libdbusmenu (0.1.8-0ubuntu1) karmic; urgency=low
+libdbusmenu (0.1.8-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.1.8
     * Changing the name to org.ayatana
