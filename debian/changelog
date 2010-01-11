@@ -1,3 +1,10 @@
+libdbusmenu (0.2.0-0ubuntu3) lucid; urgency=low
+
+  * debian/rules:
+    - updated shlibs version
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 11 Jan 2010 16:04:11 +0100
+
 libdbusmenu (0.2.0-0ubuntu2) lucid; urgency=low
 
   * Added debian/libdbusmenu-tools.install
