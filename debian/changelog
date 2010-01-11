@@ -1,3 +1,10 @@
+libdbusmenu (0.2.0-0ubuntu2~ppa1~ltr2) UNRELEASED; urgency=low
+
+  * Upstream update
+    * Setting direction based on parent widget text direction.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 12:46:46 -0600
+
 libdbusmenu (0.2.0-0ubuntu2~ppa1~ltr1) karmic; urgency=low
 
   * Upstream update
