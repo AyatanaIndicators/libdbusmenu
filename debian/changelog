@@ -1,9 +1,9 @@
-libdbusmenu (0.2.0-0ubuntu2~ppa1~padding1) UNRELEASED; urgency=low
+libdbusmenu (0.2.0-0ubuntu2~ppa1~padding1) karmic; urgency=low
 
   * Upstream update
     * Adding padding between the icon and the label.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 13:11:11 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 13:12:49 -0600
 
 libdbusmenu (0.2.0-0ubuntu1) lucid; urgency=low
 
