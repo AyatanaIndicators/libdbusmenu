@@ -1,10 +1,10 @@
-libdbusmenu (0.2.0-0ubuntu2~ppa1~ltr1) UNRELEASED; urgency=low
+libdbusmenu (0.2.0-0ubuntu2~ppa1~ltr1) karmic; urgency=low
 
   * Upstream update
     * Adding in checking for icon name plus 'ltr' to see if
       it exists.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 11:32:38 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 11:42:14 -0600
 
 libdbusmenu (0.2.0-0ubuntu1) lucid; urgency=low
 
