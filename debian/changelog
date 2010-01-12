@@ -1,9 +1,9 @@
-libdbusmenu (0.2.0-0ubuntu2~ppa3) UNRELEASED; urgency=low
+libdbusmenu (0.2.0-0ubuntu2~ppa3) karmic; urgency=low
 
   * Upstream update
     * Not deleting images that we're still using.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 08:23:55 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 08:25:38 -0600
 
 libdbusmenu (0.2.0-0ubuntu2~ppa2) karmic; urgency=low
 
