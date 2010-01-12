@@ -1,23 +1,11 @@
-libdbusmenu (0.2.0-0ubuntu2~ppa3) karmic; urgency=low
+libdbusmenu (0.2.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream update
+  * Upstream release 0.2.1
     * Not deleting images that we're still using.
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 08:25:38 -0600
-
-libdbusmenu (0.2.0-0ubuntu2~ppa2) karmic; urgency=low
-
-  * Upstream update
+    * Adding padding between the icon and the label.
     * Setting direction based on parent widget text direction.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 23:57:24 -0600
-
-libdbusmenu (0.2.0-0ubuntu2~ppa1) karmic; urgency=low
-
-  * Upstream update
-    * Adding padding between the icon and the label.
-
- -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 23:53:51 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 08:43:02 -0600
 
 libdbusmenu (0.2.0-0ubuntu1) lucid; urgency=low
 
