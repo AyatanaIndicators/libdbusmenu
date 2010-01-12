@@ -404,6 +404,9 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 		}
 	}
 
+        if (image == (GtkWidget *)imagew)
+          return;
+
 	/* No we can see if we need to ethier replace and image or
 	   just put ourselves into the structures */
 	if (imagew != NULL) {
