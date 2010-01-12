@@ -511,13 +511,31 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 			   icon either. */
 			gtkimage = NULL;
 		} else {
+			/* Look to see if we want to have an icon with the 'ltr' or
+			   'rtl' depending on what we're doing. */
+			gchar * finaliconname = g_strdup_printf("%s-%s", iconname,
+						gtk_widget_get_direction(GTK_WIDGET(gimi)) == GTK_TEXT_DIR_RTL ? "rtl" : "ltr");
+			if (!gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), finaliconname)) {
+				/* If we don't have that icon, fall back to having one
+				   without the extra bits. */
+				g_free(finaliconname);
+				finaliconname = (gchar *)iconname; /* Dropping const not
+				                                      becaue we don't love it. */
+			}
+
 			/* If we don't have an image, we need to build
 			   one so that we can set the name.  Otherwise we
 			   can just convert it to this name. */
 			if (gtkimage == NULL) {
-				gtkimage = gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU);
+				gtkimage = gtk_image_new_from_icon_name(finaliconname, GTK_ICON_SIZE_MENU);
 			} else {
-				gtk_image_set_from_icon_name(GTK_IMAGE(gtkimage), iconname, GTK_ICON_SIZE_MENU);
+				gtk_image_set_from_icon_name(GTK_IMAGE(gtkimage), finaliconname, GTK_ICON_SIZE_MENU);
+			}
+
+			/* If we're using the name with extra bits, then we need
+			   to free that string. */
+			if (finaliconname != iconname) {
+				g_free(finaliconname);
 			}
 		}
 	} else {
