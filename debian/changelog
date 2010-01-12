@@ -1,3 +1,13 @@
+libdbusmenu (0.2.1-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.1
+    - Fix to not destroy the image if we're still using it.
+    - Adding code to support icon names that have an implied direction in them.
+    - Fix to put a small amount of padding between the icon and the label.
+
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 12 Jan 2010 11:03:39 -0500
+
 libdbusmenu (0.2.0-0ubuntu3) lucid; urgency=low
 
   * debian/rules:
