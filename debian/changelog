@@ -1,11 +1,26 @@
-libdbusmenu (0.2.1-0ubuntu1~ppa1) karmic; urgency=low
+libdbusmenu (0.2.1-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.1
-    * Not deleting images that we're still using.
-    * Adding padding between the icon and the label.
-    * Setting direction based on parent widget text direction.
+    - Fix to not destroy the image if we're still using it.
+    - Adding code to support icon names that have an implied direction in them.
+    - Fix to put a small amount of padding between the icon and the label.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 08:46:10 -0600
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 12 Jan 2010 11:03:39 -0500
+
+libdbusmenu (0.2.0-0ubuntu3) lucid; urgency=low
+
+  * debian/rules:
+    - updated shlibs version (lp: #505258)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 11 Jan 2010 16:04:11 +0100
+
+libdbusmenu (0.2.0-0ubuntu2) lucid; urgency=low
+
+  * Added debian/libdbusmenu-tools.install
+  * debian/control
+    - improved description for libdbusmenu-tools
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Sat, 09 Jan 2010 09:05:47 -0500
 
 libdbusmenu (0.2.0-0ubuntu1) lucid; urgency=low
 
