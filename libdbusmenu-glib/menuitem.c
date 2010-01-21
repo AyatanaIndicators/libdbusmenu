@@ -1060,12 +1060,17 @@ dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array, gint revis
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 
+	guint id = 0;
+	if (!dbusmenu_menuitem_get_root(mi)) {
+		id = dbusmenu_menuitem_get_id(mi);
+	}
+
 	GList * children = dbusmenu_menuitem_get_children(mi);
 	/* TODO: Only put revision info in the root node.  Save some bandwidth. */
 	if (children == NULL) {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" revision=\"%d\" />", dbusmenu_menuitem_get_id(mi), revision));
+		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" revision=\"%d\" />", id, revision));
 	} else {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" revision=\"%d\">", dbusmenu_menuitem_get_id(mi), revision));
+		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" revision=\"%d\">", id, revision));
 		for ( ; children != NULL; children = children->next) {
 			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array, revision);
 		}
