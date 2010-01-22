@@ -661,7 +661,7 @@ menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_INT);
 	g_value_set_int(&value, 0);
-	org_ayatana_dbusmenu_event_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), "clicked", &value, menuitem_call_cb, mi);
+	org_ayatana_dbusmenu_event_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), "clicked", &value, 0, menuitem_call_cb, mi);
 	return;
 }
 
