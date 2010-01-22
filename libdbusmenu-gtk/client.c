@@ -109,7 +109,7 @@ static const gchar * data_menu =     "dbusmenugtk-data-gtkmenu";
 static gboolean
 menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 {
-	dbusmenu_menuitem_activate(mi);
+	dbusmenu_menuitem_activate(mi, gtk_get_current_event_time());
 	return TRUE;
 }
 
