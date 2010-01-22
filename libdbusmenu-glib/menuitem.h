@@ -104,7 +104,7 @@ struct _DbusmenuMenuitemClass
 
 	/* Signals */
 	void (*property_changed) (gchar * property, GValue * value);
-	void (*item_activated) (void);
+	void (*item_activated) (guint timestamp);
 	void (*child_added) (DbusmenuMenuitem * child, guint position);
 	void (*child_removed) (DbusmenuMenuitem * child);
 	void (*child_moved) (DbusmenuMenuitem * child, guint newpos, guint oldpos);
@@ -153,7 +153,7 @@ void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
 gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
-void dbusmenu_menuitem_activate (DbusmenuMenuitem * mi);
+void dbusmenu_menuitem_activate (DbusmenuMenuitem * mi, guint timestamp);
 
 /**
 	SECTION:menuitem

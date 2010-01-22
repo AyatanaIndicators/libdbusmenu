@@ -127,6 +127,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	/**
 		DbusmenuMenuitem::item-activated:
 		@arg0: The #DbusmenuMenuitem object.
+		@arg1: The timestamp of when it was activated
 
 		Emitted on the objects on the server side when
 		they are signaled on the client side.
@@ -136,8 +137,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, item_activated),
 	                                           NULL, NULL,
-	                                           _dbusmenu_menuitem_marshal_VOID__VOID,
-	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
+	                                           _dbusmenu_menuitem_marshal_VOID__UINT,
+	                                           G_TYPE_NONE, 1, G_TYPE_UINT, G_TYPE_NONE);
 	/**
 		DbusmenuMenuitem::child-added:
 		@arg0: The #DbusmenuMenuitem which is the parent.
@@ -1114,18 +1115,19 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 /**
 	dbusmenu_menuitem_activate:
 	@mi: The #DbusmenuMenuitem to send the signal on.
+	@timestamp: The timestamp of when the event happened
 
 	Emits the #DbusmenuMenuitem::item-activate signal on this
 	menu item.  Called by server objects when they get the
 	appropriate DBus signals from the client.
 */
 void
-dbusmenu_menuitem_activate (DbusmenuMenuitem * mi)
+dbusmenu_menuitem_activate (DbusmenuMenuitem * mi, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) activated", ID(mi), LABEL(mi));
 	#endif
-	g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, TRUE);
+	g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
 	return;
 }

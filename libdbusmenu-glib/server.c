@@ -553,7 +553,7 @@ _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GVal
 		return FALSE;
 	}
 
-	dbusmenu_menuitem_activate(mi);
+	dbusmenu_menuitem_activate(mi, timestamp);
 	return TRUE;
 }
 
