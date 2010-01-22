@@ -32,9 +32,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <json-glib/json-glib.h>
 
 static void
-menuitem_click(DbusmenuMenuitem * mi, gpointer user_data)
+menuitem_click(DbusmenuMenuitem * mi, guint32 time, gpointer user_data)
 {
-	g_debug("Clicked on: %d", dbusmenu_menuitem_get_id(mi));
+	g_debug("Clicked on: %d @ %d", dbusmenu_menuitem_get_id(mi), time);
 	return;
 }
 
