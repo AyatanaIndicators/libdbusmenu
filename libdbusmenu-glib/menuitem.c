@@ -1048,7 +1048,6 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 	dbusmenu_menuitem_buildxml:
 	@mi: #DbusmenuMenuitem to represent in XML
 	@array: A list of string that will be turned into an XML file
-	@revision: The revision of the layout to embed in the XML
 
 	This function will add strings to the array @array.  It will put
 	at least one entry if this menu item has no children.  If it has
@@ -1057,18 +1056,22 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 	children to place their own tags in the array in between those two.
 */
 void
-dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array, gint revision)
+dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 
+	guint id = 0;
+	if (!dbusmenu_menuitem_get_root(mi)) {
+		id = dbusmenu_menuitem_get_id(mi);
+	}
+
 	GList * children = dbusmenu_menuitem_get_children(mi);
-	/* TODO: Only put revision info in the root node.  Save some bandwidth. */
 	if (children == NULL) {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" revision=\"%d\" />", dbusmenu_menuitem_get_id(mi), revision));
+		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\"/>", id));
 	} else {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" revision=\"%d\">", dbusmenu_menuitem_get_id(mi), revision));
+		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\">", id));
 		for ( ; children != NULL; children = children->next) {
-			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array, revision);
+			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array);
 		}
 		g_ptr_array_add(array, g_strdup("</menu>"));
 	}

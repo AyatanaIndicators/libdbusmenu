@@ -376,13 +376,13 @@ _dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revi
 	if (parent == 0) {
 		if (priv->root == NULL) {
 			/* g_debug("Getting layout without root node!"); */
-			g_ptr_array_add(xmlarray, g_strdup_printf("<menu revision=\"%d\" />", priv->layout_revision));
+			g_ptr_array_add(xmlarray, g_strdup("<menu/>"));
 		} else {
-			dbusmenu_menuitem_buildxml(priv->root, xmlarray, priv->layout_revision);
+			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
 		}
 	} else {
 		DbusmenuMenuitem * item = dbusmenu_menuitem_find_id(priv->root, parent);
-		dbusmenu_menuitem_buildxml(item, xmlarray, priv->layout_revision);
+		dbusmenu_menuitem_buildxml(item, xmlarray);
 	}
 	g_ptr_array_add(xmlarray, NULL);
 

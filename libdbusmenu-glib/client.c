@@ -514,34 +514,6 @@ build_proxies (DbusmenuClient * client)
 	return;
 }
 
-/* Get the "revision" attribute of the node, parse it and
-   return it.  Also we're checking to ensure the node
-   is a 'menu' here. */
-static gint
-parse_node_get_revision (xmlNodePtr node)
-{
-	if (g_strcmp0((gchar *)node->name, "menu") != 0) {
-		/* This kills some nodes early */
-		g_warning("XML Node is not 'menu' it is '%s'", node->name);
-		return 0;
-	}
-
-	xmlAttrPtr attrib;
-	for (attrib = node->properties; attrib != NULL; attrib = attrib->next) {
-		if (g_strcmp0((gchar *)attrib->name, "revision") == 0) {
-			if (attrib->children != NULL) {
-				guint revision = (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
-				/* g_debug ("Found ID: %d", id); */
-				return revision;
-			}
-			break;
-		}
-	}
-
-	g_warning("Unable to find a revision on the node");
-	return 0;
-}
-
 /* Get the ID attribute of the node, parse it and
    return it.  Also we're checking to ensure the node
    is a 'menu' here. */
@@ -764,7 +736,6 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 16*1024), "dbusmenu.xml", NULL, 0);
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
-	gint revision = parse_node_get_revision(root);
 
 	DbusmenuMenuitem * oldroot = priv->root;
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
@@ -781,7 +752,7 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 
-	return revision;
+	return 1;
 }
 
 /* When the layout property returns, here's where we take care of that. */
