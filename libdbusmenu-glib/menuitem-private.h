@@ -33,7 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
-void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array, gint revision);
+void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
 
 G_END_DECLS
 
