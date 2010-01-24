@@ -141,6 +141,7 @@ menu item.
 @param id the id of the item which received the event
 @param type the type of event
 @param data event-specific data
+@param timestamp The time that the event occured if available or the time the message was sent if not.
 
 @a type can be one of the following:
 
@@ -153,6 +154,7 @@ Vendor specific events can be added by prefixing them with "x-<vendor>-"
 			<arg type="u" name="id" direction="in" />
 			<arg type="s" name="eventId" direction="in" />
 			<arg type="v" name="data" direction="in" />
+			<arg type="u" name="timestamp" direction="in" />
 		</method>
 
 <!-- Signals -->

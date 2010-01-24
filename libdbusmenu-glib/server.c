@@ -39,7 +39,7 @@ static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, guint pare
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * properties, GHashTable ** dict, GError ** error);
 static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
-static gboolean _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, GError ** error);
+static gboolean _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, guint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 
 #include "dbusmenu-server.h"
@@ -537,7 +537,7 @@ _dbusmenu_server_get_children (DbusmenuServer * server, guint id, GPtrArray * pr
 }
 
 static gboolean
-_dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, GError ** error)
+_dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, guint timestamp, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
@@ -553,7 +553,7 @@ _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GVal
 		return FALSE;
 	}
 
-	dbusmenu_menuitem_activate(mi);
+	dbusmenu_menuitem_activate(mi, timestamp);
 	return TRUE;
 }
 
