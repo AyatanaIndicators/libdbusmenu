@@ -468,7 +468,10 @@ static void
 image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata)
 {
 	/* We're only looking at these two properties here */
-	g_return_if_fail(!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON) || !g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA));
+	if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON) != 0 &&
+			g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA) != 0) {
+		return;
+	}
 
 	const gchar * value = NULL;
 	
