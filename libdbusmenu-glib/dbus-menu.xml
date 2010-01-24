@@ -182,7 +182,7 @@ revision
          item for the entries that have changed.  It is zero if the
 		 whole layout should be considered invalid.
 -->
-		<signal name="LayoutUpdate">
+		<signal name="LayoutUpdated">
 			<arg type="i" name="revision" direction="out" />
 			<arg type="u" name="parent" direction="out" />
 		</signal>

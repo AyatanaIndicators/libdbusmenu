@@ -45,7 +45,8 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE  "item-property-updated"
 #define DBUSMENU_SERVER_SIGNAL_ID_UPDATE       "item-updated"
-#define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE   "layout-update"
+#define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED  "layout-updated"
+#define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE   DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED
 
 #define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
@@ -56,7 +57,7 @@ G_BEGIN_DECLS
 	@parent_class: #GObjectClass
 	@id_prop_update: Slot for #DbusmenuServer::id-prop-update.
 	@id_update: Slot for #DbusmenuServer::id-update.
-	@layout_update: Slot for #DbusmenuServer::layout-update.
+	@layout_updated: Slot for #DbusmenuServer::layout-update.
 	@dbusmenu_server_reserved1: Reserved for future use.
 	@dbusmenu_server_reserved2: Reserved for future use.
 	@dbusmenu_server_reserved3: Reserved for future use.
@@ -71,7 +72,7 @@ struct _DbusmenuServerClass {
 	/* Signals */
 	void (*id_prop_update)(guint id, gchar * property, gchar * value);
 	void (*id_update)(guint id);
-	void (*layout_update)(gint revision);
+	void (*layout_updated)(gint revision);
 
 	/* Reserved */
 	void (*dbusmenu_server_reserved1)(void);
