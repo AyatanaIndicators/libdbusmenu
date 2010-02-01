@@ -76,17 +76,17 @@ License version 3 and version 2.1 along with this program.  If not, see
 			XML syntax:
 
 			@verbatim
-			<menu id="1" revision="2"> # Root container
-			  <menu id="2" revision="2"> # First level menu, for example "File"
-				<menu id="3" revision="2"/> ~ Second level menu, for example "Open"
-				<menu id="4" revision="3"/>
-				...
-			  </menu>
-			  <menu id="5" revision="2"> # Another first level menu, say "Edit"
-				...
-			  </menu>
-			  ...
-			</menu>
+<menu id="1" revision="2"> # Root container
+	<menu id="2" revision="2"> # First level menu, for example "File"
+		<menu id="3" revision="2"/> ~ Second level menu, for example "Open"
+		<menu id="4" revision="3"/>
+		...
+	</menu>
+	<menu id="5" revision="2"> # Another first level menu, say "Edit"
+		...
+	</menu>
+	...
+</menu>
 			@endverbatim
 			]]></dox:d>
 			<arg type="u" name="parentId" direction="in">
