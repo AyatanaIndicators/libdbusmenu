@@ -38,27 +38,99 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 		Available properties are:
 
-		- @c type (string): Type of the item (see below)
-		- @c label (string): Text of the item, except that (a) two consecutive
-		  underscore characters "__" are displayed as a single underscore, (b)
-		  any remaining underscore characters are not displayed at all, and (c)
-		  the first of those remaining underscore characters (unless it is the
-		  last character in the string) indicates that the following character
-		  is the access key.
-		- @c icon-name (string): Icon name of the item, following icon spec
-		- @c icon-data (binary): PNG data of the icon
-		- @c enabled (boolean): Whether the item can be activated or not
-		- @c toggle-type (string): none, checkmark, switch, radio
-		- @c toggle-state (int): 0 = off, 1 = on, anything else = indeterminate
+		<table>
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Description</th>
+			<th>Default Value</th>
+		</tr>
+		<tr>
+			<td>type</td>
+			<td>String</td>
+			<td>Can be one of:
+			- "standard": an item which can be clicked to trigger an action or
+			  show another menu
+			- "separator": a separator
 
-		Vendor specific properties can be added by prefixing them with "x-<vendor>-"
+			Vendor specific types can be added by prefixing them with
+			"x-<vendor>-".
+			</td>
+			<td>"standard"</td>
+		</tr>
+		<tr>
+			<td>label</td>
+			<td>string</td>
+			<td>Text of the item, except that:
+			-# two consecutive underscore characters "__" are displayed as a
+			single underscore,
+			-# any remaining underscore characters are not displayed at all,
+			-# the first of those remaining underscore characters (unless it is
+			the last character in the string) indicates that the following
+			character is the access key.
+			</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>enabled</td>
+			<td>boolean</td>
+			<td>Whether the item can be activated or not.</td>
+			<td>true</td>
+		</tr>
+		<tr>
+			<td>icon-name</td>
+			<td>string</td>
+			<td>Icon name of the item, following the freedesktop.org icon spec.</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>icon-data</td>
+			<td>binary</td>
+			<td>PNG data of the icon.</td>
+			<td>Empty</td>
+		</tr>
+		<tr>
+			<td>toggle-type</td>
+			<td>string</td>
+			<td>
+			If the item can be toggled, this property should be set to:
+			- "checkmark": Item is an independent togglable item
+			- "radio": Item is part of a group where only one item can be
+			  toggled at a time
+			- "": Item cannot be toggled
+			</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>toggle-state</td>
+			<td>int</td>
+			<td>
+			Describe the current state of a "togglable" item. Can be one of:
+			- 0 = off
+			- 1 = on
+			- anything else = indeterminate
 
-		@c type property is an enum which can take the following values:
+			Note:
+			The implementation does not itself handle ensuring that only one
+			item in a radio group is set to "on", or that a group does not have
+			"on" and "indeterminate" items simultaneously; maintaining this
+			policy is up to the toolkit wrappers.
+			</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>children-display</td>
+			<td>string</td>
+			<td>
+			If the menu item has children this property should be set to
+			"submenu".
+			</td>
+			<td>""</td>
+		</tr>
+		</table>
 
-		- @c standard: An item which can be clicked to trigger an action
-		- @c separator: A separator
-
-		Vendor specific types can be added by prefixing them with "x-<vendor>-"
+		Vendor specific properties can be added by prefixing them with
+		"x-<vendor>-".
 		]]></dox:d>
 
 <!-- Properties -->
