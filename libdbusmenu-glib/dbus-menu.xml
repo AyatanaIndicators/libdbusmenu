@@ -39,22 +39,24 @@ License version 3 and version 2.1 along with this program.  If not, see
 		Available properties are:
 
 		- @c type (string): Type of the item (see below)
-		- @c label (string): Text of the item
-		- @c icon-data (binary): Raw data of the icon (TODO: define format)
-		- @c icon (string): Icon name of the item, following icon spec
-		- @c sensitive (boolean): Whether the item can be activated or not
-		- @c checked (boolean): Whether a checkbox or radio item is checked
-		- @c shortcut (string): The keyboard shortcut
+		- @c label (string): Text of the item, except that (a) two consecutive
+		  underscore characters "__" are displayed as a single underscore, (b)
+		  any remaining underscore characters are not displayed at all, and (c)
+		  the first of those remaining underscore characters (unless it is the
+		  last character in the string) indicates that the following character
+		  is the access key.
+		- @c icon-name (string): Icon name of the item, following icon spec
+		- @c icon-data (binary): PNG data of the icon
+		- @c enabled (boolean): Whether the item can be activated or not
+		- @c toggle-type (string): none, checkmark, switch, radio
+		- @c toggle-state (int): 0 = off, 1 = on, anything else = indeterminate
 
 		Vendor specific properties can be added by prefixing them with "x-<vendor>-"
 
 		@c type property is an enum which can take the following values:
 
-		- @c action: An item which can be clicked to trigger an action
-		- @c checkbox: An item which can be checked or unchecked
-		- @c radio: An item which can be checked or unchecked as part of a group
+		- @c standard: An item which can be clicked to trigger an action
 		- @c separator: A separator
-		- @c menu: An item which contains more items
 
 		Vendor specific types can be added by prefixing them with "x-<vendor>-"
 		]]></dox:d>
@@ -89,7 +91,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 </menu>
 			@endverbatim
 			]]></dox:d>
-			<arg type="u" name="parentId" direction="in">
+			<arg type="i" name="parentId" direction="in">
 				<dox:d>The ID of the parent node for the layout.  For
 				grabbing the layout from the root node use zero.</dox:d>
 			</arg>
@@ -106,7 +108,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			<dox:d>
 			Returns the list of items which are children of @a parentId.
 			</dox:d>
-			<arg type="au" name="Ids" direction="in" >
+			<arg type="ai" name="Ids" direction="in" >
 				<dox:d>
 					A list of ids that we should be finding the properties
 					on.  If the list is empty, all menu items should be sent.
@@ -119,7 +121,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 					the properties will be sent.
 				</dox:d>
 			</arg>
-			<arg type="a(ua{sv})" name="properties" direction="out" >
+			<arg type="a(ia{sv})" name="properties" direction="out" >
 				<dox:d>
 					An array of property values.
 					An item in this area is represented as a struct following
@@ -131,13 +133,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 		</method>
 
 		<method name="GetChildren">
-			<arg type="u" name="id" direction="in" />
+			<arg type="i" name="id" direction="in" />
 			<arg type="as" name="propertyNames" direction="in" />
-			<arg type="a(ua{sv})" name="properties" direction="out" />
+			<arg type="a(ia{sv})" name="properties" direction="out" />
 		</method>
 
 		<method name="GetProperty">
-			<arg type="u" name="id" direction="in" />
+			<arg type="i" name="id" direction="in" />
 			<arg type="s" name="name" direction="in" />
 			<arg type="v" name="value" direction="out" />
 		</method>
@@ -149,7 +151,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 			</dox:d>
 			<annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
-			<arg type="u" name="id" direction="in" >
+			<arg type="i" name="id" direction="in" >
 				<dox:d>The item whose properties we want to retrieve.</dox:d>
 			</arg>
 			<arg type="as" name="propertyNames" direction="in" >
@@ -170,7 +172,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 			Vendor specific events can be added by prefixing them with "x-<vendor>-"
 			]]></dox:d>
-			<arg type="u" name="id" direction="in" >
+			<arg type="i" name="id" direction="in" >
 				<dox:d>the id of the item which received the event</dox:d>
 			</arg>
 			<arg type="s" name="eventId" direction="in" >
@@ -190,7 +192,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			Triggered by the application to notify the applet that the property @a property
 			from item @a id has changed to @a value.
 			</dox:d>
-			<arg type="u" name="id" direction="out" />
+			<arg type="i" name="id" direction="out" />
 			<arg type="s" name="prop" direction="out" />
 			<arg type="v" name="value" direction="out" />
 		</signal>
@@ -199,7 +201,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			<dox:d>
 				Triggered by the application to notify the applet that all properties of item
 			</dox:d>
-			<arg type="u" name="id" direction="out" >
+			<arg type="i" name="id" direction="out" >
 				<dox:d>id which should be considered outdated</dox:d>
 			</arg>
 		</signal>
@@ -209,10 +211,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 			Triggered by the application to notify display of a layout update, up to
 			revision
 			</dox:d>
-			<arg type="i" name="revision" direction="out" >
+			<arg type="u" name="revision" direction="out" >
 				<dox:d>The revision of the layout that we're currently on</dox:d>
 			</arg>
-			<arg type="u" name="parent" direction="out" >
+			<arg type="i" name="parent" direction="out" >
 				<dox:d>
 				If the layout update is only of a subtree, this is the
 				parent item for the entries that have changed.  It is zero if
