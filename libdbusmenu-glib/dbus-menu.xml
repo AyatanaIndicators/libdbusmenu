@@ -188,7 +188,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 			<arg type="as" name="propertyNames" direction="in" >
 				<dox:d>
-					list of string the list of item properties we are
+					The list of item properties we are
 					interested in.  If there are no entries in the list all of
 					the properties will be sent.
 				</dox:d>
@@ -278,7 +278,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 		</signal>
 
-		<signal name="LayoutUpdate">
+		<signal name="LayoutUpdated">
 			<dox:d>
 			Triggered by the application to notify display of a layout update, up to
 			revision
