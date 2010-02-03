@@ -498,15 +498,15 @@ build_proxies (DbusmenuClient * client)
 		priv->dbusproxy = NULL;
 	}
 
-	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__INT_UINT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdated", G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__UINT_INT, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_INT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdated", G_TYPE_UINT, G_TYPE_INT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "LayoutUpdated", G_CALLBACK(layout_update), client, NULL);
 
 	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__UINT_STRING_POINTER, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
 	dbus_g_proxy_add_signal(priv->menuproxy, "ItemPropertyUpdated", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemPropertyUpdated", G_CALLBACK(id_prop_update), client, NULL);
 
-	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_INT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemUpdated", G_CALLBACK(id_update), client, NULL);
 
 	update_layout(client);

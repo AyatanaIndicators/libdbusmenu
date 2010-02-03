@@ -162,8 +162,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, layout_updated),
 	                                         NULL, NULL,
-	                                         _dbusmenu_server_marshal_VOID__INT_UINT,
-	                                         G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
+	                                         _dbusmenu_server_marshal_VOID__UINT_INT,
+	                                         G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_INT);
 
 
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
