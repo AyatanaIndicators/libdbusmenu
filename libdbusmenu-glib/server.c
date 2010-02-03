@@ -35,7 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "server-marshal.h"
 
 /* DBus Prototypes */
-static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revision, gchar ** layout, GError ** error);
+static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error);
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * properties, GHashTable ** dict, GError ** error);
 static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
@@ -366,7 +366,7 @@ error_quark (void)
 
 /* DBus interface */
 static gboolean
-_dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revision, gchar ** layout, GError ** error)
+_dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
