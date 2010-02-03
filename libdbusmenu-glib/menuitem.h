@@ -52,19 +52,19 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
 #define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
-#define DBUSMENU_MENUITEM_PROP_SENSITIVE             "sensitive"
+#define DBUSMENU_MENUITEM_PROP_ENABLED               "enabled"
 #define DBUSMENU_MENUITEM_PROP_LABEL                 "label"
-#define DBUSMENU_MENUITEM_PROP_ICON                  "icon"
+#define DBUSMENU_MENUITEM_PROP_ICON_NAME             "icon-name"
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
-#define DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED        "toggle-checked"
+#define DBUSMENU_MENUITEM_PROP_TOGGLE_STATE          "toggle-state"
 
 #define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
 #define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
 
-#define DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED     "unchecked"
-#define DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED       "checked"
-#define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       "indeterminate"
+#define DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED     0
+#define DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED       1
+#define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       -1
 
 /**
 	DbusmenuMenuitem:
