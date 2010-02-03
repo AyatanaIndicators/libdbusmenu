@@ -96,8 +96,8 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
 static void layout_update (DBusGProxy * proxy, gint revision, guint parent, DbusmenuClient * client);
-static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, DbusmenuClient * client);
-static void id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client);
+static void id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client);
+static void id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static guint parse_node_get_id (xmlNodePtr node);
 static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
@@ -321,7 +321,7 @@ layout_update (DBusGProxy * proxy, gint revision, guint parent, DbusmenuClient *
 /* Signal from the server that a property has changed
    on one of our menuitems */
 static void
-id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, DbusmenuClient * client)
+id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
 	GValue valstr = {0};
@@ -344,7 +344,7 @@ id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, 
 /* Oh, lots of updates now.  That silly server, they want
    to change all kinds of stuff! */
 static void
-id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
+id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client side ID update: %d", id);
@@ -530,7 +530,7 @@ parse_node_get_id (xmlNodePtr node)
 	for (attrib = node->properties; attrib != NULL; attrib = attrib->next) {
 		if (g_strcmp0((gchar *)attrib->name, "id") == 0) {
 			if (attrib->children != NULL) {
-				guint id = (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
+				gint id = (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
 				/* g_debug ("Found ID: %d", id); */
 				return id;
 			}
@@ -642,7 +642,7 @@ menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
 static DbusmenuMenuitem *
 parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
 {
-	guint id = parse_node_get_id(node);
+	gint id = parse_node_get_id(node);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client looking at node with id: %d", id);
 	#endif

@@ -55,7 +55,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
 struct _DbusmenuMenuitemPrivate
 {
-	guint id;
+	gint id;
 	GList * children;
 	GHashTable * properties;
 	gboolean root;
@@ -367,7 +367,7 @@ dbusmenu_menuitem_new (void)
 	Return value: A newly allocated #DbusmenuMenuitem.
 */
 DbusmenuMenuitem *
-dbusmenu_menuitem_new_with_id (guint id)
+dbusmenu_menuitem_new_with_id (gint id)
 {
 	DbusmenuMenuitem * mi = g_object_new(DBUSMENU_TYPE_MENUITEM, "id", id, NULL);
 	/* g_debug("New Menuitem id %d goal id %d", dbusmenu_menuitem_get_id(mi), id); */
@@ -642,7 +642,7 @@ dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child,
 	   can't be found.
 */
 DbusmenuMenuitem *
-dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
+dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, gint id)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
@@ -661,7 +661,7 @@ dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
 
 typedef struct {
 	DbusmenuMenuitem * mi;
-	guint id;
+	gint id;
 } find_id_t;
 
 /* Basically the heart of the find_id that matches the
@@ -697,7 +697,7 @@ find_id_helper (gpointer in_mi, gpointer in_find_id)
 		represented by @mi.
 */
 DbusmenuMenuitem *
-dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, guint id)
+dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 	find_id_t find_id = {mi: NULL, id: id};
@@ -1060,7 +1060,7 @@ dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 
-	guint id = 0;
+	gint id = 0;
 	if (!dbusmenu_menuitem_get_root(mi)) {
 		id = dbusmenu_menuitem_get_id(mi);
 	}
