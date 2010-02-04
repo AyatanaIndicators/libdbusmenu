@@ -150,6 +150,7 @@ static void
 process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
+	if (value == NULL) return;
 
 	GenericmenuitemCheckType type = GENERICMENUITEM_CHECK_TYPE_NONE;
 
@@ -173,6 +174,7 @@ static void
 process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
+	if (value == NULL) return;
 
 	GenericmenuitemState state = GENERICMENUITEM_STATE_UNCHECKED;
 
@@ -184,6 +186,8 @@ process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * v
 		} else if (val == DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN) {
 			state = GENERICMENUITEM_STATE_INDETERMINATE;
 		}
+	} else {
+		g_warning("Toggle state changed without having an int");
 	}
 
 	genericmenuitem_set_state(GENERICMENUITEM(gmi), state);
