@@ -92,6 +92,7 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 static void g_value_transform_STRING_BOOLEAN (const GValue * in, GValue * out);
 static void g_value_transform_STRING_INT (const GValue * in, GValue * out);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 
 /* GObject stuff */
 G_DEFINE_TYPE (DbusmenuMenuitem, dbusmenu_menuitem, G_TYPE_OBJECT);
@@ -107,6 +108,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	object_class->finalize = dbusmenu_menuitem_finalize;
 	object_class->set_property = set_property;
 	object_class->get_property = get_property;
+
+	klass->handle_event = handle_event;
 
 	/**
 		DbusmenuMenuitem::property-changed:
@@ -342,6 +345,16 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	return;
 }
 
+/* Handles the activate event if it is sent. */
+static void
+handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+{
+	if (g_strcmp0(name, "clicked") == 0) {
+		g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
+	}
+
+	return;
+}
 
 /* Public interface */
 
@@ -1146,6 +1159,5 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const
 	if (class->handle_event != NULL) {
 		return class->handle_event(mi, name, value, timestamp);
 	}
-	//g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
 	return;
 }
