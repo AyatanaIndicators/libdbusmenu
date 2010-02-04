@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf-8
 """
 A library to communicate a menu object set accross DBus and
 track updates and maintain consistency.
