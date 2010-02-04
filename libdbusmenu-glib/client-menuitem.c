@@ -18,6 +18,7 @@ static void dbusmenu_client_menuitem_class_init (DbusmenuClientMenuitemClass *kl
 static void dbusmenu_client_menuitem_init       (DbusmenuClientMenuitem *self);
 static void dbusmenu_client_menuitem_dispose    (GObject *object);
 static void dbusmenu_client_menuitem_finalize   (GObject *object);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 
 G_DEFINE_TYPE (DbusmenuClientMenuitem, dbusmenu_client_menuitem, DBUSMENU_TYPE_MENUITEM);
 
@@ -30,6 +31,9 @@ dbusmenu_client_menuitem_class_init (DbusmenuClientMenuitemClass *klass)
 
 	object_class->dispose = dbusmenu_client_menuitem_dispose;
 	object_class->finalize = dbusmenu_client_menuitem_finalize;
+
+	DbusmenuMenuitemClass * mclass = DBUSMENU_MENUITEM_CLASS(klass);
+	mclass->handle_event = handle_event;
 
 	return;
 }
@@ -64,4 +68,12 @@ dbusmenu_client_menuitem_new (gint id, DbusmenuClient * client)
 	DbusmenuClientMenuitemPrivate * priv = DBUSMENU_CLIENT_MENUITEM_GET_PRIVATE(mi);
 	priv->client = client;
 	return mi;
+}
+
+static void
+handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+{
+	DbusmenuClientMenuitemPrivate * priv = DBUSMENU_CLIENT_MENUITEM_GET_PRIVATE(mi);
+	dbusmenu_client_send_event(priv->client, dbusmenu_menuitem_get_id(mi), name, value, timestamp);
+	return;
 }

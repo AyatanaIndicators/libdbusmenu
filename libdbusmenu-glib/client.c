@@ -35,6 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "client.h"
 #include "menuitem.h"
+#include "client-menuitem.h"
 #include "dbusmenu-client.h"
 #include "server-marshal.h"
 
@@ -626,14 +627,11 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 	return;
 }
 
-static void
-menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
+void
+dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, const GValue * value, guint timestamp)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_INT);
-	g_value_set_int(&value, 0);
-	org_ayatana_dbusmenu_event_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), "clicked", &value, 0, menuitem_call_cb, mi);
+	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, GINT_TO_POINTER(id));
 	return;
 }
 
@@ -661,11 +659,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 
 		/* Build a new item */
-		item = dbusmenu_menuitem_new_with_id(id);
+		item = DBUSMENU_MENUITEM(dbusmenu_client_menuitem_new(id, client));
 		if (parent == NULL) {
 			dbusmenu_menuitem_set_root(item, TRUE);
 		}
-		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activate), client);
 
 		/* Get the properties queued up for this item */
 		/* Not happy about this, but I need these :( */
