@@ -27,6 +27,7 @@ You should have received a copy of both the GNU Lesser General Public
 License version 3 and version 2.1 along with this program.  If not, see 
 <http://www.gnu.org/licenses/>
 """
+import itertools
 import time
 import sys
 from optparse import OptionParser
@@ -38,6 +39,10 @@ DBUS_INTERFACE = "org.ayatana.dbusmenu"
 DBUS_SERVICE = "org.dbusmenu.test"
 DBUS_PATH = "/MenuBar"
 
+PROBE_GET_LAYOUT     = "GetLayout"
+PROBE_GET_PROPERTIES = "GetProperties"
+PROBE_GET_CHILDREN   = "GetChildren"
+PROBES = PROBE_GET_LAYOUT, PROBE_GET_PROPERTIES, PROBE_GET_CHILDREN
 
 class Chrono(object):
     def __init__(self):
@@ -99,6 +104,12 @@ def run_test_sequence(menu, dump=False):
 
     return times
 
+def create_timing_dict():
+    return dict(zip(PROBES, itertools.repeat(0)))
+
+def print_probe(prefix, name, value, timestamp):
+    value = int(value * 1000000)
+    print "%(prefix)s.%(name)s:%(value)d@%(timestamp)d" % locals()
 
 def main():
     parser = OptionParser(usage = "%prog [options]")
@@ -118,14 +129,25 @@ def main():
         run_test_sequence(menu, dump=True)
         return
 
-    cumulated_timings = dict()
+    cumulated_timings = create_timing_dict()
+    min_timings = create_timing_dict()
+    max_timings = create_timing_dict()
     for x in range(options.count):
         timings = run_test_sequence(menu)
         for name, timing in timings.items():
-            cumulated_timings[name] = cumulated_timings.get(name, 0) + timing
+            cumulated_timings[name] += timing
+            if min_timings[name] == 0 or min_timings[name] > timing:
+                min_timings[name] = timing
+            if max_timings[name] < timing:
+                max_timings[name] = timing
 
+    timestamp = int(time.time())
     for name, timing in cumulated_timings.items():
-        print name, timing / options.count
+        print_probe("average", name, timing / options.count, timestamp)
+    for name, timing in min_timings.items():
+        print_probe("min", name, timing, timestamp)
+    for name, timing in max_timings.items():
+        print_probe("max", name, timing, timestamp)
 
     return 0
 
