@@ -104,6 +104,11 @@ DbusmenuMenuitem *   dbusmenu_client_get_root          (DbusmenuClient * client)
 gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
                                                         const gchar * type,
                                                         DbusmenuClientTypeHandler newfunc);
+void                 dbusmenu_client_send_event        (DbusmenuClient * client,
+                                                        gint id,
+                                                        const gchar * name,
+                                                        const GValue * value,
+                                                        guint timestamp);
 
 /**
 	SECTION:client
