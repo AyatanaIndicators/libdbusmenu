@@ -66,7 +66,7 @@ Section: devel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libdbusmenu-glib0 (= ${binary:Version})
+         libdbusmenu-glib1 (= ${binary:Version})
 Description: Tools useful during development with libdbusmenu
  .
  This package contains tools that are useful when building applications.
