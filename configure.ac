@@ -105,6 +105,7 @@ libdbusmenu-glib/dbusmenu-glib.pc
 libdbusmenu-gtk/Makefile
 libdbusmenu-gtk/dbusmenu-gtk.pc
 tools/Makefile
+tools/testapp/Makefile
 tests/Makefile
 ])
 
