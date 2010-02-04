@@ -27,6 +27,8 @@ libdbusmenu_glib_la_SOURCES = \
 	server.c \
 	server-marshal.h \
 	server-marshal.c \
+	client-menuitem.h \
+	client-menuitem.c \
 	client.h \
 	client.c
 
