@@ -44,7 +44,7 @@ static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id,
 
 #include "dbusmenu-server.h"
 
-#define DBUSMENU_VERSION_NUMBER  1
+#define DBUSMENU_VERSION_NUMBER  2
 
 /* Privates, I'll show you mine... */
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;

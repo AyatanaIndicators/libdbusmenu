@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.2.1, ted@canonical.com)
-AC_COPYRIGHT([Copyright 2009 Canonical])
+AC_INIT(libdbusmenu, 0.2.2, ted@canonical.com)
+AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.2.1)
+AM_INIT_AUTOMAKE(libdbusmenu, 0.2.2)
 
 AM_MAINTAINER_MODE
 
@@ -65,8 +65,8 @@ AC_SUBST(DBUSMENUTESTS_LIBS)
 # Lib versioning 
 ###########################
 
-LIBDBUSMENU_CURRENT=0
-LIBDBUSMENU_REVISION=11
+LIBDBUSMENU_CURRENT=1
+LIBDBUSMENU_REVISION=0
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
@@ -105,6 +105,7 @@ libdbusmenu-glib/dbusmenu-glib.pc
 libdbusmenu-gtk/Makefile
 libdbusmenu-gtk/dbusmenu-gtk.pc
 tools/Makefile
+tools/testapp/Makefile
 tests/Makefile
 ])
 
