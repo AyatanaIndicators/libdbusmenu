@@ -627,7 +627,7 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 }
 
 static void
-menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
+menuitem_activate (DbusmenuMenuitem * mi, uint timestamp, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	GValue value = {0};
