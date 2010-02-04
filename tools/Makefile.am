@@ -1,4 +1,6 @@
 
+SUBDIRS = testapp
+
 libexec_PROGRAMS = dbusmenu-dumper
 
 libexec_SCRIPTS = dbusmenu-bench
