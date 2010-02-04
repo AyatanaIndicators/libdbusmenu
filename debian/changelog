@@ -1,4 +1,4 @@
-libdbusmenu (0.2.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.2.2-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream Release 0.2.2
     * Interoperability fixes
@@ -8,7 +8,7 @@ libdbusmenu (0.2.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * debian/libdbusmenu-tools.install: Adding a wildcard to get
     all of the tools in libexec
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 04 Feb 2010 12:14:58 -0800
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Feb 2010 12:18:26 -0800
 
 libdbusmenu (0.2.1-0ubuntu1) lucid; urgency=low
 
