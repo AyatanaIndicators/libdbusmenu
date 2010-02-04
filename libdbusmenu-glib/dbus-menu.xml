@@ -37,6 +37,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 		Items are represented with a unique numeric id and a dictionary of
 		properties.
 
+		To reduce the amount of DBus traffic, a property should only be returned
+		if its value is not the default value.
+
 		Available properties are:
 
 		<table>
