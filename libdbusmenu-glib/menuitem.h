@@ -112,10 +112,11 @@ struct _DbusmenuMenuitemClass
 
 	/* Virtual functions */
 	void (*buildxml) (GPtrArray * stringarray);
+	void (*handle_event) (gchar * name, GValue * value, guint timestamp);
 
 	void (*reserved1) (void);
 	void (*reserved2) (void);
-	void (*reserved3) (void);
+	/* void (*reserved3) (void); */
 	/* void (*reserved4) (void); -- realized, realloc when bumping lib version */
 };
 
@@ -153,7 +154,7 @@ void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
 gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
-void dbusmenu_menuitem_activate (DbusmenuMenuitem * mi, guint timestamp);
+void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, gchar * name, GValue * value, guint timestamp);
 
 /**
 	SECTION:menuitem
