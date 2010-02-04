@@ -53,7 +53,10 @@ set_props (DbusmenuMenuitem * mi, JsonObject * node)
 		JsonNode * lnode = json_object_get_member(node, member);
 		if (JSON_NODE_TYPE(lnode) != JSON_NODE_VALUE) { continue; }
 
-		dbusmenu_menuitem_property_set(mi, member, json_node_get_string(lnode));
+		GValue value = {0};
+		json_node_get_value(lnode, &value);
+		dbusmenu_menuitem_property_set_value(mi, member, &value);
+		g_value_unset(&value);
 	}
 
 	return;
