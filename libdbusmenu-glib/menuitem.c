@@ -1116,21 +1116,36 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 }
 
 /**
-	dbusmenu_menuitem_activate:
+	dbusmenu_menuitem_handle_event:
 	@mi: The #DbusmenuMenuitem to send the signal on.
+	@name: The name of the signal
+	@value: A value that could be set for the event
 	@timestamp: The timestamp of when the event happened
+
+	This function is called to create an event.  It is likely
+	to be overrided by subclasses.  The default menu item
+	will respond to the activate signal and do:
 
 	Emits the #DbusmenuMenuitem::item-activate signal on this
 	menu item.  Called by server objects when they get the
 	appropriate DBus signals from the client.
+
+	If you subclass this function you should really think
+	about calling the parent function unless you have a good
+	reason not to.
 */
 void
-dbusmenu_menuitem_activate (DbusmenuMenuitem * mi, guint timestamp)
+dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Menuitem %d (%s) activated", ID(mi), LABEL(mi));
+	g_debug("Menuitem %d (%s) is getting event '%s'", ID(mi), LABEL(mi), name);
 	#endif
-	g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
+	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
+
+	if (class->handle_event != NULL) {
+		return class->handle_event(mi, name, value, timestamp);
+	}
+	//g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
 	return;
 }

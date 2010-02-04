@@ -92,6 +92,9 @@ struct _DbusmenuMenuitem
 	@realized: Slot for #DbusmenuMenuitem::realized.
 	@buildxml: Virtual function that appends the strings required
 	           to represent this menu item in the menu XML file.
+	@handle_event: This function is to override how events are handled
+			by subclasses.  Look at #dbusmenu_menuitem_handle_event for
+			lots of good information.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
@@ -112,7 +115,7 @@ struct _DbusmenuMenuitemClass
 
 	/* Virtual functions */
 	void (*buildxml) (GPtrArray * stringarray);
-	void (*handle_event) (gchar * name, GValue * value, guint timestamp);
+	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 
 	void (*reserved1) (void);
 	void (*reserved2) (void);
@@ -154,7 +157,7 @@ void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
 gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
-void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, gchar * name, GValue * value, guint timestamp);
+void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 
 /**
 	SECTION:menuitem
