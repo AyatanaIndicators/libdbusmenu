@@ -35,12 +35,12 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "server-marshal.h"
 
 /* DBus Prototypes */
-static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revision, gchar ** layout, GError ** error);
-static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error);
-static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * properties, GHashTable ** dict, GError ** error);
+static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error);
+static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
+static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * properties, GHashTable ** dict, GError ** error);
 static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
-static gboolean _dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
-static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, guint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
+static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
+static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 
 #include "dbusmenu-server.h"
 
@@ -162,8 +162,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, layout_updated),
 	                                         NULL, NULL,
-	                                         _dbusmenu_server_marshal_VOID__INT_UINT,
-	                                         G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
+	                                         _dbusmenu_server_marshal_VOID__UINT_INT,
+	                                         G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_INT);
 
 
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
@@ -366,7 +366,7 @@ error_quark (void)
 
 /* DBus interface */
 static gboolean
-_dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revision, gchar ** layout, GError ** error)
+_dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
@@ -396,7 +396,7 @@ _dbusmenu_server_get_layout (DbusmenuServer * server, guint parent, guint * revi
 }
 
 static gboolean 
-_dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * property, gchar ** value, GError ** error)
+_dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
@@ -441,7 +441,7 @@ _dbusmenu_server_get_property (DbusmenuServer * server, guint id, gchar * proper
 }
 
 static gboolean
-_dbusmenu_server_get_properties (DbusmenuServer * server, guint id, GPtrArray * properties, GHashTable ** dict, GError ** error)
+_dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * properties, GHashTable ** dict, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
@@ -475,12 +475,12 @@ _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GA
 }
 
 static void
-_gvalue_array_append_uint(GValueArray *array, guint i)
+_gvalue_array_append_int(GValueArray *array, gint i)
 {
 	GValue value = {0};
 
-	g_value_init(&value, G_TYPE_UINT);
-	g_value_set_uint(&value, i);
+	g_value_init(&value, G_TYPE_INT);
+	g_value_set_int(&value, i);
 	g_value_array_append(array, &value);
 	g_value_unset(&value);
 }
@@ -502,18 +502,18 @@ serialize_menuitem(gpointer data, gpointer user_data)
 	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
 	GPtrArray * output = (GPtrArray *)(user_data);
 
-	guint id = dbusmenu_menuitem_get_id(mi);
+	gint id = dbusmenu_menuitem_get_id(mi);
 	GHashTable * dict = dbusmenu_menuitem_properties_copy(mi);
 
 	GValueArray * item = g_value_array_new(1);
-	_gvalue_array_append_uint(item, id);
+	_gvalue_array_append_int(item, id);
 	_gvalue_array_append_hashtable(item, dict);
 
 	g_ptr_array_add(output, item);
 }
 
 static gboolean
-_dbusmenu_server_get_children (DbusmenuServer * server, guint id, GPtrArray * properties, GPtrArray ** output, GError ** error)
+_dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = id == 0 ? priv->root : dbusmenu_menuitem_find_id(priv->root, id);
@@ -537,7 +537,7 @@ _dbusmenu_server_get_children (DbusmenuServer * server, guint id, GPtrArray * pr
 }
 
 static gboolean
-_dbusmenu_server_event (DbusmenuServer * server, guint id, gchar * eventid, GValue * data, guint timestamp, GError ** error)
+_dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);

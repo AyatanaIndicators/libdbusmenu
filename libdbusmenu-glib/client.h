@@ -50,9 +50,9 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
 
-#define DBUSMENU_CLIENT_TYPES_DEFAULT      "menuitem"
+#define DBUSMENU_CLIENT_TYPES_DEFAULT      "standard"
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
-#define DBUSMENU_CLIENT_TYPES_IMAGE        "menuitem"
+#define DBUSMENU_CLIENT_TYPES_IMAGE        "standard"
 
 /**
 	DbusmenuClientClass:

@@ -70,8 +70,8 @@ struct _DbusmenuServerClass {
 	GObjectClass parent_class;
 
 	/* Signals */
-	void (*id_prop_update)(guint id, gchar * property, gchar * value);
-	void (*id_update)(guint id);
+	void (*id_prop_update)(gint id, gchar * property, gchar * value);
+	void (*id_update)(gint id);
 	void (*layout_updated)(gint revision);
 
 	/* Reserved */
