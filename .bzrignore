@@ -57,3 +57,4 @@ libdbusmenu-gtk/libdbusmenu_gtk_la-genericmenuitem.lo
 tests/test-glib-objects
 tests/test-glib-objects-test
 tests/test-glib-objects.xml
+tools/testapp/dbusmenu-testapp
