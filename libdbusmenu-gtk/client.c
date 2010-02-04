@@ -154,14 +154,19 @@ process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * va
 
 	GenericmenuitemCheckType type = GENERICMENUITEM_CHECK_TYPE_NONE;
 
-	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
-		const gchar * strval = g_value_get_string(value);
+	GValue strvalue = {0};
+	g_value_init(&strvalue, G_TYPE_STRING);
+
+	if (value != NULL && g_value_transform(value, &strvalue)) {
+		const gchar * strval = g_value_get_string(&strvalue);
 
 		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_CHECK)) {
 			type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
 		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_RADIO)) {
 			type = GENERICMENUITEM_CHECK_TYPE_RADIO;
 		}
+
+		g_value_unset(&strvalue);
 	}
 
 	genericmenuitem_set_check_type(GENERICMENUITEM(gmi), type);
@@ -174,20 +179,20 @@ static void
 process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
-	if (value == NULL) return;
 
 	GenericmenuitemState state = GENERICMENUITEM_STATE_UNCHECKED;
 
-	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_INT) {
-		int val = g_value_get_int(value);
+	GValue intvalue = {0};
+	g_value_init(&intvalue, G_TYPE_INT);
+
+	if (value != NULL && g_value_transform(value, &intvalue)) {
+		int val = g_value_get_int(&intvalue);
 
 		if (val == DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED) {
 			state = GENERICMENUITEM_STATE_CHECKED;
 		} else if (val == DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN) {
 			state = GENERICMENUITEM_STATE_INDETERMINATE;
 		}
-	} else {
-		g_warning("Toggle state changed without having an int");
 	}
 
 	genericmenuitem_set_state(GENERICMENUITEM(gmi), state);
