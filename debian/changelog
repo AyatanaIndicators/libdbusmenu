@@ -1,3 +1,18 @@
+libdbusmenu (0.2.2-0ubuntu1) lucid; urgency=low
+
+  * Updated for the soname changes
+  
+  [ Ted Gould ]
+  * Upstream Release 0.2.2
+    * Interoperability fixes
+    * Adding timestamps to events
+    * Better handling of XML
+    * Adding tools for timing dbusmenu
+  * debian/libdbusmenu-tools.install: Adding a wildcard to get
+    all of the tools in libexec
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 04 Feb 2010 13:56:49 -0800
+
 libdbusmenu (0.2.1-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.1
