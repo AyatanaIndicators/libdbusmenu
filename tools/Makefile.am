@@ -1,5 +1,5 @@
 
-libexec_PROGRAMS = dbusmenu-dumper
+libexec_PROGRAMS = dbusmenu-dumper dbusmenu-bench
 
 dbusmenu_dumper_SOURCES = \
 	dbusmenu-dumper.c
