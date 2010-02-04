@@ -55,7 +55,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
 struct _DbusmenuMenuitemPrivate
 {
-	guint id;
+	gint id;
 	GList * children;
 	GHashTable * properties;
 	gboolean root;
@@ -92,6 +92,7 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 static void g_value_transform_STRING_BOOLEAN (const GValue * in, GValue * out);
 static void g_value_transform_STRING_INT (const GValue * in, GValue * out);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 
 /* GObject stuff */
 G_DEFINE_TYPE (DbusmenuMenuitem, dbusmenu_menuitem, G_TYPE_OBJECT);
@@ -107,6 +108,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	object_class->finalize = dbusmenu_menuitem_finalize;
 	object_class->set_property = set_property;
 	object_class->get_property = get_property;
+
+	klass->handle_event = handle_event;
 
 	/**
 		DbusmenuMenuitem::property-changed:
@@ -127,6 +130,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	/**
 		DbusmenuMenuitem::item-activated:
 		@arg0: The #DbusmenuMenuitem object.
+		@arg1: The timestamp of when it was activated
 
 		Emitted on the objects on the server side when
 		they are signaled on the client side.
@@ -136,8 +140,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, item_activated),
 	                                           NULL, NULL,
-	                                           _dbusmenu_menuitem_marshal_VOID__VOID,
-	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
+	                                           _dbusmenu_menuitem_marshal_VOID__UINT,
+	                                           G_TYPE_NONE, 1, G_TYPE_UINT, G_TYPE_NONE);
 	/**
 		DbusmenuMenuitem::child-added:
 		@arg0: The #DbusmenuMenuitem which is the parent.
@@ -206,7 +210,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	g_object_class_install_property (object_class, PROP_ID,
-	                                 g_param_spec_uint("id", "ID for the menu item",
+	                                 g_param_spec_int("id", "ID for the menu item",
 	                                              "This is a unique indentifier for the menu item.",
 												  0, 30000, 0,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
@@ -245,7 +249,7 @@ g_value_transform_STRING_INT (const GValue * in, GValue * out)
 	return;
 }
 
-static guint menuitem_next_id = 1;
+static gint menuitem_next_id = 0;
 
 /* A small little function to both clear the insides of a 
    value as well as the memory it itself uses. */
@@ -314,9 +318,9 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 
 	switch (id) {
 	case PROP_ID:
-		priv->id = g_value_get_uint(value);
+		priv->id = g_value_get_int(value);
 		if (priv->id > menuitem_next_id) {
-			menuitem_next_id = priv->id;
+			menuitem_next_id = priv->id + 1;
 		}
 		break;
 	}
@@ -331,16 +335,23 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 	switch (id) {
 	case PROP_ID:
-		if (priv->id == 0) {
-			priv->id = menuitem_next_id++;
-		}
-		g_value_set_uint(value, priv->id);
+		g_value_set_int(value, priv->id);
 		break;
 	}
 
 	return;
 }
 
+/* Handles the activate event if it is sent. */
+static void
+handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+{
+	if (g_strcmp0(name, "clicked") == 0) {
+		g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
+	}
+
+	return;
+}
 
 /* Public interface */
 
@@ -354,7 +365,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 DbusmenuMenuitem *
 dbusmenu_menuitem_new (void)
 {
-	return g_object_new(DBUSMENU_TYPE_MENUITEM, NULL);
+	return g_object_new(DBUSMENU_TYPE_MENUITEM, "id", menuitem_next_id++, NULL);
 }
 
 /**
@@ -366,7 +377,7 @@ dbusmenu_menuitem_new (void)
 	Return value: A newly allocated #DbusmenuMenuitem.
 */
 DbusmenuMenuitem *
-dbusmenu_menuitem_new_with_id (guint id)
+dbusmenu_menuitem_new_with_id (gint id)
 {
 	DbusmenuMenuitem * mi = g_object_new(DBUSMENU_TYPE_MENUITEM, "id", id, NULL);
 	/* g_debug("New Menuitem id %d goal id %d", dbusmenu_menuitem_get_id(mi), id); */
@@ -641,7 +652,7 @@ dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child,
 	   can't be found.
 */
 DbusmenuMenuitem *
-dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
+dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, gint id)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
@@ -660,7 +671,7 @@ dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, guint id)
 
 typedef struct {
 	DbusmenuMenuitem * mi;
-	guint id;
+	gint id;
 } find_id_t;
 
 /* Basically the heart of the find_id that matches the
@@ -696,7 +707,7 @@ find_id_helper (gpointer in_mi, gpointer in_find_id)
 		represented by @mi.
 */
 DbusmenuMenuitem *
-dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, guint id)
+dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 	find_id_t find_id = {mi: NULL, id: id};
@@ -1047,7 +1058,6 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 	dbusmenu_menuitem_buildxml:
 	@mi: #DbusmenuMenuitem to represent in XML
 	@array: A list of string that will be turned into an XML file
-	@revision: The revision of the layout to embed in the XML
 
 	This function will add strings to the array @array.  It will put
 	at least one entry if this menu item has no children.  If it has
@@ -1056,18 +1066,22 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 	children to place their own tags in the array in between those two.
 */
 void
-dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array, gint revision)
+dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 
+	gint id = 0;
+	if (!dbusmenu_menuitem_get_root(mi)) {
+		id = dbusmenu_menuitem_get_id(mi);
+	}
+
 	GList * children = dbusmenu_menuitem_get_children(mi);
-	/* TODO: Only put revision info in the root node.  Save some bandwidth. */
 	if (children == NULL) {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" revision=\"%d\" />", dbusmenu_menuitem_get_id(mi), revision));
+		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\"/>", id));
 	} else {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\" revision=\"%d\">", dbusmenu_menuitem_get_id(mi), revision));
+		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\">", id));
 		for ( ; children != NULL; children = children->next) {
-			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array, revision);
+			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array);
 		}
 		g_ptr_array_add(array, g_strdup("</menu>"));
 	}
@@ -1112,20 +1126,35 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 }
 
 /**
-	dbusmenu_menuitem_activate:
+	dbusmenu_menuitem_handle_event:
 	@mi: The #DbusmenuMenuitem to send the signal on.
+	@name: The name of the signal
+	@value: A value that could be set for the event
+	@timestamp: The timestamp of when the event happened
+
+	This function is called to create an event.  It is likely
+	to be overrided by subclasses.  The default menu item
+	will respond to the activate signal and do:
 
 	Emits the #DbusmenuMenuitem::item-activate signal on this
 	menu item.  Called by server objects when they get the
 	appropriate DBus signals from the client.
+
+	If you subclass this function you should really think
+	about calling the parent function unless you have a good
+	reason not to.
 */
 void
-dbusmenu_menuitem_activate (DbusmenuMenuitem * mi)
+dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Menuitem %d (%s) activated", ID(mi), LABEL(mi));
+	g_debug("Menuitem %d (%s) is getting event '%s'", ID(mi), LABEL(mi), name);
 	#endif
-	g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, TRUE);
+	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
+
+	if (class->handle_event != NULL) {
+		return class->handle_event(mi, name, value, timestamp);
+	}
 	return;
 }

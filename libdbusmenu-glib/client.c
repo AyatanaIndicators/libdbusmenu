@@ -35,6 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "client.h"
 #include "menuitem.h"
+#include "client-menuitem.h"
 #include "dbusmenu-client.h"
 #include "server-marshal.h"
 
@@ -96,10 +97,10 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
 static void layout_update (DBusGProxy * proxy, gint revision, guint parent, DbusmenuClient * client);
-static void id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, DbusmenuClient * client);
-static void id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client);
+static void id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client);
+static void id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
-static guint parse_node_get_id (xmlNodePtr node);
+static gint parse_node_get_id (xmlNodePtr node);
 static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
 static gint parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
@@ -321,7 +322,7 @@ layout_update (DBusGProxy * proxy, gint revision, guint parent, DbusmenuClient *
 /* Signal from the server that a property has changed
    on one of our menuitems */
 static void
-id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, DbusmenuClient * client)
+id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
 	GValue valstr = {0};
@@ -344,7 +345,7 @@ id_prop_update (DBusGProxy * proxy, guint id, gchar * property, GValue * value, 
 /* Oh, lots of updates now.  That silly server, they want
    to change all kinds of stuff! */
 static void
-id_update (DBusGProxy * proxy, guint id, DbusmenuClient * client)
+id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client side ID update: %d", id);
@@ -498,15 +499,15 @@ build_proxies (DbusmenuClient * client)
 		priv->dbusproxy = NULL;
 	}
 
-	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__INT_UINT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdate", G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "LayoutUpdate", G_CALLBACK(layout_update), client, NULL);
+	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__UINT_INT, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_INT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdated", G_TYPE_UINT, G_TYPE_INT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->menuproxy, "LayoutUpdated", G_CALLBACK(layout_update), client, NULL);
 
 	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__UINT_STRING_POINTER, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
 	dbus_g_proxy_add_signal(priv->menuproxy, "ItemPropertyUpdated", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemPropertyUpdated", G_CALLBACK(id_prop_update), client, NULL);
 
-	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_INT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemUpdated", G_CALLBACK(id_update), client, NULL);
 
 	update_layout(client);
@@ -514,51 +515,23 @@ build_proxies (DbusmenuClient * client)
 	return;
 }
 
-/* Get the "revision" attribute of the node, parse it and
-   return it.  Also we're checking to ensure the node
-   is a 'menu' here. */
-static gint
-parse_node_get_revision (xmlNodePtr node)
-{
-	if (g_strcmp0((gchar *)node->name, "menu") != 0) {
-		/* This kills some nodes early */
-		g_warning("XML Node is not 'menu' it is '%s'", node->name);
-		return 0;
-	}
-
-	xmlAttrPtr attrib;
-	for (attrib = node->properties; attrib != NULL; attrib = attrib->next) {
-		if (g_strcmp0((gchar *)attrib->name, "revision") == 0) {
-			if (attrib->children != NULL) {
-				guint revision = (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
-				/* g_debug ("Found ID: %d", id); */
-				return revision;
-			}
-			break;
-		}
-	}
-
-	g_warning("Unable to find a revision on the node");
-	return 0;
-}
-
 /* Get the ID attribute of the node, parse it and
    return it.  Also we're checking to ensure the node
    is a 'menu' here. */
-static guint
+static gint
 parse_node_get_id (xmlNodePtr node)
 {
 	if (g_strcmp0((gchar *)node->name, "menu") != 0) {
 		/* This kills some nodes early */
 		g_warning("XML Node is not 'menu' it is '%s'", node->name);
-		return 0;
+		return -1;
 	}
 
 	xmlAttrPtr attrib;
 	for (attrib = node->properties; attrib != NULL; attrib = attrib->next) {
 		if (g_strcmp0((gchar *)attrib->name, "id") == 0) {
 			if (attrib->children != NULL) {
-				guint id = (guint)g_ascii_strtoull((gchar *)attrib->children->content, NULL, 10);
+				gint id = (guint)g_ascii_strtoll((gchar *)attrib->children->content, NULL, 10);
 				/* g_debug ("Found ID: %d", id); */
 				return id;
 			}
@@ -567,7 +540,7 @@ parse_node_get_id (xmlNodePtr node)
 	}
 
 	g_warning("Unable to find an ID on the node");
-	return 0;
+	return -1;
 }
 
 /* A small helper that calls _property_set on each hash table
@@ -654,14 +627,11 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 	return;
 }
 
-static void
-menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
+void
+dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, const GValue * value, guint timestamp)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_INT);
-	g_value_set_int(&value, 0);
-	org_ayatana_dbusmenu_event_async (priv->menuproxy, dbusmenu_menuitem_get_id(mi), "clicked", &value, menuitem_call_cb, mi);
+	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, GINT_TO_POINTER(id));
 	return;
 }
 
@@ -670,11 +640,14 @@ menuitem_activate (DbusmenuMenuitem * mi, DbusmenuClient * client)
 static DbusmenuMenuitem *
 parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
 {
-	guint id = parse_node_get_id(node);
+	gint id = parse_node_get_id(node);
+	if (id < 0) {
+		return NULL;
+	}
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client looking at node with id: %d", id);
 	#endif
-	if (item == NULL || dbusmenu_menuitem_get_id(item) != id || id == 0) {
+	if (item == NULL || dbusmenu_menuitem_get_id(item) != id) {
 		if (item != NULL) {
 			if (parent != NULL) {
 				dbusmenu_menuitem_child_delete(parent, item);
@@ -683,17 +656,11 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			item = NULL;
 		}
 
-		if (id == 0) {
-			g_warning("ID from XML file is zero");
-			return NULL;
-		}
-
 		/* Build a new item */
-		item = dbusmenu_menuitem_new_with_id(id);
+		item = DBUSMENU_MENUITEM(dbusmenu_client_menuitem_new(id, client));
 		if (parent == NULL) {
 			dbusmenu_menuitem_set_root(item, TRUE);
 		}
-		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activate), client);
 
 		/* Get the properties queued up for this item */
 		/* Not happy about this, but I need these :( */
@@ -717,7 +684,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
 		/* g_debug("Looking at child: %d", position); */
-		guint childid = parse_node_get_id(children);
+		gint childid = parse_node_get_id(children);
+		if (childid < 0) {
+			continue;
+		}
 		DbusmenuMenuitem * childmi = NULL;
 
 		GList * childsearch = NULL;
@@ -764,7 +734,6 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 16*1024), "dbusmenu.xml", NULL, 0);
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
-	gint revision = parse_node_get_revision(root);
 
 	DbusmenuMenuitem * oldroot = priv->root;
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
@@ -781,7 +750,7 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 
-	return revision;
+	return 1;
 }
 
 /* When the layout property returns, here's where we take care of that. */

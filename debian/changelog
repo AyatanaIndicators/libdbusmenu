@@ -1,3 +1,12 @@
+libdbusmenu (0.2.1-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Interoperability fixes
+    * Adding timestamps to events
+    * Better handling of XML
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Feb 2010 11:19:08 -0800
+
 libdbusmenu (0.2.1-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.1

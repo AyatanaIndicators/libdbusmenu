@@ -109,7 +109,10 @@ static const gchar * data_menu =     "dbusmenugtk-data-gtkmenu";
 static gboolean
 menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 {
-	dbusmenu_menuitem_activate(mi);
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_INT);
+	g_value_set_int(&value, 0);
+	dbusmenu_menuitem_handle_event(mi, "clicked", &value, gtk_get_current_event_time());
 	return TRUE;
 }
 
@@ -136,7 +139,7 @@ process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * valu
 {
 	gboolean val = TRUE;
 	if (value != NULL) {
-		val = dbusmenu_menuitem_property_get_bool(mi, DBUSMENU_MENUITEM_PROP_SENSITIVE);
+		val = dbusmenu_menuitem_property_get_bool(mi, DBUSMENU_MENUITEM_PROP_ENABLED);
 	}
 	gtk_widget_set_sensitive(GTK_WIDGET(gmi), val);
 	return;
@@ -147,17 +150,23 @@ static void
 process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
+	if (value == NULL) return;
 
 	GenericmenuitemCheckType type = GENERICMENUITEM_CHECK_TYPE_NONE;
 
-	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
-		const gchar * strval = g_value_get_string(value);
+	GValue strvalue = {0};
+	g_value_init(&strvalue, G_TYPE_STRING);
+
+	if (value != NULL && g_value_transform(value, &strvalue)) {
+		const gchar * strval = g_value_get_string(&strvalue);
 
 		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_CHECK)) {
 			type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
 		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_RADIO)) {
 			type = GENERICMENUITEM_CHECK_TYPE_RADIO;
 		}
+
+		g_value_unset(&strvalue);
 	}
 
 	genericmenuitem_set_check_type(GENERICMENUITEM(gmi), type);
@@ -167,18 +176,21 @@ process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * va
 
 /* Process the sensitive property */
 static void
-process_toggle_checked (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
 
 	GenericmenuitemState state = GENERICMENUITEM_STATE_UNCHECKED;
 
-	if (value != NULL && G_VALUE_TYPE(value) == G_TYPE_STRING) {
-		const gchar * strval = g_value_get_string(value);
+	GValue intvalue = {0};
+	g_value_init(&intvalue, G_TYPE_INT);
 
-		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED)) {
+	if (value != NULL && g_value_transform(value, &intvalue)) {
+		int val = g_value_get_int(&intvalue);
+
+		if (val == DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED) {
 			state = GENERICMENUITEM_STATE_CHECKED;
-		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN)) {
+		} else if (val == DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN) {
 			state = GENERICMENUITEM_STATE_INDETERMINATE;
 		}
 	}
@@ -196,12 +208,12 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMen
 		gtk_menu_item_set_label(gmi, g_value_get_string(value));
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
 		process_visible(mi, gmi, value);
-	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SENSITIVE)) {
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ENABLED)) {
 		process_sensitive(mi, gmi, value);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE)) {
 		process_toggle_type(mi, gmi, value);
-	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED)) {
-		process_toggle_checked(mi, gmi, value);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE)) {
+		process_toggle_state(mi, gmi, value);
 	}
 
 	return;
@@ -284,9 +296,9 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* Check our set of props to see if any are set already */
 	process_visible(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
-	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SENSITIVE));
+	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_ENABLED));
 	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
-	process_toggle_checked(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED));
+	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
@@ -426,8 +438,8 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 	}
 
 	image_property_handle(newitem,
-	                      DBUSMENU_MENUITEM_PROP_ICON,
-	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON),
+	                      DBUSMENU_MENUITEM_PROP_ICON_NAME,
+	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_NAME),
 	                      client);
 	image_property_handle(newitem,
 	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
@@ -468,7 +480,10 @@ static void
 image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata)
 {
 	/* We're only looking at these two properties here */
-	g_return_if_fail(!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON) || !g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA));
+	if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_NAME) != 0 &&
+			g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA) != 0) {
+		return;
+	}
 
 	const gchar * value = NULL;
 	
@@ -479,10 +494,10 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 	if (value == NULL || value[0] == '\0') {
 		/* This means that we're unsetting a value. */
 		/* Try to use the other one */
-		if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON)) {
+		if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_NAME)) {
 			property = DBUSMENU_MENUITEM_PROP_ICON_DATA;
 		} else {
-			property = DBUSMENU_MENUITEM_PROP_ICON;
+			property = DBUSMENU_MENUITEM_PROP_ICON_NAME;
 		}
 	}
 
@@ -504,7 +519,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 	}
 
 	/* Now figure out what to change */
-	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON)) {
+	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_NAME)) {
 		const gchar * iconname = dbusmenu_menuitem_property_get(item, property);
 		if (iconname == NULL) {
 			/* If there is no name, by golly we want no

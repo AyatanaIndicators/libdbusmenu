@@ -50,9 +50,9 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
 
-#define DBUSMENU_CLIENT_TYPES_DEFAULT      "menuitem"
+#define DBUSMENU_CLIENT_TYPES_DEFAULT      "standard"
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
-#define DBUSMENU_CLIENT_TYPES_IMAGE        "menuitem"
+#define DBUSMENU_CLIENT_TYPES_IMAGE        "standard"
 
 /**
 	DbusmenuClientClass:
@@ -104,6 +104,11 @@ DbusmenuMenuitem *   dbusmenu_client_get_root          (DbusmenuClient * client)
 gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
                                                         const gchar * type,
                                                         DbusmenuClientTypeHandler newfunc);
+void                 dbusmenu_client_send_event        (DbusmenuClient * client,
+                                                        gint id,
+                                                        const gchar * name,
+                                                        const GValue * value,
+                                                        guint timestamp);
 
 /**
 	SECTION:client
