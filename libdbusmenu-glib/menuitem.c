@@ -270,7 +270,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 {
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(self);
 
-	priv->id = 0; 
+	priv->id = -1; 
 	priv->children = NULL;
 
 	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, _g_value_free);
@@ -335,6 +335,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 	switch (id) {
 	case PROP_ID:
+		if (priv->id == -1) {
+			priv->id = menuitem_next_id++;
+		}
 		g_value_set_int(value, priv->id);
 		break;
 	}
