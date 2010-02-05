@@ -325,6 +325,9 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			menuitem_next_id = priv->id + 1;
 		}
 		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, id, pspec);
+		break;
 	}
 
 	return;
@@ -341,6 +344,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 			priv->id = menuitem_next_id++;
 		}
 		g_value_set_int(value, priv->id);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, id, pspec);
 		break;
 	}
 
