@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-A library to allow applictions to provide simple indications of
+A library to allow applications to provide simple indications of
 information to be displayed to users of the application through the
 interface shell.
 
@@ -8,7 +8,7 @@ Copyright 2009 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
-    Aurelien Gateau <ted@canonical.com>
+    Aurélien Gâteau <aurelien.gateau@canonical.com>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of either or both of the following licenses:
@@ -36,6 +36,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 		Items are represented with a unique numeric id and a dictionary of
 		properties.
+
+		To reduce the amount of DBus traffic, a property should only be returned
+		if its value is not the default value.
 
 		Available properties are:
 
@@ -151,13 +154,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 			XML syntax:
 
 			@verbatim
-<menu id="1" revision="2"> # Root container
-	<menu id="2" revision="2"> # First level menu, for example "File"
-		<menu id="3" revision="2"/> ~ Second level menu, for example "Open"
-		<menu id="4" revision="3"/>
+<menu id="0"> # Root container
+	<menu id="1"> # First level menu, for example "File"
+		<menu id="2"/> ~ Second level menu, for example "Open"
+		<menu id="3"/>
 		...
 	</menu>
-	<menu id="5" revision="2"> # Another first level menu, say "Edit"
+	<menu id="4"> # Another first level menu, say "Edit"
 		...
 	</menu>
 	...
