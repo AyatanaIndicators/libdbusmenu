@@ -16,4 +16,8 @@ dbusmenu_dumper_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
-EXTRA_DIST = dbusmenu-bench
+doc_DATA = README.dbusmenu-bench
+
+EXTRA_DIST = \
+	$(doc_DATA) \
+	dbusmenu-bench

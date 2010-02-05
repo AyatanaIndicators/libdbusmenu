@@ -198,7 +198,7 @@
 			{"id": 39, "type": "standard",
 			 "label": "value39"}
 		 ]
-		},
+		}
 	 ]
 	},
 	{"id": 8, "type": "standard",
@@ -367,5 +367,5 @@ QmCC",
 		 "toggle-state": -1
 		 }
 	 ]
-	},
+	}
 ]

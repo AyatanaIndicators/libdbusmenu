@@ -46,14 +46,14 @@ set_props (DbusmenuMenuitem * mi, gchar ** props)
 static DbusmenuMenuitem *
 layout2menuitem (proplayout_t * layout)
 {
-	if (layout == NULL || layout->id == 0) return NULL;
+	if (layout == NULL || layout->id == -1) return NULL;
 
 	DbusmenuMenuitem * local = dbusmenu_menuitem_new_with_id(layout->id);
 	set_props(local, layout->properties);
 	
 	if (layout->submenu != NULL) {
 		guint count;
-		for (count = 0; layout->submenu[count].id != 0; count++) {
+		for (count = 0; layout->submenu[count].id != -1; count++) {
 			DbusmenuMenuitem * child = layout2menuitem(&layout->submenu[count]);
 			if (child != NULL) {
 				dbusmenu_menuitem_child_append(local, child);
@@ -72,7 +72,7 @@ static GMainLoop * mainloop = NULL;
 static gboolean
 timer_func (gpointer data)
 {
-	if (layouts[layouton].id == 0) {
+	if (layouts[layouton].id == -1) {
 		g_main_loop_quit(mainloop);
 		return FALSE;
 	}

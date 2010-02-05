@@ -127,7 +127,7 @@ GType dbusmenu_menuitem_get_type (void);
 
 DbusmenuMenuitem * dbusmenu_menuitem_new (void) G_GNUC_WARN_UNUSED_RESULT;
 DbusmenuMenuitem * dbusmenu_menuitem_new_with_id (gint id) G_GNUC_WARN_UNUSED_RESULT;
-guint dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi);
+gint dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi);
 
 GList * dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi);
 GList * dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
@@ -152,6 +152,7 @@ gint dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * pr
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 GList * dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
 GHashTable * dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi);
+void dbusmenu_menuitem_property_remove (DbusmenuMenuitem * mi, const gchar * property);
 
 void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
 gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
