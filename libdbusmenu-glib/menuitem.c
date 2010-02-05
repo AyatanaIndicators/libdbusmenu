@@ -80,6 +80,8 @@ enum {
 	PROP_ID,
 };
 
+#define PROP_ID_S  "id"
+
 #define DBUSMENU_MENUITEM_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemPrivate))
 
@@ -210,7 +212,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	g_object_class_install_property (object_class, PROP_ID,
-	                                 g_param_spec_int("id", "ID for the menu item",
+	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
 	                                              "This is a unique indentifier for the menu item.",
 												  0, 30000, 0,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
@@ -368,7 +370,7 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 DbusmenuMenuitem *
 dbusmenu_menuitem_new (void)
 {
-	return g_object_new(DBUSMENU_TYPE_MENUITEM, "id", menuitem_next_id++, NULL);
+	return g_object_new(DBUSMENU_TYPE_MENUITEM, PROP_ID_S, menuitem_next_id++, NULL);
 }
 
 /**
@@ -382,7 +384,7 @@ dbusmenu_menuitem_new (void)
 DbusmenuMenuitem *
 dbusmenu_menuitem_new_with_id (gint id)
 {
-	DbusmenuMenuitem * mi = g_object_new(DBUSMENU_TYPE_MENUITEM, "id", id, NULL);
+	DbusmenuMenuitem * mi = g_object_new(DBUSMENU_TYPE_MENUITEM, PROP_ID_S, id, NULL);
 	/* g_debug("New Menuitem id %d goal id %d", dbusmenu_menuitem_get_id(mi), id); */
 	return mi;
 }
@@ -402,7 +404,7 @@ dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 
 	GValue retval = {0};
 	g_value_init(&retval, G_TYPE_INT);
-	g_object_get_property(G_OBJECT(mi), "id", &retval);
+	g_object_get_property(G_OBJECT(mi), PROP_ID_S, &retval);
 	return g_value_get_int(&retval);
 }
 
