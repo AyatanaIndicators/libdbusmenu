@@ -339,6 +339,7 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 	g_return_if_fail(menuitem != NULL);
 
 	dbusmenu_menuitem_property_set_value(menuitem, property, value);
+
 	return;
 }
 
@@ -569,6 +570,22 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	return;
 }
 
+static void
+menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+{
+	GList * current_props = NULL;
+
+	for (current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
+			current_props != NULL ; current_props = g_list_next(current_props)) {
+		if (g_hash_table_lookup(properties, current_props->data) == NULL) {
+			dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)current_props->data);
+		}
+	}
+
+	menuitem_get_properties_cb(proxy, properties, error, data);
+	return;
+}
+
 /* This is a different get properites call back that also sends
    new signals.  It basically is a small wrapper around the original. */
 static void
@@ -647,6 +664,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client looking at node with id: %d", id);
 	#endif
+	/* If we don't have any item, or the IDs don't match */
 	if (item == NULL || dbusmenu_menuitem_get_id(item) != id) {
 		if (item != NULL) {
 			if (parent != NULL) {
@@ -675,7 +693,11 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
 		}
-	} 
+	} else {
+		/* Refresh the properties */
+		gchar * properties[1] = {NULL}; /* This gets them all */
+		org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
+	}
 
 	xmlNodePtr children;
 	guint position;
@@ -736,6 +758,10 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
 	DbusmenuMenuitem * oldroot = priv->root;
+	if (oldroot != NULL) {
+		g_object_ref(oldroot);
+	}
+
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
 	xmlFreeDoc(xmldoc);
 
@@ -747,6 +773,16 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		#ifdef MASSIVEDEBUGGING
 		g_debug("Client signaling root changed.");
 		#endif 
+
+		/* Switch the root around */
+		g_object_ref(priv->root);
+		dbusmenu_menuitem_set_root(priv->root, TRUE);
+
+		if (oldroot != NULL) {
+			dbusmenu_menuitem_set_root(oldroot, FALSE);
+			g_object_unref(oldroot);
+		}
+
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 

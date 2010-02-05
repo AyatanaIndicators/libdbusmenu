@@ -24,7 +24,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 typedef struct _proplayout_t proplayout_t;
 struct _proplayout_t {
-	guint id;
+	gint id;
 	gchar ** properties;
 	proplayout_t * submenu;
 };
@@ -68,7 +68,7 @@ proplayout_t submenu_4_1[] = {
 	{id: 17, properties: props2, submenu: NULL},
 	{id: 18, properties: props2, submenu: NULL},
 	{id: 19, properties: props2, submenu: NULL},
-	{id: 0, properties: NULL, submenu: NULL}
+	{id: -1, properties: NULL, submenu: NULL}
 };
 
 proplayout_t submenu_4_2[] = {
@@ -82,7 +82,7 @@ proplayout_t submenu_4_2[] = {
 	{id: 27, properties: props2, submenu: NULL},
 	{id: 28, properties: props2, submenu: NULL},
 	{id: 29, properties: props2, submenu: NULL},
-	{id: 0, properties: NULL, submenu: NULL}
+	{id: -1, properties: NULL, submenu: NULL}
 };
 
 proplayout_t submenu_4_3[] = {
@@ -96,14 +96,14 @@ proplayout_t submenu_4_3[] = {
 	{id: 37, properties: props2, submenu: NULL},
 	{id: 38, properties: props2, submenu: NULL},
 	{id: 39, properties: props2, submenu: NULL},
-	{id: 0, properties: NULL, submenu: NULL}
+	{id: -1, properties: NULL, submenu: NULL}
 };
 
 proplayout_t submenu_4_0[] = {
 	{id: 1, properties: props2, submenu: submenu_4_1},
 	{id: 2, properties: props2, submenu: submenu_4_2},
 	{id: 3, properties: props2, submenu: submenu_4_3},
-	{id: 0, properties: NULL, submenu: NULL}
+	{id: -1, properties: NULL, submenu: NULL}
 };
 
 proplayout_t layouts[] = {
@@ -111,6 +111,6 @@ proplayout_t layouts[] = {
 	{id: 10, properties: props2, submenu: NULL},
 	{id: 20, properties: props3, submenu: NULL},
 	{id: 100, properties: props2, submenu: submenu_4_0},
-	{id: 0, properties: NULL, submenu: NULL}
+	{id: -1, properties: NULL, submenu: NULL}
 };
 
