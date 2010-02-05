@@ -237,12 +237,14 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 	case PROP_ROOT_NODE:
 		if (priv->root != NULL) {
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, obj);
+			dbusmenu_menuitem_set_root(priv->root, FALSE);
 			g_object_unref(G_OBJECT(priv->root));
 			priv->root = NULL;
 		}
 		priv->root = DBUSMENU_MENUITEM(g_value_get_object(value));
 		if (priv->root != NULL) {
 			g_object_ref(G_OBJECT(priv->root));
+			dbusmenu_menuitem_set_root(priv->root, TRUE);
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_create, obj);
 		} else {
 			g_debug("Setting root node to NULL");
@@ -516,7 +518,7 @@ static gboolean
 _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	DbusmenuMenuitem * mi = id == 0 ? priv->root : dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
 		if (error != NULL) {

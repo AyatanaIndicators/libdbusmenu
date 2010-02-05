@@ -1,3 +1,10 @@
+libdbusmenu (0.2.2-0ubuntu1~ppa2~autoid3) UNRELEASED; urgency=low
+
+  * Upstrem Merge
+    * Fixing the range nd default.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Feb 2010 23:29:52 -0800
+
 libdbusmenu (0.2.2-0ubuntu1~ppa2~autoid2) lucid; urgency=low
 
   * Upstream Merge

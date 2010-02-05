@@ -36,8 +36,10 @@ verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
 	g_debug("Verifying ID: %d", layout->id);
 
 	if (layout->id != dbusmenu_menuitem_get_id(mi)) {
-		g_debug("Failed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
-		return FALSE;
+		if (!(dbusmenu_menuitem_get_root(mi) && dbusmenu_menuitem_get_id(mi) == 0)) {
+			g_debug("Failed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
+			return FALSE;
+		}
 	}
 
 	GList * children = dbusmenu_menuitem_get_children(mi);
@@ -88,7 +90,7 @@ layout_updated (DbusmenuClient * client, gpointer data)
 
 	layouton++;
 
-	if (layouts[layouton].id == 0) {
+	if (layouts[layouton].id == -1) {
 		g_main_loop_quit(mainloop);
 	}
 
