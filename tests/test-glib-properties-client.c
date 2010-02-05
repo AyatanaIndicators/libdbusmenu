@@ -60,8 +60,10 @@ verify_root_to_layout(DbusmenuMenuitem * mi, proplayout_t * layout)
 	g_debug("Verifying ID: %d", layout->id);
 
 	if (layout->id != dbusmenu_menuitem_get_id(mi)) {
-		g_debug("\tFailed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
-		return FALSE;
+		if (!dbusmenu_menuitem_get_root(mi)) {
+			g_debug("\tFailed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
+			return FALSE;
+		}
 	}
 
 	if (!verify_props(mi, layout->properties)) {
