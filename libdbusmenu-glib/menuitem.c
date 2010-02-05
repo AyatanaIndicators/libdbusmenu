@@ -405,7 +405,11 @@ dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 	GValue retval = {0};
 	g_value_init(&retval, G_TYPE_INT);
 	g_object_get_property(G_OBJECT(mi), PROP_ID_S, &retval);
-	return g_value_get_int(&retval);
+	gint ret = g_value_get_int(&retval);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Getting menuitem ID: %d", ret);
+	#endif
+	return ret;
 }
 
 /**
