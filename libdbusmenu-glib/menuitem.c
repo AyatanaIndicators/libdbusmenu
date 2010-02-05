@@ -343,7 +343,11 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		if (priv->id == -1) {
 			priv->id = menuitem_next_id++;
 		}
-		g_value_set_int(value, priv->id);
+		if (dbusmenu_menuitem_get_root(DBUSMENU_MENUITEM(obj))) {
+			g_value_set_int(value, 0);
+		} else {
+			g_value_set_int(value, priv->id);
+		}
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, id, pspec);
