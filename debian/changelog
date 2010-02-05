@@ -1,5 +1,22 @@
-libdbusmenu (0.2.2-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.2.2-0ubuntu3) lucid; urgency=low
 
+  * debian/control: 
+    - let libdbusmenu-glib1 breaks libdbusmenu-glib0 since they are create
+      issues at runtime if both got loaded
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 04 Feb 2010 18:10:56 -0800
+
+libdbusmenu (0.2.2-0ubuntu2) lucid; urgency=low
+
+  * debian/control: fix a typo in the tools depends
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 04 Feb 2010 14:18:47 -0800
+
+libdbusmenu (0.2.2-0ubuntu1) lucid; urgency=low
+
+  * Updated for the soname changes
+  
+  [ Ted Gould ]
   * Upstream Release 0.2.2
     * Interoperability fixes
     * Adding timestamps to events
@@ -8,7 +25,7 @@ libdbusmenu (0.2.2-0ubuntu1~ppa1) lucid; urgency=low
   * debian/libdbusmenu-tools.install: Adding a wildcard to get
     all of the tools in libexec
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 04 Feb 2010 12:18:26 -0800
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 04 Feb 2010 13:56:49 -0800
 
 libdbusmenu (0.2.1-0ubuntu1) lucid; urgency=low
 
