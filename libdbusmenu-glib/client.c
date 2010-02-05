@@ -570,6 +570,22 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	return;
 }
 
+static void
+menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+{
+	GList * current_props = NULL;
+
+	for (current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
+			current_props != NULL ; current_props = g_list_next(current_props)) {
+		if (g_hash_table_lookup(properties, current_props->data) == NULL) {
+			dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)current_props->data);
+		}
+	}
+
+	menuitem_get_properties_cb(proxy, properties, error, data);
+	return;
+}
+
 /* This is a different get properites call back that also sends
    new signals.  It basically is a small wrapper around the original. */
 static void
@@ -648,6 +664,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client looking at node with id: %d", id);
 	#endif
+	/* If we don't have any item, or the IDs don't match */
 	if (item == NULL || dbusmenu_menuitem_get_id(item) != id) {
 		if (item != NULL) {
 			if (parent != NULL) {
@@ -676,6 +693,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
 		}
+	} else {
+		/* Refresh the properties */
+		gchar * properties[1] = {NULL}; /* This gets them all */
+		org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
 	}
 
 	xmlNodePtr children;

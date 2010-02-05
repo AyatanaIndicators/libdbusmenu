@@ -988,6 +988,26 @@ dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
 }
 
 /**
+	dbusmenu_menuitem_property_remove:
+	@mi: The #DbusmenuMenuitem to remove the property on.
+	@property: The property to look for.
+
+	Removes a property from the menuitem.
+*/
+void
+dbusmenu_menuitem_property_remove (DbusmenuMenuitem * mi, const gchar * property)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	g_return_if_fail(property != NULL);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	g_hash_table_remove(priv->properties, property);
+
+	return;
+}
+
+/**
 	dbusmenu_menuitem_properties_list:
 	@mi: #DbusmenuMenuitem to list the properties on
 
