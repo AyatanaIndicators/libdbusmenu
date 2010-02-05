@@ -57,13 +57,13 @@ verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
 	}
 
 	guint i = 0;
-	for (i = 0; children != NULL && layout->submenu[i].id != 0; children = g_list_next(children), i++) {
+	for (i = 0; children != NULL && layout->submenu[i].id != -1; children = g_list_next(children), i++) {
 		if (!verify_root_to_layout(DBUSMENU_MENUITEM(children->data), &layout->submenu[i])) {
 			return FALSE;
 		}
 	}
 
-	if (children == NULL && layout->submenu[i].id == 0) {
+	if (children == NULL && layout->submenu[i].id == -1) {
 		return TRUE;
 	}
 

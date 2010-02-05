@@ -231,10 +231,15 @@ examplesdir = $(docdir)/examples/
 examples_DATA = \
 	$(glib_server_nomenu_SOURCES)
 
+jsondir = $(datadir)/${PACKAGE}/json/
+
+json_DATA = \
+	test-gtk-label.json
+
 EXTRA_DIST = \
 	$(examples_DATA) \
 	run-xvfb.sh \
-	test-gtk-label.json \
+	$(json_DATA) \
 	dbusmenu-gtk/dbusMenuTest \
 	dbusmenu-gtk/mago_tests/dbusmenu.xml \
 	dbusmenu-gtk/mago_tests/dbusmenu.py \
