@@ -339,6 +339,7 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 	g_return_if_fail(menuitem != NULL);
 
 	dbusmenu_menuitem_property_set_value(menuitem, property, value);
+
 	return;
 }
 
@@ -747,6 +748,13 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		#ifdef MASSIVEDEBUGGING
 		g_debug("Client signaling root changed.");
 		#endif 
+
+		/* Switch the root around */
+		g_object_ref(priv->root);
+		dbusmenu_menuitem_set_root(priv->root, TRUE);
+		dbusmenu_menuitem_set_root(oldroot, FALSE);
+		g_object_unref(oldroot);
+
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 
