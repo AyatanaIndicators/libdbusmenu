@@ -395,15 +395,15 @@ dbusmenu_menuitem_new_with_id (gint id)
 
 	Return value: The ID of the @mi.
 */
-guint
+gint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), 0);
 
 	GValue retval = {0};
-	g_value_init(&retval, G_TYPE_UINT);
+	g_value_init(&retval, G_TYPE_INT);
 	g_object_get_property(G_OBJECT(mi), "id", &retval);
-	return g_value_get_uint(&retval);
+	return g_value_get_int(&retval);
 }
 
 /**

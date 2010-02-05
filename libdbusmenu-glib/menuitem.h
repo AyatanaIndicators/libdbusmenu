@@ -127,7 +127,7 @@ GType dbusmenu_menuitem_get_type (void);
 
 DbusmenuMenuitem * dbusmenu_menuitem_new (void) G_GNUC_WARN_UNUSED_RESULT;
 DbusmenuMenuitem * dbusmenu_menuitem_new_with_id (gint id) G_GNUC_WARN_UNUSED_RESULT;
-guint dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi);
+gint dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi);
 
 GList * dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi);
 GList * dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
