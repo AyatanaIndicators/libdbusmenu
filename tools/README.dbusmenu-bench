@@ -12,7 +12,7 @@ a JSON file.
 
 1. Start dbusmenu-testapp:
 
-    dbusmenu-testapp </path/to/JSON/file>
+    dbusmenu-testapp /usr/share/libdbusmenu/json/test-gtk-label.json
 
 2. Run dbusmenu-bench
 
