@@ -251,7 +251,7 @@ g_value_transform_STRING_INT (const GValue * in, GValue * out)
 	return;
 }
 
-static gint menuitem_next_id = 0;
+static gint menuitem_next_id = 1;
 
 /* A small little function to both clear the insides of a 
    value as well as the memory it itself uses. */
