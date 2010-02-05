@@ -398,7 +398,7 @@ dbusmenu_menuitem_new_with_id (gint id)
 gint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {
-	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), 0);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), -1);
 
 	GValue retval = {0};
 	g_value_init(&retval, G_TYPE_INT);
