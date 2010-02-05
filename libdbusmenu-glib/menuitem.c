@@ -80,6 +80,8 @@ enum {
 	PROP_ID,
 };
 
+#define PROP_ID_S  "id"
+
 #define DBUSMENU_MENUITEM_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemPrivate))
 
@@ -210,9 +212,9 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	g_object_class_install_property (object_class, PROP_ID,
-	                                 g_param_spec_int("id", "ID for the menu item",
+	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
 	                                              "This is a unique indentifier for the menu item.",
-												  0, 30000, 0,
+												  -1, 30000, -1,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/* Check transfer functions for GValue */
@@ -249,7 +251,7 @@ g_value_transform_STRING_INT (const GValue * in, GValue * out)
 	return;
 }
 
-static gint menuitem_next_id = 0;
+static gint menuitem_next_id = 1;
 
 /* A small little function to both clear the insides of a 
    value as well as the memory it itself uses. */
@@ -270,7 +272,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 {
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(self);
 
-	priv->id = 0; 
+	priv->id = -1; 
 	priv->children = NULL;
 
 	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, _g_value_free);
@@ -323,6 +325,9 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			menuitem_next_id = priv->id + 1;
 		}
 		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, id, pspec);
+		break;
 	}
 
 	return;
@@ -335,7 +340,17 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 	switch (id) {
 	case PROP_ID:
-		g_value_set_int(value, priv->id);
+		if (priv->id == -1) {
+			priv->id = menuitem_next_id++;
+		}
+		if (dbusmenu_menuitem_get_root(DBUSMENU_MENUITEM(obj))) {
+			g_value_set_int(value, 0);
+		} else {
+			g_value_set_int(value, priv->id);
+		}
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, id, pspec);
 		break;
 	}
 
@@ -365,7 +380,7 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 DbusmenuMenuitem *
 dbusmenu_menuitem_new (void)
 {
-	return g_object_new(DBUSMENU_TYPE_MENUITEM, "id", menuitem_next_id++, NULL);
+	return g_object_new(DBUSMENU_TYPE_MENUITEM, NULL);
 }
 
 /**
@@ -379,7 +394,7 @@ dbusmenu_menuitem_new (void)
 DbusmenuMenuitem *
 dbusmenu_menuitem_new_with_id (gint id)
 {
-	DbusmenuMenuitem * mi = g_object_new(DBUSMENU_TYPE_MENUITEM, "id", id, NULL);
+	DbusmenuMenuitem * mi = g_object_new(DBUSMENU_TYPE_MENUITEM, PROP_ID_S, id, NULL);
 	/* g_debug("New Menuitem id %d goal id %d", dbusmenu_menuitem_get_id(mi), id); */
 	return mi;
 }
@@ -392,15 +407,19 @@ dbusmenu_menuitem_new_with_id (gint id)
 
 	Return value: The ID of the @mi.
 */
-guint
+gint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {
-	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), 0);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), -1);
 
 	GValue retval = {0};
-	g_value_init(&retval, G_TYPE_UINT);
-	g_object_get_property(G_OBJECT(mi), "id", &retval);
-	return g_value_get_uint(&retval);
+	g_value_init(&retval, G_TYPE_INT);
+	g_object_get_property(G_OBJECT(mi), PROP_ID_S, &retval);
+	gint ret = g_value_get_int(&retval);
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Getting menuitem ID: %d", ret);
+	#endif
+	return ret;
 }
 
 /**
@@ -710,6 +729,12 @@ DbusmenuMenuitem *
 dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	if (id == 0) {
+		if (dbusmenu_menuitem_get_root(mi) == FALSE) {
+			g_warning("Getting a menuitem with id zero, but it's not set as root.");
+		}
+		return mi;
+	}
 	find_id_t find_id = {mi: NULL, id: id};
 	find_id_helper(mi, &find_id);
 	return find_id.mi;
@@ -960,6 +985,26 @@ dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
 	gpointer value = g_hash_table_lookup(priv->properties, property);
 
 	return value != NULL;
+}
+
+/**
+	dbusmenu_menuitem_property_remove:
+	@mi: The #DbusmenuMenuitem to remove the property on.
+	@property: The property to look for.
+
+	Removes a property from the menuitem.
+*/
+void
+dbusmenu_menuitem_property_remove (DbusmenuMenuitem * mi, const gchar * property)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	g_return_if_fail(property != NULL);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	g_hash_table_remove(priv->properties, property);
+
+	return;
 }
 
 /**
