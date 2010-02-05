@@ -715,6 +715,12 @@ DbusmenuMenuitem *
 dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	if (id == 0) {
+		if (dbusmenu_menuitem_get_root(mi) == FALSE) {
+			g_warning("Getting a menuitem with id zero, but it's not set as root.");
+		}
+		return mi;
+	}
 	find_id_t find_id = {mi: NULL, id: id};
 	find_id_helper(mi, &find_id);
 	return find_id.mi;

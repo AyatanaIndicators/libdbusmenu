@@ -518,7 +518,7 @@ static gboolean
 _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	DbusmenuMenuitem * mi = id == 0 ? priv->root : dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
 		if (error != NULL) {
