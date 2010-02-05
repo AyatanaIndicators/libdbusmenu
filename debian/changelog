@@ -1,4 +1,4 @@
-libdbusmenu (0.2.2-0ubuntu3~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.2.2-0ubuntu3~ppa1) lucid; urgency=low
 
   * Upstrem Merge
     * Fixing handing of root IDs being zero
@@ -7,7 +7,7 @@ libdbusmenu (0.2.2-0ubuntu3~ppa1) UNRELEASED; urgency=low
   * libdbusmenu-tools.install: Add in json file and README so
     that they're put in the right directories.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 05 Feb 2010 10:59:02 -0800
+ -- Ted Gould <ted@ubuntu.com>  Fri, 05 Feb 2010 11:09:22 -0800
 
 libdbusmenu (0.2.2-0ubuntu3) lucid; urgency=low
 
