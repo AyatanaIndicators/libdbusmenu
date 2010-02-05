@@ -370,7 +370,7 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 DbusmenuMenuitem *
 dbusmenu_menuitem_new (void)
 {
-	return g_object_new(DBUSMENU_TYPE_MENUITEM, PROP_ID_S, menuitem_next_id++, NULL);
+	return g_object_new(DBUSMENU_TYPE_MENUITEM, NULL);
 }
 
 /**
