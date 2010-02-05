@@ -214,7 +214,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
 	                                              "This is a unique indentifier for the menu item.",
-												  0, 30000, 0,
+												  -1, 30000, -1,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/* Check transfer functions for GValue */
