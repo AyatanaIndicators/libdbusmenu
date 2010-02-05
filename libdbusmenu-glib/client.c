@@ -737,6 +737,10 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
 	DbusmenuMenuitem * oldroot = priv->root;
+	if (oldroot != NULL) {
+		g_object_ref(oldroot);
+	}
+
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
 	xmlFreeDoc(xmldoc);
 
@@ -752,8 +756,11 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		/* Switch the root around */
 		g_object_ref(priv->root);
 		dbusmenu_menuitem_set_root(priv->root, TRUE);
-		dbusmenu_menuitem_set_root(oldroot, FALSE);
-		g_object_unref(oldroot);
+
+		if (oldroot != NULL) {
+			dbusmenu_menuitem_set_root(oldroot, FALSE);
+			g_object_unref(oldroot);
+		}
 
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
