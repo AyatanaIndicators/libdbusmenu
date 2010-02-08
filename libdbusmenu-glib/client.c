@@ -430,6 +430,7 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(userdata);
 
 	if (priv->root != NULL) {
+		g_debug("Root ref count: %d", ((GObject *)priv->root)->ref_count);
 		g_object_unref(G_OBJECT(priv->root));
 		priv->root = NULL;
 		#if 1

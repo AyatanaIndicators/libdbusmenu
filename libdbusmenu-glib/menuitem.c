@@ -291,6 +291,7 @@ dbusmenu_menuitem_dispose (GObject *object)
 
 	GList * child = NULL;
 	for (child = priv->children; child != NULL; child = g_list_next(child)) {
+		g_debug("Unreffing %X", (guint)child->data);
 		g_object_unref(G_OBJECT(child->data));
 	}
 	g_list_free(priv->children);
