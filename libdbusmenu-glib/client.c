@@ -430,11 +430,9 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(userdata);
 
 	if (priv->root != NULL) {
-		g_debug("Root ref count: %d", ((GObject *)priv->root)->ref_count);
 		g_object_unref(G_OBJECT(priv->root));
-		g_debug("     ref count: %d", ((GObject *)priv->root)->ref_count);
 		priv->root = NULL;
-		#if 1
+		#ifdef MASSIVEDEBUGGING
 		g_debug("Proxies destroyed, signaling a root change and a layout update.");
 		#endif
 		g_signal_emit(G_OBJECT(userdata), signals[ROOT_CHANGED], 0, NULL, TRUE);
@@ -776,12 +774,15 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		g_debug("Client signaling root changed.");
 		#endif 
 
-		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
-	}
+		/* If they are different, and there was an old root we must
+		   clean up that old root */
+		if (oldroot != NULL) {
+			dbusmenu_menuitem_set_root(oldroot, FALSE);
+			g_object_unref(oldroot);
+		}
 
-	if (oldroot != NULL) {
-		dbusmenu_menuitem_set_root(oldroot, FALSE);
-		g_object_unref(oldroot);
+		/* If the root changed we can signal that */
+		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 
 	return 1;

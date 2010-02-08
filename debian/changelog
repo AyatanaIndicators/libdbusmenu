@@ -1,3 +1,10 @@
+libdbusmenu (0.2.3-0ubuntu1~ppa2~repeat7) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Removing debug messages
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 16:02:40 -0600
+
 libdbusmenu (0.2.3-0ubuntu1~ppa2~repeat6) lucid; urgency=low
 
   * Upstream Merge

@@ -270,7 +270,6 @@ _g_value_free (gpointer data)
 static void
 dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 {
-	g_debug("Menuitem init: %X", (guint)self);
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(self);
 
 	priv->id = -1; 
@@ -286,12 +285,10 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 static void
 dbusmenu_menuitem_dispose (GObject *object)
 {
-	g_debug("Menuitem dele: %X", (guint)object);
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(object);
 
 	GList * child = NULL;
 	for (child = priv->children; child != NULL; child = g_list_next(child)) {
-		g_debug("Unreffing %X", (guint)child->data);
 		g_object_unref(G_OBJECT(child->data));
 	}
 	g_list_free(priv->children);
@@ -304,7 +301,7 @@ dbusmenu_menuitem_dispose (GObject *object)
 static void
 dbusmenu_menuitem_finalize (GObject *object)
 {
-	g_debug("Menuitem dying");
+	/* g_debug("Menuitem dying"); */
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(object);
 
 	if (priv->properties != NULL) {
