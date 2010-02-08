@@ -304,7 +304,7 @@ dbusmenu_menuitem_dispose (GObject *object)
 static void
 dbusmenu_menuitem_finalize (GObject *object)
 {
-	/* g_debug("Menuitem dying"); */
+	g_debug("Menuitem dying");
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(object);
 
 	if (priv->properties != NULL) {

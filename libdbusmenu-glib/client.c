@@ -432,6 +432,7 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	if (priv->root != NULL) {
 		g_debug("Root ref count: %d", ((GObject *)priv->root)->ref_count);
 		g_object_unref(G_OBJECT(priv->root));
+		g_debug("     ref count: %d", ((GObject *)priv->root)->ref_count);
 		priv->root = NULL;
 		#if 1
 		g_debug("Proxies destroyed, signaling a root change and a layout update.");
