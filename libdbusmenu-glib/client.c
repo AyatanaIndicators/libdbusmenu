@@ -432,7 +432,7 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	if (priv->root != NULL) {
 		g_object_unref(G_OBJECT(priv->root));
 		priv->root = NULL;
-		#ifdef MASSIVEDEBUGGING
+		#if 1
 		g_debug("Proxies destroyed, signaling a root change and a layout update.");
 		#endif
 		g_signal_emit(G_OBJECT(userdata), signals[ROOT_CHANGED], 0, NULL, TRUE);
