@@ -778,12 +778,12 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		g_object_ref(priv->root);
 		dbusmenu_menuitem_set_root(priv->root, TRUE);
 
-		if (oldroot != NULL) {
-			dbusmenu_menuitem_set_root(oldroot, FALSE);
-			g_object_unref(oldroot);
-		}
-
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
+	}
+
+	if (oldroot != NULL) {
+		dbusmenu_menuitem_set_root(oldroot, FALSE);
+		g_object_unref(oldroot);
 	}
 
 	return 1;
