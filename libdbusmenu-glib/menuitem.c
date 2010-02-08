@@ -286,7 +286,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 static void
 dbusmenu_menuitem_dispose (GObject *object)
 {
-	g_debug("Menuitem dele: %X", (guint)self);
+	g_debug("Menuitem dele: %X", (guint)object);
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(object);
 
 	GList * child = NULL;
