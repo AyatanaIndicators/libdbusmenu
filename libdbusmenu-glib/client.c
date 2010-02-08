@@ -776,10 +776,6 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		g_debug("Client signaling root changed.");
 		#endif 
 
-		/* Switch the root around */
-		g_object_ref(priv->root);
-		dbusmenu_menuitem_set_root(priv->root, TRUE);
-
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 
