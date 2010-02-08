@@ -1,9 +1,9 @@
-libdbusmenu (0.2.3-0ubuntu1~ppa2~repeat1) UNRELEASED; urgency=low
+libdbusmenu (0.2.3-0ubuntu1~ppa2~repeat1) lucid; urgency=low
 
   * Upstream Merge
     * Making sure to unref the old item in all cases.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 12:25:56 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 12:28:21 -0600
 
 libdbusmenu (0.2.3-0ubuntu1~ppa1) lucid; urgency=low
 
