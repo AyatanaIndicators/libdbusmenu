@@ -1,9 +1,9 @@
-libdbusmenu (0.2.3-0ubuntu1~ppa2~repeat3) UNRELEASED; urgency=low
+libdbusmenu (0.2.3-0ubuntu1~ppa2~repeat3) lucid; urgency=low
 
   * Upstream Merge
     * Debugging message
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 14:28:48 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 14:43:04 -0600
 
 libdbusmenu (0.2.3-0ubuntu1~ppa2~repeat2) lucid; urgency=low
 
