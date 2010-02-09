@@ -68,18 +68,29 @@ dbusmenu_menuitem_proxy_class_init (DbusmenuMenuitemProxyClass *klass)
 static void
 dbusmenu_menuitem_proxy_init (DbusmenuMenuitemProxy *self)
 {
+	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(self);
+
+	priv->mi = NULL;
 
 	return;
 }
 
+/* Remove references to objects */
 static void
 dbusmenu_menuitem_proxy_dispose (GObject *object)
 {
+	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(object);
+
+	if (priv->mi != NULL) {
+		g_object_unref(G_OBJECT(priv->mi));
+		priv->mi = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_proxy_parent_class)->dispose (object);
 	return;
 }
 
+/* Free any memory that we've allocated */
 static void
 dbusmenu_menuitem_proxy_finalize (GObject *object)
 {
