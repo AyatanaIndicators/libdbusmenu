@@ -1,3 +1,10 @@
+libdbusmenu (0.2.3-0ubuntu1~ppa2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Removing the ref to root and a setting of root
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 09 Feb 2010 08:49:16 -0600
+
 libdbusmenu (0.2.3-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.2.3
