@@ -561,6 +561,7 @@ get_properties_helper (gpointer key, gpointer value, gpointer data)
 static void
 menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
 	if (error != NULL) {
 		g_warning("Error getting properties on a menuitem: %s", error->message);
 		return;
@@ -646,10 +647,13 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	return;
 }
 
+/* Respond to the call function to make sure that the other side
+   got it, or print a warning. */
 static void
 menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 {
-	DbusmenuMenuitem * mi = (DbusmenuMenuitem *)userdata;
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(userdata));
+	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(userdata);
 
 	if (error != NULL) {
 		g_warning("Unable to call menu item %d: %s", dbusmenu_menuitem_get_id(mi), error->message);
