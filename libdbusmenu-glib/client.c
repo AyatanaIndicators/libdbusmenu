@@ -774,15 +774,14 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		g_debug("Client signaling root changed.");
 		#endif 
 
-		/* Switch the root around */
-		g_object_ref(priv->root);
-		dbusmenu_menuitem_set_root(priv->root, TRUE);
-
+		/* If they are different, and there was an old root we must
+		   clean up that old root */
 		if (oldroot != NULL) {
 			dbusmenu_menuitem_set_root(oldroot, FALSE);
 			g_object_unref(oldroot);
 		}
 
+		/* If the root changed we can signal that */
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
 	}
 
