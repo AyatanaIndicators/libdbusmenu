@@ -154,10 +154,7 @@ main (int argc, char ** argv)
 {
 	g_type_init();
 
-	/* Make sure the server starts up and all that */
-	g_usleep(500000);
-
-	DbusmenuClient * client = dbusmenu_client_new(":1.0", "/org/test");
+	DbusmenuClient * client = dbusmenu_client_new("test.proxy.first_proxy", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
 	death_timer = g_timeout_add_seconds(10, timer_func, client);
