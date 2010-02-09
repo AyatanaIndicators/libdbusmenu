@@ -652,11 +652,8 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 static void
 menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 {
-	g_return_if_fail(DBUSMENU_IS_MENUITEM(userdata));
-	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(userdata);
-
 	if (error != NULL) {
-		g_warning("Unable to call menu item %d: %s", dbusmenu_menuitem_get_id(mi), error->message);
+		g_warning("Unable to call menu item %d: %s", GPOINTER_TO_INT(userdata), error->message);
 	}
 
 	return;
