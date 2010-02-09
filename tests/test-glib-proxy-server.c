@@ -24,11 +24,12 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
+#include <dbus/dbus-glib-bindings.h>
 
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 
-#include "test-glib-properties.h"
+#include "test-glib-proxy.h"
 
 static void
 set_props (DbusmenuMenuitem * mi, gchar ** props)
@@ -91,7 +92,10 @@ main (int argc, char ** argv)
 {
 	g_type_init();
 
-	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
+	GError * error = NULL;
+	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+
+	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(connection)));
 
 	DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
 	guint nameret = 0;

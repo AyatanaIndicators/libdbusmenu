@@ -24,7 +24,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-glib/menuitem.h>
 
-#include "test-glib-properties.h"
+#include "test-glib-proxy.h"
 
 static guint layouton = 0;
 static GMainLoop * mainloop = NULL;
