@@ -138,7 +138,7 @@ test_glib_properties_client_LDADD = \
 test-glib-proxy: test-glib-proxy-client test-glib-proxy-server test-glib-proxy-proxy Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-proxy-client --task-name Client --task ./test-glib-proxy-server --task-name Server --ignore-return \\ >> $@
-	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.proxy_first --parameter test.proxy.server --task-name Proxy01
+	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.proxy_first --parameter test.proxy.server --task-name Proxy01 >> $@
 	@chmod +x $@
 
 test_glib_proxy_server_SOURCES = \
