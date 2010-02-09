@@ -45,6 +45,8 @@ static void dbusmenu_menuitem_proxy_init       (DbusmenuMenuitemProxy *self);
 static void dbusmenu_menuitem_proxy_dispose    (GObject *object);
 static void dbusmenu_menuitem_proxy_finalize   (GObject *object);
 static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+static void add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi);
+static void remove_menuitem (DbusmenuMenuitemProxy * pmi);
 
 G_DEFINE_TYPE (DbusmenuMenuitemProxy, dbusmenu_menuitem_proxy, DBUSMENU_TYPE_MENUITEM);
 
@@ -79,12 +81,7 @@ dbusmenu_menuitem_proxy_init (DbusmenuMenuitemProxy *self)
 static void
 dbusmenu_menuitem_proxy_dispose (GObject *object)
 {
-	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(object);
-
-	if (priv->mi != NULL) {
-		g_object_unref(G_OBJECT(priv->mi));
-		priv->mi = NULL;
-	}
+	remove_menuitem(DBUSMENU_MENUITEM_PROXY(object));
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_proxy_parent_class)->dispose (object);
 	return;
@@ -108,4 +105,33 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(mi);
 	g_return_if_fail(priv->mi != NULL);
 	return dbusmenu_menuitem_handle_event(priv->mi, name, value, timestamp);
+}
+
+/* References all of the things we need for talking to this menuitem
+   including signals and other data.  If the menuitem already has
+   properties we need to signal that they've changed for us.  */
+static void
+add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
+{
+
+	return;
+}
+
+/* Removes the menuitem from being our proxy.  Typically this isn't
+   done until this object is destroyed, but who knows?!? */
+static void
+remove_menuitem (DbusmenuMenuitemProxy * pmi)
+{
+	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(pmi);
+	if (priv->mi == NULL) {
+		return;
+	}
+
+	/* Remove signals */
+
+	/* Unref */
+	g_object_unref(G_OBJECT(priv->mi));
+	priv->mi = NULL;
+
+	return;
 }
