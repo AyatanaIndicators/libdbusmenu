@@ -59,3 +59,4 @@ tests/test-glib-objects-test
 tests/test-glib-objects.xml
 tools/testapp/dbusmenu-testapp
 libdbusmenu-glib/libdbusmenu_glib_la-client-menuitem.lo
+libdbusmenu-glib/libdbusmenu_glib_la-menuitem-proxy.lo
