@@ -570,19 +570,33 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	return;
 }
 
+/* This function is called to refresh the properites on an item that
+   is getting recycled with the update, but we think might have prop
+   changes. */
 static void
 menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
+	gboolean have_error = FALSE;
+
+	if (error != NULL) {
+		g_warning("Unable to replace properties on %d: %s", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(data)), error->message);
+		have_error = TRUE;
+	}
+
 	GList * current_props = NULL;
 
 	for (current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
 			current_props != NULL ; current_props = g_list_next(current_props)) {
-		if (g_hash_table_lookup(properties, current_props->data) == NULL) {
+		if (have_error || g_hash_table_lookup(properties, current_props->data) == NULL) {
 			dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)current_props->data);
 		}
 	}
 
-	menuitem_get_properties_cb(proxy, properties, error, data);
+	if (!have_error) {
+		menuitem_get_properties_cb(proxy, properties, error, data);
+	}
+
 	return;
 }
 
