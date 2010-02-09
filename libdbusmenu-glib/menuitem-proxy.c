@@ -37,6 +37,14 @@ struct _DbusmenuMenuitemProxyPrivate {
 	DbusmenuMenuitem * mi;
 };
 
+/* Properties */
+enum {
+	PROP_0,
+	PROP_MENU_ITEM
+};
+
+#define PROP_MENU_ITEM_S   "menu-item"
+
 #define DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_MENUITEM_PROXY, DbusmenuMenuitemProxyPrivate))
 
@@ -44,6 +52,8 @@ static void dbusmenu_menuitem_proxy_class_init (DbusmenuMenuitemProxyClass *klas
 static void dbusmenu_menuitem_proxy_init       (DbusmenuMenuitemProxy *self);
 static void dbusmenu_menuitem_proxy_dispose    (GObject *object);
 static void dbusmenu_menuitem_proxy_finalize   (GObject *object);
+static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
+static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 static void add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi);
 static void remove_menuitem (DbusmenuMenuitemProxy * pmi);
@@ -59,10 +69,18 @@ dbusmenu_menuitem_proxy_class_init (DbusmenuMenuitemProxyClass *klass)
 
 	object_class->dispose = dbusmenu_menuitem_proxy_dispose;
 	object_class->finalize = dbusmenu_menuitem_proxy_finalize;
+	object_class->set_property = set_property;
+	object_class->get_property = get_property;
 
 	DbusmenuMenuitemClass * miclass = DBUSMENU_MENUITEM_CLASS(klass);
 
 	miclass->handle_event = handle_event;
+
+	g_object_class_install_property (object_class, PROP_MENU_ITEM,
+	                                 g_param_spec_object(PROP_MENU_ITEM_S, "The Menuitem we're proxying",
+	                                                     "An instance of the DbusmenuMenuitem class that this menuitem will mimic.",
+	                                                     DBUSMENU_TYPE_MENUITEM,
+	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	return;
 }
@@ -93,6 +111,42 @@ dbusmenu_menuitem_proxy_finalize (GObject *object)
 {
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_proxy_parent_class)->finalize (object);
+	return;
+}
+
+/* Set a property using the generic GObject interface */
+static void
+set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
+{
+	switch (id) {
+	case PROP_MENU_ITEM: {
+		GObject * lobj = g_value_get_object(value);
+		add_menuitem(DBUSMENU_MENUITEM_PROXY(obj), DBUSMENU_MENUITEM(lobj));
+		break;
+	}
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, id, pspec);
+		break;
+	}
+
+	return;
+}
+
+/* Get a property using the generic GObject interface */
+static void
+get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
+{
+	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(obj);
+
+	switch (id) {
+	case PROP_MENU_ITEM:
+		g_value_set_object(value, priv->mi);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, id, pspec);
+		break;
+	}
+
 	return;
 }
 
