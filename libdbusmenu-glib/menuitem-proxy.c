@@ -167,6 +167,17 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 static void
 add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
 {
+	/* Put it in private */
+	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(pmi);
+	if (priv->mi != NULL) {
+		remove_menuitem(pmi);
+	}
+	priv->mi = mi;
+	g_object_ref(G_OBJECT(priv->mi));
+
+	/* Attach signals */
+
+	/* Go through children and wrap them */
 
 	return;
 }
