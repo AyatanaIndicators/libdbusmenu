@@ -19,6 +19,8 @@ static GMainLoop * mainloop = NULL;
 void
 root_changed (DbusmenuClient * client, DbusmenuMenuitem * newroot, gpointer user_data)
 {
+	g_debug("New root: %X", (guint)newroot);
+
 	if (newroot == NULL) {
 		g_debug("Root removed, exiting");
 		g_main_loop_quit(mainloop);
