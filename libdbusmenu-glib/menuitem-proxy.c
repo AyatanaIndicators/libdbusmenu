@@ -35,6 +35,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 typedef struct _DbusmenuMenuitemProxyPrivate DbusmenuMenuitemProxyPrivate;
 struct _DbusmenuMenuitemProxyPrivate {
 	DbusmenuMenuitem * mi;
+	gulong sig_property_changed;
+	gulong sig_child_added;
+	gulong sig_child_removed;
+	gulong sig_child_moved;
 };
 
 /* Properties */
@@ -91,6 +95,11 @@ dbusmenu_menuitem_proxy_init (DbusmenuMenuitemProxy *self)
 	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(self);
 
 	priv->mi = NULL;
+
+	priv->sig_property_changed = 0;
+	priv->sig_child_added = 0;
+	priv->sig_child_removed = 0;
+	priv->sig_child_moved = 0;
 
 	return;
 }
@@ -213,10 +222,10 @@ add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
 	g_object_ref(G_OBJECT(priv->mi));
 
 	/* Attach signals */
-	g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(proxy_item_property_changed), pmi);
-	g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,      G_CALLBACK(proxy_item_child_added),      pmi);
-	g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED,    G_CALLBACK(proxy_item_child_removed),    pmi);
-	g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,      G_CALLBACK(proxy_item_child_moved),      pmi);
+	priv->sig_property_changed = g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(proxy_item_property_changed), pmi);
+	priv->sig_child_added =      g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,      G_CALLBACK(proxy_item_child_added),      pmi);
+	priv->sig_child_removed =    g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED,    G_CALLBACK(proxy_item_child_removed),    pmi);
+	priv->sig_child_moved =      g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,      G_CALLBACK(proxy_item_child_moved),      pmi);
 
 	/* Grab (cache) Properties */
 
@@ -236,6 +245,18 @@ remove_menuitem (DbusmenuMenuitemProxy * pmi)
 	}
 
 	/* Remove signals */
+	if (priv->sig_property_changed != 0) {
+		g_signal_handler_disconnect(G_OBJECT(priv->mi), priv->sig_property_changed);
+	}
+	if (priv->sig_child_added != 0) {
+		g_signal_handler_disconnect(G_OBJECT(priv->mi), priv->sig_child_added);
+	}
+	if (priv->sig_child_removed != 0) {
+		g_signal_handler_disconnect(G_OBJECT(priv->mi), priv->sig_child_removed);
+	}
+	if (priv->sig_child_moved != 0) {
+		g_signal_handler_disconnect(G_OBJECT(priv->mi), priv->sig_child_moved);
+	}
 
 	/* Unref */
 	g_object_unref(G_OBJECT(priv->mi));
