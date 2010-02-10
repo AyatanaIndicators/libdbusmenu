@@ -207,6 +207,13 @@ proxy_item_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, gui
 	return;
 }
 
+/* Making g_object_unref into a GFunc */
+static void
+func_g_object_unref (gpointer data, gpointer user_data)
+{
+	return g_object_unref(G_OBJECT(data));
+}
+
 /* References all of the things we need for talking to this menuitem
    including signals and other data.  If the menuitem already has
    properties we need to signal that they've changed for us.  */
@@ -270,6 +277,9 @@ remove_menuitem (DbusmenuMenuitemProxy * pmi)
 	priv->mi = NULL;
 
 	/* Remove our own children */
+	GList * children = dbusmenu_menuitem_take_children(DBUSMENU_MENUITEM(pmi));
+	g_list_foreach(children, func_g_object_unref, NULL);
+	g_list_free(children);
 
 	return;
 }
