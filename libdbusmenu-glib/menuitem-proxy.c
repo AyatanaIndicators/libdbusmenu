@@ -200,3 +200,22 @@ remove_menuitem (DbusmenuMenuitemProxy * pmi)
 
 	return;
 }
+
+/**
+	dbusmenu_menuitem_proxy_new:
+	@mi: The #DbusmenuMenuitem to proxy
+
+	Builds a new #DbusmenuMenuitemProxy object that proxies
+	all of the values for @mi.
+
+	Return value: A new #DbusmenuMenuitemProxy object.
+*/
+DbusmenuMenuitemProxy *
+dbusmenu_menuitem_proxy_new (DbusmenuMenuitem * mi)
+{
+	DbusmenuMenuitemProxy * pmi = g_object_new(DBUSMENU_TYPE_MENUITEM_PROXY,
+	                                           PROP_MENU_ITEM_S, mi,
+	                                           NULL);
+
+	return pmi;
+}

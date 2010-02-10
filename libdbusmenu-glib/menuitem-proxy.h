@@ -66,6 +66,7 @@ struct _DbusmenuMenuitemProxy {
 };
 
 GType dbusmenu_menuitem_proxy_get_type (void);
+DbusmenuMenuitemProxy * dbusmenu_menuitem_proxy_new (DbusmenuMenuitem * mi);
 
 G_END_DECLS
 
