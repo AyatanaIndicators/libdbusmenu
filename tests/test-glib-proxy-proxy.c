@@ -7,11 +7,27 @@
 
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
+#include <libdbusmenu-glib/client.h>
 
 #include "test-glib-proxy.h"
 
 static DbusmenuServer * server = NULL;
+static DbusmenuClient * client = NULL;
 static GMainLoop * mainloop = NULL;
+
+void
+root_changed (DbusmenuClient * client, DbusmenuMenuitem * newroot, gpointer user_data)
+{
+	if (newroot == NULL) {
+		g_debug("Root removed, exiting");
+		g_main_loop_quit(mainloop);
+		return;
+	}
+
+	DbusmenuMenuitem * pmi;// = dbusmenu_menuitem_proxy_new(newroot);
+	dbusmenu_server_set_root(server, DBUSMENU_MENUITEM(pmi));
+	return;
+}
 
 int
 main (int argc, char ** argv)
@@ -47,6 +63,9 @@ main (int argc, char ** argv)
 	}
 
 	server = dbusmenu_server_new("/org/test");
+	client = dbusmenu_client_new(myproxy, "/org/test");
+
+	g_signal_connect(client, DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(root_changed), server);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
