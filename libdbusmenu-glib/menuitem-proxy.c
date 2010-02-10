@@ -218,8 +218,25 @@ proxy_item_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, g
 
 /* Find the wrapper for the item and move it in our child list */
 static void 
-proxy_item_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos)
+proxy_item_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos, gpointer user_data)
 {
+	DbusmenuMenuitemProxy * pmi = DBUSMENU_MENUITEM_PROXY(user_data);
+	GList * children = dbusmenu_menuitem_get_children(DBUSMENU_MENUITEM(pmi));
+	DbusmenuMenuitemProxy * finalpmi = NULL;
+	GList * childitem;
+
+	for (childitem = children; childitem != NULL; childitem = g_list_next(childitem)) {
+		DbusmenuMenuitemProxy * childpmi = (DbusmenuMenuitemProxy *)childitem->data;
+		DbusmenuMenuitem * childmi = dbusmenu_menuitem_proxy_get_wrapped(childpmi);
+		if (childmi == child) {
+			finalpmi = childpmi;
+			break;
+		}
+	}
+
+	if (finalpmi != NULL) {
+		dbusmenu_menuitem_child_reorder(DBUSMENU_MENUITEM(pmi), DBUSMENU_MENUITEM(finalpmi), newpos);
+	}
 
 	return;
 }
