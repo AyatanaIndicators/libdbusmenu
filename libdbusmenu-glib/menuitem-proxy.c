@@ -228,6 +228,13 @@ add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
 	priv->sig_child_moved =      g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,      G_CALLBACK(proxy_item_child_moved),      pmi);
 
 	/* Grab (cache) Properties */
+	GList * props = dbusmenu_menuitem_properties_list(priv->mi);
+	GList * prop;
+	for (prop = props; prop != NULL; prop = g_list_next(prop)) {
+		gchar * prop_name = (gchar *)prop->data;
+		dbusmenu_menuitem_property_set_value(DBUSMENU_MENUITEM(pmi), prop_name, dbusmenu_menuitem_property_get_value(priv->mi, prop_name));
+	}
+	g_list_free(props);
 
 	/* Go through children and wrap them */
 
@@ -261,6 +268,8 @@ remove_menuitem (DbusmenuMenuitemProxy * pmi)
 	/* Unref */
 	g_object_unref(G_OBJECT(priv->mi));
 	priv->mi = NULL;
+
+	/* Remove our own children */
 
 	return;
 }
