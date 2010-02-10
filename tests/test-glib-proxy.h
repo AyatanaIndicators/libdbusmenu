@@ -108,8 +108,8 @@ proplayout_t submenu_4_0[] = {
 
 proplayout_t layouts[] = {
 	{id: 1, properties: props1, submenu: NULL},
-	{id: 10, properties: props2, submenu: NULL},
-	{id: 20, properties: props3, submenu: NULL},
+	{id: 10, properties: props2, submenu: submenu_4_1},
+	{id: 20, properties: props3, submenu: submenu_4_2},
 	{id: 100, properties: props2, submenu: submenu_4_0},
 	{id: -1, properties: NULL, submenu: NULL}
 };
