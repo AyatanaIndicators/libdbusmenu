@@ -6,6 +6,7 @@
 #include <dbus/dbus-glib-bindings.h>
 
 #include <libdbusmenu-glib/menuitem.h>
+#include <libdbusmenu-glib/menuitem-proxy.h>
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/client.h>
 
@@ -24,7 +25,7 @@ root_changed (DbusmenuClient * client, DbusmenuMenuitem * newroot, gpointer user
 		return;
 	}
 
-	DbusmenuMenuitem * pmi;// = dbusmenu_menuitem_proxy_new(newroot);
+	DbusmenuMenuitemProxy * pmi = dbusmenu_menuitem_proxy_new(newroot);
 	dbusmenu_server_set_root(server, DBUSMENU_MENUITEM(pmi));
 	return;
 }
