@@ -244,6 +244,12 @@ add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
 	g_list_free(props);
 
 	/* Go through children and wrap them */
+	GList * children = dbusmenu_menuitem_get_children(priv->mi);
+	GList * child;
+	for (child = children; child != NULL; child = g_list_next(child)) {
+		DbusmenuMenuitemProxy * child_pmi = dbusmenu_menuitem_proxy_new(DBUSMENU_MENUITEM(child->data));
+		dbusmenu_menuitem_child_append(DBUSMENU_MENUITEM(pmi), DBUSMENU_MENUITEM(child_pmi));
+	}
 
 	return;
 }
