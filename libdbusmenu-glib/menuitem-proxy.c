@@ -308,3 +308,21 @@ dbusmenu_menuitem_proxy_new (DbusmenuMenuitem * mi)
 
 	return pmi;
 }
+
+/**
+	dbusmenu_menuitem_proxy_get_wrapped:
+	@pmi: #DbusmenuMenuitemProxy to look into
+
+	Accesses the private variable of which #DbusmenuMenuitem
+	we are doing the proxying for.
+
+	Return value: A #DbusmenuMenuitem object or a #NULL if we
+		don't have one or there is an error.
+*/
+DbusmenuMenuitem *
+dbusmenu_menuitem_proxy_get_wrapped (DbusmenuMenuitemProxy * pmi)
+{
+	g_return_val_if_fail(DBUSMENU_MENUITEM_PROXY(pmi), NULL);
+	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(pmi);
+	return priv->mi;
+}
