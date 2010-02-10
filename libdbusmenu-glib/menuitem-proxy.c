@@ -161,6 +161,43 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 	return dbusmenu_menuitem_handle_event(priv->mi, name, value, timestamp);
 }
 
+/* Watches a property change and makes sure to put that value
+   into our property list. */
+static void
+proxy_item_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, gpointer user_data)
+{
+	DbusmenuMenuitemProxy * pmi = DBUSMENU_MENUITEM_PROXY(user_data);
+	dbusmenu_menuitem_property_set_value(DBUSMENU_MENUITEM(pmi), property, value);
+	return;
+}
+
+/* Looks for a child getting added and wraps it and places it
+   in our list of children. */
+static void
+proxy_item_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer user_data)
+{
+	DbusmenuMenuitemProxy * pmi = DBUSMENU_MENUITEM_PROXY(user_data);
+	DbusmenuMenuitemProxy * child_pmi = dbusmenu_menuitem_proxy_new(child);
+	dbusmenu_menuitem_child_add_position(DBUSMENU_MENUITEM(pmi), DBUSMENU_MENUITEM(child_pmi), position);
+	return;
+}
+
+/* Find the wrapper for this child and remove it as well. */
+static void 
+proxy_item_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, gpointer user_data)
+{
+
+	return;
+}
+
+/* Find the wrapper for the item and move it in our child list */
+static void 
+proxy_item_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos)
+{
+
+	return;
+}
+
 /* References all of the things we need for talking to this menuitem
    including signals and other data.  If the menuitem already has
    properties we need to signal that they've changed for us.  */
@@ -176,6 +213,12 @@ add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
 	g_object_ref(G_OBJECT(priv->mi));
 
 	/* Attach signals */
+	g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(proxy_item_property_changed), pmi);
+	g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,      G_CALLBACK(proxy_item_child_added),      pmi);
+	g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED,    G_CALLBACK(proxy_item_child_removed),    pmi);
+	g_signal_connect(G_OBJECT(priv->mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,      G_CALLBACK(proxy_item_child_moved),      pmi);
+
+	/* Grab (cache) Properties */
 
 	/* Go through children and wrap them */
 
