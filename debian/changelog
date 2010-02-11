@@ -1,3 +1,11 @@
+libdbusmenu (0.2.4-0ubuntu1) UNRELEASED; urgency=low
+
+  * Upstream release 0.2.4
+    * Remove uneccessary reference to stop duplication of menus
+    * Handle dbus method errors better
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 11 Feb 2010 10:08:17 -0600
+
 libdbusmenu (0.2.3-0ubuntu3) lucid; urgency=low
 
   * Backported lp:~ted/dbusmenu/dbus-error-handling to fix the 
