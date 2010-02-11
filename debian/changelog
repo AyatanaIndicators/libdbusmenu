@@ -1,11 +1,19 @@
-libdbusmenu (0.2.3-0ubuntu1~ppa2) lucid; urgency=low
+libdbusmenu (0.2.3-0ubuntu3) lucid; urgency=low
+
+  * Backported lp:~ted/dbusmenu/dbus-error-handling to fix the 
+    indicator-applet crashing sometime on softwares close 
+    (lp: #518900, #519019)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 10 Feb 2010 00:12:35 +0100
+
+libdbusmenu (0.2.3-0ubuntu2) lucid; urgency=low
 
   * Upstream Merge
     * Removing the ref to root and a setting of root
 
  -- Ted Gould <ted@ubuntu.com>  Tue, 09 Feb 2010 08:53:00 -0600
 
-libdbusmenu (0.2.3-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.2.3-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.3
     * Fixing handing of root IDs being zero
