@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "test-glib-proxy.h"
 
-static guint layouton = 0;
+static guint layouton = -1;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
 static guint death_timer = 0;
@@ -114,6 +114,7 @@ static void
 layout_updated (DbusmenuClient * client, gpointer data)
 {
 	g_debug("Layout Updated");
+	layouton++;
 	g_timeout_add (1500, layout_verify_timer, client);
 	return;
 }
@@ -121,6 +122,7 @@ layout_updated (DbusmenuClient * client, gpointer data)
 static gboolean
 layout_verify_timer (gpointer data)
 {
+	g_debug("Verifing Layout: %d", layouton);
 	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(DBUSMENU_CLIENT(data));
 	proplayout_t * layout = &layouts[layouton];
 	
@@ -133,9 +135,7 @@ layout_verify_timer (gpointer data)
 		death_timer = g_timeout_add_seconds(10, timer_func, data);
 	}
 
-	layouton++;
-	
-	if (layouts[layouton].id == -1) {
+	if (layouts[layouton+1].id == -1) {
 		g_main_loop_quit(mainloop);
 	}
 
