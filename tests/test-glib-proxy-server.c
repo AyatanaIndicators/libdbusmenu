@@ -49,7 +49,7 @@ layout2menuitem (proplayout_t * layout)
 {
 	if (layout == NULL || layout->id == -1) return NULL;
 
-	DbusmenuMenuitem * local = dbusmenu_menuitem_new_with_id(layout->id);
+	DbusmenuMenuitem * local = dbusmenu_menuitem_new();
 	set_props(local, layout->properties);
 	
 	if (layout->submenu != NULL) {
