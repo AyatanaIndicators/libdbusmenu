@@ -885,16 +885,19 @@ update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, vo
 	DbusmenuClient * client = DBUSMENU_CLIENT(data);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
+	/* Check to make sure this isn't an issue */
 	if (error != NULL) {
 		g_warning("Getting layout failed on client %s object %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		return;
 	}
 
+	/* Try to take in the layout that we got */
 	if (!parse_layout(client, xml)) {
 		g_warning("Unable to parse layout!");
 		return;
 	}
 
+	/* Success, so we need to update our local variables */
 	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
 	priv->layoutcall = NULL;
@@ -903,6 +906,41 @@ update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, vo
 	#endif 
 	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
 
+	/* Apply the delayed properties that were queued up while
+	   we were waiting on this layout update. */
+	if (G_LIKELY(priv->delayed_properties != NULL)) {
+		gint i;
+		for (i = 0; i < priv->delayed_properties->len; i++) {
+			propertyDelay * delay = &g_array_index(priv->delayed_properties, propertyDelay, i);
+			if (delay->revision > priv->my_revision) {
+				/* Check to see if this is for future revisions, which
+				   is possible if there is a ton of updates. */
+				break;
+			}
+
+			gint j;
+			for (j = 0; j < delay->entries->len; j++) {
+				propertyDelayValue * value = &g_array_index(delay->entries, propertyDelayValue, j);
+				DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, value->id);
+				if (mi != NULL) {
+					dbusmenu_menuitem_property_set_value(mi, value->name, &value->value);
+				}
+				g_free(value->name);
+				g_value_unset(&value->value);
+			}
+			g_array_free(delay->entries, TRUE);
+
+			/* We're removing the entry and moving the index down one
+			   to ensure that we adjust for the shift in the array.  The
+			   reality is that i is always 0.  You understood this loop
+			   until you got here, didn't you :)  */
+			g_array_remove_index(priv->delayed_properties, i);
+			i--;
+		}
+	}
+
+	/* Check to see if we got another update in the time this
+	   one was issued. */
 	if (priv->my_revision < priv->current_revision) {
 		update_layout(client);
 	}
