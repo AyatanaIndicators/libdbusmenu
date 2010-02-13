@@ -114,6 +114,10 @@ static void
 layout_updated (DbusmenuClient * client, gpointer data)
 {
 	g_debug("Layout Updated");
+	if (dbusmenu_client_get_root(client) == NULL) {
+		g_debug("\tIgnored, no root");
+		return;
+	}
 	layouton++;
 	g_timeout_add (1500, layout_verify_timer, client);
 	return;
