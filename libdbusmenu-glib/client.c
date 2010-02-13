@@ -90,7 +90,7 @@ struct _newItemPropData
 typedef struct _propertyDelay propertyDelay;
 struct _propertyDelay
 {
-	guint revsion;
+	guint revision;
 	GArray * entries;
 };
 
@@ -355,6 +355,49 @@ layout_update (DBusGProxy * proxy, gint revision, guint parent, DbusmenuClient *
 	return;
 }
 
+/* Add an entry to the set of entries that are delayed until the
+   layout has been updated to this revision */
+static void
+delay_prop_update (guint revision, GArray * delayarray, gint id, gchar * prop, GValue * value)
+{
+	propertyDelay * delay = NULL;
+	gint i;
+
+	/* First look for something with this revision number.  This
+	   array should be really short, probably not more than an entry or
+	   two so there is no reason to optimize this. */
+	for (i = 0; i < delayarray->len; i++) {
+		propertyDelay * localdelay = &g_array_index(delayarray, propertyDelay, i);
+		if (localdelay->revision == revision) {
+			delay = localdelay;
+			break;
+		}
+	}
+
+	/* If we don't have any entires for this revision number then we
+	   need to create a new one with it's own array of entires. */
+	if (delay == NULL) {
+		propertyDelay localdelay = {0};
+		localdelay.revision = revision;
+		localdelay.entries = g_array_new(FALSE, TRUE, sizeof(propertyDelayValue));
+
+		g_array_append_val(delayarray, localdelay);
+		delay = &g_array_index(delayarray, propertyDelay, delayarray->len - 1);
+	}
+
+	/* Build the actual entry and tack it on the end of the array
+	   of entries */
+	propertyDelayValue delayvalue = {0};
+	delayvalue.id = id;
+	delayvalue.name = g_strdup(prop);
+
+	g_value_init(&delayvalue.value, G_VALUE_TYPE(value));
+	g_value_copy(value, &delayvalue.value);
+
+	g_array_append_val(delay->entries, delayvalue);
+	return;
+}
+
 /* Signal from the server that a property has changed
    on one of our menuitems */
 static void
@@ -369,7 +412,17 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 	#endif
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	g_return_if_fail(priv->root != NULL);
+
+	/* If we're not on the right revision, we need to cache the property
+	   changes as it could be that the menuitems don't exist yet. */
+	if (priv->my_revision != priv->current_revision) {
+		delay_prop_update(priv->current_revision, priv->delayed_properties, id, property, value);
+		return;
+	}
+
+	if (priv->root != NULL) {
+		return;
+	}
 
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
