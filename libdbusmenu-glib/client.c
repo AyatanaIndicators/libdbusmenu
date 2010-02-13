@@ -75,6 +75,8 @@ struct _DbusmenuClientPrivate
 	DBusGProxy * dbusproxy;
 
 	GHashTable * type_handlers;
+
+	GArray * delayed_properties;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -83,6 +85,21 @@ struct _newItemPropData
 	DbusmenuClient * client;
 	DbusmenuMenuitem * item;
 	DbusmenuMenuitem * parent;
+};
+
+typedef struct _propertyDelay propertyDelay;
+struct _propertyDelay
+{
+	guint revsion;
+	GArray * entries;
+};
+
+typedef struct _propertyDelayValue propertyDelayValue;
+struct _propertyDelayValue
+{
+	gint id;
+	gchar * name;
+	GValue value;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -208,6 +225,8 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
 	                                            g_free, NULL);
 
+	priv->delayed_properties = g_array_new(FALSE, TRUE, sizeof(propertyDelay));
+
 	return;
 }
 
@@ -253,6 +272,23 @@ dbusmenu_client_finalize (GObject *object)
 
 	if (priv->type_handlers != NULL) {
 		g_hash_table_destroy(priv->type_handlers);
+	}
+
+	if (priv->delayed_properties) {
+		gint i;
+		for (i = 0; i < priv->delayed_properties->len; i++) {
+			propertyDelay * delay = &g_array_index(priv->delayed_properties, propertyDelay, i);
+			gint j;
+			for (j = 0; j < delay->entries->len; j++) {
+				propertyDelayValue * value = &g_array_index(delay->entries, propertyDelayValue, j);
+				g_free(value->name);
+				g_value_unset(&value->value);
+			}
+			g_array_free(delay->entries, TRUE);
+			delay->entries = NULL;
+		}
+		g_array_free(priv->delayed_properties, TRUE);
+		priv->delayed_properties = NULL;
 	}
 
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
