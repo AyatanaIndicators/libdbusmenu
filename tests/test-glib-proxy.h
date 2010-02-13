@@ -106,11 +106,37 @@ proplayout_t submenu_4_0[] = {
 	{id: -1, properties: NULL, submenu: NULL}
 };
 
+proplayout_t submenu_5_5[] = {
+	{id: 205, properties: props3, submenu: NULL},
+	{id: -1, properties: NULL, submenu: NULL}
+};
+
+proplayout_t submenu_5_4[] = {
+	{id: 204, properties: props3, submenu: submenu_5_5},
+	{id: -1, properties: NULL, submenu: NULL}
+};
+
+proplayout_t submenu_5_3[] = {
+	{id: 203, properties: props3, submenu: submenu_5_4},
+	{id: -1, properties: NULL, submenu: NULL}
+};
+
+proplayout_t submenu_5_2[] = {
+	{id: 202, properties: props3, submenu: submenu_5_3},
+	{id: -1, properties: NULL, submenu: NULL}
+};
+
+proplayout_t submenu_5_1[] = {
+	{id: 201, properties: props3, submenu: submenu_5_2},
+	{id: -1, properties: NULL, submenu: NULL}
+};
+
 proplayout_t layouts[] = {
 	{id: 1, properties: props1, submenu: NULL},
 	{id: 10, properties: props2, submenu: submenu_4_1},
 	{id: 20, properties: props3, submenu: submenu_4_2},
 	{id: 100, properties: props2, submenu: submenu_4_0},
+	{id: 200, properties: props3, submenu: submenu_5_1},
 	{id: -1, properties: NULL, submenu: NULL}
 };
 
