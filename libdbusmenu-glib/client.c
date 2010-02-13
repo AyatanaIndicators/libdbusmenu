@@ -415,12 +415,11 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 
 	/* If we're not on the right revision, we need to cache the property
 	   changes as it could be that the menuitems don't exist yet. */
-	if (priv->my_revision != priv->current_revision) {
+	if (priv->root == NULL || priv->my_revision != priv->current_revision) {
+		#ifdef MASSIVEDEBUGGING
+		g_debug("Delaying prop update until rev %d for id %d property %s", priv->current_revision, id, property);
+		#endif
 		delay_prop_update(priv->current_revision, priv->delayed_properties, id, property, value);
-		return;
-	}
-
-	if (priv->root != NULL) {
 		return;
 	}
 
@@ -923,6 +922,9 @@ update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, vo
 				propertyDelayValue * value = &g_array_index(delay->entries, propertyDelayValue, j);
 				DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, value->id);
 				if (mi != NULL) {
+					#ifdef MASSIVEDEBUGGING
+					g_debug("Applying delayed property id %d property %s", value->id, value->name);
+					#endif
 					dbusmenu_menuitem_property_set_value(mi, value->name, &value->value);
 				}
 				g_free(value->name);
