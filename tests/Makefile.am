@@ -5,6 +5,7 @@ TESTS = \
 	test-glib-objects-test \
 	test-glib-layout \
 	test-glib-properties \
+	test-glib-proxy \
 	test-glib-simple-items \
 	test-gtk-label \
 	test-gtk-reorder
@@ -16,6 +17,9 @@ check_PROGRAMS = \
 	test-glib-layout-server \
 	test-glib-properties-client \
 	test-glib-properties-server \
+	test-glib-proxy-client \
+	test-glib-proxy-server \
+	test-glib-proxy-proxy \
 	test-gtk-label-client \
 	test-gtk-label-server \
 	test-glib-simple-items \
@@ -124,6 +128,56 @@ test_glib_properties_client_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_properties_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+######################
+# Test Glib Proxy
+######################
+
+test-glib-proxy: test-glib-proxy-client test-glib-proxy-server test-glib-proxy-proxy Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-proxy-client --task-name Client --task ./test-glib-proxy-server --task-name Server --ignore-return \\ >> $@
+	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.first_proxy --parameter test.proxy.second_proxy --task-name Proxy01 --ignore-return \\ >> $@
+	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.second_proxy --parameter test.proxy.third_proxy --task-name Proxy02 --ignore-return \\ >> $@
+	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.third_proxy --parameter test.proxy.fourth_proxy --task-name Proxy03 --ignore-return \\ >> $@
+	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.fourth_proxy --parameter test.proxy.last_proxy --task-name Proxy04 --ignore-return \\ >> $@
+	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.last_proxy --parameter test.proxy.server --task-name Proxy05 --ignore-return >> $@
+	@chmod +x $@
+
+test_glib_proxy_server_SOURCES = \
+	test-glib-proxy.h \
+	test-glib-proxy-server.c
+
+test_glib_proxy_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_proxy_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_proxy_client_SOURCES = \
+	test-glib-proxy.h \
+	test-glib-proxy-client.c
+
+test_glib_proxy_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_proxy_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_proxy_proxy_SOURCES = \
+	test-glib-proxy.h \
+	test-glib-proxy-proxy.c
+
+test_glib_proxy_proxy_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_proxy_proxy_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 

@@ -301,10 +301,29 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * val
 	return;
 }
 
+/* Adds the signals for this entry to the list and looks at
+   the children of this entry to add the signals we need
+   as well.  We like signals. */
+static void
+added_check_children (gpointer data, gpointer user_data)
+{
+	DbusmenuMenuitem * mi = (DbusmenuMenuitem *)data;
+	DbusmenuServer * server = (DbusmenuServer *)user_data;
+
+	menuitem_signals_create(mi, server);
+	g_list_foreach(dbusmenu_menuitem_get_children(mi), added_check_children, server);
+
+	return;
+}
+
+/* Callback for when a child is added.  We need to connect everything
+   up and signal that the layout has changed. */
 static void
 menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint pos, DbusmenuServer * server)
 {
 	menuitem_signals_create(child, server);
+	g_list_foreach(dbusmenu_menuitem_get_children(child), added_check_children, server);
+
 	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	priv->layout_revision++;
