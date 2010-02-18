@@ -1,3 +1,10 @@
+libdbusmenu (0.2.4-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * Upstream merge
+    * Adding ID to default <menu> item.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 10:50:40 -0600
+
 libdbusmenu (0.2.4-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.4

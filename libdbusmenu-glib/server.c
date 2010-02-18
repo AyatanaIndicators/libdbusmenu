@@ -378,7 +378,7 @@ _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revis
 	if (parent == 0) {
 		if (priv->root == NULL) {
 			/* g_debug("Getting layout without root node!"); */
-			g_ptr_array_add(xmlarray, g_strdup("<menu/>"));
+			g_ptr_array_add(xmlarray, g_strdup("<menu id=\"0\"/>"));
 		} else {
 			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
 		}
