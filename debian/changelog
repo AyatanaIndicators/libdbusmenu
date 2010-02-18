@@ -1,4 +1,4 @@
-libdbusmenu (0.2.5-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.2.5-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.5
     * Adding in menuitem proxy object.
