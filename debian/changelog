@@ -1,11 +1,11 @@
-libdbusmenu (0.2.5-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.2.5-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.2.5
     * Adding in menuitem proxy object.
     * Adding ID to default <menu> item.
   * debian/rules: Updating shlibs
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 10:54:24 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 11:00:24 -0600
 
 libdbusmenu (0.2.4-0ubuntu1) lucid; urgency=low
 
