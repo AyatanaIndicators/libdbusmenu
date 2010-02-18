@@ -12,6 +12,7 @@ libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-glib/
 
 libdbusmenu_glibinclude_HEADERS = \
 	menuitem.h \
+	menuitem-proxy.h \
 	server.h \
 	client.h
 
@@ -23,6 +24,8 @@ libdbusmenu_glib_la_SOURCES = \
 	menuitem-marshal.h \
 	menuitem-marshal.c \
 	menuitem-private.h \
+	menuitem-proxy.h \
+	menuitem-proxy.c \
 	server.h \
 	server.c \
 	server-marshal.h \
