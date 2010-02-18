@@ -1,9 +1,9 @@
-libdbusmenu (0.2.4-0ubuntu2~ppa2) UNRELEASED; urgency=low
+libdbusmenu (0.2.4-0ubuntu2~ppa2) lucid; urgency=low
 
   * Upstream Merge
     * Adding in menuitem proxy object.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 10:53:20 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 10:54:14 -0600
 
 libdbusmenu (0.2.4-0ubuntu2~ppa1) lucid; urgency=low
 
