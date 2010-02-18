@@ -75,6 +75,8 @@ struct _DbusmenuClientPrivate
 	DBusGProxy * dbusproxy;
 
 	GHashTable * type_handlers;
+
+	GArray * delayed_properties;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -83,6 +85,21 @@ struct _newItemPropData
 	DbusmenuClient * client;
 	DbusmenuMenuitem * item;
 	DbusmenuMenuitem * parent;
+};
+
+typedef struct _propertyDelay propertyDelay;
+struct _propertyDelay
+{
+	guint revision;
+	GArray * entries;
+};
+
+typedef struct _propertyDelayValue propertyDelayValue;
+struct _propertyDelayValue
+{
+	gint id;
+	gchar * name;
+	GValue value;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -208,6 +225,8 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
 	                                            g_free, NULL);
 
+	priv->delayed_properties = g_array_new(FALSE, TRUE, sizeof(propertyDelay));
+
 	return;
 }
 
@@ -253,6 +272,23 @@ dbusmenu_client_finalize (GObject *object)
 
 	if (priv->type_handlers != NULL) {
 		g_hash_table_destroy(priv->type_handlers);
+	}
+
+	if (priv->delayed_properties) {
+		gint i;
+		for (i = 0; i < priv->delayed_properties->len; i++) {
+			propertyDelay * delay = &g_array_index(priv->delayed_properties, propertyDelay, i);
+			gint j;
+			for (j = 0; j < delay->entries->len; j++) {
+				propertyDelayValue * value = &g_array_index(delay->entries, propertyDelayValue, j);
+				g_free(value->name);
+				g_value_unset(&value->value);
+			}
+			g_array_free(delay->entries, TRUE);
+			delay->entries = NULL;
+		}
+		g_array_free(priv->delayed_properties, TRUE);
+		priv->delayed_properties = NULL;
 	}
 
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
@@ -319,6 +355,49 @@ layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient *
 	return;
 }
 
+/* Add an entry to the set of entries that are delayed until the
+   layout has been updated to this revision */
+static void
+delay_prop_update (guint revision, GArray * delayarray, gint id, gchar * prop, GValue * value)
+{
+	propertyDelay * delay = NULL;
+	gint i;
+
+	/* First look for something with this revision number.  This
+	   array should be really short, probably not more than an entry or
+	   two so there is no reason to optimize this. */
+	for (i = 0; i < delayarray->len; i++) {
+		propertyDelay * localdelay = &g_array_index(delayarray, propertyDelay, i);
+		if (localdelay->revision == revision) {
+			delay = localdelay;
+			break;
+		}
+	}
+
+	/* If we don't have any entires for this revision number then we
+	   need to create a new one with it's own array of entires. */
+	if (delay == NULL) {
+		propertyDelay localdelay = {0};
+		localdelay.revision = revision;
+		localdelay.entries = g_array_new(FALSE, TRUE, sizeof(propertyDelayValue));
+
+		g_array_append_val(delayarray, localdelay);
+		delay = &g_array_index(delayarray, propertyDelay, delayarray->len - 1);
+	}
+
+	/* Build the actual entry and tack it on the end of the array
+	   of entries */
+	propertyDelayValue delayvalue = {0};
+	delayvalue.id = id;
+	delayvalue.name = g_strdup(prop);
+
+	g_value_init(&delayvalue.value, G_VALUE_TYPE(value));
+	g_value_copy(value, &delayvalue.value);
+
+	g_array_append_val(delay->entries, delayvalue);
+	return;
+}
+
 /* Signal from the server that a property has changed
    on one of our menuitems */
 static void
@@ -333,7 +412,16 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 	#endif
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	g_return_if_fail(priv->root != NULL);
+
+	/* If we're not on the right revision, we need to cache the property
+	   changes as it could be that the menuitems don't exist yet. */
+	if (priv->root == NULL || priv->my_revision != priv->current_revision) {
+		#ifdef MASSIVEDEBUGGING
+		g_debug("Delaying prop update until rev %d for id %d property %s", priv->current_revision, id, property);
+		#endif
+		delay_prop_update(priv->current_revision, priv->delayed_properties, id, property, value);
+		return;
+	}
 
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
@@ -810,16 +898,19 @@ update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, vo
 	DbusmenuClient * client = DBUSMENU_CLIENT(data);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
+	/* Check to make sure this isn't an issue */
 	if (error != NULL) {
 		g_warning("Getting layout failed on client %s object %s: %s", priv->dbus_name, priv->dbus_object, error->message);
 		return;
 	}
 
+	/* Try to take in the layout that we got */
 	if (!parse_layout(client, xml)) {
 		g_warning("Unable to parse layout!");
 		return;
 	}
 
+	/* Success, so we need to update our local variables */
 	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
 	priv->layoutcall = NULL;
@@ -828,6 +919,44 @@ update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, vo
 	#endif 
 	g_signal_emit(G_OBJECT(client), signals[LAYOUT_UPDATED], 0, TRUE);
 
+	/* Apply the delayed properties that were queued up while
+	   we were waiting on this layout update. */
+	if (G_LIKELY(priv->delayed_properties != NULL)) {
+		gint i;
+		for (i = 0; i < priv->delayed_properties->len; i++) {
+			propertyDelay * delay = &g_array_index(priv->delayed_properties, propertyDelay, i);
+			if (delay->revision > priv->my_revision) {
+				/* Check to see if this is for future revisions, which
+				   is possible if there is a ton of updates. */
+				break;
+			}
+
+			gint j;
+			for (j = 0; j < delay->entries->len; j++) {
+				propertyDelayValue * value = &g_array_index(delay->entries, propertyDelayValue, j);
+				DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, value->id);
+				if (mi != NULL) {
+					#ifdef MASSIVEDEBUGGING
+					g_debug("Applying delayed property id %d property %s", value->id, value->name);
+					#endif
+					dbusmenu_menuitem_property_set_value(mi, value->name, &value->value);
+				}
+				g_free(value->name);
+				g_value_unset(&value->value);
+			}
+			g_array_free(delay->entries, TRUE);
+
+			/* We're removing the entry and moving the index down one
+			   to ensure that we adjust for the shift in the array.  The
+			   reality is that i is always 0.  You understood this loop
+			   until you got here, didn't you :)  */
+			g_array_remove_index(priv->delayed_properties, i);
+			i--;
+		}
+	}
+
+	/* Check to see if we got another update in the time this
+	   one was issued. */
 	if (priv->my_revision < priv->current_revision) {
 		update_layout(client);
 	}
