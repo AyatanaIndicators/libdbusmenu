@@ -119,7 +119,15 @@ layout_updated (DbusmenuClient * client, gpointer data)
 		return;
 	}
 	layouton++;
-	g_timeout_add (1500, layout_verify_timer, client);
+	if (layouton != 0) {
+		g_timeout_add (1500, layout_verify_timer, client);
+	} else {
+		DbusmenuMenuitem * mi = dbusmenu_client_get_root(client);
+		GValue value = {0};
+		g_value_init(&value, G_TYPE_INT);
+		g_value_set_int(&value, 0);
+		dbusmenu_menuitem_handle_event(mi, "clicked", &value, layouton);
+	}
 	return;
 }
 
@@ -142,6 +150,11 @@ layout_verify_timer (gpointer data)
 	if (layouts[layouton+1].id == -1) {
 		g_main_loop_quit(mainloop);
 	}
+
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_INT);
+	g_value_set_int(&value, 0);
+	dbusmenu_menuitem_handle_event(menuroot, "clicked", &value, layouton);
 
 	return FALSE;
 }
