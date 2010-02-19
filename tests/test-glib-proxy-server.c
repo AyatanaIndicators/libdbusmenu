@@ -90,6 +90,7 @@ layout_change (DbusmenuMenuitem * oldroot, guint timestamp, gpointer data)
 
 	DbusmenuMenuitem * mi = layout2menuitem(&layouts[layouton]);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(layout_change), NULL);
+	dbusmenu_menuitem_property_set_int(mi, LAYOUT_ON, layouton);
 	dbusmenu_server_set_root(server, mi);
 	g_object_unref(G_OBJECT(mi));
 	layouton++;

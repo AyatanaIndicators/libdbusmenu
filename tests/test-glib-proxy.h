@@ -22,6 +22,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib.h>
 
+#define LAYOUT_ON "proxy-layout-on"
+
 typedef struct _proplayout_t proplayout_t;
 struct _proplayout_t {
 	gint id;
