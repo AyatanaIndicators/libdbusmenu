@@ -122,13 +122,8 @@ layout_updated (DbusmenuClient * client, gpointer data)
 	if (verify_timer != 0) {
 		g_source_remove(verify_timer);
 	}
-	verify_timer = g_timeout_add (2500, layout_verify_timer, client);
 
-	DbusmenuMenuitem * mi = dbusmenu_client_get_root(client);
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_INT);
-	g_value_set_int(&value, 0);
-	dbusmenu_menuitem_handle_event(mi, "clicked", &value, layouton);
+	verify_timer = g_timeout_add (2500, layout_verify_timer, client);
 	return;
 }
 
