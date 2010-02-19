@@ -26,10 +26,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "test-glib-proxy.h"
 
-static guint layouton = -1;
+static guint layouton = -2;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
 static guint death_timer = 0;
+static guint verify_timer = 0;
 
 static gboolean
 verify_props (DbusmenuMenuitem * mi, gchar ** properties)
@@ -118,16 +119,22 @@ layout_updated (DbusmenuClient * client, gpointer data)
 		g_debug("\tIgnored, no root");
 		return;
 	}
-	layouton++;
-	g_timeout_add (1500, layout_verify_timer, client);
+	if (verify_timer != 0) {
+		g_source_remove(verify_timer);
+	}
+
+	verify_timer = g_timeout_add (3000, layout_verify_timer, client);
 	return;
 }
 
 static gboolean
 layout_verify_timer (gpointer data)
 {
-	g_debug("Verifing Layout: %d", layouton);
 	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(DBUSMENU_CLIENT(data));
+	layouton = dbusmenu_menuitem_property_get_int(menuroot, LAYOUT_ON);
+
+	g_debug("Verifing Layout: %d", layouton);
+	verify_timer = 0;
 	proplayout_t * layout = &layouts[layouton];
 	
 	if (!verify_root_to_layout(menuroot, layout)) {
@@ -136,12 +143,17 @@ layout_verify_timer (gpointer data)
 	} else {
 		/* Extend our death */
 		g_source_remove(death_timer);
-		death_timer = g_timeout_add_seconds(10, timer_func, data);
+		death_timer = g_timeout_add_seconds(4, timer_func, data);
 	}
 
 	if (layouts[layouton+1].id == -1) {
 		g_main_loop_quit(mainloop);
 	}
+
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_INT);
+	g_value_set_int(&value, 0);
+	dbusmenu_menuitem_handle_event(menuroot, "clicked", &value, layouton);
 
 	return FALSE;
 }
@@ -154,7 +166,7 @@ main (int argc, char ** argv)
 	DbusmenuClient * client = dbusmenu_client_new("test.proxy.first_proxy", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
-	death_timer = g_timeout_add_seconds(10, timer_func, client);
+	death_timer = g_timeout_add_seconds(4, timer_func, client);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
