@@ -69,6 +69,15 @@ layout2menuitem (proplayout_t * layout)
 static guint layouton = 0;
 static DbusmenuServer * server = NULL;
 static GMainLoop * mainloop = NULL;
+static guint death_timer = 0;
+
+static gboolean
+timer_func (gpointer data)
+{
+	g_debug("Death timer.  Oops.  Got to: %d", layouton);
+	g_main_loop_quit(mainloop);
+	return FALSE;
+}
 
 static gboolean
 layout_change (DbusmenuMenuitem * oldroot, guint timestamp, gpointer data)
@@ -84,6 +93,10 @@ layout_change (DbusmenuMenuitem * oldroot, guint timestamp, gpointer data)
 	dbusmenu_server_set_root(server, mi);
 	g_object_unref(G_OBJECT(mi));
 	layouton++;
+
+	/* Extend our death */
+	g_source_remove(death_timer);
+	death_timer = g_timeout_add_seconds(2, timer_func, data);
 
 	return TRUE;
 }
@@ -116,6 +129,8 @@ main (int argc, char ** argv)
 	DbusmenuMenuitem * root = dbusmenu_menuitem_new();
 	g_signal_connect(G_OBJECT(root), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(layout_change), NULL);
 	dbusmenu_server_set_root(server, root);
+
+	death_timer = g_timeout_add_seconds(2, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
