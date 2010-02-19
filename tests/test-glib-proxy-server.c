@@ -71,7 +71,7 @@ static DbusmenuServer * server = NULL;
 static GMainLoop * mainloop = NULL;
 
 static gboolean
-timer_func (gpointer data)
+layout_change (DbusmenuMenuitem * oldroot, guint timestamp, gpointer data)
 {
 	if (layouts[layouton].id == -1) {
 		g_main_loop_quit(mainloop);
@@ -80,6 +80,7 @@ timer_func (gpointer data)
 	g_debug("Updating to Layout %d", layouton);
 
 	DbusmenuMenuitem * mi = layout2menuitem(&layouts[layouton]);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(layout_change), NULL);
 	dbusmenu_server_set_root(server, mi);
 	g_object_unref(G_OBJECT(mi));
 	layouton++;
@@ -112,8 +113,9 @@ main (int argc, char ** argv)
 
 	server = dbusmenu_server_new("/org/test");
 
-	timer_func(NULL);
-	g_timeout_add(2500, timer_func, NULL);
+	DbusmenuMenuitem * root = dbusmenu_menuitem_new();
+	g_signal_connect(G_OBJECT(root), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(layout_change), NULL);
+	dbusmenu_server_set_root(server, root);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
