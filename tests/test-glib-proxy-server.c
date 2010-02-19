@@ -79,12 +79,12 @@ timer_func (gpointer data)
 	return FALSE;
 }
 
-static gboolean
+static void
 layout_change (DbusmenuMenuitem * oldroot, guint timestamp, gpointer data)
 {
 	if (layouts[layouton].id == -1) {
 		g_main_loop_quit(mainloop);
-		return FALSE;
+		return;
 	}
 	g_debug("Updating to Layout %d", layouton);
 
@@ -96,10 +96,12 @@ layout_change (DbusmenuMenuitem * oldroot, guint timestamp, gpointer data)
 	layouton++;
 
 	/* Extend our death */
-	g_source_remove(death_timer);
-	death_timer = g_timeout_add_seconds(2, timer_func, data);
+	if (death_timer != 0) {
+		g_source_remove(death_timer);
+	}
+	death_timer = g_timeout_add_seconds(4, timer_func, data);
 
-	return TRUE;
+	return;
 }
 
 int
@@ -126,12 +128,7 @@ main (int argc, char ** argv)
 	}
 
 	server = dbusmenu_server_new("/org/test");
-
-	DbusmenuMenuitem * root = dbusmenu_menuitem_new();
-	g_signal_connect(G_OBJECT(root), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(layout_change), NULL);
-	dbusmenu_server_set_root(server, root);
-
-	death_timer = g_timeout_add_seconds(2, timer_func, NULL);
+	layout_change(NULL, 0, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
