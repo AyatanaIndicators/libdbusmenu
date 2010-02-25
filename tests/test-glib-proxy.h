@@ -22,6 +22,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib.h>
 
+#define LAYOUT_ON "proxy-layout-on"
+
 typedef struct _proplayout_t proplayout_t;
 struct _proplayout_t {
 	gint id;
@@ -132,7 +134,7 @@ proplayout_t submenu_5_1[] = {
 };
 
 proplayout_t layouts[] = {
-	{id: 1, properties: props1, submenu: NULL},
+	{id: 1, properties: props1, submenu: submenu_5_5},
 	{id: 10, properties: props2, submenu: submenu_4_1},
 	{id: 20, properties: props3, submenu: submenu_4_2},
 	{id: 100, properties: props2, submenu: submenu_4_0},
