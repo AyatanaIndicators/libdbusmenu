@@ -69,22 +69,39 @@ layout2menuitem (proplayout_t * layout)
 static guint layouton = 0;
 static DbusmenuServer * server = NULL;
 static GMainLoop * mainloop = NULL;
+static guint death_timer = 0;
 
 static gboolean
 timer_func (gpointer data)
 {
+	g_debug("Death timer.  Oops.  Got to: %d", layouton);
+	g_main_loop_quit(mainloop);
+	return FALSE;
+}
+
+static void
+layout_change (DbusmenuMenuitem * oldroot, guint timestamp, gpointer data)
+{
 	if (layouts[layouton].id == -1) {
 		g_main_loop_quit(mainloop);
-		return FALSE;
+		return;
 	}
 	g_debug("Updating to Layout %d", layouton);
 
 	DbusmenuMenuitem * mi = layout2menuitem(&layouts[layouton]);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(layout_change), NULL);
+	dbusmenu_menuitem_property_set_int(mi, LAYOUT_ON, layouton);
 	dbusmenu_server_set_root(server, mi);
 	g_object_unref(G_OBJECT(mi));
 	layouton++;
 
-	return TRUE;
+	/* Extend our death */
+	if (death_timer != 0) {
+		g_source_remove(death_timer);
+	}
+	death_timer = g_timeout_add_seconds(4, timer_func, data);
+
+	return;
 }
 
 int
@@ -111,9 +128,7 @@ main (int argc, char ** argv)
 	}
 
 	server = dbusmenu_server_new("/org/test");
-
-	timer_func(NULL);
-	g_timeout_add(2500, timer_func, NULL);
+	layout_change(NULL, 0, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
