@@ -104,7 +104,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(libdbusmenu_glib_la_SOURCES)
+introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
 
 DbusmenuGlib-1.0.gir: libdbusmenu-glib.la
 DbusmenuGlib_1_0_gir_INCLUDES = \
