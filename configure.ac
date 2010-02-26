@@ -2,10 +2,10 @@
 AC_INIT(libdbusmenu, 0.2.6, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
-AC_PREREQ(2.53)
+AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.2.6)
+AM_INIT_AUTOMAKE(libdbusmenu, 0.2.6, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -60,6 +60,12 @@ PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION)
 
 AC_SUBST(DBUSMENUTESTS_CFLAGS)
 AC_SUBST(DBUSMENUTESTS_LIBS)
+
+###########################
+# GObject Introspection
+###########################
+
+GOBJECT_INTROSPECTION_CHECK([0.6.7])
 
 ###########################
 # Lib versioning 
