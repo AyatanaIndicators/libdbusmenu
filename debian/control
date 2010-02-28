@@ -76,14 +76,16 @@ Description: Tools useful during development with libdbusmenu
 Package: gir1.0-dbusmenu-glib-0.2
 Section: libs
 Architecture: any
-Depends: libdbusmenu-glib1 (= ${binary:Version}),
+Depends: ${misc:Depends},
+         libdbusmenu-glib1 (= ${binary:Version}),
          gir1.0-glib-2.0
 Description: Typelib file for libdbusmenu-glib1
 
 Package: gir1.0-dbusmenu-gtk-0.2
 Section: libs
 Architecture: any
-Depends: libdbusmenu-gtk1 (= ${binary:Version}),
+Depends: ${misc:Depends},
+         libdbusmenu-gtk1 (= ${binary:Version}),
          gir1.0-dbusmenu-glib-0.2 (= ${binary:Version}),
          gir1.0-gtk-2.0
 Description: Typelib file for libdbusmenu-gtk1
