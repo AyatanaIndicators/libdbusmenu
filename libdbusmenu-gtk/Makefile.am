@@ -52,16 +52,16 @@ if HAVE_INTROSPECTION
 
 introspection_sources = $(libdbusmenu_gtkinclude_HEADERS)
 
-DbusmenuGtk-1.0.gir: libdbusmenu-gtk.la
-DbusmenuGtk_1_0_gir_INCLUDES = \
+DbusmenuGtk-0.2.gir: libdbusmenu-gtk.la
+DbusmenuGtk_0_2_gir_INCLUDES = \
 	GObject-2.0 \
 	Gtk-2.0 \
-	DbusmenuGlib-1.0
-DbusmenuGtk_1_0_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
-DbusmenuGtk_1_0_gir_LIBS = libdbusmenu-gtk.la
-DbusmenuGtk_1_0_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+	DbusmenuGlib-0.2
+DbusmenuGtk_0_2_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
+DbusmenuGtk_0_2_gir_LIBS = libdbusmenu-gtk.la
+DbusmenuGtk_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 
-INTROSPECTION_GIRS += DbusmenuGtk-1.0.gir
+INTROSPECTION_GIRS += DbusmenuGtk-0.2.gir
 
 girdir = $(datadir)/gir-1.0
 dist_gir_DATA = $(INTROSPECTION_GIRS)

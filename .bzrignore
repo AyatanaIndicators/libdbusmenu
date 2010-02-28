@@ -64,7 +64,7 @@ tests/test-glib-proxy-client
 tests/test-glib-proxy-server
 tests/test-glib-proxy-proxy
 tests/test-glib-proxy
-libdbusmenu-glib/DbusmenuGlib-1.0.gir
-libdbusmenu-glib/DbusmenuGlib-1.0.typelib
-libdbusmenu-gtk/DbusmenuGtk-1.0.gir
-libdbusmenu-gtk/DbusmenuGtk-1.0.typelib
+libdbusmenu-glib/DbusmenuGlib-0.2.gir
+libdbusmenu-glib/DbusmenuGlib-0.2.typelib
+libdbusmenu-gtk/DbusmenuGtk-0.2.gir
+libdbusmenu-gtk/DbusmenuGtk-0.2.typelib
