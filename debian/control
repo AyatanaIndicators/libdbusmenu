@@ -72,3 +72,15 @@ Description: Tools useful during development with libdbusmenu
  .
  This package contains tools that are useful when building applications.
 
+Package: gir1.0-dbusmenu-glib-0.2
+Section: libs
+Architecture: any
+Depends: libdbusmenu-glib1 (= ${binary:Version})
+Description: Typelib file for libdbusmenu-glib1
+
+Package: gir1.0-dbusmenu-gtk-0.2
+Section: libs
+Architecture: any
+Depends: libdbusmenu-gtk1 (= ${binary:Version})
+Description: Typelib file for libdbusmenu-gtk1
+
