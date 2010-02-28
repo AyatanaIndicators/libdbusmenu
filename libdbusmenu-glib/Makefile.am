@@ -1,4 +1,6 @@
 
+CLEANFILES = 
+
 EXTRA_DIST = \
 	dbusmenu-glib.pc.in \
 	dbus-menu.xml \
@@ -90,4 +92,36 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 	glib-genmarshal --body \
 		--prefix=_dbusmenu_menuitem_marshal $(srcdir)/menuitem-marshal.list \
 		> menuitem-marshal.c
+
+#########################
+# GObject Introsepction 
+#########################
+
+-include $(INTROSPECTION_MAKEFILE)
+INTROSPECTION_GIRS = 
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
+INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+
+if HAVE_INTROSPECTION
+
+introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
+
+DbusmenuGlib-0.2.gir: libdbusmenu-glib.la
+DbusmenuGlib_0_2_gir_INCLUDES = \
+	GObject-2.0
+DbusmenuGlib_0_2_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
+DbusmenuGlib_0_2_gir_LIBS = libdbusmenu-glib.la
+DbusmenuGlib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+
+INTROSPECTION_GIRS += DbusmenuGlib-0.2.gir
+
+girdir = $(datadir)/gir-1.0
+dist_gir_DATA = $(INTROSPECTION_GIRS)
+
+typelibdir = $(libdir)/girepository-1.0
+typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+CLEANFILES += $(dist_gir_DATA) $(typelib_DATA)
+
+endif
 
