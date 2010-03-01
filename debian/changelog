@@ -1,8 +1,8 @@
-libdbusmenu (0.2.6-0ubuntu1~ppa2~gir2) UNRELEASED; urgency=low
+libdbusmenu (0.2.6-0ubuntu1~ppa2~gir2) lucid; urgency=low
 
   * debian/control: Adding in gir's as build dependencies.
 
- -- Ted Gould <ted@ubuntu.com>  Sun, 28 Feb 2010 20:29:56 -0600
+ -- Ted Gould <ted@ubuntu.com>  Sun, 28 Feb 2010 20:30:27 -0600
 
 libdbusmenu (0.2.6-0ubuntu1~ppa2~gir1) lucid; urgency=low
 
