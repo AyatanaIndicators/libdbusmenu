@@ -68,6 +68,12 @@ AC_SUBST(DBUSMENUTESTS_LIBS)
 GOBJECT_INTROSPECTION_CHECK([0.6.7])
 
 ###########################
+# Vala API Generation
+###########################
+
+AC_PATH_PROG([VALA_API_GEN], [vapigen])
+
+###########################
 # Lib versioning 
 ###########################
 
