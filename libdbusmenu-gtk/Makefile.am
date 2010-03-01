@@ -72,3 +72,32 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 CLEANFILES += $(dist_gir_DATA) $(typelib_DATA)
 
 endif
+
+#########################
+# VAPI Files
+#########################
+
+if HAVE_INTROSPECTION
+
+vapidir = $(datadir)/vala/vapi
+vapi_DATA = DbusmenuGtk-0.2.vapi
+
+DbusmenuGtk-0.2.vapi: DbusmenuGtk-0.2.tmp.gir Makefile.am
+	$(VALA_API_GEN) --library=DbusmenuGtk-0.2 \
+		--pkg gdk-pixbuf-2.0 \
+		--pkg gtk+-2.0 \
+		--pkg atk \
+		--pkg DbusmenuGlib-0.2 \
+		--vapidir=$(top_builddir)/libdbusmenu-glib \
+		$<
+
+DbusmenuGtk-0.2.tmp.gir: DbusmenuGtk-0.2.gir
+	$(SED) \
+		-e "s|GdkPixbuf.Pixbuf|Gdk.Pixbuf|g" \
+		-e "s|Atk.ImplementorIface|Atk.Implementor|g" \
+		$< > $@
+
+CLEANFILES += $(vapi_DATA)
+
+endif
+
