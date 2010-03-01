@@ -11,7 +11,9 @@ Build-Depends: debhelper (>= 5.0),
                intltool,
                libxml2-dev,
                libjson-glib-dev,
-               libgirepository1.0-dev
+               libgirepository1.0-dev,
+               gir1.0-glib-2.0,
+               gir1.0-gtk-2.0
 Standards-Version: 3.8.0
 Homepage: https://launchpad.net/libdbusmenu
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-desktop/dbusmenu/ubuntu
