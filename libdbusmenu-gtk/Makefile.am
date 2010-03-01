@@ -97,7 +97,7 @@ DbusmenuGtk-0.2.tmp.gir: DbusmenuGtk-0.2.gir
 		-e "s|Atk.ImplementorIface|Atk.Implementor|g" \
 		$< > $@
 
-CLEANFILES += $(vapi_DATA)
+CLEANFILES += $(vapi_DATA) DbusmenuGtk-0.2.tmp.gir
 
 endif
 
