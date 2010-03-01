@@ -125,3 +125,19 @@ CLEANFILES += $(dist_gir_DATA) $(typelib_DATA)
 
 endif
 
+#########################
+# VAPI Files
+#########################
+
+if HAVE_INTROSPECTION
+
+vapidir = $(datadir)/vala/vapi
+vapi_DATA = DbusmenuGlib-0.2.vapi
+
+DbusmenuGlib-0.2.vapi: DbusmenuGlib-0.2.gir
+	$(VALA_API_GEN) --library=DbusmenuGlib-0.2 $<
+
+CLEANFILES += $(vapi_DATA)
+
+endif
+
