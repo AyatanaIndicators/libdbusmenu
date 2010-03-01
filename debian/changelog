@@ -2,6 +2,10 @@ libdbusmenu (0.2.6-0ubuntu1~ppa2~gir4) UNRELEASED; urgency=low
 
   * Upstream Merge
     * Adding in building of VAPI files
+  * debian/control: Adding dependency on valac
+  * debian/libdbusmenu-glib-dev.install,
+    debian/libdbusmenu-gtk-dev.install: Added VAPI files to
+    the packages.
 
  -- Ted Gould <ted@ubuntu.com>  Mon, 01 Mar 2010 10:50:08 -0600
 
