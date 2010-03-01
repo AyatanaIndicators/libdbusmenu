@@ -1,3 +1,10 @@
+libdbusmenu (0.2.6-0ubuntu1~ppa2~gir4) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Adding in building of VAPI files
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 01 Mar 2010 10:50:08 -0600
+
 libdbusmenu (0.2.6-0ubuntu1~ppa2~gir3) lucid; urgency=low
 
   * debian/libdbusmenu-glib-dev.install,
