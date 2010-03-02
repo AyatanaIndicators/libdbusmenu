@@ -45,7 +45,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) --add-include-path=$(top_srcdir)/libdbusmenu-glib
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) --add-include-path=$(top_builddir)/libdbusmenu-glib
 INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir) --includedir=$(top_srcdir)/libdbusmenu-glib
 
 if HAVE_INTROSPECTION
@@ -69,7 +69,7 @@ gir_DATA = $(INTROSPECTION_GIRS)
 typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
-CLEANFILES += $(dist_gir_DATA) $(typelib_DATA)
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 endif
 
