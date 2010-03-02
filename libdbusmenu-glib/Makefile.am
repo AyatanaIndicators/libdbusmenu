@@ -100,7 +100,7 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
-INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
