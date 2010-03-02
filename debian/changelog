@@ -1,10 +1,10 @@
-libdbusmenu (0.2.6-0ubuntu2~ppa2) UNRELEASED; urgency=low
+libdbusmenu (0.2.6-0ubuntu2~ppa2) lucid; urgency=low
 
   * debian/control:
     * Adding dependencies for gir-repository-dev and
       gobject-introspection to ensure we get all the GI goodies.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 02 Mar 2010 10:12:52 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 02 Mar 2010 10:13:39 -0600
 
 libdbusmenu (0.2.6-0ubuntu2~ppa1) lucid; urgency=low
 
