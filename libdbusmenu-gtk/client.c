@@ -109,18 +109,14 @@ static const gchar * data_menu =     "dbusmenugtk-data-gtkmenu";
 static gboolean
 menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 {
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_INT);
-	g_value_set_int(&value, 0);
-	dbusmenu_menuitem_handle_event(mi, "clicked", &value, gtk_get_current_event_time());
-	return TRUE;
-}
-
-/* This is called when submenu gm of menuitem mi gets shown. */
-static gboolean
-menu_shown_cb (GtkMenu * gm, DbusmenuMenuitem * mi)
-{
-	dbusmenu_menuitem_send_about_to_show(mi);
+	if (gtk_menu_item_get_submenu(gmi) == NULL) {
+		GValue value = {0};
+		g_value_init(&value, G_TYPE_INT);
+		g_value_set_int(&value, 0);
+		dbusmenu_menuitem_handle_event(mi, "clicked", &value, gtk_get_current_event_time());
+	} else {
+		dbusmenu_menuitem_send_about_to_show(mi);
+	}
 	return TRUE;
 }
 
@@ -331,7 +327,6 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 		/* Oh, we don't have a submenu, build one! */
 		menu = GTK_MENU(gtk_menu_new());
 		g_object_set_data(G_OBJECT(mi), data_menu, menu);
-		g_signal_connect(G_OBJECT(menu), "show", G_CALLBACK(menu_shown_cb), mi);
 
 		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get(gtkclient, mi);
 		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));
