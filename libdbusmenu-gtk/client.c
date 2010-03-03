@@ -116,6 +116,14 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 	return TRUE;
 }
 
+/* This is called when submenu gm of menuitem mi gets shown. */
+static gboolean
+menu_shown_cb (GtkMenu * gm, DbusmenuMenuitem * mi)
+{
+	dbusmenu_menuitem_send_about_to_show(mi);
+	return TRUE;
+}
+
 /* Process the visible property */
 static void
 process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
@@ -323,6 +331,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 		/* Oh, we don't have a submenu, build one! */
 		menu = GTK_MENU(gtk_menu_new());
 		g_object_set_data(G_OBJECT(mi), data_menu, menu);
+		g_signal_connect(G_OBJECT(menu), "show", G_CALLBACK(menu_shown_cb), mi);
 
 		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get(gtkclient, mi);
 		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));

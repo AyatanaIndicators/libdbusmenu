@@ -668,6 +668,36 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	return;
 }
 
+static void
+about_to_show_cb (DBusGProxy * proxy, gboolean need_update, GError * error, gpointer userdata)
+{
+	DbusmenuClient * client = DBUSMENU_CLIENT(userdata);
+	if (error != NULL) {
+		g_warning("Unable to send about_to_show: %s", error->message);
+		return;
+	}
+
+	if (need_update) {
+		update_layout(client);
+	}
+	return;
+}
+
+void
+dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	org_ayatana_dbusmenu_about_to_show_async (priv->menuproxy, id, about_to_show_cb, client);
+	/*
+	FIXME: We should wait until either
+	 - about_to_show_cb has been called and need_update was false
+	 - about_to_show_cb has been called, need_update was true and menu has been
+	   updated
+	 - about_to_show_cb has not been called and we already waited for 10msecs
+	*/
+	return;
+}
+
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *

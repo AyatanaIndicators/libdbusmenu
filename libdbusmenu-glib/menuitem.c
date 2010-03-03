@@ -1203,3 +1203,17 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const
 	}
 	return;
 }
+void
+dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Submenu for menuitem %d (%s) is about to be shown", ID(mi), LABEL(mi));
+	#endif
+	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
+
+	if (class->send_about_to_show != NULL) {
+		return class->send_about_to_show(mi);
+	}
+	return;
+}

@@ -95,6 +95,8 @@ struct _DbusmenuMenuitem
 	@handle_event: This function is to override how events are handled
 			by subclasses.  Look at #dbusmenu_menuitem_handle_event for
 			lots of good information.
+	@send_about_to_show: Virtual function that notifies server that the
+			client is about to show a menu.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
@@ -116,9 +118,10 @@ struct _DbusmenuMenuitemClass
 	/* Virtual functions */
 	void (*buildxml) (GPtrArray * stringarray);
 	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+	void (*send_about_to_show) (DbusmenuMenuitem * mi);
 
 	void (*reserved1) (void);
-	void (*reserved2) (void);
+	/* void (*reserved2) (void); */
 	/* void (*reserved3) (void); */
 	/* void (*reserved4) (void); -- realized, realloc when bumping lib version */
 };
@@ -159,6 +162,7 @@ gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
 void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+void dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi);
 
 /**
 	SECTION:menuitem

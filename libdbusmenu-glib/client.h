@@ -109,6 +109,8 @@ void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         const gchar * name,
                                                         const GValue * value,
                                                         guint timestamp);
+void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
+                                                        gint id);
 
 /**
 	SECTION:client
