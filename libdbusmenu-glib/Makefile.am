@@ -100,7 +100,7 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
-INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
@@ -116,12 +116,12 @@ DbusmenuGlib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 INTROSPECTION_GIRS += DbusmenuGlib-0.2.gir
 
 girdir = $(datadir)/gir-1.0
-dist_gir_DATA = $(INTROSPECTION_GIRS)
+gir_DATA = $(INTROSPECTION_GIRS)
 
 typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
-CLEANFILES += $(dist_gir_DATA) $(typelib_DATA)
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 endif
 
