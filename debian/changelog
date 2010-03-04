@@ -1,4 +1,4 @@
-libdbusmenu (0.2.7-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.2.7-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.2.7
     * Adding in building of the GObject Introspection details
@@ -17,7 +17,7 @@ libdbusmenu (0.2.7-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Added VAPI files to the packages.
     * Added GIR files to the packages.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 04 Mar 2010 11:11:01 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Mar 2010 11:13:43 -0600
 
 libdbusmenu (0.2.6-0ubuntu1) lucid; urgency=low
 
