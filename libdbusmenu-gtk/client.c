@@ -525,6 +525,16 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 			/* If there is no name, by golly we want no
 			   icon either. */
 			gtkimage = NULL;
+		} else if (g_strcmp0(iconname, DBUSMENU_MENUITEM_ICON_NAME_BLANK) == 0) {
+			if (gtkimage != NULL) {
+				g_object_unref(gtkimage);
+			}
+
+			gint width, height;
+			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
+
+			gtkimage = gtk_image_new();
+			gtk_widget_set_size_request(GTK_WIDGET(gtkimage), width, height);
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
 			   'rtl' depending on what we're doing. */
