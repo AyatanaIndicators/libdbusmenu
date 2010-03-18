@@ -594,6 +594,10 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 
 	}
 
+	if (gtkimage != NULL) {
+		gtk_misc_set_alignment(GTK_MISC(gtkimage), 0.0, 0.5);
+	}
+
 	genericmenuitem_set_image(GENERICMENUITEM(gimi), gtkimage);
 
 	return;
