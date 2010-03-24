@@ -533,7 +533,32 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 			gint width, height;
 			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
 
+#if 0
+			/* Not work */
+			GError * error = NULL;
+			GdkPixbuf * pixbuf = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/16x16/apps/wine.png", &error);
+			if (error != NULL) { g_warning("Blank error: %s", error->message); }
+			gtkimage = gtk_image_new_from_pixbuf(pixbuf);
+#endif
+#if 1
+			/* Work */
+			gtkimage = gtk_image_new_from_icon_name("stock_person", GTK_ICON_SIZE_MENU);
+#endif
+#if 0
+			/* Not Work */
 			gtkimage = gtk_image_new();
+#endif
+#if 0
+			/* Not work */
+			gtkimage = gtk_image_new_from_icon_name("stock_person", GTK_ICON_SIZE_MENU);
+			gtk_image_clear(GTK_IMAGE(gtkimage));
+#endif
+#if 0
+			/* Not work */
+			gtkimage = gtk_image_new();
+			gtk_widget_show(gtkimage);
+#endif
+
 			gtk_widget_set_size_request(GTK_WIDGET(gtkimage), width, height);
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
