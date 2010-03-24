@@ -530,11 +530,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 				g_object_unref(gtkimage);
 			}
 
-			gint width, height;
-			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
-
 			gtkimage = gtk_image_new();
-			gtk_widget_set_size_request(GTK_WIDGET(gtkimage), width, height);
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
 			   'rtl' depending on what we're doing. */
@@ -595,6 +591,10 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 	}
 
 	if (gtkimage != NULL) {
+		gint width, height;
+		gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
+
+		gtk_widget_set_size_request(GTK_WIDGET(gtkimage), width, height);
 		gtk_misc_set_alignment(GTK_MISC(gtkimage), 0.0, 0.5);
 	}
 
