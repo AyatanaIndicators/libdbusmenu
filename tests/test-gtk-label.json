@@ -242,8 +242,8 @@
 		 "label": "sad"},
 	 	{"id": 89,
 		 "type": "standard",
-		 "icon-name": "face-sick",
-		 "label": "sick"}
+		 "icon-name": "blank-icon",
+		 "label": "blank"}
 	 ]
 	},
 	{"id": 9, "type": "standard",

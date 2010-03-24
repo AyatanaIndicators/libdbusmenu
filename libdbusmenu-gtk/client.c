@@ -411,7 +411,6 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	gpointer data = g_object_get_data(G_OBJECT(item), data_menuitem);
 	if (data == NULL) {
-		g_warning("GTK not updated");
 		return NULL;
 	}
 
@@ -513,7 +512,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 	if (!g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_DATA)) {
 		/* If we have an image already built from a name that is
 		   way better than a pixbuf.  Keep it. */
-		if (gtkimage != NULL && gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_ICON_NAME) {
+		if (gtkimage != NULL && (gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_ICON_NAME || gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_EMPTY)) {
 			return;
 		}
 	}
@@ -525,6 +524,12 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 			/* If there is no name, by golly we want no
 			   icon either. */
 			gtkimage = NULL;
+		} else if (g_strcmp0(iconname, DBUSMENU_MENUITEM_ICON_NAME_BLANK) == 0) {
+			if (gtkimage != NULL) {
+				g_object_unref(gtkimage);
+			}
+
+			gtkimage = gtk_image_new();
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
 			   'rtl' depending on what we're doing. */
@@ -582,6 +587,14 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 			}
 		}
 
+	}
+
+	if (gtkimage != NULL) {
+		gint width, height;
+		gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
+
+		gtk_widget_set_size_request(GTK_WIDGET(gtkimage), width, height);
+		gtk_misc_set_alignment(GTK_MISC(gtkimage), 0.0, 0.5);
 	}
 
 	genericmenuitem_set_image(GENERICMENUITEM(gimi), gtkimage);
