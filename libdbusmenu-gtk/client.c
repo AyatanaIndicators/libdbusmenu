@@ -525,10 +525,6 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 			   icon either. */
 			gtkimage = NULL;
 		} else if (g_strcmp0(iconname, DBUSMENU_MENUITEM_ICON_NAME_BLANK) == 0) {
-			if (gtkimage != NULL) {
-				g_object_unref(gtkimage);
-			}
-
 			gtkimage = gtk_image_new();
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
