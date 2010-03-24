@@ -1,4 +1,4 @@
-libdbusmenu (0.2.7-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.2.7-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.7
     * Adding in building of the GObject Introspection details
