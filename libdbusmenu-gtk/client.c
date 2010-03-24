@@ -411,7 +411,6 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	gpointer data = g_object_get_data(G_OBJECT(item), data_menuitem);
 	if (data == NULL) {
-		g_warning("GTK not updated");
 		return NULL;
 	}
 
