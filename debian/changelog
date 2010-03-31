@@ -1,4 +1,4 @@
-libdbusmenu (0.2.8-0ubuntu1~ppa2~crash1ubuntu1) lucid; urgency=low
+libdbusmenu (0.2.8-0ubuntu1~ppa2~crash2) lucid; urgency=low
 
   * Upstream merge
     * Making an unref more accessible
