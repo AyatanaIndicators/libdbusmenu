@@ -337,7 +337,12 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 	g_return_if_fail(priv->root != NULL);
 
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
-	g_return_if_fail(menuitem != NULL);
+	if (menuitem == NULL) {
+		#ifdef MASSIVEDEBUGGING
+		g_debug("Property update '%s' on id %d which couldn't be found", property, id);
+		#endif
+		return;
+	}
 
 	dbusmenu_menuitem_property_set_value(menuitem, property, value);
 
@@ -443,6 +448,9 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	if ((gpointer)priv->menuproxy == (gpointer)gobj_proxy) {
 		priv->layoutcall = NULL;
 	}
+
+	priv->current_revision = 0;
+	priv->my_revision = 0;
 
 	build_dbus_proxy(DBUSMENU_CLIENT(userdata));
 	return;
