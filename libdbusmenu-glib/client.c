@@ -444,6 +444,9 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 		priv->layoutcall = NULL;
 	}
 
+	priv->current_revision = 0;
+	priv->my_revision = 0;
+
 	build_dbus_proxy(DBUSMENU_CLIENT(userdata));
 	return;
 }
