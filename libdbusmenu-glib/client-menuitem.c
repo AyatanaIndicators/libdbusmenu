@@ -46,6 +46,7 @@ static void dbusmenu_client_menuitem_init       (DbusmenuClientMenuitem *self);
 static void dbusmenu_client_menuitem_dispose    (GObject *object);
 static void dbusmenu_client_menuitem_finalize   (GObject *object);
 static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+static void send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
 G_DEFINE_TYPE (DbusmenuClientMenuitem, dbusmenu_client_menuitem, DBUSMENU_TYPE_MENUITEM);
 
@@ -61,6 +62,7 @@ dbusmenu_client_menuitem_class_init (DbusmenuClientMenuitemClass *klass)
 
 	DbusmenuMenuitemClass * mclass = DBUSMENU_MENUITEM_CLASS(klass);
 	mclass->handle_event = handle_event;
+	mclass->send_about_to_show = send_about_to_show;
 
 	return;
 }
@@ -88,6 +90,7 @@ dbusmenu_client_menuitem_finalize (GObject *object)
 	return;
 }
 
+/* Creates the item and associates the client */
 DbusmenuClientMenuitem *
 dbusmenu_client_menuitem_new (gint id, DbusmenuClient * client)
 {
@@ -97,10 +100,52 @@ dbusmenu_client_menuitem_new (gint id, DbusmenuClient * client)
 	return mi;
 }
 
+/* Passes the event signal on through the client. */
 static void
 handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
 {
 	DbusmenuClientMenuitemPrivate * priv = DBUSMENU_CLIENT_MENUITEM_GET_PRIVATE(mi);
 	dbusmenu_client_send_event(priv->client, dbusmenu_menuitem_get_id(mi), name, value, timestamp);
+	return;
+}
+
+typedef struct _about_to_show_t about_to_show_t;
+struct _about_to_show_t {
+	DbusmenuMenuitem * mi;
+	dbusmenu_menuitem_about_to_show_cb cb;
+	gpointer cb_data;
+};
+
+/* Handles calling the callback that we were called with */
+static void
+about_to_show_cb (gpointer user_data)
+{
+	about_to_show_t * data = (about_to_show_t *)user_data;
+
+	data->cb(data->mi, data->cb_data);
+
+	g_object_unref(data->mi);
+	g_free(user_data);
+	return;
+}
+
+/* Passes the about to show signal on through the client. */
+static void
+send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data)
+{
+	DbusmenuClientMenuitemPrivate * priv = DBUSMENU_CLIENT_MENUITEM_GET_PRIVATE(mi);
+	if (cb == NULL) {
+		/* Common enough that we don't want to bother
+		   with the allocation */
+		dbusmenu_client_send_about_to_show(priv->client, dbusmenu_menuitem_get_id(mi), NULL, NULL);
+	} else {
+		about_to_show_t * data = g_new0(about_to_show_t, 1);
+		data->mi = mi;
+		data->cb = cb;
+		data->cb_data = cb_data;
+		g_object_ref(mi);
+
+		dbusmenu_client_send_about_to_show(priv->client, dbusmenu_menuitem_get_id(mi), about_to_show_cb, data);
+	}
 	return;
 }
