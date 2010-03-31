@@ -1207,6 +1207,8 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const
 /**
 	dbusmenu_menuitem_send_about_to_show:
 	@mi: The #DbusmenuMenuitem to send the signal on.
+	@cb: Callback to call when the call has returned.
+	@cb_data: Data to pass to the callback.
 
 	This function is used to send the even that the submenu
 	of this item is about to be shown.  Callers to this event
@@ -1214,7 +1216,7 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const
 	called if possible.
 */
 void
-dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi)
+dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	#ifdef MASSIVEDEBUGGING
@@ -1223,7 +1225,10 @@ dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi)
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
 	if (class->send_about_to_show != NULL) {
-		return class->send_about_to_show(mi);
+		return class->send_about_to_show(mi, cb, cb_data);
+	} else if (cb != NULL) {
+		cb(mi, cb_data);
 	}
+
 	return;
 }

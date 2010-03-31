@@ -110,7 +110,9 @@ void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         const GValue * value,
                                                         guint timestamp);
 void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
-                                                        gint id);
+                                                        gint id,
+                                                        void (*cb) (gpointer user_data),
+                                                        gpointer cb_data);
 
 /**
 	SECTION:client

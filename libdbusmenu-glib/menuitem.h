@@ -83,6 +83,17 @@ struct _DbusmenuMenuitem
 };
 
 /**
+	dbusmenu_menuitem_about_to_show_cb:
+	@mi Menu item that should be shown
+	@user_data Extra user data sent with the function
+
+	Callback prototype for a callback that is called when the
+	menu should be shown.
+*/
+typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpointer user_data);
+
+
+/**
 	DbusmenuMenuitemClass:
 	@property_changed: Slot for #DbusmenuMenuitem::property-changed.
 	@item_activated: Slot for #DbusmenuMenuitem::item-activated.
@@ -118,7 +129,7 @@ struct _DbusmenuMenuitemClass
 	/* Virtual functions */
 	void (*buildxml) (GPtrArray * stringarray);
 	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
-	void (*send_about_to_show) (DbusmenuMenuitem * mi);
+	void (*send_about_to_show) (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
 	void (*reserved1) (void);
 	/* void (*reserved2) (void); */
@@ -162,7 +173,7 @@ gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
 void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
-void dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi);
+void dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
 /**
 	SECTION:menuitem

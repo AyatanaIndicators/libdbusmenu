@@ -670,40 +670,55 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	return;
 }
 
+typedef struct _about_to_show_t about_to_show_t;
+struct _about_to_show_t {
+	DbusmenuClient * client;
+	void (*cb) (gpointer data);
+	gpointer cb_data;
+};
+
 /* Reports errors and responds to update request that were a result
    of sending the about to show signal. */
 static void
 about_to_show_cb (DBusGProxy * proxy, gboolean need_update, GError * error, gpointer userdata)
 {
-	DbusmenuClient * client = DBUSMENU_CLIENT(userdata);
+	about_to_show_t * data = (about_to_show_t *)userdata;
+
 	if (error != NULL) {
 		g_warning("Unable to send about_to_show: %s", error->message);
-		return;
+		/* Note: we're just ensuring only the callback gets called */
+		need_update = FALSE;
 	}
 
+	/* If we need to update, do that first. */
 	if (need_update) {
-		update_layout(client);
+		update_layout(data->client);
 	}
+
+	if (data->cb != NULL) {
+		data->cb(data->cb_data);
+	}
+
+	g_object_unref(data->client);
+	g_free(data);
+
 	return;
 }
 
 /* Sends the about to show signal for a given id to the
    server on the other side of DBus */
 void
-dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id)
+dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(gpointer data), gpointer cb_data)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	org_ayatana_dbusmenu_about_to_show_async (priv->menuproxy, id, about_to_show_cb, client);
-	/*
-	TODO: We should ideally restrict the displaying of the menu until:
 
-	 - about_to_show_cb has been called and need_update was false
-	 - about_to_show_cb has been called, need_update was true and menu has been
-	   updated
-	 - about_to_show_cb has not been called and we already waited for 10msecs
+	about_to_show_t * data = g_new0(about_to_show_t, 1);
+	data->client = client;
+	data->cb = cb;
+	data->cb_data = cb_data;
+	g_object_ref(client);
 
-	There's not really support in GTK for doing this easily.
-	*/
+	org_ayatana_dbusmenu_about_to_show_async (priv->menuproxy, id, about_to_show_cb, data);
 	return;
 }
 
