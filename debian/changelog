@@ -1,3 +1,12 @@
+libdbusmenu (0.2.8-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * Upstream merge
+    * Unrefing on layout updates (LP: #545026)
+    * Resetting sync versions on disconnection
+    * Removing useless warning
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 31 Mar 2010 11:07:55 -0500
+
 libdbusmenu (0.2.8-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.2.8
