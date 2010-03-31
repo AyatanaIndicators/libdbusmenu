@@ -96,6 +96,18 @@ dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass)
 }
 
 static void
+menu_focus_cb(DbusmenuGtkMenu * menu, gpointer userdata)
+{
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+	if (priv->client != NULL) {
+		/* TODO: We should stop the display of the menu
+		         until the about to show call returns. */
+		dbusmenu_client_send_about_to_show(DBUSMENU_CLIENT(priv->client), 0, NULL, NULL);
+	}
+	return;
+}
+
+static void
 dbusmenu_gtkmenu_init (DbusmenuGtkMenu *self)
 {
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(self);
@@ -104,6 +116,8 @@ dbusmenu_gtkmenu_init (DbusmenuGtkMenu *self)
 
 	priv->dbus_object = NULL;
 	priv->dbus_name = NULL;
+
+	g_signal_connect(G_OBJECT(self), "focus", G_CALLBACK(menu_focus_cb), self);
 
 	return;
 }
