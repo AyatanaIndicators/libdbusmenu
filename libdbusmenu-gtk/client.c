@@ -115,7 +115,9 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 		g_value_set_int(&value, 0);
 		dbusmenu_menuitem_handle_event(mi, "clicked", &value, gtk_get_current_event_time());
 	} else {
-		dbusmenu_menuitem_send_about_to_show(mi);
+		/* TODO: We need to stop the display of the submenu
+		         until this callback returns. */
+		dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
 	}
 	return TRUE;
 }
