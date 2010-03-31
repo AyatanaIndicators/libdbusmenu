@@ -779,7 +779,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 	xmlNodePtr children;
 	guint position;
-	GList * oldchildren = dbusmenu_menuitem_take_children(item);
+	GList * oldchildren = g_list_copy(dbusmenu_menuitem_get_children(item));
 	/* g_debug("Starting old children: %d", g_list_length(oldchildren)); */
 
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
@@ -800,8 +800,16 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			}
 		}
 
-		childmi = parse_layout_xml(client, children, childmi, item, proxy);
-		dbusmenu_menuitem_child_add_position(item, childmi, position);
+		DbusmenuMenuitem * newchildmi = parse_layout_xml(client, children, childmi, item, proxy);
+
+		if (newchildmi != childmi) {
+			if (childmi != NULL) {
+				dbusmenu_menuitem_child_delete(item, childmi);
+			}
+			dbusmenu_menuitem_child_add_position(item, newchildmi, position);
+		} else {
+			dbusmenu_menuitem_child_reorder(item, childmi, position);
+		}
 	}
 
 	/* g_debug("Stopping old children: %d", g_list_length(oldchildren)); */
@@ -811,7 +819,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		#ifdef MASSIVEDEBUGGING
 		g_debug("Unref'ing menu item with layout update. ID: %d", dbusmenu_menuitem_get_id(oldmi));
 		#endif
-		g_object_unref(G_OBJECT(oldmi));
+		dbusmenu_menuitem_child_delete(item, oldmi);
 	}
 	g_list_free(oldchildren);
 
