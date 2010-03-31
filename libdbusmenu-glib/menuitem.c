@@ -459,7 +459,7 @@ take_children_signal (gpointer data, gpointer user_data)
 
 	While the name sounds devious that's exactly what this function
 	does.  It takes the list of children from the @mi and clears the
-	internal list.  The calling function is no in charge of the ref's
+	internal list.  The calling function is now in charge of the ref's
 	on the children it has taken.  A lot of responsibility involved
 	in taking children.
 
