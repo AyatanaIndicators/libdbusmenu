@@ -1203,6 +1203,16 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const
 	}
 	return;
 }
+
+/**
+	dbusmenu_menuitem_send_about_to_show:
+	@mi: The #DbusmenuMenuitem to send the signal on.
+
+	This function is used to send the even that the submenu
+	of this item is about to be shown.  Callers to this event
+	should delay showing the menu until their callback is
+	called if possible.
+*/
 void
 dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi)
 {

@@ -579,6 +579,7 @@ _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValu
 	return TRUE;
 }
 
+/* Recieve the About To Show function.  Pass it to our menu item. */
 static gboolean
 _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error)
 {

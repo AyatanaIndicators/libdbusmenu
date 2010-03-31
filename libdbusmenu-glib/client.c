@@ -660,6 +660,8 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 	return;
 }
 
+/* Sends the event over DBus to the server on the other side
+   of the bus. */
 void
 dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, const GValue * value, guint timestamp)
 {
@@ -668,6 +670,8 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	return;
 }
 
+/* Reports errors and responds to update request that were a result
+   of sending the about to show signal. */
 static void
 about_to_show_cb (DBusGProxy * proxy, gboolean need_update, GError * error, gpointer userdata)
 {
@@ -683,17 +687,22 @@ about_to_show_cb (DBusGProxy * proxy, gboolean need_update, GError * error, gpoi
 	return;
 }
 
+/* Sends the about to show signal for a given id to the
+   server on the other side of DBus */
 void
 dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	org_ayatana_dbusmenu_about_to_show_async (priv->menuproxy, id, about_to_show_cb, client);
 	/*
-	FIXME: We should wait until either
+	TODO: We should ideally restrict the displaying of the menu until:
+
 	 - about_to_show_cb has been called and need_update was false
 	 - about_to_show_cb has been called, need_update was true and menu has been
 	   updated
 	 - about_to_show_cb has not been called and we already waited for 10msecs
+
+	There's not really support in GTK for doing this easily.
 	*/
 	return;
 }

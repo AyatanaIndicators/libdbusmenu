@@ -90,6 +90,7 @@ dbusmenu_client_menuitem_finalize (GObject *object)
 	return;
 }
 
+/* Creates the item and associates the client */
 DbusmenuClientMenuitem *
 dbusmenu_client_menuitem_new (gint id, DbusmenuClient * client)
 {
@@ -99,6 +100,7 @@ dbusmenu_client_menuitem_new (gint id, DbusmenuClient * client)
 	return mi;
 }
 
+/* Passes the event signal on through the client. */
 static void
 handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
 {
@@ -107,6 +109,7 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 	return;
 }
 
+/* Passes the about to show signal on through the client. */
 static void
 send_about_to_show (DbusmenuMenuitem * mi)
 {
