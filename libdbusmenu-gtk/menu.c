@@ -98,7 +98,6 @@ dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass)
 static void
 menu_focus_cb(DbusmenuGtkMenu * menu, gpointer userdata)
 {
-	g_debug(__FUNCTION__);
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 	if (priv->client != NULL) {
 		dbusmenu_client_send_about_to_show(DBUSMENU_CLIENT(priv->client), 0);
