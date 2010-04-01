@@ -1,3 +1,21 @@
+libdbusmenu (0.2.8-0ubuntu1) lucid; urgency=low
+
+  * debian/control
+    - Dropped Vcs-Bzr and Vcs-Browser
+    - Added extended descriptio for gir1.0-dbusmenu-gtk-0.2 and
+      gir1.0-dbusmenu-glib-0.2
+
+  * debian/rules
+    - bumped shlibs version to 0.2.8 for libdbusmenu-glib1
+
+  [Ted Gould]
+  * Upstream release 0.2.8
+    * Adding support for blank icons (LP: #534854)
+    * Remove unneeded warning (LP: #537312)
+    * Fix typo in documentation
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Mar 2010 11:35:46 -0400
+
 libdbusmenu (0.2.7-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.7

@@ -19,8 +19,6 @@ Build-Depends: debhelper (>= 5.0),
                valac
 Standards-Version: 3.8.0
 Homepage: https://launchpad.net/libdbusmenu
-Vcs-Bzr: https://code.launchpad.net/~ubuntu-desktop/dbusmenu/ubuntu
-Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/dbusmenu/ubuntu
 
 Package: libdbusmenu-glib1
 Section: libs
@@ -73,6 +71,7 @@ Section: devel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         python,
          libdbusmenu-glib1 (= ${binary:Version})
 Description: Tools useful during development with libdbusmenu
  .
@@ -85,6 +84,9 @@ Depends: ${misc:Depends},
          libdbusmenu-glib1 (= ${binary:Version}),
          gir1.0-glib-2.0
 Description: Typelib file for libdbusmenu-glib1
+ .
+ This package can be used by other packages using the GIRepository format to
+ generate dynamic bindings
 
 Package: gir1.0-dbusmenu-gtk-0.2
 Section: libs
@@ -94,4 +96,6 @@ Depends: ${misc:Depends},
          gir1.0-dbusmenu-glib-0.2 (= ${binary:Version}),
          gir1.0-gtk-2.0
 Description: Typelib file for libdbusmenu-gtk1
-
+ .
+ This package can be used by other packages using the GIRepository format to
+ generate dynamic bindings

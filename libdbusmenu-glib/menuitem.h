@@ -66,6 +66,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED       1
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       -1
 
+#define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
+
 /**
 	DbusmenuMenuitem:
 
