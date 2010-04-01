@@ -1,9 +1,16 @@
-libdbusmenu (0.2.8-0ubuntu3~ppa1) lucid; urgency=low
+libdbusmenu (0.2.9-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
     * Documentation fix
+    * Changing the parse function to get_children instead of
+      taking them. (LP: #471044)
+    * Supporting AboutToShow in event callbacks to catch up
+      with QT implementation.
+    * Unrefing on layout updates (LP: #545026)
+    * Resetting sync versions on disconnection
+    * Removing useless warning
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 01 Apr 2010 09:09:21 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Apr 2010 09:09:51 -0500
 
 libdbusmenu (0.2.8-0ubuntu2) lucid; urgency=low
 
@@ -27,7 +34,7 @@ libdbusmenu (0.2.8-0ubuntu1) lucid; urgency=low
 
   * debian/control
     - Dropped Vcs-Bzr and Vcs-Browser
-    - Added extended descriptio for gir1.0-dbusmenu-gtk-0.2 and
+    - Added extended description for gir1.0-dbusmenu-gtk-0.2 and
       gir1.0-dbusmenu-glib-0.2
 
   * debian/rules
