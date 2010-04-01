@@ -120,7 +120,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			"on" and "indeterminate" items simultaneously; maintaining this
 			policy is up to the toolkit wrappers.
 			</td>
-			<td>0</td>
+			<td>-1</td>
 		</tr>
 		<tr>
 			<td>children-display</td>
