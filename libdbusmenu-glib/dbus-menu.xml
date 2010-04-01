@@ -265,6 +265,23 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 		</method>
 
+		<method name="AboutToShow">
+			<dox:d>
+			This is called by the applet to notify the application that it is about
+			to show the menu under the specified item.
+			</dox:d>
+			<arg type="i" name="id" direction="in">
+				<dox:d>
+				Which menu item represents the parent of the item about to be shown.
+				</dox:d>
+			</arg>
+			<arg type="b" name="needUpdate" direction="out">
+				<dox:d>
+				Whether this AboutToShow event should result in the menu being updated.
+				</dox:d>
+			</arg>
+		</method>
+
 <!-- Signals -->
 		<signal name="ItemPropertyUpdated">
 			<dox:d>

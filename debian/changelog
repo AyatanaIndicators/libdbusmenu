@@ -1,3 +1,21 @@
+libdbusmenu (0.2.8-0ubuntu2) lucid; urgency=low
+
+  * debian/control:
+    - restore vcs location, we move back to the non import version, the other
+      one don't allow merging trunk changes 
+
+  [ Ted Gould ]
+  * Upstream Merge
+    * Changing the parse function to get_children instead of
+      taking them. (LP: #471044)
+    * Supporting AboutToShow in event callbacks to catch up
+      with QT implementation.
+    * Unrefing on layout updates (LP: #545026)
+    * Resetting sync versions on disconnection
+    * Removing useless warning
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 01 Apr 2010 12:36:06 +0200
+
 libdbusmenu (0.2.8-0ubuntu1) lucid; urgency=low
 
   * debian/control

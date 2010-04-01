@@ -41,6 +41,7 @@ static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint i
 static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
+static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
 
 #include "dbusmenu-server.h"
 
@@ -575,6 +576,29 @@ _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValu
 	}
 
 	dbusmenu_menuitem_handle_event(mi, eventid, data, timestamp);
+	return TRUE;
+}
+
+/* Recieve the About To Show function.  Pass it to our menu item. */
+static gboolean
+_dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+
+	if (mi == NULL) {
+		if (error != NULL) {
+			g_set_error(error,
+			            error_quark(),
+			            INVALID_MENUITEM_ID,
+			            "The ID supplied %d does not refer to a menu item we have",
+			            id);
+		}
+		return FALSE;
+	}
+
+	/* GTK+ does not support about-to-show concept for now */
+	*need_update = FALSE;
 	return TRUE;
 }
 

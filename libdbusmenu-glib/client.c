@@ -337,7 +337,12 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 	g_return_if_fail(priv->root != NULL);
 
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
-	g_return_if_fail(menuitem != NULL);
+	if (menuitem == NULL) {
+		#ifdef MASSIVEDEBUGGING
+		g_debug("Property update '%s' on id %d which couldn't be found", property, id);
+		#endif
+		return;
+	}
 
 	dbusmenu_menuitem_property_set_value(menuitem, property, value);
 
@@ -443,6 +448,9 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	if ((gpointer)priv->menuproxy == (gpointer)gobj_proxy) {
 		priv->layoutcall = NULL;
 	}
+
+	priv->current_revision = 0;
+	priv->my_revision = 0;
 
 	build_dbus_proxy(DBUSMENU_CLIENT(userdata));
 	return;
@@ -660,11 +668,65 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 	return;
 }
 
+/* Sends the event over DBus to the server on the other side
+   of the bus. */
 void
 dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, const GValue * value, guint timestamp)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, GINT_TO_POINTER(id));
+	return;
+}
+
+typedef struct _about_to_show_t about_to_show_t;
+struct _about_to_show_t {
+	DbusmenuClient * client;
+	void (*cb) (gpointer data);
+	gpointer cb_data;
+};
+
+/* Reports errors and responds to update request that were a result
+   of sending the about to show signal. */
+static void
+about_to_show_cb (DBusGProxy * proxy, gboolean need_update, GError * error, gpointer userdata)
+{
+	about_to_show_t * data = (about_to_show_t *)userdata;
+
+	if (error != NULL) {
+		g_warning("Unable to send about_to_show: %s", error->message);
+		/* Note: we're just ensuring only the callback gets called */
+		need_update = FALSE;
+	}
+
+	/* If we need to update, do that first. */
+	if (need_update) {
+		update_layout(data->client);
+	}
+
+	if (data->cb != NULL) {
+		data->cb(data->cb_data);
+	}
+
+	g_object_unref(data->client);
+	g_free(data);
+
+	return;
+}
+
+/* Sends the about to show signal for a given id to the
+   server on the other side of DBus */
+void
+dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(gpointer data), gpointer cb_data)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	about_to_show_t * data = g_new0(about_to_show_t, 1);
+	data->client = client;
+	data->cb = cb;
+	data->cb_data = cb_data;
+	g_object_ref(client);
+
+	org_ayatana_dbusmenu_about_to_show_async (priv->menuproxy, id, about_to_show_cb, data);
 	return;
 }
 
@@ -717,7 +779,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 	xmlNodePtr children;
 	guint position;
-	GList * oldchildren = dbusmenu_menuitem_take_children(item);
+	GList * oldchildren = g_list_copy(dbusmenu_menuitem_get_children(item));
 	/* g_debug("Starting old children: %d", g_list_length(oldchildren)); */
 
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
@@ -738,8 +800,16 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			}
 		}
 
-		childmi = parse_layout_xml(client, children, childmi, item, proxy);
-		dbusmenu_menuitem_child_add_position(item, childmi, position);
+		DbusmenuMenuitem * newchildmi = parse_layout_xml(client, children, childmi, item, proxy);
+
+		if (newchildmi != childmi) {
+			if (childmi != NULL) {
+				dbusmenu_menuitem_child_delete(item, childmi);
+			}
+			dbusmenu_menuitem_child_add_position(item, newchildmi, position);
+		} else {
+			dbusmenu_menuitem_child_reorder(item, childmi, position);
+		}
 	}
 
 	/* g_debug("Stopping old children: %d", g_list_length(oldchildren)); */
@@ -749,7 +819,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		#ifdef MASSIVEDEBUGGING
 		g_debug("Unref'ing menu item with layout update. ID: %d", dbusmenu_menuitem_get_id(oldmi));
 		#endif
-		g_object_unref(G_OBJECT(oldmi));
+		dbusmenu_menuitem_child_delete(item, oldmi);
 	}
 	g_list_free(oldchildren);
 
@@ -794,11 +864,15 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		   clean up that old root */
 		if (oldroot != NULL) {
 			dbusmenu_menuitem_set_root(oldroot, FALSE);
-			g_object_unref(oldroot);
 		}
 
 		/* If the root changed we can signal that */
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
+	}
+
+	/* We need to unref it in this function no matter */
+	if (oldroot != NULL) {
+		g_object_unref(oldroot);
 	}
 
 	return 1;
