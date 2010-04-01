@@ -7,5 +7,5 @@ DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
 DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk1 += -V 'libdbusmenu-gtk1 (>= 0.2.5)'
-DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-glib1 += -V 'libdbusmenu-glib1 (>= 0.2.2)'
+DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-glib1 += -V 'libdbusmenu-glib1 (>= 0.2.8)'
 

@@ -1,36 +1,38 @@
-libdbusmenu (0.2.8-0ubuntu2~ppa3) lucid; urgency=low
+libdbusmenu (0.2.8-0ubuntu2) lucid; urgency=low
 
+  * debian/control:
+    - restore vcs location, we move back to the non import version, the other
+      one don't allow merging trunk changes 
+
+  [ Ted Gould ]
   * Upstream Merge
     * Changing the parse function to get_children instead of
       taking them. (LP: #471044)
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 31 Mar 2010 17:39:46 -0500
-
-libdbusmenu (0.2.8-0ubuntu2~ppa2) lucid; urgency=low
-
-  * Upstream merge
     * Supporting AboutToShow in event callbacks to catch up
       with QT implementation.
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 31 Mar 2010 14:17:14 -0500
-
-libdbusmenu (0.2.8-0ubuntu2~ppa1) lucid; urgency=low
-
-  * Upstream merge
     * Unrefing on layout updates (LP: #545026)
     * Resetting sync versions on disconnection
     * Removing useless warning
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 31 Mar 2010 11:12:42 -0500
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 01 Apr 2010 12:36:06 +0200
 
-libdbusmenu (0.2.8-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.2.8-0ubuntu1) lucid; urgency=low
 
+  * debian/control
+    - Dropped Vcs-Bzr and Vcs-Browser
+    - Added extended descriptio for gir1.0-dbusmenu-gtk-0.2 and
+      gir1.0-dbusmenu-glib-0.2
+
+  * debian/rules
+    - bumped shlibs version to 0.2.8 for libdbusmenu-glib1
+
+  [Ted Gould]
   * Upstream release 0.2.8
     * Adding support for blank icons (LP: #534854)
     * Remove unneeded warning (LP: #537312)
     * Fix typo in documentation
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 25 Mar 2010 10:12:27 -0500
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Mar 2010 11:35:46 -0400
 
 libdbusmenu (0.2.7-0ubuntu1) lucid; urgency=low
 
