@@ -1,3 +1,11 @@
+libdbusmenu (0.2.9-0ubuntu1~ppa2~ordering1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Adding in visible property to docs
+    * Helpful comments in the code
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 14 Apr 2010 14:40:26 -0500
+
 libdbusmenu (0.2.9-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
