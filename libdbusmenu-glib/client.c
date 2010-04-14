@@ -748,6 +748,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			if (parent != NULL) {
 				dbusmenu_menuitem_child_delete(parent, item);
 			}
+			/* XXX: Should this be an unref?  Who's reffing this that it exists without a parent? */
 			g_object_unref(G_OBJECT(item));
 			item = NULL;
 		}
@@ -773,6 +774,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 	} else {
 		/* Refresh the properties */
+		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
 		gchar * properties[1] = {NULL}; /* This gets them all */
 		org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
 	}
