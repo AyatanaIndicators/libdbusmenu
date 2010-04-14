@@ -1,4 +1,4 @@
-libdbusmenu (0.2.9-0ubuntu1~ppa2~ordering1ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.2.9-0ubuntu1~ppa2~ordering2) UNRELEASED; urgency=low
 
   * Upstream Merge
     * Don't allow setting children twice
