@@ -533,6 +533,8 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	g_return_val_if_fail(g_list_find(priv->children, child), FALSE);
+
 	priv->children = g_list_append(priv->children, child);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), g_list_length(priv->children) - 1);
@@ -558,6 +560,8 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	g_return_val_if_fail(g_list_find(priv->children, child), FALSE);
+
 	priv->children = g_list_prepend(priv->children, child);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), 0);
@@ -611,6 +615,8 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	g_return_val_if_fail(g_list_find(priv->children, child), FALSE);
+
 	priv->children = g_list_insert(priv->children, child, position);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), position);
