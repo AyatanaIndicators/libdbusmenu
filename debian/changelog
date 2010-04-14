@@ -1,3 +1,12 @@
+libdbusmenu (0.2.9-0ubuntu1~ppa2~ordering1ubuntu1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Don't allow setting children twice
+    * Ref children of a menuitem
+    * Return error when parent ID of getlayout can't be found
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 14 Apr 2010 17:06:34 -0500
+
 libdbusmenu (0.2.9-0ubuntu1~ppa2~ordering1) lucid; urgency=low
 
   * Upstream Merge

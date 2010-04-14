@@ -404,6 +404,16 @@ _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revis
 		}
 	} else {
 		DbusmenuMenuitem * item = dbusmenu_menuitem_find_id(priv->root, parent);
+		if (item == NULL) {
+			if (error != NULL) {
+				g_set_error(error,
+				            error_quark(),
+				            INVALID_MENUITEM_ID,
+				            "The ID supplied %d does not refer to a menu item we have",
+				            parent);
+			}
+			return FALSE;
+		}
 		dbusmenu_menuitem_buildxml(item, xmlarray);
 	}
 	g_ptr_array_add(xmlarray, NULL);
