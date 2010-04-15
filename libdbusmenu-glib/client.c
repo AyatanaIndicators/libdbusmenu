@@ -35,6 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "client.h"
 #include "menuitem.h"
+#include "menuitem-private.h"
 #include "client-menuitem.h"
 #include "dbusmenu-client.h"
 #include "server-marshal.h"
@@ -645,7 +646,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client has realized a menuitem: %d", dbusmenu_menuitem_get_id(propdata->item));
 	#endif
-	g_signal_emit(G_OBJECT(propdata->item), DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID, 0, TRUE);
+	dbusmenu_menuitem_set_realized(propdata->item);
 
 	if (!handled) {
 		g_signal_emit(G_OBJECT(propdata->client), signals[NEW_MENUITEM], 0, propdata->item, TRUE);
@@ -748,6 +749,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			if (parent != NULL) {
 				dbusmenu_menuitem_child_delete(parent, item);
 			}
+			/* XXX: Should this be an unref?  Who's reffing this that it exists without a parent? */
 			g_object_unref(G_OBJECT(item));
 			item = NULL;
 		}
@@ -773,6 +775,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 	} else {
 		/* Refresh the properties */
+		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
 		gchar * properties[1] = {NULL}; /* This gets them all */
 		org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
 	}
