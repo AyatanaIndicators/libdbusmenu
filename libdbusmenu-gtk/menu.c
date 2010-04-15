@@ -237,7 +237,7 @@ root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint posit
 	GtkMenuItem * mi = dbusmenu_gtkclient_menuitem_get(priv->client, child);
 	if (mi != NULL) {
 		GtkWidget * item = GTK_WIDGET(mi);
-		gtk_menu_insert(GTK_MENU(menu), item, position);
+		gtk_menu_insert(GTK_MENU(menu), item, dbusmenu_menuitem_get_position_realized(child, root));
 		#ifdef MASSIVEDEBUGGING
 		menu_pos_t menu_pos;
 		menu_pos.mi = mi;
@@ -260,7 +260,7 @@ root_child_moved (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint newpo
 	g_debug("Root child moved");
 	#endif
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
-	gtk_menu_reorder_child(GTK_MENU(menu), GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)), newposition);
+	gtk_menu_reorder_child(GTK_MENU(menu), GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child)), dbusmenu_menuitem_get_position_realized(child, root));
 	return;
 }
 
