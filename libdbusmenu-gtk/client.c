@@ -308,7 +308,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
-		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
+		new_child(parent, item, dbusmenu_menuitem_get_position_realized(item, parent), DBUSMENU_GTKCLIENT(client));
 	}
 
 	return;

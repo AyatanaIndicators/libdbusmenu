@@ -300,7 +300,7 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 
 	if (child_widget != NULL) {
 		gtk_menu_append(menu, child_widget);
-		gtk_menu_reorder_child(GTK_MENU(menu), child_widget, dbusmenu_menuitem_get_position(child, dbusmenu_client_get_root(DBUSMENU_CLIENT(priv->client))));
+		gtk_menu_reorder_child(GTK_MENU(menu), child_widget, dbusmenu_menuitem_get_position_realized(child, dbusmenu_client_get_root(DBUSMENU_CLIENT(priv->client))));
 	} else {
 		g_warning("Child is realized, but doesn't have a GTK Widget!");
 	}
