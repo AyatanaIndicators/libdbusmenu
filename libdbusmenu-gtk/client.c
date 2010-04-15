@@ -308,7 +308,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
-		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
+		new_child(parent, item, dbusmenu_menuitem_get_position_realized(item, parent), DBUSMENU_GTKCLIENT(client));
 	}
 
 	return;
@@ -335,7 +335,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 	} 
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
-	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
+	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), dbusmenu_menuitem_get_position_realized(child, mi));
 	gtk_widget_show(GTK_WIDGET(menu));
 	
 	return;
@@ -373,7 +373,7 @@ move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint ol
 	}
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
-	gtk_menu_reorder_child(GTK_MENU(ann_menu), GTK_WIDGET(childmi), new);
+	gtk_menu_reorder_child(GTK_MENU(ann_menu), GTK_WIDGET(childmi), dbusmenu_menuitem_get_position_realized(child, mi));
 
 	return;
 }

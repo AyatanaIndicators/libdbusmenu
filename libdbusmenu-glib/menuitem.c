@@ -59,6 +59,7 @@ struct _DbusmenuMenuitemPrivate
 	GList * children;
 	GHashTable * properties;
 	gboolean root;
+	gboolean realized;
 };
 
 /* Signals */
@@ -278,6 +279,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, _g_value_free);
 
 	priv->root = FALSE;
+	priv->realized = FALSE;
 	
 	return;
 }
@@ -423,6 +425,46 @@ dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 }
 
 /**
+	dbusmenu_menuitem_realized:
+	@mi: #DbusmenuMenuitem to check on
+
+	This function returns whether the menuitem has been realized or
+	not.  This is significant mostly in client implementations that
+	can use this additional state to see if the second layers of
+	the implementation have been built yet.
+
+	Return value: Returns whether or not the menu item has been realized
+		yet or not.
+*/
+gboolean
+dbusmenu_menuitem_realized (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return priv->realized;
+}
+
+/**
+	dbusmenu_menuitem_set_realized:
+	@mi: #DbusmenuMenuitem to realize
+
+	Sets the internal variable tracking whether it's been realized and
+	signals the DbusmenuMenuitem::realized event.
+*/
+void
+dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	if (priv->realized) {
+		g_warning("Realized entry realized again?  ID: %d", dbusmenu_menuitem_get_id(mi));
+	}
+	priv->realized = TRUE;
+	g_signal_emit(G_OBJECT(mi), signals[REALIZED], 0, TRUE);
+	return;
+}
+
+/**
 	dbusmenu_menuitem_get_children:
 	@mi: The #DbusmenuMenuitem to query.
 
@@ -449,6 +491,7 @@ take_children_signal (gpointer data, gpointer user_data)
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(user_data), LABEL(user_data), ID(data), LABEL(data));
 	#endif
+	g_object_unref(G_OBJECT(data));
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
 	return;
 }
@@ -517,6 +560,50 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 }
 
 /**
+	dbusmenu_menuitem_get_position_realized:
+	@mi: The #DbusmenuMenuitem to find the position of
+	@parent: The #DbusmenuMenuitem who's children contain @mi
+
+	This function is very similar to #dbusmenu_menuitem_get_position
+	except that it only counts in the children that have been realized.
+
+	Return value: The position of @mi in the realized children of @parent.
+*/
+guint
+dbusmenu_menuitem_get_position_realized (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
+{
+	#ifdef MASSIVEDEBUGGING
+	if (!DBUSMENU_IS_MENUITEM(mi))     g_warning("Getting position of %d (%s), it's at: %d (mi fail)", ID(mi), LABEL(mi), 0);
+	if (!DBUSMENU_IS_MENUITEM(parent)) g_warning("Getting position of %d (%s), it's at: %d (parent fail)", ID(mi), LABEL(mi), 0);
+	#endif
+
+	/* TODO: I'm not too happy returning zeros here.  But that's all I've got */
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), 0);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(parent), 0);
+
+	GList * childs = dbusmenu_menuitem_get_children(parent);
+	if (childs == NULL) return 0;
+	guint count = 0;
+	for ( ; childs != NULL; childs = childs->next, count++) {
+		if (!dbusmenu_menuitem_realized(DBUSMENU_MENUITEM(childs->data))) {
+			count--;
+			continue;
+		}
+		if (childs->data == mi) {
+			break;
+		}
+	}
+
+	if (childs == NULL) return 0;
+
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Getting position of %d (%s), it's at: %d", ID(mi), LABEL(mi), count);
+	#endif
+
+	return count;
+}
+
+/**
 	dbusmenu_menuitem_child_append:
 	@mi: The #DbusmenuMenuitem which will become a new parent
 	@child: The #DbusmenMenuitem that will be a child
@@ -533,10 +620,13 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
 	priv->children = g_list_append(priv->children, child);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), g_list_length(priv->children) - 1);
 	#endif
+	g_object_ref(G_OBJECT(child));
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, g_list_length(priv->children) - 1, TRUE);
 	return TRUE;
 }
@@ -558,10 +648,13 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
 	priv->children = g_list_prepend(priv->children, child);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), 0);
 	#endif
+	g_object_ref(G_OBJECT(child));
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, 0, TRUE);
 	return TRUE;
 }
@@ -588,6 +681,7 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(mi), LABEL(mi), ID(child), LABEL(child));
 	#endif
+	g_object_unref(G_OBJECT(child));
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_REMOVED], 0, child, TRUE);
 	return TRUE;
 }
@@ -611,10 +705,13 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
 	priv->children = g_list_insert(priv->children, child, position);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), position);
 	#endif
+	g_object_ref(G_OBJECT(child));
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_ADDED], 0, child, position, TRUE);
 	return TRUE;
 }

@@ -1,3 +1,16 @@
+libdbusmenu (0.2.9-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Changing GTK layer to look at position in realized
+      children to avoid realization races. (LP: #555816)
+    * Don't allow setting children twice
+    * Ref children of a menuitem
+    * Return error when parent ID of getlayout can't be found
+    * Adding in visible property to docs
+    * Helpful comments in the code
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 15 Apr 2010 01:17:34 -0500
+
 libdbusmenu (0.2.9-0ubuntu1) lucid; urgency=low
 
   * New upstream release.
