@@ -59,6 +59,7 @@ struct _DbusmenuMenuitemPrivate
 	GList * children;
 	GHashTable * properties;
 	gboolean root;
+	gboolean realized;
 };
 
 /* Signals */
@@ -278,6 +279,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, _g_value_free);
 
 	priv->root = FALSE;
+	priv->realized = FALSE;
 	
 	return;
 }
@@ -420,6 +422,46 @@ dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 	g_debug("Getting menuitem ID: %d", ret);
 	#endif
 	return ret;
+}
+
+/**
+	dbusmenu_menuitem_realized:
+	@mi: #DbusmenuMenuitem to check on
+
+	This function returns whether the menuitem has been realized or
+	not.  This is significant mostly in client implementations that
+	can use this additional state to see if the second layers of
+	the implementation have been built yet.
+
+	Return value: Returns whether or not the menu item has been realized
+		yet or not.
+*/
+gboolean
+dbusmenu_menuitem_realized (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return priv->realized;
+}
+
+/**
+	dbusmenu_menuitem_set_realized:
+	@mi: #DbusmenuMenuitem to realize
+
+	Sets the internal variable tracking whether it's been realized and
+	signals the DbusmenuMenuitem::realized event.
+*/
+void
+dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	if (priv->realized) {
+		g_warning("Realized entry realized again?  ID: %d", dbusmenu_menuitem_get_id(mi));
+	}
+	priv->realized = TRUE;
+	g_signal_emit(G_OBJECT(mi), signals[REALIZED], 0, TRUE);
+	return;
 }
 
 /**
