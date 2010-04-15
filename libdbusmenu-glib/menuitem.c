@@ -560,6 +560,50 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 }
 
 /**
+	dbusmenu_menuitem_get_position_realized:
+	@mi: The #DbusmenuMenuitem to find the position of
+	@parent: The #DbusmenuMenuitem who's children contain @mi
+
+	This function is very similar to #dbusmenu_menuitem_get_position
+	except that it only counts in the children that have been realized.
+
+	Return value: The position of @mi in the realized children of @parent.
+*/
+guint
+dbusmenu_menuitem_get_position_realized (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
+{
+	#ifdef MASSIVEDEBUGGING
+	if (!DBUSMENU_IS_MENUITEM(mi))     g_warning("Getting position of %d (%s), it's at: %d (mi fail)", ID(mi), LABEL(mi), 0);
+	if (!DBUSMENU_IS_MENUITEM(parent)) g_warning("Getting position of %d (%s), it's at: %d (parent fail)", ID(mi), LABEL(mi), 0);
+	#endif
+
+	/* TODO: I'm not too happy returning zeros here.  But that's all I've got */
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), 0);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(parent), 0);
+
+	GList * childs = dbusmenu_menuitem_get_children(parent);
+	if (childs == NULL) return 0;
+	guint count = 0;
+	for ( ; childs != NULL; childs = childs->next, count++) {
+		if (!dbusmenu_menuitem_realized(DBUSMENU_MENUITEM(childs->data))) {
+			count--;
+			continue;
+		}
+		if (childs->data == mi) {
+			break;
+		}
+	}
+
+	if (childs == NULL) return 0;
+
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Getting position of %d (%s), it's at: %d", ID(mi), LABEL(mi), count);
+	#endif
+
+	return count;
+}
+
+/**
 	dbusmenu_menuitem_child_append:
 	@mi: The #DbusmenuMenuitem which will become a new parent
 	@child: The #DbusmenMenuitem that will be a child
