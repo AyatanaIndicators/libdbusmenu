@@ -34,6 +34,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 G_BEGIN_DECLS
 
 void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
+gboolean dbusmenu_menuitem_realized (DbusmenuMenuitem * mi);
+void dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi);
 
 G_END_DECLS
 
