@@ -1,3 +1,10 @@
+libdbusmenu (0.2.9-0ubuntu1~ppa2~ordering6) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * A position functions using realized position
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 15 Apr 2010 00:54:56 -0500
+
 libdbusmenu (0.2.9-0ubuntu1~ppa2~ordering5) lucid; urgency=low
 
   * Upstream Merge
