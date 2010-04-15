@@ -1,4 +1,4 @@
-libdbusmenu (0.2.9-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.2.9-0ubuntu1) lucid; urgency=low
 
   * New upstream release.
     * Documentation fix
