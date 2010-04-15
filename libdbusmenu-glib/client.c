@@ -35,6 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "client.h"
 #include "menuitem.h"
+#include "menuitem-private.h"
 #include "client-menuitem.h"
 #include "dbusmenu-client.h"
 #include "server-marshal.h"
@@ -645,7 +646,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client has realized a menuitem: %d", dbusmenu_menuitem_get_id(propdata->item));
 	#endif
-	g_signal_emit(G_OBJECT(propdata->item), DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID, 0, TRUE);
+	dbusmenu_menuitem_set_realized(propdata->item);
 
 	if (!handled) {
 		g_signal_emit(G_OBJECT(propdata->client), signals[NEW_MENUITEM], 0, propdata->item, TRUE);
