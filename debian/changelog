@@ -1,3 +1,10 @@
+libdbusmenu (0.2.9-0ubuntu2~ppa2~refs3) UNRELEASED; urgency=low
+
+  * Upstream merge
+    * Protecting references before signalling
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 16 Apr 2010 11:43:18 -0500
+
 libdbusmenu (0.2.9-0ubuntu2~ppa2~refs2) lucid; urgency=low
 
   * Upstream merge
