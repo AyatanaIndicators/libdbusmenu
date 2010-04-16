@@ -1,3 +1,10 @@
+libdbusmenu (0.2.9-0ubuntu2~ppa2~refs1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Decrementing refs when added to child menus
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 16 Apr 2010 10:48:14 -0500
+
 libdbusmenu (0.2.9-0ubuntu2~ppa1) lucid; urgency=low
 
   * Upstream Merge
