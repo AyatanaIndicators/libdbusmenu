@@ -1,10 +1,10 @@
-libdbusmenu (0.2.9-0ubuntu2~ppa2~refs4) UNRELEASED; urgency=low
+libdbusmenu (0.2.9-0ubuntu2~ppa2~refs4) lucid; urgency=low
 
   * Upstream merge
     * Removing extra unref which allows us to not make an
       extra ref.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 16 Apr 2010 11:50:51 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 16 Apr 2010 11:54:19 -0500
 
 libdbusmenu (0.2.9-0ubuntu2~ppa2~refs3) lucid; urgency=low
 
