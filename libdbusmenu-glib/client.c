@@ -848,9 +848,6 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
 	DbusmenuMenuitem * oldroot = priv->root;
-	if (oldroot != NULL) {
-		g_object_ref(oldroot);
-	}
 
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
 	xmlFreeDoc(xmldoc);
