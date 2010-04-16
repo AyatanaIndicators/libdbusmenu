@@ -810,6 +810,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 				dbusmenu_menuitem_child_delete(item, childmi);
 			}
 			dbusmenu_menuitem_child_add_position(item, newchildmi, position);
+			g_object_unref(newchildmi);
 		} else {
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
 		}
