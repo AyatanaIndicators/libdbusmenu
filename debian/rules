@@ -3,7 +3,7 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/gnome.mk
 
-DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper
+DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-massivedebugging
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
 DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk1 += -V 'libdbusmenu-gtk1 (>= 0.2.5)'
