@@ -367,6 +367,7 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 
 	gchar * properties[1] = {NULL}; /* This gets them all */
 	g_debug("Getting properties");
+	g_object_ref(menuitem);
 	org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
 	return;
 }
@@ -574,10 +575,12 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
 	if (error != NULL) {
 		g_warning("Error getting properties on a menuitem: %s", error->message);
+		g_object_unref(data);
 		return;
 	}
 	g_hash_table_foreach(properties, get_properties_helper, data);
 	g_hash_table_destroy(properties);
+	g_object_unref(data);
 	return;
 }
 
@@ -606,6 +609,8 @@ menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties,
 
 	if (!have_error) {
 		menuitem_get_properties_cb(proxy, properties, error, data);
+	} else {
+		g_object_unref(data);
 	}
 
 	return;
@@ -618,6 +623,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 {
 	if (error != NULL) {
 		g_warning("Error getting properties on a new menuitem: %s", error->message);
+		g_object_unref(data);
 		return;
 	}
 	g_return_if_fail(data != NULL);
@@ -625,6 +631,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	newItemPropData * propdata = (newItemPropData *)data;
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
 
+	g_object_ref(propdata->item);
 	menuitem_get_properties_cb (proxy, properties, error, propdata->item);
 
 	gboolean handled = FALSE;
@@ -652,6 +659,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 		g_signal_emit(G_OBJECT(propdata->client), signals[NEW_MENUITEM], 0, propdata->item, TRUE);
 	}
 
+	g_object_unref(propdata->item);
 	g_free(propdata);
 
 	return;
@@ -767,6 +775,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			propdata->parent  = parent;
 
 			gchar * properties[1] = {NULL}; /* This gets them all */
+			g_object_ref(item);
 			org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
@@ -775,6 +784,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		/* Refresh the properties */
 		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
 		gchar * properties[1] = {NULL}; /* This gets them all */
+		g_object_ref(item);
 		org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
 	}
 
