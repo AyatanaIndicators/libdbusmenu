@@ -1,8 +1,8 @@
-libdbusmenu (0.2.9-0ubuntu2~ppa2~refs5) UNRELEASED; urgency=low
+libdbusmenu (0.2.9-0ubuntu2~ppa2~refs5) lucid; urgency=low
 
   * debian/rules: Massive debugging
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 16 Apr 2010 11:59:28 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 16 Apr 2010 12:02:48 -0500
 
 libdbusmenu (0.2.9-0ubuntu2~ppa2~refs4) lucid; urgency=low
 
