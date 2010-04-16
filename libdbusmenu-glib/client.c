@@ -873,15 +873,12 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		   clean up that old root */
 		if (oldroot != NULL) {
 			dbusmenu_menuitem_set_root(oldroot, FALSE);
+			g_object_unref(oldroot);
+			oldroot = NULL;
 		}
 
 		/* If the root changed we can signal that */
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
-	}
-
-	/* We need to unref it in this function no matter */
-	if (oldroot != NULL) {
-		g_object_unref(oldroot);
 	}
 
 	return 1;
