@@ -1,4 +1,4 @@
-libdbusmenu (0.2.9-0ubuntu3~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.2.9-0ubuntu3~ppa1) lucid; urgency=low
 
   * Upstream Merge
     * Only unref root if the root has changed.
@@ -7,7 +7,7 @@ libdbusmenu (0.2.9-0ubuntu3~ppa1) UNRELEASED; urgency=low
     * Protecting references before signalling
     * Decrementing refs when added to child menus
 
- -- Ted Gould <ted@ubuntu.com>  Sat, 17 Apr 2010 12:53:25 -0500
+ -- Ted Gould <ted@ubuntu.com>  Sat, 17 Apr 2010 13:09:57 -0500
 
 libdbusmenu (0.2.9-0ubuntu2) lucid; urgency=low
 
