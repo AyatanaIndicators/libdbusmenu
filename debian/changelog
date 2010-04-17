@@ -1,4 +1,4 @@
-libdbusmenu (0.2.9-0ubuntu2~ppa1) lucid; urgency=low
+libdbusmenu (0.2.9-0ubuntu2) lucid; urgency=low
 
   * Upstream Merge
     * Changing GTK layer to look at position in realized
