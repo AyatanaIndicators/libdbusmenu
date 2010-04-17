@@ -367,6 +367,7 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 
 	gchar * properties[1] = {NULL}; /* This gets them all */
 	g_debug("Getting properties");
+	g_object_ref(menuitem);
 	org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
 	return;
 }
@@ -574,10 +575,12 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
 	if (error != NULL) {
 		g_warning("Error getting properties on a menuitem: %s", error->message);
+		g_object_unref(data);
 		return;
 	}
 	g_hash_table_foreach(properties, get_properties_helper, data);
 	g_hash_table_destroy(properties);
+	g_object_unref(data);
 	return;
 }
 
@@ -606,6 +609,8 @@ menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties,
 
 	if (!have_error) {
 		menuitem_get_properties_cb(proxy, properties, error, data);
+	} else {
+		g_object_unref(data);
 	}
 
 	return;
@@ -618,6 +623,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 {
 	if (error != NULL) {
 		g_warning("Error getting properties on a new menuitem: %s", error->message);
+		g_object_unref(data);
 		return;
 	}
 	g_return_if_fail(data != NULL);
@@ -625,6 +631,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	newItemPropData * propdata = (newItemPropData *)data;
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
 
+	g_object_ref(propdata->item);
 	menuitem_get_properties_cb (proxy, properties, error, propdata->item);
 
 	gboolean handled = FALSE;
@@ -652,6 +659,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 		g_signal_emit(G_OBJECT(propdata->client), signals[NEW_MENUITEM], 0, propdata->item, TRUE);
 	}
 
+	g_object_unref(propdata->item);
 	g_free(propdata);
 
 	return;
@@ -749,8 +757,6 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			if (parent != NULL) {
 				dbusmenu_menuitem_child_delete(parent, item);
 			}
-			/* XXX: Should this be an unref?  Who's reffing this that it exists without a parent? */
-			g_object_unref(G_OBJECT(item));
 			item = NULL;
 		}
 
@@ -769,6 +775,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			propdata->parent  = parent;
 
 			gchar * properties[1] = {NULL}; /* This gets them all */
+			g_object_ref(item);
 			org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
@@ -777,6 +784,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		/* Refresh the properties */
 		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
 		gchar * properties[1] = {NULL}; /* This gets them all */
+		g_object_ref(item);
 		org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
 	}
 
@@ -810,6 +818,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 				dbusmenu_menuitem_child_delete(item, childmi);
 			}
 			dbusmenu_menuitem_child_add_position(item, newchildmi, position);
+			g_object_unref(newchildmi);
 		} else {
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
 		}
@@ -847,9 +856,6 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
 	DbusmenuMenuitem * oldroot = priv->root;
-	if (oldroot != NULL) {
-		g_object_ref(oldroot);
-	}
 
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
 	xmlFreeDoc(xmldoc);
@@ -867,15 +873,12 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		   clean up that old root */
 		if (oldroot != NULL) {
 			dbusmenu_menuitem_set_root(oldroot, FALSE);
+			g_object_unref(oldroot);
+			oldroot = NULL;
 		}
 
 		/* If the root changed we can signal that */
 		g_signal_emit(G_OBJECT(client), signals[ROOT_CHANGED], 0, priv->root, TRUE);
-	}
-
-	/* We need to unref it in this function no matter */
-	if (oldroot != NULL) {
-		g_object_unref(oldroot);
 	}
 
 	return 1;
