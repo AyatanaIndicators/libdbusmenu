@@ -1,3 +1,14 @@
+libdbusmenu (0.2.9-0ubuntu3) lucid; urgency=low
+
+  * Upstream Merge
+    * Only unref root if the root has changed.
+    * Ensure that callbacks retain references to objects incase
+      they get deleted quickly.
+    * Protecting references before signalling
+    * Decrementing refs when added to child menus
+
+ -- Ted Gould <ted@ubuntu.com>  Sat, 17 Apr 2010 13:09:57 -0500
+
 libdbusmenu (0.2.9-0ubuntu2) lucid; urgency=low
 
   * Upstream Merge
