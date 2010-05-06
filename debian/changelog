@@ -1,3 +1,9 @@
+libdbusmenu (0.3.0~dev-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Bump version
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 06 May 2010 10:31:23 +0200
+
 libdbusmenu (0.2.9-0ubuntu3~ppa1) lucid; urgency=low
 
   * Upstream Merge
