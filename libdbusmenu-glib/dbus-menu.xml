@@ -29,12 +29,18 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 -->
 <node name="/" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+    <dox:d><![CDATA[
+    @mainpage
+
+    The goal of DBusMenu is to expose menus on DBus.
+    
+    Main interface is documented here: @ref org::ayatana::dbusmenu
+    ]]></dox:d>
 	<interface name="org.ayatana.dbusmenu">
 		<dox:d><![CDATA[
-		The goal of this DBus interface is to be able to pass menu items
-		through DBus.
+		A DBus interface to expose menus on DBus.
 
-		Items are represented with a unique numeric id and a dictionary of
+		Menu items are represented with a unique numeric id and a dictionary of
 		properties.
 
 		To reduce the amount of DBus traffic, a property should only be returned

@@ -533,6 +533,9 @@ build_proxies (DbusmenuClient * client)
 static gint
 parse_node_get_id (xmlNodePtr node)
 {
+	if (node->type != XML_ELEMENT_NODE) {
+		return -1;
+	}
 	if (g_strcmp0((gchar *)node->name, "menu") != 0) {
 		/* This kills some nodes early */
 		g_warning("XML Node is not 'menu' it is '%s'", node->name);
