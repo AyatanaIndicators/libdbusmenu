@@ -45,7 +45,10 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) --add-include-path=$(top_builddir)/libdbusmenu-glib
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(srcdir) \
+	--add-include-path=$(top_builddir)/libdbusmenu-glib \
+	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_builddir)/libdbusmenu-glib
 
 if HAVE_INTROSPECTION
@@ -56,7 +59,7 @@ DbusmenuGtk-0.2.gir: libdbusmenu-gtk.la
 DbusmenuGtk_0_2_gir_INCLUDES = \
 	GObject-2.0 \
 	Gtk-2.0 \
-	DbusmenuGlib-0.2
+	Dbusmenu-Glib-0.2
 DbusmenuGtk_0_2_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
 DbusmenuGtk_0_2_gir_LIBS = libdbusmenu-gtk.la
 DbusmenuGtk_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
@@ -87,7 +90,7 @@ DbusmenuGtk-0.2.vapi: DbusmenuGtk-0.2.tmp.gir Makefile.am
 		--pkg gdk-pixbuf-2.0 \
 		--pkg gtk+-2.0 \
 		--pkg atk \
-		--pkg DbusmenuGlib-0.2 \
+		--pkg Dbusmenu-Glib-0.2 \
 		--vapidir=$(top_builddir)/libdbusmenu-glib \
 		$<
 
