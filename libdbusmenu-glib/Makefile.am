@@ -99,7 +99,9 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(srcdir) \
+	$(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources))
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
