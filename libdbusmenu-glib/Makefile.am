@@ -99,21 +99,24 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(srcdir) \
+	$(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources))
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
 introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
 
-DbusmenuGlib-0.2.gir: libdbusmenu-glib.la
-DbusmenuGlib_0_2_gir_INCLUDES = \
+Dbusmenu_Glib-0.2.gir: libdbusmenu-glib.la
+Dbusmenu_Glib_0_2_gir_INCLUDES = \
 	GObject-2.0
-DbusmenuGlib_0_2_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
-DbusmenuGlib_0_2_gir_LIBS = libdbusmenu-glib.la
-DbusmenuGlib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+Dbusmenu_Glib_0_2_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
+Dbusmenu_Glib_0_2_gir_LIBS = libdbusmenu-glib.la
+Dbusmenu_Glib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+Dbusmenu_Glib_0_2_gir_NAMESPACE = Dbusmenu
 
-INTROSPECTION_GIRS += DbusmenuGlib-0.2.gir
+INTROSPECTION_GIRS += Dbusmenu-Glib-0.2.gir
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(INTROSPECTION_GIRS)
@@ -132,10 +135,10 @@ endif
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
-vapi_DATA = DbusmenuGlib-0.2.vapi
+vapi_DATA = Dbusmenu-Glib-0.2.vapi
 
-DbusmenuGlib-0.2.vapi: DbusmenuGlib-0.2.gir
-	$(VALA_API_GEN) --library=DbusmenuGlib-0.2 $<
+Dbusmenu-Glib-0.2.vapi: Dbusmenu-Glib-0.2.gir
+	$(VALA_API_GEN) --library=Dbusmenu-Glib-0.2 $<
 
 CLEANFILES += $(vapi_DATA)
 
