@@ -3,8 +3,10 @@ libdbusmenu (0.3.0~dev-0ubuntu1~ppa2~vapi1) lucid; urgency=low
   * Upstream Merge
     * Fixing up VAPI files to build them correctly
   * Autogen
+  * debian/libdbusmenu-glib-dev.install: Updating gir and vapi file
+    names for package list.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 11:22:21 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 11:25:38 -0500
 
 libdbusmenu (0.3.0~dev-0ubuntu1~ppa1) lucid; urgency=low
 
