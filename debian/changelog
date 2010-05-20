@@ -10,7 +10,7 @@ libdbusmenu (0.3.0~dev-0ubuntu1~ppa2) lucid; urgency=low
   * debian/gir1.0-dbusmenu-glib-0.2.install: Changing the name of the
     typelib file.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 13:54:02 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 13:58:45 -0500
 
 libdbusmenu (0.3.0~dev-0ubuntu1~ppa1) lucid; urgency=low
 
