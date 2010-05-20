@@ -36,14 +36,18 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@HAVE_INTROSPECTION_TRUE@am__append_1 = DbusmenuGlib-0.2.gir
+@HAVE_INTROSPECTION_TRUE@am__append_1 = Dbusmenu-Glib-0.2.gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
 @HAVE_INTROSPECTION_TRUE@	$(vapi_DATA)
 subdir = libdbusmenu-glib
 DIST_COMMON = $(libdbusmenu_glibinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-glib.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -339,15 +343,19 @@ BUILT_SOURCES = \
 	server-marshal.c
 
 INTROSPECTION_GIRS = $(am__append_1)
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(srcdir) \
+	$(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources))
+
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGlib_0_2_gir_INCLUDES = \
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGlib_0_2_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGlib_0_2_gir_LIBS = libdbusmenu-glib.la
-@HAVE_INTROSPECTION_TRUE@DbusmenuGlib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_LIBS = libdbusmenu-glib.la
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_NAMESPACE = Dbusmenu
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
 @HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
@@ -357,7 +365,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 # VAPI Files
 #########################
 @HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@vapi_DATA = DbusmenuGlib-0.2.vapi
+@HAVE_INTROSPECTION_TRUE@vapi_DATA = Dbusmenu-Glib-0.2.vapi
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -885,10 +893,10 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 
 -include $(INTROSPECTION_MAKEFILE)
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGlib-0.2.gir: libdbusmenu-glib.la
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib-0.2.gir: libdbusmenu-glib.la
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGlib-0.2.vapi: DbusmenuGlib-0.2.gir
-@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=DbusmenuGlib-0.2 $<
+@HAVE_INTROSPECTION_TRUE@Dbusmenu-Glib-0.2.vapi: Dbusmenu-Glib-0.2.gir
+@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=Dbusmenu-Glib-0.2 $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
