@@ -356,6 +356,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_LIBS = libdbusmenu-glib.la
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_NAMESPACE = Dbusmenu
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_VERSION = Glib-0.2
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
 @HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
