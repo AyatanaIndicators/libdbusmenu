@@ -115,6 +115,7 @@ Dbusmenu_Glib_0_2_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
 Dbusmenu_Glib_0_2_gir_LIBS = libdbusmenu-glib.la
 Dbusmenu_Glib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 Dbusmenu_Glib_0_2_gir_NAMESPACE = Dbusmenu
+Dbusmenu_Glib_0_2_gir_VERSION = Glib-0.2
 
 INTROSPECTION_GIRS += Dbusmenu-Glib-0.2.gir
 
