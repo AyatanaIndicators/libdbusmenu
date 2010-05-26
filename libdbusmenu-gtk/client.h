@@ -77,6 +77,7 @@ struct _DbusmenuGtkClient {
 GType dbusmenu_gtkclient_get_type (void);
 DbusmenuGtkClient * dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object);
 GtkMenuItem * dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * item);
+GtkMenu *     dbusmenu_gtkclient_menuitem_get_submenu (DbusmenuGtkClient * client, DbusmenuMenuitem * item);
 
 void dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * item, GtkMenuItem * gmi, DbusmenuMenuitem * parent);
 
