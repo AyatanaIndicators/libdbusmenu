@@ -1,4 +1,4 @@
-libdbusmenu (0.3.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.0-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Add function to get submenu of GTK-ified items
@@ -12,7 +12,7 @@ libdbusmenu (0.3.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * debian/gir1.0-dbusmenu-glib-0.2.install: Changing the name of the
     typelib file.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 May 2010 11:40:42 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 May 2010 11:47:05 -0500
 
 libdbusmenu (0.2.9-0ubuntu3) lucid; urgency=low
 
