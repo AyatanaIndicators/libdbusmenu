@@ -146,8 +146,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, id_update),
 	                                         NULL, NULL,
-	                                         g_cclosure_marshal_VOID__UINT,
-	                                         G_TYPE_NONE, 1, G_TYPE_UINT);
+	                                         g_cclosure_marshal_VOID__INT,
+	                                         G_TYPE_NONE, 1, G_TYPE_INT);
 	/**
 		DbusmenuServer::layout-updated:
 		@arg0: The #DbusmenuServer emitting the signal.
