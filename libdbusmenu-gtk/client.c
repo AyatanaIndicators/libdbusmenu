@@ -308,7 +308,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
-		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
+		new_child(parent, item, dbusmenu_menuitem_get_position_realized(item, parent), DBUSMENU_GTKCLIENT(client));
 	}
 
 	return;
@@ -335,7 +335,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 	} 
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
-	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
+	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), dbusmenu_menuitem_get_position_realized(child, mi));
 	gtk_widget_show(GTK_WIDGET(menu));
 	
 	return;
@@ -373,7 +373,7 @@ move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint ol
 	}
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
-	gtk_menu_reorder_child(GTK_MENU(ann_menu), GTK_WIDGET(childmi), new);
+	gtk_menu_reorder_child(GTK_MENU(ann_menu), GTK_WIDGET(childmi), dbusmenu_menuitem_get_position_realized(child, mi));
 
 	return;
 }
@@ -421,6 +421,29 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	}
 
 	return GTK_MENU_ITEM(data);
+}
+
+/**
+	dbusmenu_gtkclient_menuitem_get_submenu:
+	@client: A #DbusmenuGtkClient with the item in it.
+	@item: #DbusmenuMenuitem to get associated #GtkMenu on.
+
+	This grabs the submenu associated with the menuitem.
+
+	Return value: The #GtkMenu if there is one.
+*/
+GtkMenu *
+dbusmenu_gtkclient_menuitem_get_submenu (DbusmenuGtkClient * client, DbusmenuMenuitem * item)
+{
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(item), NULL);
+
+	gpointer data = g_object_get_data(G_OBJECT(item), data_menu);
+	if (data == NULL) {
+		return NULL;
+	}
+
+	return GTK_MENU(data);
 }
 
 /* The base type handler that builds a plain ol'

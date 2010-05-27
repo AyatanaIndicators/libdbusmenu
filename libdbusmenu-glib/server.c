@@ -146,8 +146,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         G_SIGNAL_RUN_LAST,
 	                                         G_STRUCT_OFFSET(DbusmenuServerClass, id_update),
 	                                         NULL, NULL,
-	                                         g_cclosure_marshal_VOID__UINT,
-	                                         G_TYPE_NONE, 1, G_TYPE_UINT);
+	                                         g_cclosure_marshal_VOID__INT,
+	                                         G_TYPE_NONE, 1, G_TYPE_INT);
 	/**
 		DbusmenuServer::layout-updated:
 		@arg0: The #DbusmenuServer emitting the signal.
@@ -404,6 +404,16 @@ _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revis
 		}
 	} else {
 		DbusmenuMenuitem * item = dbusmenu_menuitem_find_id(priv->root, parent);
+		if (item == NULL) {
+			if (error != NULL) {
+				g_set_error(error,
+				            error_quark(),
+				            INVALID_MENUITEM_ID,
+				            "The ID supplied %d does not refer to a menu item we have",
+				            parent);
+			}
+			return FALSE;
+		}
 		dbusmenu_menuitem_buildxml(item, xmlarray);
 	}
 	g_ptr_array_add(xmlarray, NULL);
