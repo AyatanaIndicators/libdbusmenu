@@ -14,7 +14,7 @@ libdbusmenu (0.3.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 27 May 2010 11:40:42 -0500
 
-libdbusmenu (0.2.9-0ubuntu3~ppa1) lucid; urgency=low
+libdbusmenu (0.2.9-0ubuntu3) lucid; urgency=low
 
   * Upstream Merge
     * Only unref root if the root has changed.
