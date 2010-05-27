@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.2.9, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.3.0, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.2.9, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.3.0, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -78,7 +78,7 @@ AC_PATH_PROG([VALA_API_GEN], [vapigen])
 ###########################
 
 LIBDBUSMENU_CURRENT=1
-LIBDBUSMENU_REVISION=6
+LIBDBUSMENU_REVISION=7
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
