@@ -96,8 +96,7 @@ typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpoin
 
 /**
  * dbusmenu_menuitem_buildxml_slot_t:
- * @stringarray: (inout) (array) (transfer none) (element utf8): An array of strings
- * that can be combined into an XML file.
+ * @stringarray: (inout) (array) (transfer none) (element utf8): An array of strings that can be combined into an XML file.
  * 
  * This is the function that is called to represent this menu item
  * as an XML fragment.  Should call it's own children.
@@ -112,13 +111,9 @@ typedef void (*dbusmenu_menuitem_buildxml_slot_t) (GPtrArray * stringarray);
  * @child_removed: Slot for #DbusmenuMenuitem::child-removed.
  * @child_moved: Slot for #DbusmenuMenuitem::child-moved.
  * @realized: Slot for #DbusmenuMenuitem::realized.
- * @buildxml: Virtual function that appends the strings required
- * to represent this menu item in the menu XML file.
- * @handle_event: This function is to override how events are handled
- * by subclasses.  Look at #dbusmenu_menuitem_handle_event for
- * lots of good information.
- * @send_about_to_show: Virtual function that notifies server that the
- * client is about to show a menu.
+ * @buildxml: Virtual function that appends the strings required to represent this menu item in the menu XML file.
+ * @handle_event: This function is to override how events are handled by subclasses.  Look at #dbusmenu_menuitem_handle_event for lots of good information.
+ * @send_about_to_show: Virtual function that notifies server that the client is about to show a menu.
  * @reserved1: Reserved for future use.
  * @reserved2: Reserved for future use.
  * @reserved3: Reserved for future use.
