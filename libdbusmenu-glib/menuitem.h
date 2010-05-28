@@ -86,8 +86,8 @@ struct _DbusmenuMenuitem
 
 /**
 	dbusmenu_menuitem_about_to_show_cb:
-	@mi Menu item that should be shown
-	@user_data Extra user data sent with the function
+	@mi: Menu item that should be shown
+	@user_data: (closure): Extra user data sent with the function
 
 	Callback prototype for a callback that is called when the
 	menu should be shown.
@@ -96,7 +96,7 @@ typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpoin
 
 /**
 	dbusmenu_menuitem_buildxml_slot_t:
-	@stringarray: (inout) (transfer none) (element utf8): An array of strings
+	@stringarray: (inout) (array) (transfer none) (element utf8): An array of strings
 		that can be combined into an XML file.
 
 	This is the function that is called to represent this menu item
