@@ -94,6 +94,15 @@ struct _DbusmenuMenuitem
 */
 typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpointer user_data);
 
+/**
+	dbusmenu_menuitem_buildxml_slot_t:
+	@stringarray: (inout) (transfer none) (element utf8): An array of strings
+		that can be combined into an XML file.
+
+	This is the function that is called to represent this menu item
+	as an XML fragment.  Should call it's own children.
+*/
+typedef void (*dbusmenu_menuitem_buildxml_slot_t) (GPtrArray * stringarray);
 
 /**
 	DbusmenuMenuitemClass:
@@ -129,7 +138,7 @@ struct _DbusmenuMenuitemClass
 	void (*realized) (void);
 
 	/* Virtual functions */
-	void (*buildxml) (GPtrArray * stringarray);
+	dbusmenu_menuitem_buildxml_slot_t buildxml;
 	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 	void (*send_about_to_show) (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
