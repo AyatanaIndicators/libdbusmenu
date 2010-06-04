@@ -423,6 +423,29 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	return GTK_MENU_ITEM(data);
 }
 
+/**
+	dbusmenu_gtkclient_menuitem_get_submenu:
+	@client: A #DbusmenuGtkClient with the item in it.
+	@item: #DbusmenuMenuitem to get associated #GtkMenu on.
+
+	This grabs the submenu associated with the menuitem.
+
+	Return value: The #GtkMenu if there is one.
+*/
+GtkMenu *
+dbusmenu_gtkclient_menuitem_get_submenu (DbusmenuGtkClient * client, DbusmenuMenuitem * item)
+{
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(item), NULL);
+
+	gpointer data = g_object_get_data(G_OBJECT(item), data_menu);
+	if (data == NULL) {
+		return NULL;
+	}
+
+	return GTK_MENU(data);
+}
+
 /* The base type handler that builds a plain ol'
    GtkMenuItem to represent, well, the GtkMenuItem */
 static gboolean
