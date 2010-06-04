@@ -1,9 +1,9 @@
-libdbusmenu (0.3.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.1-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Fix annotations for GIR scanner
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 04 Jun 2010 14:39:37 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Jun 2010 14:42:26 -0500
 
 libdbusmenu (0.3.0-0ubuntu1~ppa1) lucid; urgency=low
 
