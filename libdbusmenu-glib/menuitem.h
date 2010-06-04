@@ -96,12 +96,13 @@ typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpoin
 
 /**
  * dbusmenu_menuitem_buildxml_slot_t:
- * @stringarray: (inout) (array) (transfer none) (element utf8): An array of strings that can be combined into an XML file.
+ * @mi: (in): Menu item that should be built from
+ * @stringarray: (inout) (transfer none) (array) (element-type utf8): An array of strings that can be combined into an XML file.
  * 
  * This is the function that is called to represent this menu item
  * as an XML fragment.  Should call it's own children.
  */
-typedef void (*dbusmenu_menuitem_buildxml_slot_t) (GPtrArray * stringarray);
+typedef void (*dbusmenu_menuitem_buildxml_slot_t) (DbusmenuMenuitem * mi, GPtrArray* stringarray);
 
 /**
  * DbusmenuMenuitemClass:
