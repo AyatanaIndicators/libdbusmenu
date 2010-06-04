@@ -1,6 +1,7 @@
-libdbusmenu (0.3.0-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.3.1-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release.
+    * Fix annotations for GIR scanner
     * Add function to get submenu of GTK-ified items
     * Fix signal prototype of ID update
     * Fixing up VAPI files to build them correctly
@@ -12,7 +13,7 @@ libdbusmenu (0.3.0-0ubuntu1) UNRELEASED; urgency=low
   * debian/gir1.0-dbusmenu-glib-0.2.install: Changing the name of the
     typelib file.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 May 2010 11:47:05 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Jun 2010 14:42:26 -0500
 
 libdbusmenu (0.2.9-0ubuntu3) lucid; urgency=low
 
