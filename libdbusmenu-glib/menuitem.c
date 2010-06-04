@@ -1199,7 +1199,7 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 /**
 	dbusmenu_menuitem_buildxml:
 	@mi: #DbusmenuMenuitem to represent in XML
-	@array: A list of string that will be turned into an XML file
+	@array: (element-type utf8): A list of string that will be turned into an XML file
 
 	This function will add strings to the array @array.  It will put
 	at least one entry if this menu item has no children.  If it has
@@ -1247,7 +1247,7 @@ foreach_helper (gpointer data, gpointer user_data)
 	dbusmenu_menuitem_foreach:
 	@mi: The #DbusmenItem to start from
 	@func: Function to call on every node in the tree
-	@data: User data to pass to the function
+	@data: (closure): User data to pass to the function
 
 	This calls the function @func on this menu item and all
 	of the children of this item.  And their children.  And
@@ -1305,7 +1305,7 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const
 	dbusmenu_menuitem_send_about_to_show:
 	@mi: The #DbusmenuMenuitem to send the signal on.
 	@cb: Callback to call when the call has returned.
-	@cb_data: Data to pass to the callback.
+	@cb_data: (closure): Data to pass to the callback.
 
 	This function is used to send the even that the submenu
 	of this item is about to be shown.  Callers to this event

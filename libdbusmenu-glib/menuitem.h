@@ -69,15 +69,15 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
 
 /**
-	DbusmenuMenuitem:
-
-	This is the #GObject based object that represents a menu
-	item.  It gets created the same on both the client and
-	the server side and libdbusmenu-glib does the work of making
-	this object model appear on both sides of DBus.  Simple
-	really, though through updates and people coming on and off
-	the bus it can lead to lots of fun complex scenarios.
-*/
+ * DbusmenuMenuitem:
+ * 
+ * This is the #GObject based object that represents a menu
+ * item.  It gets created the same on both the client and
+ * the server side and libdbusmenu-glib does the work of making
+ * this object model appear on both sides of DBus.  Simple
+ * really, though through updates and people coming on and off
+ * the bus it can lead to lots of fun complex scenarios.
+ */
 typedef struct _DbusmenuMenuitem      DbusmenuMenuitem;
 struct _DbusmenuMenuitem
 {
@@ -85,36 +85,41 @@ struct _DbusmenuMenuitem
 };
 
 /**
-	dbusmenu_menuitem_about_to_show_cb:
-	@mi Menu item that should be shown
-	@user_data Extra user data sent with the function
-
-	Callback prototype for a callback that is called when the
-	menu should be shown.
-*/
+ * dbusmenu_menuitem_about_to_show_cb:
+ * @mi: Menu item that should be shown
+ * @user_data: (closure): Extra user data sent with the function
+ * 
+ * Callback prototype for a callback that is called when the
+ * menu should be shown.
+ */
 typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpointer user_data);
 
+/**
+ * dbusmenu_menuitem_buildxml_slot_t:
+ * @mi: (in): Menu item that should be built from
+ * @stringarray: (inout) (transfer none) (array) (element-type utf8): An array of strings that can be combined into an XML file.
+ * 
+ * This is the function that is called to represent this menu item
+ * as an XML fragment.  Should call it's own children.
+ */
+typedef void (*dbusmenu_menuitem_buildxml_slot_t) (DbusmenuMenuitem * mi, GPtrArray* stringarray);
 
 /**
-	DbusmenuMenuitemClass:
-	@property_changed: Slot for #DbusmenuMenuitem::property-changed.
-	@item_activated: Slot for #DbusmenuMenuitem::item-activated.
-	@child_added: Slot for #DbusmenuMenuitem::child-added.
-	@child_removed: Slot for #DbusmenuMenuitem::child-removed.
-	@child_moved: Slot for #DbusmenuMenuitem::child-moved.
-	@realized: Slot for #DbusmenuMenuitem::realized.
-	@buildxml: Virtual function that appends the strings required
-	           to represent this menu item in the menu XML file.
-	@handle_event: This function is to override how events are handled
-			by subclasses.  Look at #dbusmenu_menuitem_handle_event for
-			lots of good information.
-	@send_about_to_show: Virtual function that notifies server that the
-			client is about to show a menu.
-	@reserved1: Reserved for future use.
-	@reserved2: Reserved for future use.
-	@reserved3: Reserved for future use.
-	@reserved4: Reserved for future use.
-*/
+ * DbusmenuMenuitemClass:
+ * @property_changed: Slot for #DbusmenuMenuitem::property-changed.
+ * @item_activated: Slot for #DbusmenuMenuitem::item-activated.
+ * @child_added: Slot for #DbusmenuMenuitem::child-added.
+ * @child_removed: Slot for #DbusmenuMenuitem::child-removed.
+ * @child_moved: Slot for #DbusmenuMenuitem::child-moved.
+ * @realized: Slot for #DbusmenuMenuitem::realized.
+ * @buildxml: Virtual function that appends the strings required to represent this menu item in the menu XML file.
+ * @handle_event: This function is to override how events are handled by subclasses.  Look at #dbusmenu_menuitem_handle_event for lots of good information.
+ * @send_about_to_show: Virtual function that notifies server that the client is about to show a menu.
+ * @reserved1: Reserved for future use.
+ * @reserved2: Reserved for future use.
+ * @reserved3: Reserved for future use.
+ * @reserved4: Reserved for future use.
+ */
 typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
 struct _DbusmenuMenuitemClass
 {
@@ -129,7 +134,7 @@ struct _DbusmenuMenuitemClass
 	void (*realized) (void);
 
 	/* Virtual functions */
-	void (*buildxml) (GPtrArray * stringarray);
+	dbusmenu_menuitem_buildxml_slot_t buildxml;
 	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 	void (*send_about_to_show) (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
@@ -179,23 +184,23 @@ void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, 
 void dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
 /**
-	SECTION:menuitem
-	@short_description: A lowlevel represenation of a menuitem
-	@stability: Unstable
-	@include: libdbusmenu-glib/menuitem.h
-
-	A #DbusmenuMenuitem is the lowest level of represenation of a
-	single item in a menu.  It gets created on the server side
-	and copied over to the client side where it gets rendered.  As
-	the server starts to change it, and grow it, and do all kinds
-	of fun stuff that information is transfered over DBus and the
-	client updates it's understanding of the object model.
-
-	Most people using either the client or the server should be
-	able to deal mostly with #DbusmenuMenuitem objects.  These
-	are simple, but then they can be attached to more complex
-	objects and handled appropriately.
-*/
+ * SECTION:menuitem
+ * @short_description: A lowlevel represenation of a menuitem
+ * @stability: Unstable
+ * @include: libdbusmenu-glib/menuitem.h
+ * 
+ * A #DbusmenuMenuitem is the lowest level of represenation of a
+ * single item in a menu.  It gets created on the server side
+ * and copied over to the client side where it gets rendered.  As
+ * the server starts to change it, and grow it, and do all kinds
+ * of fun stuff that information is transfered over DBus and the
+ * client updates it's understanding of the object model.
+ * 
+ * Most people using either the client or the server should be
+ * able to deal mostly with #DbusmenuMenuitem objects.  These
+ * are simple, but then they can be attached to more complex
+ * objects and handled appropriately.
+ */
 
 G_END_DECLS
 
