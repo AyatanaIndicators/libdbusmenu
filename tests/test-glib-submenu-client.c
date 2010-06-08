@@ -30,49 +30,22 @@ static guint layouton = 0;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
 
-static gboolean
-verify_root_to_layout(DbusmenuMenuitem * mi, layout_t * layout)
+static void
+realization (DbusmenuMenuitem * mi)
 {
-	g_debug("Verifying ID: %d", layout->id);
+	const gchar * value;
+	value = dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
 
-	if (layout->id != dbusmenu_menuitem_get_id(mi)) {
-		if (!(dbusmenu_menuitem_get_root(mi) && dbusmenu_menuitem_get_id(mi) == 0)) {
-			g_debug("Failed as ID %d is not equal to %d", layout->id, dbusmenu_menuitem_get_id(mi));
-			return FALSE;
+	if (layouton % 2 == 0) {
+		if (value == NULL) {
+			passed = FALSE;
 		}
-	}
-
-	GList * children = dbusmenu_menuitem_get_children(mi);
-
-	if (children == NULL && layout->submenu == NULL) {
-		return TRUE;
-	}
-	if (children == NULL || layout->submenu == NULL) {
-		if (children == NULL) {
-			g_debug("Failed as there are no children but we have submenus");
-		} else {
-			g_debug("Failed as we have children but no submenu");
-		}
-		return FALSE;
-	}
-
-	guint i = 0;
-	for (i = 0; children != NULL && layout->submenu[i].id != -1; children = g_list_next(children), i++) {
-		if (!verify_root_to_layout(DBUSMENU_MENUITEM(children->data), &layout->submenu[i])) {
-			return FALSE;
-		}
-	}
-
-	if (children == NULL && layout->submenu[i].id == -1) {
-		return TRUE;
-	}
-
-	if (children != NULL) {
-		g_debug("Failed as there are still children but no submenus.  (ID: %d)", layout->id);
 	} else {
-		g_debug("Failed as there are still submenus but no children.  (ID: %d)", layout->id);
+		if (value != NULL) {
+			passed = FALSE;
+		}
 	}
-	return FALSE;
+	return;
 }
 
 static void
@@ -81,13 +54,19 @@ layout_updated (DbusmenuClient * client, gpointer data)
 	g_debug("Layout Updated");
 
 	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(client);
-	layout_t * layout = &layouts[layouton];
 	
-	if (!verify_root_to_layout(menuroot, layout)) {
-		g_debug("Failed layout: %d", layouton);
+
+	GList * children = dbusmenu_menuitem_get_children(menuroot);
+	if (children == NULL) {
 		passed = FALSE;
+		goto exit;
 	}
 
+	for (; children != NULL; children = g_list_next(children)) {
+		g_signal_connect(G_OBJECT(children->data), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(realization), NULL);
+	}
+
+exit:
 	layouton++;
 
 	if (layouts[layouton].id == -1) {
