@@ -517,6 +517,9 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 	GList * children = priv->children;
 	priv->children = NULL;
 	g_list_foreach(children, take_children_signal, mi);
+
+	dbusmenu_menuitem_property_remove(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
+	
 	return children;
 }
 
@@ -691,6 +694,11 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_REMOVED], 0, child, TRUE);
 	g_object_unref(G_OBJECT(child));
+
+	if (priv->children == NULL) {
+		dbusmenu_menuitem_property_remove(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
+	}
+
 	return TRUE;
 }
 
