@@ -128,3 +128,37 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 	return icon;
 }
 
+/**
+	dbusmenu_menuitem_property_set_shortcut:
+	@menuitem: The #DbusmenuMenuitem to set the shortcut on
+	@shortcut: String describing the shortcut
+
+	This function takes a GTK shortcut string as defined in
+	#gtk_accellerator_parse and turns that into the information
+	required to send it over DBusmenu.
+
+	Return value: Whether it was successful at setting the property.
+*/
+gboolean
+dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gchar * shortcut)
+{
+
+	return FALSE;
+}
+
+/**
+	dbusmenu_menuitem_property_get_shortcut:
+	@menuitem: The #DbusmenuMenuitem to get the shortcut off
+
+	This function gets a GTK shortcut string as defined in
+	#gtk_accellerator_parse from the data that is transferred
+	over DBusmenu.
+
+	Return value: Either the string or #NULL if there is none.
+*/
+gchar *
+dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem)
+{
+
+	return NULL;
+}
