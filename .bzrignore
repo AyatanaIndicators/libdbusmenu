@@ -71,3 +71,6 @@ libdbusmenu-gtk/DbusmenuGtk-0.2.gir
 libdbusmenu-gtk/DbusmenuGtk-0.2.tmp.gir
 libdbusmenu-gtk/DbusmenuGtk-0.2.typelib
 libdbusmenu-gtk/DbusmenuGtk-0.2.vapi
+tests/test-glib-submenu
+tests/test-glib-submenu-client
+tests/test-glib-submenu-server
