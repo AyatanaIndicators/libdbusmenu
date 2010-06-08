@@ -34,6 +34,8 @@ static void
 realization (DbusmenuMenuitem * mi)
 {
 	const gchar * value;
+	gboolean original = passed;
+
 	value = dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
 
 	if (layouton % 2 == 0) {
@@ -45,6 +47,11 @@ realization (DbusmenuMenuitem * mi)
 			passed = FALSE;
 		}
 	}
+
+	if (original != passed) {
+		g_debug("Oops, this is where we failed");
+	}
+
 	return;
 }
 
@@ -54,19 +61,21 @@ layout_updated (DbusmenuClient * client, gpointer data)
 	g_debug("Layout Updated");
 
 	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(client);
-	
+	if (menuroot == NULL) {
+		g_debug("Root is NULL?");
+		return;
+	}
 
 	GList * children = dbusmenu_menuitem_get_children(menuroot);
 	if (children == NULL) {
+		g_debug("No Children on root -- fail");
 		passed = FALSE;
-		goto exit;
+	} else {
+		for (; children != NULL; children = g_list_next(children)) {
+			g_signal_connect(G_OBJECT(children->data), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(realization), NULL);
+		}
 	}
 
-	for (; children != NULL; children = g_list_next(children)) {
-		g_signal_connect(G_OBJECT(children->data), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(realization), NULL);
-	}
-
-exit:
 	layouton++;
 
 	if (layouts[layouton].id == -1) {
