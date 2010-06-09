@@ -1,0 +1,462 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="libdbusmenu-glib-dbusmenu-server">
+<refmeta>
+<refentrytitle role="top_of_page" id="libdbusmenu-glib-dbusmenu-server.top_of_page">dbusmenu-server</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GLIB Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>dbusmenu-server</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="libdbusmenu-glib-dbusmenu-server.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>#define             <link linkend="g-marshal-value-peek-boolean">g_marshal_value_peek_boolean</link>        (v)
+#define             <link linkend="g-marshal-value-peek-char">g_marshal_value_peek_char</link>           (v)
+#define             <link linkend="g-marshal-value-peek-uchar">g_marshal_value_peek_uchar</link>          (v)
+#define             <link linkend="g-marshal-value-peek-int">g_marshal_value_peek_int</link>            (v)
+#define             <link linkend="g-marshal-value-peek-uint">g_marshal_value_peek_uint</link>           (v)
+#define             <link linkend="g-marshal-value-peek-long">g_marshal_value_peek_long</link>           (v)
+#define             <link linkend="g-marshal-value-peek-ulong">g_marshal_value_peek_ulong</link>          (v)
+#define             <link linkend="g-marshal-value-peek-int64">g_marshal_value_peek_int64</link>          (v)
+#define             <link linkend="g-marshal-value-peek-uint64">g_marshal_value_peek_uint64</link>         (v)
+#define             <link linkend="g-marshal-value-peek-enum">g_marshal_value_peek_enum</link>           (v)
+#define             <link linkend="g-marshal-value-peek-flags">g_marshal_value_peek_flags</link>          (v)
+#define             <link linkend="g-marshal-value-peek-float">g_marshal_value_peek_float</link>          (v)
+#define             <link linkend="g-marshal-value-peek-double">g_marshal_value_peek_double</link>         (v)
+#define             <link linkend="g-marshal-value-peek-string">g_marshal_value_peek_string</link>         (v)
+#define             <link linkend="g-marshal-value-peek-param">g_marshal_value_peek_param</link>          (v)
+#define             <link linkend="g-marshal-value-peek-boxed">g_marshal_value_peek_boxed</link>          (v)
+#define             <link linkend="g-marshal-value-peek-pointer">g_marshal_value_peek_pointer</link>        (v)
+#define             <link linkend="g-marshal-value-peek-object">g_marshal_value_peek_object</link>         (v)
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-POINTER-POINTER">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER</link>
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER-POINTER">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER</link>
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-BOXED-POINTER-POINTER">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER</link>
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-BOXED-UINT-POINTER">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER</link>
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER</link>
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbus-glib-marshal--dbusmenu-server-BOOLEAN--BOXED-BOXED-POINTER-POINTER">dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER</link>
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="libdbusmenu-glib-dbusmenu-server.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+<refsect1 id="libdbusmenu-glib-dbusmenu-server.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="g-marshal-value-peek-boolean" role="macro">
+<title>g_marshal_value_peek_boolean()</title>
+<indexterm zone="g-marshal-value-peek-boolean"><primary>g_marshal_value_peek_boolean</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_boolean(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-char" role="macro">
+<title>g_marshal_value_peek_char()</title>
+<indexterm zone="g-marshal-value-peek-char"><primary>g_marshal_value_peek_char</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_char(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-uchar" role="macro">
+<title>g_marshal_value_peek_uchar()</title>
+<indexterm zone="g-marshal-value-peek-uchar"><primary>g_marshal_value_peek_uchar</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_uchar(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-int" role="macro">
+<title>g_marshal_value_peek_int()</title>
+<indexterm zone="g-marshal-value-peek-int"><primary>g_marshal_value_peek_int</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_int(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-uint" role="macro">
+<title>g_marshal_value_peek_uint()</title>
+<indexterm zone="g-marshal-value-peek-uint"><primary>g_marshal_value_peek_uint</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_uint(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-long" role="macro">
+<title>g_marshal_value_peek_long()</title>
+<indexterm zone="g-marshal-value-peek-long"><primary>g_marshal_value_peek_long</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_long(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-ulong" role="macro">
+<title>g_marshal_value_peek_ulong()</title>
+<indexterm zone="g-marshal-value-peek-ulong"><primary>g_marshal_value_peek_ulong</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_ulong(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-int64" role="macro">
+<title>g_marshal_value_peek_int64()</title>
+<indexterm zone="g-marshal-value-peek-int64"><primary>g_marshal_value_peek_int64</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_int64(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-uint64" role="macro">
+<title>g_marshal_value_peek_uint64()</title>
+<indexterm zone="g-marshal-value-peek-uint64"><primary>g_marshal_value_peek_uint64</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_uint64(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-enum" role="macro">
+<title>g_marshal_value_peek_enum()</title>
+<indexterm zone="g-marshal-value-peek-enum"><primary>g_marshal_value_peek_enum</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_enum(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-flags" role="macro">
+<title>g_marshal_value_peek_flags()</title>
+<indexterm zone="g-marshal-value-peek-flags"><primary>g_marshal_value_peek_flags</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_flags(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-float" role="macro">
+<title>g_marshal_value_peek_float()</title>
+<indexterm zone="g-marshal-value-peek-float"><primary>g_marshal_value_peek_float</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_float(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-double" role="macro">
+<title>g_marshal_value_peek_double()</title>
+<indexterm zone="g-marshal-value-peek-double"><primary>g_marshal_value_peek_double</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_double(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-string" role="macro">
+<title>g_marshal_value_peek_string()</title>
+<indexterm zone="g-marshal-value-peek-string"><primary>g_marshal_value_peek_string</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_string(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-param" role="macro">
+<title>g_marshal_value_peek_param()</title>
+<indexterm zone="g-marshal-value-peek-param"><primary>g_marshal_value_peek_param</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_param(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-boxed" role="macro">
+<title>g_marshal_value_peek_boxed()</title>
+<indexterm zone="g-marshal-value-peek-boxed"><primary>g_marshal_value_peek_boxed</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_boxed(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-pointer" role="macro">
+<title>g_marshal_value_peek_pointer()</title>
+<indexterm zone="g-marshal-value-peek-pointer"><primary>g_marshal_value_peek_pointer</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_pointer(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="g-marshal-value-peek-object" role="macro">
+<title>g_marshal_value_peek_object()</title>
+<indexterm zone="g-marshal-value-peek-object"><primary>g_marshal_value_peek_object</primary></indexterm>
+<programlisting>#define             g_marshal_value_peek_object(v)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>v</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-POINTER-POINTER" role="function">
+<title>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER ()</title>
+<indexterm zone="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-POINTER-POINTER"><primary>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>closure</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>invocation_hint</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>marshal_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER-POINTER" role="function">
+<title>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER ()</title>
+<indexterm zone="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER-POINTER"><primary>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>closure</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>invocation_hint</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>marshal_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-BOXED-POINTER-POINTER" role="function">
+<title>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER ()</title>
+<indexterm zone="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-BOXED-POINTER-POINTER"><primary>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>closure</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>invocation_hint</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>marshal_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-BOXED-UINT-POINTER" role="function">
+<title>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER ()</title>
+<indexterm zone="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-BOXED-UINT-POINTER"><primary>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>closure</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>invocation_hint</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>marshal_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER" role="function">
+<title>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER ()</title>
+<indexterm zone="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER"><primary>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>closure</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>invocation_hint</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>marshal_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbus-glib-marshal--dbusmenu-server-BOOLEAN--BOXED-BOXED-POINTER-POINTER" role="function">
+<title>dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER ()</title>
+<indexterm zone="dbus-glib-marshal--dbusmenu-server-BOOLEAN--BOXED-BOXED-POINTER-POINTER"><primary>dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER
+                                                        (<parameter><link linkend="GClosure"><type>GClosure</type></link> *closure</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *return_value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> n_param_values</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *param_values</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> invocation_hint</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> marshal_data</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>closure</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>param_values</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>invocation_hint</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>marshal_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>

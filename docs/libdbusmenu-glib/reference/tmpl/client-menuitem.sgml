@@ -1,0 +1,54 @@
+<!-- ##### SECTION Title ##### -->
+DbusmenuClientMenuitem
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_MENUITEM_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT DbusmenuClientMenuitem ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT DbusmenuClientMenuitemClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+
+<!-- ##### FUNCTION dbusmenu_client_menuitem_new ##### -->
+<para>
+
+</para>
+
+@id: 
+@client: 
+@Returns: 
+
+

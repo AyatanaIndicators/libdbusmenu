@@ -1,0 +1,5 @@
+dbusmenu_client_get_type
+dbusmenu_client_menuitem_get_type
+dbusmenu_menuitem_get_type
+dbusmenu_menuitem_proxy_get_type
+dbusmenu_server_get_type

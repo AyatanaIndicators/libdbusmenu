@@ -1,0 +1,575 @@
+<!-- ##### SECTION Title ##### -->
+DbusmenuMenuitem
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_SIGNAL_REALIZED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_VISIBLE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_ENABLED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_LABEL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_ICON_NAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_ICON_DATA ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_TOGGLE_STATE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_TOGGLE_CHECK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_TOGGLE_RADIO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_ICON_NAME_BLANK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT DbusmenuMenuitem ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL DbusmenuMenuitem::child-added ##### -->
+<para>
+
+</para>
+
+@dbusmenumenuitem: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL DbusmenuMenuitem::child-moved ##### -->
+<para>
+
+</para>
+
+@dbusmenumenuitem: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### SIGNAL DbusmenuMenuitem::child-removed ##### -->
+<para>
+
+</para>
+
+@dbusmenumenuitem: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL DbusmenuMenuitem::item-activated ##### -->
+<para>
+
+</para>
+
+@dbusmenumenuitem: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL DbusmenuMenuitem::property-changed ##### -->
+<para>
+
+</para>
+
+@dbusmenumenuitem: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL DbusmenuMenuitem::realized ##### -->
+<para>
+
+</para>
+
+@dbusmenumenuitem: the object which received the signal.
+
+<!-- ##### ARG DbusmenuMenuitem:id ##### -->
+<para>
+
+</para>
+
+<!-- ##### USER_FUNCTION dbusmenu_menuitem_about_to_show_cb ##### -->
+<para>
+
+</para>
+
+@mi: 
+@user_data: 
+
+
+<!-- ##### USER_FUNCTION dbusmenu_menuitem_buildxml_slot_t ##### -->
+<para>
+
+</para>
+
+@mi: 
+@stringarray: 
+
+
+<!-- ##### STRUCT DbusmenuMenuitemClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@property_changed: 
+@item_activated: 
+@child_added: 
+@child_removed: 
+@child_moved: 
+@realized: 
+@buildxml: 
+@handle_event: 
+@send_about_to_show: 
+@reserved1: 
+
+<!-- ##### FUNCTION dbusmenu_menuitem_new ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_new_with_id ##### -->
+<para>
+
+</para>
+
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_get_id ##### -->
+<para>
+
+</para>
+
+@mi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_get_children ##### -->
+<para>
+
+</para>
+
+@mi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_take_children ##### -->
+<para>
+
+</para>
+
+@mi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_get_position ##### -->
+<para>
+
+</para>
+
+@mi: 
+@parent: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_get_position_realized ##### -->
+<para>
+
+</para>
+
+@mi: 
+@parent: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_child_append ##### -->
+<para>
+
+</para>
+
+@mi: 
+@child: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_child_prepend ##### -->
+<para>
+
+</para>
+
+@mi: 
+@child: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_child_delete ##### -->
+<para>
+
+</para>
+
+@mi: 
+@child: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_child_add_position ##### -->
+<para>
+
+</para>
+
+@mi: 
+@child: 
+@position: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_child_reorder ##### -->
+<para>
+
+</para>
+
+@mi: 
+@child: 
+@position: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_child_find ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_find_id ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_value ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_bool ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_int ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_get ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_get_value ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_get_bool ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_get_int ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_exist ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_properties_list ##### -->
+<para>
+
+</para>
+
+@mi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_properties_copy ##### -->
+<para>
+
+</para>
+
+@mi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_remove ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_set_root ##### -->
+<para>
+
+</para>
+
+@mi: 
+@root: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_get_root ##### -->
+<para>
+
+</para>
+
+@mi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_foreach ##### -->
+<para>
+
+</para>
+
+@mi: 
+@DbusmenuMenuitem * mi, gpointer data: 
+@data: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_handle_event ##### -->
+<para>
+
+</para>
+
+@mi: 
+@name: 
+@value: 
+@timestamp: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_send_about_to_show ##### -->
+<para>
+
+</para>
+
+@mi: 
+@cb: 
+@cb_data: 
+
+

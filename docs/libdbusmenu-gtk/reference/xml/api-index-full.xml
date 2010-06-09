@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE indexdiv PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<indexdiv>
+<indexdiv><title></title>
+<indexentry><primaryie linkends="GENERICMENUITEM:CAPS"><link linkend="GENERICMENUITEM:CAPS">GENERICMENUITEM</link>, macro in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="Genericmenuitem-struct"><link linkend="Genericmenuitem-struct">Genericmenuitem</link>, struct in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+</indexdiv>
+<indexdiv><title>C</title>
+<indexentry><primaryie linkends="GenericmenuitemCheckType"><link linkend="GenericmenuitemCheckType">GenericmenuitemCheckType</link>, enum in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="GENERICMENUITEM-CLASS:CAPS"><link linkend="GENERICMENUITEM-CLASS:CAPS">GENERICMENUITEM_CLASS</link>, macro in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="GenericmenuitemClass"><link linkend="GenericmenuitemClass">GenericmenuitemClass</link>, struct in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+</indexdiv>
+<indexdiv><title>D</title>
+<indexentry><primaryie linkends="DbusmenuGtkClientClass"><link linkend="DbusmenuGtkClientClass">DbusmenuGtkClientClass</link>, struct in <link linkend="libdbusmenu-gtk-DbusmenuGtkClient">DbusmenuGtkClient</link></primaryie></indexentry>
+<indexentry><primaryie linkends="DbusmenuGtkMenuClass"><link linkend="DbusmenuGtkMenuClass">DbusmenuGtkMenuClass</link>, struct in <link linkend="libdbusmenu-gtk-DbusmenuGtkMenu">DbusmenuGtkMenu</link></primaryie></indexentry>
+<indexentry><primaryie linkends="dbusmenu-gtkclient-menuitem-get"><link linkend="dbusmenu-gtkclient-menuitem-get">dbusmenu_gtkclient_menuitem_get</link>, function in <link linkend="libdbusmenu-gtk-DbusmenuGtkClient">DbusmenuGtkClient</link></primaryie></indexentry>
+<indexentry><primaryie linkends="dbusmenu-gtkclient-menuitem-get-submenu"><link linkend="dbusmenu-gtkclient-menuitem-get-submenu">dbusmenu_gtkclient_menuitem_get_submenu</link>, function in <link linkend="libdbusmenu-gtk-DbusmenuGtkClient">DbusmenuGtkClient</link></primaryie></indexentry>
+<indexentry><primaryie linkends="dbusmenu-gtkclient-new"><link linkend="dbusmenu-gtkclient-new">dbusmenu_gtkclient_new</link>, function in <link linkend="libdbusmenu-gtk-DbusmenuGtkClient">DbusmenuGtkClient</link></primaryie></indexentry>
+<indexentry><primaryie linkends="dbusmenu-gtkclient-newitem-base"><link linkend="dbusmenu-gtkclient-newitem-base">dbusmenu_gtkclient_newitem_base</link>, function in <link linkend="libdbusmenu-gtk-DbusmenuGtkClient">DbusmenuGtkClient</link></primaryie></indexentry>
+<indexentry><primaryie linkends="DBUSMENU-GTKCLIENT-SIGNAL-ROOT-CHANGED:CAPS"><link linkend="DBUSMENU-GTKCLIENT-SIGNAL-ROOT-CHANGED:CAPS">DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED</link>, macro in <link linkend="libdbusmenu-gtk-DbusmenuGtkClient">DbusmenuGtkClient</link></primaryie></indexentry>
+<indexentry><primaryie linkends="DBUSMENU-GTKCLIENT-TYPE:CAPS"><link linkend="DBUSMENU-GTKCLIENT-TYPE:CAPS">DBUSMENU_GTKCLIENT_TYPE</link>, macro in <link linkend="libdbusmenu-gtk-DbusmenuGtkClient">DbusmenuGtkClient</link></primaryie></indexentry>
+<indexentry><primaryie linkends="dbusmenu-gtkmenu-get-client"><link linkend="dbusmenu-gtkmenu-get-client">dbusmenu_gtkmenu_get_client</link>, function in <link linkend="libdbusmenu-gtk-DbusmenuGtkMenu">DbusmenuGtkMenu</link></primaryie></indexentry>
+<indexentry><primaryie linkends="dbusmenu-gtkmenu-new"><link linkend="dbusmenu-gtkmenu-new">dbusmenu_gtkmenu_new</link>, function in <link linkend="libdbusmenu-gtk-DbusmenuGtkMenu">DbusmenuGtkMenu</link></primaryie></indexentry>
+<indexentry><primaryie linkends="DBUSMENU-GTKMENU-TYPE:CAPS"><link linkend="DBUSMENU-GTKMENU-TYPE:CAPS">DBUSMENU_GTKMENU_TYPE</link>, macro in <link linkend="libdbusmenu-gtk-DbusmenuGtkMenu">DbusmenuGtkMenu</link></primaryie></indexentry>
+<indexentry><primaryie linkends="dbusmenu-menuitem-property-get-image"><link linkend="dbusmenu-menuitem-property-get-image">dbusmenu_menuitem_property_get_image</link>, function in <link linkend="libdbusmenu-gtk-menuitem">menuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="dbusmenu-menuitem-property-set-image"><link linkend="dbusmenu-menuitem-property-set-image">dbusmenu_menuitem_property_set_image</link>, function in <link linkend="libdbusmenu-gtk-menuitem">menuitem</link></primaryie></indexentry>
+</indexdiv>
+<indexdiv><title>G</title>
+<indexentry><primaryie linkends="GENERICMENUITEM-GET-CLASS:CAPS"><link linkend="GENERICMENUITEM-GET-CLASS:CAPS">GENERICMENUITEM_GET_CLASS</link>, macro in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="genericmenuitem-get-image"><link linkend="genericmenuitem-get-image">genericmenuitem_get_image</link>, function in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="genericmenuitem-get-type"><link linkend="genericmenuitem-get-type">genericmenuitem_get_type</link>, function in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+</indexdiv>
+<indexdiv><title>I</title>
+<indexentry><primaryie linkends="IS-GENERICMENUITEM:CAPS"><link linkend="IS-GENERICMENUITEM:CAPS">IS_GENERICMENUITEM</link>, macro in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="IS-GENERICMENUITEM-CLASS:CAPS"><link linkend="IS-GENERICMENUITEM-CLASS:CAPS">IS_GENERICMENUITEM_CLASS</link>, macro in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+</indexdiv>
+<indexdiv><title>P</title>
+<indexentry><primaryie linkends="GenericmenuitemPrivate"><link linkend="GenericmenuitemPrivate">GenericmenuitemPrivate</link>, struct in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+</indexdiv>
+<indexdiv><title>S</title>
+<indexentry><primaryie linkends="genericmenuitem-set-check-type"><link linkend="genericmenuitem-set-check-type">genericmenuitem_set_check_type</link>, function in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="genericmenuitem-set-image"><link linkend="genericmenuitem-set-image">genericmenuitem_set_image</link>, function in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="genericmenuitem-set-state"><link linkend="genericmenuitem-set-state">genericmenuitem_set_state</link>, function in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+<indexentry><primaryie linkends="GenericmenuitemState"><link linkend="GenericmenuitemState">GenericmenuitemState</link>, enum in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+</indexdiv>
+<indexdiv><title>T</title>
+<indexentry><primaryie linkends="GENERICMENUITEM-TYPE:CAPS"><link linkend="GENERICMENUITEM-TYPE:CAPS">GENERICMENUITEM_TYPE</link>, macro in <link linkend="Genericmenuitem">Genericmenuitem</link></primaryie></indexentry>
+</indexdiv>
+</indexdiv>

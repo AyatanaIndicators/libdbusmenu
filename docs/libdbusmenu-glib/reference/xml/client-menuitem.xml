@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="DbusmenuClientMenuitem">
+<refmeta>
+<refentrytitle role="top_of_page" id="DbusmenuClientMenuitem.top_of_page">DbusmenuClientMenuitem</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GLIB Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>DbusmenuClientMenuitem</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="DbusmenuClientMenuitem.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>#define             <link linkend="DBUSMENU-CLIENT-MENUITEM-TYPE:CAPS">DBUSMENU_CLIENT_MENUITEM_TYPE</link>
+                    <link linkend="DbusmenuClientMenuitem-struct">DbusmenuClientMenuitem</link>;
+                    <link linkend="DbusmenuClientMenuitemClass">DbusmenuClientMenuitemClass</link>;
+<link linkend="DbusmenuClientMenuitem"><returnvalue>DbusmenuClientMenuitem</returnvalue></link> * <link linkend="dbusmenu-client-menuitem-new">dbusmenu_client_menuitem_new</link>   (<parameter><link linkend="gint"><type>gint</type></link> id</parameter>,
+                                                         <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
+</synopsis>
+</refsynopsisdiv>
+<refsect1 id="DbusmenuClientMenuitem.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="DbusmenuMenuitem">DbusmenuMenuitem</link>
+         +----DbusmenuClientMenuitem
+</synopsis>
+</refsect1>
+
+<refsect1 id="DbusmenuClientMenuitem.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+<refsect1 id="DbusmenuClientMenuitem.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="DBUSMENU-CLIENT-MENUITEM-TYPE:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_MENUITEM_TYPE</title>
+<indexterm zone="DBUSMENU-CLIENT-MENUITEM-TYPE:CAPS"><primary>DBUSMENU_CLIENT_MENUITEM_TYPE</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_MENUITEM_TYPE            (dbusmenu_client_menuitem_get_type ())
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DbusmenuClientMenuitem-struct" role="struct">
+<title>DbusmenuClientMenuitem</title>
+<indexterm zone="DbusmenuClientMenuitem-struct"><primary>DbusmenuClientMenuitem</primary></indexterm>
+<programlisting>typedef struct _DbusmenuClientMenuitem DbusmenuClientMenuitem;</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DbusmenuClientMenuitemClass" role="struct">
+<title>DbusmenuClientMenuitemClass</title>
+<indexterm zone="DbusmenuClientMenuitemClass"><primary>DbusmenuClientMenuitemClass</primary></indexterm>
+<programlisting>typedef struct {
+	DbusmenuMenuitemClass parent_class;
+} DbusmenuClientMenuitemClass;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="dbusmenu-client-menuitem-new" role="function">
+<title>dbusmenu_client_menuitem_new ()</title>
+<indexterm zone="dbusmenu-client-menuitem-new"><primary>dbusmenu_client_menuitem_new</primary></indexterm>
+<programlisting><link linkend="DbusmenuClientMenuitem"><returnvalue>DbusmenuClientMenuitem</returnvalue></link> * dbusmenu_client_menuitem_new   (<parameter><link linkend="gint"><type>gint</type></link> id</parameter>,
+                                                         <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>

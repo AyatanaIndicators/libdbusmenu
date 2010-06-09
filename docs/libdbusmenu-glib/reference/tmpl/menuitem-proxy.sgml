@@ -1,0 +1,60 @@
+<!-- ##### SECTION Title ##### -->
+DbusmenuMenuitemProxy
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT DbusmenuMenuitemProxy ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG DbusmenuMenuitemProxy:menu-item ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT DbusmenuMenuitemProxyClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+
+<!-- ##### FUNCTION dbusmenu_menuitem_proxy_new ##### -->
+<para>
+
+</para>
+
+@mi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_proxy_get_wrapped ##### -->
+<para>
+
+</para>
+
+@pmi: 
+@Returns: 
+
+

@@ -1,0 +1,1001 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>dbusmenu-client</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="libdbusmenu-glib Reference Manual">
+<link rel="up" href="ch01.html" title="API">
+<link rel="prev" href="DbusmenuClientMenuitem.html" title="DbusmenuClientMenuitem">
+<link rel="next" href="libdbusmenu-glib-dbusmenu-server.html" title="dbusmenu-server">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="DbusmenuClientMenuitem.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">libdbusmenu-glib Reference Manual</th>
+<td><a accesskey="n" href="libdbusmenu-glib-dbusmenu-server.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#libdbusmenu-glib-dbusmenu-client.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#libdbusmenu-glib-dbusmenu-client.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry" title="dbusmenu-client">
+<a name="libdbusmenu-glib-dbusmenu-client"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="libdbusmenu-glib-dbusmenu-client.top_of_page"></a>dbusmenu-client</span></h2>
+<p>dbusmenu-client</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="libdbusmenu-glib-dbusmenu-client.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">#define             <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#DBUS-GLIB-CLIENT-WRAPPERS-org-ayatana-dbusmenu" title="DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu">DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu</a>
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-layout" title="org_ayatana_dbusmenu_get_layout ()">org_ayatana_dbusmenu_get_layout</a>     (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_parentId</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *OUT_revision</code></em>,
+                                                         <em class="parameter"><code><span class="type">char</span> **OUT_layout</code></em>);
+<span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-layout-reply" title="org_ayatana_dbusmenu_get_layout_reply ()">*org_ayatana_dbusmenu_get_layout_reply</a>)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> OUT_revision</code></em>,
+                                                         <em class="parameter"><code><span class="type">char</span> *OUT_layout</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);
+<span class="returnvalue">DBusGProxyCall</span> *    <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-layout-async" title="org_ayatana_dbusmenu_get_layout_async ()">org_ayatana_dbusmenu_get_layout_async</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_parentId</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-layout-reply" title="org_ayatana_dbusmenu_get_layout_reply ()"><span class="type">org_ayatana_dbusmenu_get_layout_reply</span></a> callback</code></em>);
+<span class="returnvalue">return</span>              <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#dbus-g-proxy-begin-call" title="dbus_g_proxy_begin_call ()">dbus_g_proxy_begin_call</a>             (<em class="parameter"><code><span class="type">proxy</span> Param1</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-group-properties" title="org_ayatana_dbusmenu_get_group_properties ()">org_ayatana_dbusmenu_get_group_properties</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"><span class="type">GArray</span></a> *IN_ids</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> **OUT_properties</code></em>);
+<span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-group-properties-reply" title="org_ayatana_dbusmenu_get_group_properties_reply ()">*org_ayatana_dbusmenu_get_group_properties_reply</a>)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *OUT_properties</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);
+<span class="returnvalue">DBusGProxyCall</span> *    <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-group-properties-async" title="org_ayatana_dbusmenu_get_group_properties_async ()">org_ayatana_dbusmenu_get_group_properties_async</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"><span class="type">GArray</span></a> *IN_ids</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-group-properties-reply" title="org_ayatana_dbusmenu_get_group_properties_reply ()"><span class="type">org_ayatana_dbusmenu_get_group_properties_reply</span></a> callback</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-children" title="org_ayatana_dbusmenu_get_children ()">org_ayatana_dbusmenu_get_children</a>   (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> **OUT_properties</code></em>);
+<span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-children-reply" title="org_ayatana_dbusmenu_get_children_reply ()">*org_ayatana_dbusmenu_get_children_reply</a>)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *OUT_properties</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);
+<span class="returnvalue">DBusGProxyCall</span> *    <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-children-async" title="org_ayatana_dbusmenu_get_children_async ()">org_ayatana_dbusmenu_get_children_async</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-children-reply" title="org_ayatana_dbusmenu_get_children_reply ()"><span class="type">org_ayatana_dbusmenu_get_children_reply</span></a> callback</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-property" title="org_ayatana_dbusmenu_get_property ()">org_ayatana_dbusmenu_get_property</a>   (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *IN_name</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *OUT_value</code></em>);
+<span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-property-reply" title="org_ayatana_dbusmenu_get_property_reply ()">*org_ayatana_dbusmenu_get_property_reply</a>)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> OUT_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);
+<span class="returnvalue">DBusGProxyCall</span> *    <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-property-async" title="org_ayatana_dbusmenu_get_property_async ()">org_ayatana_dbusmenu_get_property_async</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *IN_name</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-property-reply" title="org_ayatana_dbusmenu_get_property_reply ()"><span class="type">org_ayatana_dbusmenu_get_property_reply</span></a> callback</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-properties" title="org_ayatana_dbusmenu_get_properties ()">org_ayatana_dbusmenu_get_properties</a> (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> **OUT_properties</code></em>);
+<span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-properties-reply" title="org_ayatana_dbusmenu_get_properties_reply ()">*org_ayatana_dbusmenu_get_properties_reply</a>)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> *OUT_properties</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);
+<span class="returnvalue">DBusGProxyCall</span> *    <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-properties-async" title="org_ayatana_dbusmenu_get_properties_async ()">org_ayatana_dbusmenu_get_properties_async</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-properties-reply" title="org_ayatana_dbusmenu_get_properties_reply ()"><span class="type">org_ayatana_dbusmenu_get_properties_reply</span></a> callback</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-event" title="org_ayatana_dbusmenu_event ()">org_ayatana_dbusmenu_event</a>          (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *IN_eventId</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *IN_data</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> IN_timestamp</code></em>);
+<span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-event-reply" title="org_ayatana_dbusmenu_event_reply ()">*org_ayatana_dbusmenu_event_reply</a>) (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);
+<span class="returnvalue">DBusGProxyCall</span> *    <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-event-async" title="org_ayatana_dbusmenu_event_async ()">org_ayatana_dbusmenu_event_async</a>    (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *IN_eventId</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *IN_data</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> IN_timestamp</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-event-reply" title="org_ayatana_dbusmenu_event_reply ()"><span class="type">org_ayatana_dbusmenu_event_reply</span></a> callback</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-about-to-show" title="org_ayatana_dbusmenu_about_to_show ()">org_ayatana_dbusmenu_about_to_show</a>  (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> *OUT_needUpdate</code></em>);
+<span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-about-to-show-reply" title="org_ayatana_dbusmenu_about_to_show_reply ()">*org_ayatana_dbusmenu_about_to_show_reply</a>)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> OUT_needUpdate</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);
+<span class="returnvalue">DBusGProxyCall</span> *    <a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-about-to-show-async" title="org_ayatana_dbusmenu_about_to_show_async ()">org_ayatana_dbusmenu_about_to_show_async</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-about-to-show-reply" title="org_ayatana_dbusmenu_about_to_show_reply ()"><span class="type">org_ayatana_dbusmenu_about_to_show_reply</span></a> callback</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="libdbusmenu-glib-dbusmenu-client.description"></a><h2>Description</h2>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="libdbusmenu-glib-dbusmenu-client.details"></a><h2>Details</h2>
+<div class="refsect2" title="DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu">
+<a name="DBUS-GLIB-CLIENT-WRAPPERS-org-ayatana-dbusmenu"></a><h3>DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu</h3>
+<pre class="programlisting">#define DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_layout ()">
+<a name="org-ayatana-dbusmenu-get-layout"></a><h3>org_ayatana_dbusmenu_get_layout ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            org_ayatana_dbusmenu_get_layout     (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_parentId</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *OUT_revision</code></em>,
+                                                         <em class="parameter"><code><span class="type">char</span> **OUT_layout</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_parentId</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_revision</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_layout</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_layout_reply ()">
+<a name="org-ayatana-dbusmenu-get-layout-reply"></a><h3>org_ayatana_dbusmenu_get_layout_reply ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*org_ayatana_dbusmenu_get_layout_reply)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> OUT_revision</code></em>,
+                                                         <em class="parameter"><code><span class="type">char</span> *OUT_layout</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_revision</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_layout</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>userdata</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_layout_async ()">
+<a name="org-ayatana-dbusmenu-get-layout-async"></a><h3>org_ayatana_dbusmenu_get_layout_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">DBusGProxyCall</span> *    org_ayatana_dbusmenu_get_layout_async
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_parentId</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-layout-reply" title="org_ayatana_dbusmenu_get_layout_reply ()"><span class="type">org_ayatana_dbusmenu_get_layout_reply</span></a> callback</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_parentId</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbus_g_proxy_begin_call ()">
+<a name="dbus-g-proxy-begin-call"></a><h3>dbus_g_proxy_begin_call ()</h3>
+<pre class="programlisting"><span class="returnvalue">return</span>              dbus_g_proxy_begin_call             (<em class="parameter"><code><span class="type">proxy</span> Param1</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>Param1</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_group_properties ()">
+<a name="org-ayatana-dbusmenu-get-group-properties"></a><h3>org_ayatana_dbusmenu_get_group_properties ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            org_ayatana_dbusmenu_get_group_properties
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"><span class="type">GArray</span></a> *IN_ids</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> **OUT_properties</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_ids</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_propertyNames</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_properties</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_group_properties_reply ()">
+<a name="org-ayatana-dbusmenu-get-group-properties-reply"></a><h3>org_ayatana_dbusmenu_get_group_properties_reply ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*org_ayatana_dbusmenu_get_group_properties_reply)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *OUT_properties</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_properties</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>userdata</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_group_properties_async ()">
+<a name="org-ayatana-dbusmenu-get-group-properties-async"></a><h3>org_ayatana_dbusmenu_get_group_properties_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">DBusGProxyCall</span> *    org_ayatana_dbusmenu_get_group_properties_async
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"><span class="type">GArray</span></a> *IN_ids</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-group-properties-reply" title="org_ayatana_dbusmenu_get_group_properties_reply ()"><span class="type">org_ayatana_dbusmenu_get_group_properties_reply</span></a> callback</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_ids</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_propertyNames</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_children ()">
+<a name="org-ayatana-dbusmenu-get-children"></a><h3>org_ayatana_dbusmenu_get_children ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            org_ayatana_dbusmenu_get_children   (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> **OUT_properties</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_propertyNames</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_properties</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_children_reply ()">
+<a name="org-ayatana-dbusmenu-get-children-reply"></a><h3>org_ayatana_dbusmenu_get_children_reply ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*org_ayatana_dbusmenu_get_children_reply)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *OUT_properties</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_properties</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>userdata</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_children_async ()">
+<a name="org-ayatana-dbusmenu-get-children-async"></a><h3>org_ayatana_dbusmenu_get_children_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">DBusGProxyCall</span> *    org_ayatana_dbusmenu_get_children_async
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-children-reply" title="org_ayatana_dbusmenu_get_children_reply ()"><span class="type">org_ayatana_dbusmenu_get_children_reply</span></a> callback</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_propertyNames</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_property ()">
+<a name="org-ayatana-dbusmenu-get-property"></a><h3>org_ayatana_dbusmenu_get_property ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            org_ayatana_dbusmenu_get_property   (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *IN_name</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *OUT_value</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_name</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_value</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_property_reply ()">
+<a name="org-ayatana-dbusmenu-get-property-reply"></a><h3>org_ayatana_dbusmenu_get_property_reply ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*org_ayatana_dbusmenu_get_property_reply)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> OUT_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_value</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>userdata</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_property_async ()">
+<a name="org-ayatana-dbusmenu-get-property-async"></a><h3>org_ayatana_dbusmenu_get_property_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">DBusGProxyCall</span> *    org_ayatana_dbusmenu_get_property_async
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *IN_name</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-property-reply" title="org_ayatana_dbusmenu_get_property_reply ()"><span class="type">org_ayatana_dbusmenu_get_property_reply</span></a> callback</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_name</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_properties ()">
+<a name="org-ayatana-dbusmenu-get-properties"></a><h3>org_ayatana_dbusmenu_get_properties ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            org_ayatana_dbusmenu_get_properties (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> **OUT_properties</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_propertyNames</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_properties</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_properties_reply ()">
+<a name="org-ayatana-dbusmenu-get-properties-reply"></a><h3>org_ayatana_dbusmenu_get_properties_reply ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*org_ayatana_dbusmenu_get_properties_reply)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> *OUT_properties</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_properties</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>userdata</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_get_properties_async ()">
+<a name="org-ayatana-dbusmenu-get-properties-async"></a><h3>org_ayatana_dbusmenu_get_properties_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">DBusGProxyCall</span> *    org_ayatana_dbusmenu_get_properties_async
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> **IN_propertyNames</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-properties-reply" title="org_ayatana_dbusmenu_get_properties_reply ()"><span class="type">org_ayatana_dbusmenu_get_properties_reply</span></a> callback</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_propertyNames</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_event ()">
+<a name="org-ayatana-dbusmenu-event"></a><h3>org_ayatana_dbusmenu_event ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            org_ayatana_dbusmenu_event          (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *IN_eventId</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *IN_data</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> IN_timestamp</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_eventId</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_timestamp</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_event_reply ()">
+<a name="org-ayatana-dbusmenu-event-reply"></a><h3>org_ayatana_dbusmenu_event_reply ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*org_ayatana_dbusmenu_event_reply) (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>userdata</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_event_async ()">
+<a name="org-ayatana-dbusmenu-event-async"></a><h3>org_ayatana_dbusmenu_event_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">DBusGProxyCall</span> *    org_ayatana_dbusmenu_event_async    (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *IN_eventId</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *IN_data</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> IN_timestamp</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-event-reply" title="org_ayatana_dbusmenu_event_reply ()"><span class="type">org_ayatana_dbusmenu_event_reply</span></a> callback</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_eventId</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_timestamp</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_about_to_show ()">
+<a name="org-ayatana-dbusmenu-about-to-show"></a><h3>org_ayatana_dbusmenu_about_to_show ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            org_ayatana_dbusmenu_about_to_show  (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> *OUT_needUpdate</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_needUpdate</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_about_to_show_reply ()">
+<a name="org-ayatana-dbusmenu-about-to-show-reply"></a><h3>org_ayatana_dbusmenu_about_to_show_reply ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*org_ayatana_dbusmenu_about_to_show_reply)
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> OUT_needUpdate</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> userdata</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>OUT_needUpdate</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>userdata</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="org_ayatana_dbusmenu_about_to_show_async ()">
+<a name="org-ayatana-dbusmenu-about-to-show-async"></a><h3>org_ayatana_dbusmenu_about_to_show_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">DBusGProxyCall</span> *    org_ayatana_dbusmenu_about_to_show_async
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/dbus-glib/dbus-glib-DBusGProxy.html#DBusGProxy"><span class="type">DBusGProxy</span></a> *proxy</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> IN_id</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-about-to-show-reply" title="org_ayatana_dbusmenu_about_to_show_reply ()"><span class="type">org_ayatana_dbusmenu_about_to_show_reply</span></a> callback</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proxy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>IN_id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.14</div>
+</body>
+</html>

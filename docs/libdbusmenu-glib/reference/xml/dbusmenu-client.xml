@@ -1,0 +1,657 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="libdbusmenu-glib-dbusmenu-client">
+<refmeta>
+<refentrytitle role="top_of_page" id="libdbusmenu-glib-dbusmenu-client.top_of_page">dbusmenu-client</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GLIB Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>dbusmenu-client</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="libdbusmenu-glib-dbusmenu-client.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>#define             <link linkend="DBUS-GLIB-CLIENT-WRAPPERS-org-ayatana-dbusmenu">DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu</link>
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="org-ayatana-dbusmenu-get-layout">org_ayatana_dbusmenu_get_layout</link>     (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_parentId</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> *OUT_revision</parameter>,
+                                                         <parameter><link linkend="char"><type>char</type></link> **OUT_layout</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="org-ayatana-dbusmenu-get-layout-reply">*org_ayatana_dbusmenu_get_layout_reply</link>)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> OUT_revision</parameter>,
+                                                         <parameter><link linkend="char"><type>char</type></link> *OUT_layout</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);
+<link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    <link linkend="org-ayatana-dbusmenu-get-layout-async">org_ayatana_dbusmenu_get_layout_async</link>
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_parentId</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-layout-reply"><type>org_ayatana_dbusmenu_get_layout_reply</type></link> callback</parameter>);
+<link linkend="return"><returnvalue>return</returnvalue></link>              <link linkend="dbus-g-proxy-begin-call">dbus_g_proxy_begin_call</link>             (<parameter><link linkend="proxy"><type>proxy</type></link> Param1</parameter>);
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="org-ayatana-dbusmenu-get-group-properties">org_ayatana_dbusmenu_get_group_properties</link>
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="GArray"><type>GArray</type></link> *IN_ids</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="GPtrArray"><type>GPtrArray</type></link> **OUT_properties</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="org-ayatana-dbusmenu-get-group-properties-reply">*org_ayatana_dbusmenu_get_group_properties_reply</link>)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GPtrArray"><type>GPtrArray</type></link> *OUT_properties</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);
+<link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    <link linkend="org-ayatana-dbusmenu-get-group-properties-async">org_ayatana_dbusmenu_get_group_properties_async</link>
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="GArray"><type>GArray</type></link> *IN_ids</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-group-properties-reply"><type>org_ayatana_dbusmenu_get_group_properties_reply</type></link> callback</parameter>);
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="org-ayatana-dbusmenu-get-children">org_ayatana_dbusmenu_get_children</link>   (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="GPtrArray"><type>GPtrArray</type></link> **OUT_properties</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="org-ayatana-dbusmenu-get-children-reply">*org_ayatana_dbusmenu_get_children_reply</link>)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GPtrArray"><type>GPtrArray</type></link> *OUT_properties</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);
+<link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    <link linkend="org-ayatana-dbusmenu-get-children-async">org_ayatana_dbusmenu_get_children_async</link>
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-children-reply"><type>org_ayatana_dbusmenu_get_children_reply</type></link> callback</parameter>);
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="org-ayatana-dbusmenu-get-property">org_ayatana_dbusmenu_get_property</link>   (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> *IN_name</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *OUT_value</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="org-ayatana-dbusmenu-get-property-reply">*org_ayatana_dbusmenu_get_property_reply</link>)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> OUT_value</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);
+<link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    <link linkend="org-ayatana-dbusmenu-get-property-async">org_ayatana_dbusmenu_get_property_async</link>
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> *IN_name</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-property-reply"><type>org_ayatana_dbusmenu_get_property_reply</type></link> callback</parameter>);
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="org-ayatana-dbusmenu-get-properties">org_ayatana_dbusmenu_get_properties</link> (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="GHashTable"><type>GHashTable</type></link> **OUT_properties</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="org-ayatana-dbusmenu-get-properties-reply">*org_ayatana_dbusmenu_get_properties_reply</link>)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GHashTable"><type>GHashTable</type></link> *OUT_properties</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);
+<link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    <link linkend="org-ayatana-dbusmenu-get-properties-async">org_ayatana_dbusmenu_get_properties_async</link>
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-properties-reply"><type>org_ayatana_dbusmenu_get_properties_reply</type></link> callback</parameter>);
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="org-ayatana-dbusmenu-event">org_ayatana_dbusmenu_event</link>          (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> *IN_eventId</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *IN_data</parameter>,
+                                                         <parameter>const <link linkend="guint"><type>guint</type></link> IN_timestamp</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="org-ayatana-dbusmenu-event-reply">*org_ayatana_dbusmenu_event_reply</link>) (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);
+<link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    <link linkend="org-ayatana-dbusmenu-event-async">org_ayatana_dbusmenu_event_async</link>    (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> *IN_eventId</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *IN_data</parameter>,
+                                                         <parameter>const <link linkend="guint"><type>guint</type></link> IN_timestamp</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-event-reply"><type>org_ayatana_dbusmenu_event_reply</type></link> callback</parameter>);
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="org-ayatana-dbusmenu-about-to-show">org_ayatana_dbusmenu_about_to_show</link>  (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter><link linkend="gboolean"><type>gboolean</type></link> *OUT_needUpdate</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="org-ayatana-dbusmenu-about-to-show-reply">*org_ayatana_dbusmenu_about_to_show_reply</link>)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="gboolean"><type>gboolean</type></link> OUT_needUpdate</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);
+<link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    <link linkend="org-ayatana-dbusmenu-about-to-show-async">org_ayatana_dbusmenu_about_to_show_async</link>
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-about-to-show-reply"><type>org_ayatana_dbusmenu_about_to_show_reply</type></link> callback</parameter>);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="libdbusmenu-glib-dbusmenu-client.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+<refsect1 id="libdbusmenu-glib-dbusmenu-client.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="DBUS-GLIB-CLIENT-WRAPPERS-org-ayatana-dbusmenu" role="macro">
+<title>DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu</title>
+<indexterm zone="DBUS-GLIB-CLIENT-WRAPPERS-org-ayatana-dbusmenu"><primary>DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu</primary></indexterm>
+<programlisting>#define DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-layout" role="function">
+<title>org_ayatana_dbusmenu_get_layout ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-layout"><primary>org_ayatana_dbusmenu_get_layout</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            org_ayatana_dbusmenu_get_layout     (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_parentId</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> *OUT_revision</parameter>,
+                                                         <parameter><link linkend="char"><type>char</type></link> **OUT_layout</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_parentId</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_revision</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_layout</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-layout-reply" role="function">
+<title>org_ayatana_dbusmenu_get_layout_reply ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-layout-reply"><primary>org_ayatana_dbusmenu_get_layout_reply</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                (*org_ayatana_dbusmenu_get_layout_reply)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> OUT_revision</parameter>,
+                                                         <parameter><link linkend="char"><type>char</type></link> *OUT_layout</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_revision</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_layout</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>userdata</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-layout-async" role="function">
+<title>org_ayatana_dbusmenu_get_layout_async ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-layout-async"><primary>org_ayatana_dbusmenu_get_layout_async</primary></indexterm>
+<programlisting><link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    org_ayatana_dbusmenu_get_layout_async
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_parentId</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-layout-reply"><type>org_ayatana_dbusmenu_get_layout_reply</type></link> callback</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_parentId</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbus-g-proxy-begin-call" role="function">
+<title>dbus_g_proxy_begin_call ()</title>
+<indexterm zone="dbus-g-proxy-begin-call"><primary>dbus_g_proxy_begin_call</primary></indexterm>
+<programlisting><link linkend="return"><returnvalue>return</returnvalue></link>              dbus_g_proxy_begin_call             (<parameter><link linkend="proxy"><type>proxy</type></link> Param1</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>Param1</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-group-properties" role="function">
+<title>org_ayatana_dbusmenu_get_group_properties ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-group-properties"><primary>org_ayatana_dbusmenu_get_group_properties</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            org_ayatana_dbusmenu_get_group_properties
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="GArray"><type>GArray</type></link> *IN_ids</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="GPtrArray"><type>GPtrArray</type></link> **OUT_properties</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_ids</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_propertyNames</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_properties</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-group-properties-reply" role="function">
+<title>org_ayatana_dbusmenu_get_group_properties_reply ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-group-properties-reply"><primary>org_ayatana_dbusmenu_get_group_properties_reply</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                (*org_ayatana_dbusmenu_get_group_properties_reply)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GPtrArray"><type>GPtrArray</type></link> *OUT_properties</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_properties</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>userdata</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-group-properties-async" role="function">
+<title>org_ayatana_dbusmenu_get_group_properties_async ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-group-properties-async"><primary>org_ayatana_dbusmenu_get_group_properties_async</primary></indexterm>
+<programlisting><link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    org_ayatana_dbusmenu_get_group_properties_async
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="GArray"><type>GArray</type></link> *IN_ids</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-group-properties-reply"><type>org_ayatana_dbusmenu_get_group_properties_reply</type></link> callback</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_ids</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_propertyNames</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-children" role="function">
+<title>org_ayatana_dbusmenu_get_children ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-children"><primary>org_ayatana_dbusmenu_get_children</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            org_ayatana_dbusmenu_get_children   (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="GPtrArray"><type>GPtrArray</type></link> **OUT_properties</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_propertyNames</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_properties</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-children-reply" role="function">
+<title>org_ayatana_dbusmenu_get_children_reply ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-children-reply"><primary>org_ayatana_dbusmenu_get_children_reply</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                (*org_ayatana_dbusmenu_get_children_reply)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GPtrArray"><type>GPtrArray</type></link> *OUT_properties</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_properties</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>userdata</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-children-async" role="function">
+<title>org_ayatana_dbusmenu_get_children_async ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-children-async"><primary>org_ayatana_dbusmenu_get_children_async</primary></indexterm>
+<programlisting><link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    org_ayatana_dbusmenu_get_children_async
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-children-reply"><type>org_ayatana_dbusmenu_get_children_reply</type></link> callback</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_propertyNames</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-property" role="function">
+<title>org_ayatana_dbusmenu_get_property ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-property"><primary>org_ayatana_dbusmenu_get_property</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            org_ayatana_dbusmenu_get_property   (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> *IN_name</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> *OUT_value</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-property-reply" role="function">
+<title>org_ayatana_dbusmenu_get_property_reply ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-property-reply"><primary>org_ayatana_dbusmenu_get_property_reply</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                (*org_ayatana_dbusmenu_get_property_reply)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GValue"><type>GValue</type></link> OUT_value</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>userdata</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-property-async" role="function">
+<title>org_ayatana_dbusmenu_get_property_async ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-property-async"><primary>org_ayatana_dbusmenu_get_property_async</primary></indexterm>
+<programlisting><link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    org_ayatana_dbusmenu_get_property_async
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> *IN_name</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-property-reply"><type>org_ayatana_dbusmenu_get_property_reply</type></link> callback</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-properties" role="function">
+<title>org_ayatana_dbusmenu_get_properties ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-properties"><primary>org_ayatana_dbusmenu_get_properties</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            org_ayatana_dbusmenu_get_properties (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="GHashTable"><type>GHashTable</type></link> **OUT_properties</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_propertyNames</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_properties</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-properties-reply" role="function">
+<title>org_ayatana_dbusmenu_get_properties_reply ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-properties-reply"><primary>org_ayatana_dbusmenu_get_properties_reply</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                (*org_ayatana_dbusmenu_get_properties_reply)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GHashTable"><type>GHashTable</type></link> *OUT_properties</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_properties</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>userdata</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-get-properties-async" role="function">
+<title>org_ayatana_dbusmenu_get_properties_async ()</title>
+<indexterm zone="org-ayatana-dbusmenu-get-properties-async"><primary>org_ayatana_dbusmenu_get_properties_async</primary></indexterm>
+<programlisting><link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    org_ayatana_dbusmenu_get_properties_async
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> **IN_propertyNames</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-get-properties-reply"><type>org_ayatana_dbusmenu_get_properties_reply</type></link> callback</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_propertyNames</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-event" role="function">
+<title>org_ayatana_dbusmenu_event ()</title>
+<indexterm zone="org-ayatana-dbusmenu-event"><primary>org_ayatana_dbusmenu_event</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            org_ayatana_dbusmenu_event          (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> *IN_eventId</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *IN_data</parameter>,
+                                                         <parameter>const <link linkend="guint"><type>guint</type></link> IN_timestamp</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_eventId</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_timestamp</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-event-reply" role="function">
+<title>org_ayatana_dbusmenu_event_reply ()</title>
+<indexterm zone="org-ayatana-dbusmenu-event-reply"><primary>org_ayatana_dbusmenu_event_reply</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                (*org_ayatana_dbusmenu_event_reply) (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>userdata</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-event-async" role="function">
+<title>org_ayatana_dbusmenu_event_async ()</title>
+<indexterm zone="org-ayatana-dbusmenu-event-async"><primary>org_ayatana_dbusmenu_event_async</primary></indexterm>
+<programlisting><link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    org_ayatana_dbusmenu_event_async    (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter>const <link linkend="char"><type>char</type></link> *IN_eventId</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *IN_data</parameter>,
+                                                         <parameter>const <link linkend="guint"><type>guint</type></link> IN_timestamp</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-event-reply"><type>org_ayatana_dbusmenu_event_reply</type></link> callback</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_eventId</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_timestamp</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-about-to-show" role="function">
+<title>org_ayatana_dbusmenu_about_to_show ()</title>
+<indexterm zone="org-ayatana-dbusmenu-about-to-show"><primary>org_ayatana_dbusmenu_about_to_show</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            org_ayatana_dbusmenu_about_to_show  (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter><link linkend="gboolean"><type>gboolean</type></link> *OUT_needUpdate</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_needUpdate</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-about-to-show-reply" role="function">
+<title>org_ayatana_dbusmenu_about_to_show_reply ()</title>
+<indexterm zone="org-ayatana-dbusmenu-about-to-show-reply"><primary>org_ayatana_dbusmenu_about_to_show_reply</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                (*org_ayatana_dbusmenu_about_to_show_reply)
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter><link linkend="gboolean"><type>gboolean</type></link> OUT_needUpdate</parameter>,
+                                                         <parameter><link linkend="GError"><type>GError</type></link> *error</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> userdata</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>OUT_needUpdate</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>userdata</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="org-ayatana-dbusmenu-about-to-show-async" role="function">
+<title>org_ayatana_dbusmenu_about_to_show_async ()</title>
+<indexterm zone="org-ayatana-dbusmenu-about-to-show-async"><primary>org_ayatana_dbusmenu_about_to_show_async</primary></indexterm>
+<programlisting><link linkend="DBusGProxyCall"><returnvalue>DBusGProxyCall</returnvalue></link> *    org_ayatana_dbusmenu_about_to_show_async
+                                                        (<parameter><link linkend="DBusGProxy"><type>DBusGProxy</type></link> *proxy</parameter>,
+                                                         <parameter>const <link linkend="gint"><type>gint</type></link> IN_id</parameter>,
+                                                         <parameter><link linkend="org-ayatana-dbusmenu-about-to-show-reply"><type>org_ayatana_dbusmenu_about_to_show_reply</type></link> callback</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>proxy</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>IN_id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>

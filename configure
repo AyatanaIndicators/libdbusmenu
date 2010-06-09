@@ -780,7 +780,29 @@ DBUSMENUGTK_LIBS
 DBUSMENUGTK_CFLAGS
 DBUSMENUGLIB_LIBS
 DBUSMENUGLIB_CFLAGS
+HAVE_GNOME_DOC_UTILS_FALSE
+HAVE_GNOME_DOC_UTILS_TRUE
+DISTCHECK_CONFIGURE_FLAGS
+ENABLE_SK_FALSE
+ENABLE_SK_TRUE
+DOC_USER_FORMATS
+OMF_DIR
+HELP_DIR
+GTK_DOC_USE_REBASE_FALSE
+GTK_DOC_USE_REBASE_TRUE
+GTK_DOC_USE_LIBTOOL_FALSE
+GTK_DOC_USE_LIBTOOL_TRUE
+GTK_DOC_BUILD_PDF_FALSE
+GTK_DOC_BUILD_PDF_TRUE
+GTK_DOC_BUILD_HTML_FALSE
+GTK_DOC_BUILD_HTML_TRUE
+ENABLE_GTK_DOC_FALSE
+ENABLE_GTK_DOC_TRUE
 PKG_CONFIG
+HTML_DIR
+GTKDOC_MKPDF
+GTKDOC_REBASE
+GTKDOC_CHECK
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 OTOOL64
@@ -934,6 +956,14 @@ enable_fast_install
 with_gnu_ld
 enable_libtool_lock
 enable_silent_rules
+with_html_dir
+enable_gtk_doc
+enable_gtk_doc_html
+enable_gtk_doc_pdf
+with_help_dir
+with_omf_dir
+with_help_formats
+enable_scrollkeeper
 enable_introspection
 enable_massivedebugging
 '
@@ -1584,6 +1614,10 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-silent-rules          less verbose build output (undo: `make V=1')
   --disable-silent-rules         verbose build output (undo: `make V=0')
+  --enable-gtk-doc        use gtk-doc to build documentation [[default=no]]
+  --enable-gtk-doc-html   build documentation in html format [[default=yes]]
+  --enable-gtk-doc-pdf    build documentation in pdf format [[default=no]]
+  --disable-scrollkeeper  do not make updates to the scrollkeeper database
   --enable-introspection=[no/auto/yes]
                           Enable introspection for this build
   --enable-massivedebugging
@@ -1595,6 +1629,11 @@ Optional Packages:
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
+  --with-html-dir=PATH    path to installed docs
+  --with-help-dir=DIR     path to help docs
+  --with-omf-dir=DIR      path to OMF files
+  --with-help-formats=FORMATS
+                          list of formats
 
 Some influential environment variables:
   CC          C compiler command
@@ -6246,13 +6285,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6249: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6288: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6252: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:6291: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6255: output\"" >&5)
+  (eval echo "\"\$as_me:6294: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7457,7 +7496,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7460 "configure"' > conftest.$ac_ext
+  echo '#line 7499 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8708,6 +8747,10 @@ _lt_linker_boilerplate=`cat conftest.err`
 $RM -r conftest*
 
 
+## CAVEAT EMPTOR:
+## There is no encapsulation within the following macros, do not change
+## the running order or otherwise move them around unless you know exactly
+## what you are doing...
 if test -n "$compiler"; then
 
 lt_prog_compiler_no_builtin_flag=
@@ -8733,11 +8776,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8736: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8779: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8740: \$? = $ac_status" >&5
+   echo "$as_me:8783: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9072,11 +9115,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9075: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9118: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9079: \$? = $ac_status" >&5
+   echo "$as_me:9122: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9177,11 +9220,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9180: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9223: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9184: \$? = $ac_status" >&5
+   echo "$as_me:9227: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9232,11 +9275,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9235: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9278: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9239: \$? = $ac_status" >&5
+   echo "$as_me:9282: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11616,7 +11659,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11619 "configure"
+#line 11662 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11712,7 +11755,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11715 "configure"
+#line 11758 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11957,12 +12000,8 @@ AM_BACKSLASH='\'
 
 
 ###########################
-# Dependencies - GLib
+# GTK Doc
 ###########################
-
-GLIB_REQUIRED_VERSION=2.18
-DBUS_REQUIRED_VERSION=0.76
-XML_REQUIRED_VERSION=2.6
 
 
 
@@ -12080,6 +12119,331 @@ $as_echo "no" >&6; }
 	fi
 
 fi
+
+
+    # Extract the first word of "gtkdoc-check", so it can be a program name with args.
+set dummy gtkdoc-check; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_GTKDOC_CHECK+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $GTKDOC_CHECK in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_GTKDOC_CHECK="$GTKDOC_CHECK" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_GTKDOC_CHECK="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+GTKDOC_CHECK=$ac_cv_path_GTKDOC_CHECK
+if test -n "$GTKDOC_CHECK"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GTKDOC_CHECK" >&5
+$as_echo "$GTKDOC_CHECK" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  for ac_prog in gtkdoc-rebase
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_GTKDOC_REBASE+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $GTKDOC_REBASE in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_GTKDOC_REBASE="$GTKDOC_REBASE" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_GTKDOC_REBASE="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+GTKDOC_REBASE=$ac_cv_path_GTKDOC_REBASE
+if test -n "$GTKDOC_REBASE"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GTKDOC_REBASE" >&5
+$as_echo "$GTKDOC_REBASE" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$GTKDOC_REBASE" && break
+done
+test -n "$GTKDOC_REBASE" || GTKDOC_REBASE="true"
+
+  # Extract the first word of "gtkdoc-mkpdf", so it can be a program name with args.
+set dummy gtkdoc-mkpdf; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_GTKDOC_MKPDF+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $GTKDOC_MKPDF in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_GTKDOC_MKPDF="$GTKDOC_MKPDF" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_GTKDOC_MKPDF="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+GTKDOC_MKPDF=$ac_cv_path_GTKDOC_MKPDF
+if test -n "$GTKDOC_MKPDF"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GTKDOC_MKPDF" >&5
+$as_echo "$GTKDOC_MKPDF" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+
+
+# Check whether --with-html-dir was given.
+if test "${with_html_dir+set}" = set; then :
+  withval=$with_html_dir;
+else
+  with_html_dir='${datadir}/gtk-doc/html'
+fi
+
+  HTML_DIR="$with_html_dir"
+
+
+    # Check whether --enable-gtk-doc was given.
+if test "${enable_gtk_doc+set}" = set; then :
+  enableval=$enable_gtk_doc;
+else
+  enable_gtk_doc=no
+fi
+
+
+  if test x$enable_gtk_doc = xyes; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk-doc >= 1.4\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtk-doc >= 1.4") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  :
+else
+  as_fn_error "You need to have gtk-doc >= 1.4 installed to build $PACKAGE_NAME" "$LINENO" 5
+fi
+  fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to build gtk-doc documentation" >&5
+$as_echo_n "checking whether to build gtk-doc documentation... " >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_gtk_doc" >&5
+$as_echo "$enable_gtk_doc" >&6; }
+
+    # Check whether --enable-gtk-doc-html was given.
+if test "${enable_gtk_doc_html+set}" = set; then :
+  enableval=$enable_gtk_doc_html;
+else
+  enable_gtk_doc_html=yes
+fi
+
+    # Check whether --enable-gtk-doc-pdf was given.
+if test "${enable_gtk_doc_pdf+set}" = set; then :
+  enableval=$enable_gtk_doc_pdf;
+else
+  enable_gtk_doc_pdf=no
+fi
+
+
+  if test -z "$GTKDOC_MKPDF"; then
+    enable_gtk_doc_pdf=no
+  fi
+
+
+   if test x$enable_gtk_doc = xyes; then
+  ENABLE_GTK_DOC_TRUE=
+  ENABLE_GTK_DOC_FALSE='#'
+else
+  ENABLE_GTK_DOC_TRUE='#'
+  ENABLE_GTK_DOC_FALSE=
+fi
+
+   if test x$enable_gtk_doc_html = xyes; then
+  GTK_DOC_BUILD_HTML_TRUE=
+  GTK_DOC_BUILD_HTML_FALSE='#'
+else
+  GTK_DOC_BUILD_HTML_TRUE='#'
+  GTK_DOC_BUILD_HTML_FALSE=
+fi
+
+   if test x$enable_gtk_doc_pdf = xyes; then
+  GTK_DOC_BUILD_PDF_TRUE=
+  GTK_DOC_BUILD_PDF_FALSE='#'
+else
+  GTK_DOC_BUILD_PDF_TRUE='#'
+  GTK_DOC_BUILD_PDF_FALSE=
+fi
+
+   if test -n "$LIBTOOL"; then
+  GTK_DOC_USE_LIBTOOL_TRUE=
+  GTK_DOC_USE_LIBTOOL_FALSE='#'
+else
+  GTK_DOC_USE_LIBTOOL_TRUE='#'
+  GTK_DOC_USE_LIBTOOL_FALSE=
+fi
+
+   if test -n "$GTKDOC_REBASE"; then
+  GTK_DOC_USE_REBASE_TRUE=
+  GTK_DOC_USE_REBASE_FALSE='#'
+else
+  GTK_DOC_USE_REBASE_TRUE='#'
+  GTK_DOC_USE_REBASE_FALSE=
+fi
+
+
+
+gdu_cv_version_required=0.3.2
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking gnome-doc-utils >= $gdu_cv_version_required" >&5
+$as_echo_n "checking gnome-doc-utils >= $gdu_cv_version_required... " >&6; }
+if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gnome-doc-utils >= \$gdu_cv_version_required\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gnome-doc-utils >= $gdu_cv_version_required") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  gdu_cv_have_gdu=yes
+else
+  gdu_cv_have_gdu=no
+fi
+
+if test "$gdu_cv_have_gdu" = "yes"; then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+else
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	as_fn_error "gnome-doc-utils >= $gdu_cv_version_required not found" "$LINENO" 5
+fi
+
+
+
+# Check whether --with-help-dir was given.
+if test "${with_help_dir+set}" = set; then :
+  withval=$with_help_dir;
+else
+  with_help_dir='${datadir}/gnome/help'
+fi
+
+HELP_DIR="$with_help_dir"
+
+
+
+# Check whether --with-omf-dir was given.
+if test "${with_omf_dir+set}" = set; then :
+  withval=$with_omf_dir;
+else
+  with_omf_dir='${datadir}/omf'
+fi
+
+OMF_DIR="$with_omf_dir"
+
+
+
+# Check whether --with-help-formats was given.
+if test "${with_help_formats+set}" = set; then :
+  withval=$with_help_formats;
+else
+  with_help_formats=''
+fi
+
+DOC_USER_FORMATS="$with_help_formats"
+
+
+# Check whether --enable-scrollkeeper was given.
+if test "${enable_scrollkeeper+set}" = set; then :
+  enableval=$enable_scrollkeeper;
+else
+  enable_scrollkeeper=yes
+fi
+
+ if test "$gdu_cv_have_gdu" = "yes" -a "$enable_scrollkeeper" = "yes"; then
+  ENABLE_SK_TRUE=
+  ENABLE_SK_FALSE='#'
+else
+  ENABLE_SK_TRUE='#'
+  ENABLE_SK_FALSE=
+fi
+
+
+DISTCHECK_CONFIGURE_FLAGS="--disable-scrollkeeper $DISTCHECK_CONFIGURE_FLAGS"
+
+
+ if test "$gdu_cv_have_gdu" = "yes"; then
+  HAVE_GNOME_DOC_UTILS_TRUE=
+  HAVE_GNOME_DOC_UTILS_FALSE='#'
+else
+  HAVE_GNOME_DOC_UTILS_TRUE='#'
+  HAVE_GNOME_DOC_UTILS_FALSE=
+fi
+
+
+
+
+###########################
+# Dependencies - GLib
+###########################
+
+GLIB_REQUIRED_VERSION=2.18
+DBUS_REQUIRED_VERSION=0.76
+XML_REQUIRED_VERSION=2.6
+
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for DBUSMENUGLIB" >&5
@@ -13313,7 +13677,7 @@ fi
 # Files
 ###########################
 
-ac_config_files="$ac_config_files Makefile po/Makefile.in libdbusmenu-glib/Makefile libdbusmenu-glib/dbusmenu-glib.pc libdbusmenu-gtk/Makefile libdbusmenu-gtk/dbusmenu-gtk.pc tools/Makefile tools/testapp/Makefile tests/Makefile"
+ac_config_files="$ac_config_files Makefile po/Makefile.in libdbusmenu-glib/Makefile libdbusmenu-glib/dbusmenu-glib.pc libdbusmenu-gtk/Makefile libdbusmenu-gtk/dbusmenu-gtk.pc tools/Makefile tools/testapp/Makefile tests/Makefile docs/Makefile docs/libdbusmenu-glib/Makefile docs/libdbusmenu-glib/reference/Makefile docs/libdbusmenu-glib/reference/version.xml docs/libdbusmenu-gtk/Makefile docs/libdbusmenu-gtk/reference/Makefile docs/libdbusmenu-gtk/reference/version.xml"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -13438,6 +13802,34 @@ fi
 
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_GTK_DOC_TRUE}" && test -z "${ENABLE_GTK_DOC_FALSE}"; then
+  as_fn_error "conditional \"ENABLE_GTK_DOC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${GTK_DOC_BUILD_HTML_TRUE}" && test -z "${GTK_DOC_BUILD_HTML_FALSE}"; then
+  as_fn_error "conditional \"GTK_DOC_BUILD_HTML\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${GTK_DOC_BUILD_PDF_TRUE}" && test -z "${GTK_DOC_BUILD_PDF_FALSE}"; then
+  as_fn_error "conditional \"GTK_DOC_BUILD_PDF\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${GTK_DOC_USE_LIBTOOL_TRUE}" && test -z "${GTK_DOC_USE_LIBTOOL_FALSE}"; then
+  as_fn_error "conditional \"GTK_DOC_USE_LIBTOOL\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${GTK_DOC_USE_REBASE_TRUE}" && test -z "${GTK_DOC_USE_REBASE_FALSE}"; then
+  as_fn_error "conditional \"GTK_DOC_USE_REBASE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_SK_TRUE}" && test -z "${ENABLE_SK_FALSE}"; then
+  as_fn_error "conditional \"ENABLE_SK\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_GNOME_DOC_UTILS_TRUE}" && test -z "${HAVE_GNOME_DOC_UTILS_FALSE}"; then
+  as_fn_error "conditional \"HAVE_GNOME_DOC_UTILS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_INTROSPECTION_TRUE}" && test -z "${HAVE_INTROSPECTION_FALSE}"; then
@@ -14310,6 +14702,13 @@ do
     "tools/Makefile") CONFIG_FILES="$CONFIG_FILES tools/Makefile" ;;
     "tools/testapp/Makefile") CONFIG_FILES="$CONFIG_FILES tools/testapp/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
+    "docs/Makefile") CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
+    "docs/libdbusmenu-glib/Makefile") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-glib/Makefile" ;;
+    "docs/libdbusmenu-glib/reference/Makefile") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-glib/reference/Makefile" ;;
+    "docs/libdbusmenu-glib/reference/version.xml") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-glib/reference/version.xml" ;;
+    "docs/libdbusmenu-gtk/Makefile") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-gtk/Makefile" ;;
+    "docs/libdbusmenu-gtk/reference/Makefile") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-gtk/reference/Makefile" ;;
+    "docs/libdbusmenu-gtk/reference/version.xml") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-gtk/reference/version.xml" ;;
     "po/stamp-it") CONFIG_COMMANDS="$CONFIG_COMMANDS po/stamp-it" ;;
 
   *) as_fn_error "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

@@ -1,0 +1,158 @@
+<!-- ##### SECTION Title ##### -->
+DbusmenuClient
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_PROP_DBUS_NAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_PROP_DBUS_OBJECT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_TYPES_DEFAULT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_TYPES_SEPARATOR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_CLIENT_TYPES_IMAGE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT DbusmenuClientClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@layout_updated: 
+@root_changed: 
+@new_menuitem: 
+@reserved1: 
+@reserved2: 
+@reserved3: 
+@reserved4: 
+
+<!-- ##### USER_FUNCTION DbusmenuClientTypeHandler ##### -->
+<para>
+
+</para>
+
+@newitem: 
+@parent: 
+@client: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_client_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_client_get_root ##### -->
+<para>
+
+</para>
+
+@client: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_client_add_type_handler ##### -->
+<para>
+
+</para>
+
+@client: 
+@type: 
+@newfunc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_client_send_event ##### -->
+<para>
+
+</para>
+
+@client: 
+@id: 
+@name: 
+@value: 
+@timestamp: 
+
+
+<!-- ##### FUNCTION dbusmenu_client_send_about_to_show ##### -->
+<para>
+
+</para>
+
+@client: 
+@id: 
+@gpointer user_data: 
+@cb_data: 
+
+

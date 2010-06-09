@@ -1,0 +1,672 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>dbusmenu-server</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="libdbusmenu-glib Reference Manual">
+<link rel="up" href="ch01.html" title="API">
+<link rel="prev" href="libdbusmenu-glib-dbusmenu-client.html" title="dbusmenu-client">
+<link rel="next" href="object-tree.html" title="Object Hierarchy">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="libdbusmenu-glib-dbusmenu-client.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">libdbusmenu-glib Reference Manual</th>
+<td><a accesskey="n" href="object-tree.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#libdbusmenu-glib-dbusmenu-server.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#libdbusmenu-glib-dbusmenu-server.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry" title="dbusmenu-server">
+<a name="libdbusmenu-glib-dbusmenu-server"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="libdbusmenu-glib-dbusmenu-server.top_of_page"></a>dbusmenu-server</span></h2>
+<p>dbusmenu-server</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="libdbusmenu-glib-dbusmenu-server.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-boolean" title="g_marshal_value_peek_boolean()">g_marshal_value_peek_boolean</a>        (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-char" title="g_marshal_value_peek_char()">g_marshal_value_peek_char</a>           (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-uchar" title="g_marshal_value_peek_uchar()">g_marshal_value_peek_uchar</a>          (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-int" title="g_marshal_value_peek_int()">g_marshal_value_peek_int</a>            (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-uint" title="g_marshal_value_peek_uint()">g_marshal_value_peek_uint</a>           (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-long" title="g_marshal_value_peek_long()">g_marshal_value_peek_long</a>           (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-ulong" title="g_marshal_value_peek_ulong()">g_marshal_value_peek_ulong</a>          (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-int64" title="g_marshal_value_peek_int64()">g_marshal_value_peek_int64</a>          (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-uint64" title="g_marshal_value_peek_uint64()">g_marshal_value_peek_uint64</a>         (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-enum" title="g_marshal_value_peek_enum()">g_marshal_value_peek_enum</a>           (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-flags" title="g_marshal_value_peek_flags()">g_marshal_value_peek_flags</a>          (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-float" title="g_marshal_value_peek_float()">g_marshal_value_peek_float</a>          (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-double" title="g_marshal_value_peek_double()">g_marshal_value_peek_double</a>         (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-string" title="g_marshal_value_peek_string()">g_marshal_value_peek_string</a>         (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-param" title="g_marshal_value_peek_param()">g_marshal_value_peek_param</a>          (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-boxed" title="g_marshal_value_peek_boxed()">g_marshal_value_peek_boxed</a>          (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-pointer" title="g_marshal_value_peek_pointer()">g_marshal_value_peek_pointer</a>        (v)
+#define             <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-object" title="g_marshal_value_peek_object()">g_marshal_value_peek_object</a>         (v)
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-POINTER-POINTER" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER ()">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER-POINTER" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER ()">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-BOXED-POINTER-POINTER" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER ()">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-BOXED-UINT-POINTER" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER ()">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER ()">dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--BOXED-BOXED-POINTER-POINTER" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER ()">dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="libdbusmenu-glib-dbusmenu-server.description"></a><h2>Description</h2>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="libdbusmenu-glib-dbusmenu-server.details"></a><h2>Details</h2>
+<div class="refsect2" title="g_marshal_value_peek_boolean()">
+<a name="g-marshal-value-peek-boolean"></a><h3>g_marshal_value_peek_boolean()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_boolean(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_char()">
+<a name="g-marshal-value-peek-char"></a><h3>g_marshal_value_peek_char()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_char(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_uchar()">
+<a name="g-marshal-value-peek-uchar"></a><h3>g_marshal_value_peek_uchar()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_uchar(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_int()">
+<a name="g-marshal-value-peek-int"></a><h3>g_marshal_value_peek_int()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_int(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_uint()">
+<a name="g-marshal-value-peek-uint"></a><h3>g_marshal_value_peek_uint()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_uint(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_long()">
+<a name="g-marshal-value-peek-long"></a><h3>g_marshal_value_peek_long()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_long(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_ulong()">
+<a name="g-marshal-value-peek-ulong"></a><h3>g_marshal_value_peek_ulong()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_ulong(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_int64()">
+<a name="g-marshal-value-peek-int64"></a><h3>g_marshal_value_peek_int64()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_int64(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_uint64()">
+<a name="g-marshal-value-peek-uint64"></a><h3>g_marshal_value_peek_uint64()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_uint64(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_enum()">
+<a name="g-marshal-value-peek-enum"></a><h3>g_marshal_value_peek_enum()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_enum(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_flags()">
+<a name="g-marshal-value-peek-flags"></a><h3>g_marshal_value_peek_flags()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_flags(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_float()">
+<a name="g-marshal-value-peek-float"></a><h3>g_marshal_value_peek_float()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_float(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_double()">
+<a name="g-marshal-value-peek-double"></a><h3>g_marshal_value_peek_double()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_double(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_string()">
+<a name="g-marshal-value-peek-string"></a><h3>g_marshal_value_peek_string()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_string(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_param()">
+<a name="g-marshal-value-peek-param"></a><h3>g_marshal_value_peek_param()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_param(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_boxed()">
+<a name="g-marshal-value-peek-boxed"></a><h3>g_marshal_value_peek_boxed()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_boxed(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_pointer()">
+<a name="g-marshal-value-peek-pointer"></a><h3>g_marshal_value_peek_pointer()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_pointer(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="g_marshal_value_peek_object()">
+<a name="g-marshal-value-peek-object"></a><h3>g_marshal_value_peek_object()</h3>
+<pre class="programlisting">#define             g_marshal_value_peek_object(v)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER ()">
+<a name="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-POINTER-POINTER"></a><h3>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>closure</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>return_value</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>invocation_hint</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>marshal_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER ()">
+<a name="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER-POINTER"></a><h3>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>closure</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>return_value</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>invocation_hint</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>marshal_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER ()">
+<a name="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-BOXED-POINTER-POINTER"></a><h3>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>closure</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>return_value</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>invocation_hint</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>marshal_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER ()">
+<a name="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-BOXED-UINT-POINTER"></a><h3>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>closure</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>return_value</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>invocation_hint</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>marshal_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER ()">
+<a name="dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER"></a><h3>dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>closure</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>return_value</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>invocation_hint</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>marshal_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER ()">
+<a name="dbus-glib-marshal--dbusmenu-server-BOOLEAN--BOXED-BOXED-POINTER-POINTER"></a><h3>dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> *closure</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *return_value</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_param_values</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *param_values</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> invocation_hint</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>closure</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>return_value</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>param_values</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>invocation_hint</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>marshal_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.14</div>
+</body>
+</html>
