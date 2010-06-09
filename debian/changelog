@@ -1,3 +1,20 @@
+libdbusmenu (0.3.1-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Fix annotations for GIR scanner
+    * Add function to get submenu of GTK-ified items
+    * Fix signal prototype of ID update
+    * Fixing up VAPI files to build them correctly
+  	* Fixing the version string in the GIR file
+    * Fix documentation title page
+    * Reject text nodes early (warnings with Qt integration)
+  * debian/libdbusmenu-glib-dev.install: Updating gir and vapi file
+    names for package list.
+  * debian/gir1.0-dbusmenu-glib-0.2.install: Changing the name of the
+    typelib file.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Jun 2010 14:42:26 -0500
+
 libdbusmenu (0.3.1-0ubuntu1~ppa2) lucid; urgency=low
 
   * Upstream Merge
