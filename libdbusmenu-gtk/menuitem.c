@@ -27,6 +27,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 */
 
 #include "menuitem.h"
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 /**
 	dbusmenu_menuitem_property_set_image:
@@ -134,7 +136,7 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 	@shortcut: String describing the shortcut
 
 	This function takes a GTK shortcut string as defined in
-	#gtk_accellerator_parse and turns that into the information
+	#gtk_accelerator_parse and turns that into the information
 	required to send it over DBusmenu.
 
 	Return value: Whether it was successful at setting the property.
@@ -142,8 +144,47 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 gboolean
 dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gchar * shortcut)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
+	g_return_val_if_fail(shortcut != NULL, FALSE);
 
-	return FALSE;
+	guint key = 0;
+	GdkModifierType modifier = 0;
+
+	gtk_accelerator_parse(shortcut, &key, &modifier);
+
+	if (key == 0) {
+		g_warning("Unable to parse shortcut string '%s'", shortcut);
+		return FALSE;
+	}
+
+	GPtrArray * array = g_ptr_array_new();
+
+	if (modifier & GDK_CONTROL_MASK) {
+		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_CONTROL));
+	}
+	if (modifier & GDK_MOD1_MASK) {
+		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_ALT));
+	}
+	if (modifier & GDK_SHIFT_MASK) {
+		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_SHIFT));
+	}
+	if (modifier & GDK_SUPER_MASK) {
+		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_SUPER));
+	}
+
+	gint len = g_utf8_strlen(shortcut, -1);
+	g_ptr_array_add(array, g_strdup(shortcut + len - 1));
+
+	GPtrArray * wrapper = g_ptr_array_new();
+	g_ptr_array_add(wrapper, array);
+
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_BOXED);
+	g_value_set_boxed(&value, wrapper);
+
+	dbusmenu_menuitem_property_set_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT, &value);
+
+	return TRUE;
 }
 
 /**
@@ -151,7 +192,7 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gcha
 	@menuitem: The #DbusmenuMenuitem to get the shortcut off
 
 	This function gets a GTK shortcut string as defined in
-	#gtk_accellerator_parse from the data that is transferred
+	#gtk_accelerator_parse from the data that is transferred
 	over DBusmenu.
 
 	Return value: Either the string or #NULL if there is none.
@@ -159,6 +200,7 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gcha
 gchar *
 dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
 
 	return NULL;
 }
