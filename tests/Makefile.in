@@ -35,8 +35,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 TESTS = test-glib-objects-test test-glib-layout test-glib-properties \
-	test-glib-proxy test-glib-simple-items$(EXEEXT) test-gtk-label \
-	test-gtk-reorder
+	test-glib-proxy test-glib-simple-items$(EXEEXT) \
+	test-glib-submenu test-gtk-label test-gtk-reorder
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-objects$(EXEEXT) test-glib-layout-client$(EXEEXT) \
 	test-glib-layout-server$(EXEEXT) \
@@ -44,6 +44,8 @@ check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-properties-server$(EXEEXT) \
 	test-glib-proxy-client$(EXEEXT) \
 	test-glib-proxy-server$(EXEEXT) test-glib-proxy-proxy$(EXEEXT) \
+	test-glib-submenu-client$(EXEEXT) \
+	test-glib-submenu-server$(EXEEXT) \
 	test-gtk-label-client$(EXEEXT) test-gtk-label-server$(EXEEXT) \
 	test-glib-simple-items$(EXEEXT) \
 	test-gtk-reorder-server$(EXEEXT)
@@ -158,6 +160,26 @@ test_glib_simple_items_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_glib_simple_items_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am_test_glib_submenu_client_OBJECTS =  \
+	test_glib_submenu_client-test-glib-submenu-client.$(OBJEXT)
+test_glib_submenu_client_OBJECTS =  \
+	$(am_test_glib_submenu_client_OBJECTS)
+test_glib_submenu_client_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1)
+test_glib_submenu_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_glib_submenu_client_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_test_glib_submenu_server_OBJECTS =  \
+	test_glib_submenu_server-test-glib-submenu-server.$(OBJEXT)
+test_glib_submenu_server_OBJECTS =  \
+	$(am_test_glib_submenu_server_OBJECTS)
+test_glib_submenu_server_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1)
+test_glib_submenu_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_glib_submenu_server_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_test_gtk_label_client_OBJECTS =  \
 	test_gtk_label_client-test-gtk-label-client.$(OBJEXT)
 test_gtk_label_client_OBJECTS = $(am_test_gtk_label_client_OBJECTS)
@@ -228,6 +250,8 @@ SOURCES = $(glib_server_nomenu_SOURCES) \
 	$(test_glib_proxy_proxy_SOURCES) \
 	$(test_glib_proxy_server_SOURCES) \
 	$(test_glib_simple_items_SOURCES) \
+	$(test_glib_submenu_client_SOURCES) \
+	$(test_glib_submenu_server_SOURCES) \
 	$(test_gtk_label_client_SOURCES) \
 	$(test_gtk_label_server_SOURCES) \
 	$(test_gtk_reorder_server_SOURCES)
@@ -241,6 +265,8 @@ DIST_SOURCES = $(glib_server_nomenu_SOURCES) \
 	$(test_glib_proxy_proxy_SOURCES) \
 	$(test_glib_proxy_server_SOURCES) \
 	$(test_glib_simple_items_SOURCES) \
+	$(test_glib_submenu_client_SOURCES) \
+	$(test_glib_submenu_server_SOURCES) \
 	$(test_gtk_label_client_SOURCES) \
 	$(test_gtk_label_server_SOURCES) \
 	$(test_gtk_reorder_server_SOURCES)
@@ -473,6 +499,30 @@ test_glib_layout_client_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_layout_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_submenu_server_SOURCES = \
+	test-glib-submenu.h \
+	test-glib-submenu-server.c
+
+test_glib_submenu_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_submenu_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_submenu_client_SOURCES = \
+	test-glib-submenu.h \
+	test-glib-submenu-client.c
+
+test_glib_submenu_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_submenu_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
@@ -728,6 +778,12 @@ test-glib-proxy-server$(EXEEXT): $(test_glib_proxy_server_OBJECTS) $(test_glib_p
 test-glib-simple-items$(EXEEXT): $(test_glib_simple_items_OBJECTS) $(test_glib_simple_items_DEPENDENCIES) 
 	@rm -f test-glib-simple-items$(EXEEXT)
 	$(AM_V_CCLD)$(test_glib_simple_items_LINK) $(test_glib_simple_items_OBJECTS) $(test_glib_simple_items_LDADD) $(LIBS)
+test-glib-submenu-client$(EXEEXT): $(test_glib_submenu_client_OBJECTS) $(test_glib_submenu_client_DEPENDENCIES) 
+	@rm -f test-glib-submenu-client$(EXEEXT)
+	$(AM_V_CCLD)$(test_glib_submenu_client_LINK) $(test_glib_submenu_client_OBJECTS) $(test_glib_submenu_client_LDADD) $(LIBS)
+test-glib-submenu-server$(EXEEXT): $(test_glib_submenu_server_OBJECTS) $(test_glib_submenu_server_DEPENDENCIES) 
+	@rm -f test-glib-submenu-server$(EXEEXT)
+	$(AM_V_CCLD)$(test_glib_submenu_server_LINK) $(test_glib_submenu_server_OBJECTS) $(test_glib_submenu_server_LDADD) $(LIBS)
 test-gtk-label-client$(EXEEXT): $(test_gtk_label_client_OBJECTS) $(test_gtk_label_client_DEPENDENCIES) 
 	@rm -f test-gtk-label-client$(EXEEXT)
 	$(AM_V_CCLD)$(test_gtk_label_client_LINK) $(test_gtk_label_client_OBJECTS) $(test_gtk_label_client_LDADD) $(LIBS)
@@ -754,6 +810,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_proxy_proxy-test-glib-proxy-proxy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_proxy_server-test-glib-proxy-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_simple_items-test-glib-simple-items.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_submenu_client-test-glib-submenu-client.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_submenu_server-test-glib-submenu-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_label_client-test-gtk-label-client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_label_server-test-gtk-label-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_reorder_server-test-gtk-reorder-server.Po@am__quote@
@@ -941,6 +999,38 @@ test_glib_simple_items-test-glib-simple-items.obj: test-glib-simple-items.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-simple-items.c' object='test_glib_simple_items-test-glib-simple-items.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_simple_items_CFLAGS) $(CFLAGS) -c -o test_glib_simple_items-test-glib-simple-items.obj `if test -f 'test-glib-simple-items.c'; then $(CYGPATH_W) 'test-glib-simple-items.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-simple-items.c'; fi`
+
+test_glib_submenu_client-test-glib-submenu-client.o: test-glib-submenu-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_submenu_client_CFLAGS) $(CFLAGS) -MT test_glib_submenu_client-test-glib-submenu-client.o -MD -MP -MF $(DEPDIR)/test_glib_submenu_client-test-glib-submenu-client.Tpo -c -o test_glib_submenu_client-test-glib-submenu-client.o `test -f 'test-glib-submenu-client.c' || echo '$(srcdir)/'`test-glib-submenu-client.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_submenu_client-test-glib-submenu-client.Tpo $(DEPDIR)/test_glib_submenu_client-test-glib-submenu-client.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-submenu-client.c' object='test_glib_submenu_client-test-glib-submenu-client.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_submenu_client_CFLAGS) $(CFLAGS) -c -o test_glib_submenu_client-test-glib-submenu-client.o `test -f 'test-glib-submenu-client.c' || echo '$(srcdir)/'`test-glib-submenu-client.c
+
+test_glib_submenu_client-test-glib-submenu-client.obj: test-glib-submenu-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_submenu_client_CFLAGS) $(CFLAGS) -MT test_glib_submenu_client-test-glib-submenu-client.obj -MD -MP -MF $(DEPDIR)/test_glib_submenu_client-test-glib-submenu-client.Tpo -c -o test_glib_submenu_client-test-glib-submenu-client.obj `if test -f 'test-glib-submenu-client.c'; then $(CYGPATH_W) 'test-glib-submenu-client.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-submenu-client.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_submenu_client-test-glib-submenu-client.Tpo $(DEPDIR)/test_glib_submenu_client-test-glib-submenu-client.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-submenu-client.c' object='test_glib_submenu_client-test-glib-submenu-client.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_submenu_client_CFLAGS) $(CFLAGS) -c -o test_glib_submenu_client-test-glib-submenu-client.obj `if test -f 'test-glib-submenu-client.c'; then $(CYGPATH_W) 'test-glib-submenu-client.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-submenu-client.c'; fi`
+
+test_glib_submenu_server-test-glib-submenu-server.o: test-glib-submenu-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_submenu_server_CFLAGS) $(CFLAGS) -MT test_glib_submenu_server-test-glib-submenu-server.o -MD -MP -MF $(DEPDIR)/test_glib_submenu_server-test-glib-submenu-server.Tpo -c -o test_glib_submenu_server-test-glib-submenu-server.o `test -f 'test-glib-submenu-server.c' || echo '$(srcdir)/'`test-glib-submenu-server.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_submenu_server-test-glib-submenu-server.Tpo $(DEPDIR)/test_glib_submenu_server-test-glib-submenu-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-submenu-server.c' object='test_glib_submenu_server-test-glib-submenu-server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_submenu_server_CFLAGS) $(CFLAGS) -c -o test_glib_submenu_server-test-glib-submenu-server.o `test -f 'test-glib-submenu-server.c' || echo '$(srcdir)/'`test-glib-submenu-server.c
+
+test_glib_submenu_server-test-glib-submenu-server.obj: test-glib-submenu-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_submenu_server_CFLAGS) $(CFLAGS) -MT test_glib_submenu_server-test-glib-submenu-server.obj -MD -MP -MF $(DEPDIR)/test_glib_submenu_server-test-glib-submenu-server.Tpo -c -o test_glib_submenu_server-test-glib-submenu-server.obj `if test -f 'test-glib-submenu-server.c'; then $(CYGPATH_W) 'test-glib-submenu-server.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-submenu-server.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_submenu_server-test-glib-submenu-server.Tpo $(DEPDIR)/test_glib_submenu_server-test-glib-submenu-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-submenu-server.c' object='test_glib_submenu_server-test-glib-submenu-server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_submenu_server_CFLAGS) $(CFLAGS) -c -o test_glib_submenu_server-test-glib-submenu-server.obj `if test -f 'test-glib-submenu-server.c'; then $(CYGPATH_W) 'test-glib-submenu-server.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-submenu-server.c'; fi`
 
 test_gtk_label_client-test-gtk-label-client.o: test-gtk-label-client.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_label_client_CFLAGS) $(CFLAGS) -MT test_gtk_label_client-test-gtk-label-client.o -MD -MP -MF $(DEPDIR)/test_gtk_label_client-test-gtk-label-client.Tpo -c -o test_gtk_label_client-test-gtk-label-client.o `test -f 'test-gtk-label-client.c' || echo '$(srcdir)/'`test-gtk-label-client.c
@@ -1342,6 +1432,15 @@ uninstall-am: uninstall-examplesDATA uninstall-jsonDATA
 test-glib-layout: test-glib-layout-client test-glib-layout-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+######################
+# Test Glib Submenu
+######################
+
+test-glib-submenu: test-glib-submenu-client test-glib-submenu-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-submenu-client --task-name Client --task ./test-glib-submenu-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 test-glib-objects-test: test-glib-objects Makefile.am
