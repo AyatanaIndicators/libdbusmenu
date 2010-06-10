@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="Genericmenuitem">
+<refmeta>
+<refentrytitle role="top_of_page" id="Genericmenuitem.top_of_page">Genericmenuitem</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GTK Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>Genericmenuitem</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="Genericmenuitem.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>#define             <link linkend="GENERICMENUITEM-TYPE:CAPS">GENERICMENUITEM_TYPE</link>
+#define             <link linkend="GENERICMENUITEM:CAPS">GENERICMENUITEM</link>                     (obj)
+#define             <link linkend="GENERICMENUITEM-CLASS:CAPS">GENERICMENUITEM_CLASS</link>               (klass)
+#define             <link linkend="IS-GENERICMENUITEM:CAPS">IS_GENERICMENUITEM</link>                  (obj)
+#define             <link linkend="IS-GENERICMENUITEM-CLASS:CAPS">IS_GENERICMENUITEM_CLASS</link>            (klass)
+#define             <link linkend="GENERICMENUITEM-GET-CLASS:CAPS">GENERICMENUITEM_GET_CLASS</link>           (obj)
+                    <link linkend="Genericmenuitem-struct">Genericmenuitem</link>;
+                    <link linkend="GenericmenuitemClass">GenericmenuitemClass</link>;
+                    <link linkend="GenericmenuitemPrivate">GenericmenuitemPrivate</link>;
+enum                <link linkend="GenericmenuitemCheckType">GenericmenuitemCheckType</link>;
+enum                <link linkend="GenericmenuitemState">GenericmenuitemState</link>;
+<link linkend="GType"><returnvalue>GType</returnvalue></link>               <link linkend="genericmenuitem-get-type">genericmenuitem_get_type</link>            (<parameter><type>void</type></parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="genericmenuitem-set-check-type">genericmenuitem_set_check_type</link>      (<parameter><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> *item</parameter>,
+                                                         <parameter><link linkend="GenericmenuitemCheckType"><type>GenericmenuitemCheckType</type></link> check_type</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="genericmenuitem-set-state">genericmenuitem_set_state</link>           (<parameter><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> *item</parameter>,
+                                                         <parameter><link linkend="GenericmenuitemState"><type>GenericmenuitemState</type></link> state</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="genericmenuitem-set-image">genericmenuitem_set_image</link>           (<parameter><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> *item</parameter>,
+                                                         <parameter><link linkend="GtkWidget"><type>GtkWidget</type></link> *image</parameter>);
+<link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *         <link linkend="genericmenuitem-get-image">genericmenuitem_get_image</link>           (<parameter><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> *item</parameter>);
+</synopsis>
+</refsynopsisdiv>
+<refsect1 id="Genericmenuitem.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----<link linkend="GtkContainer">GtkContainer</link>
+                           +----<link linkend="GtkBin">GtkBin</link>
+                                 +----<link linkend="GtkItem">GtkItem</link>
+                                       +----<link linkend="GtkMenuItem">GtkMenuItem</link>
+                                             +----<link linkend="GtkCheckMenuItem">GtkCheckMenuItem</link>
+                                                   +----Genericmenuitem
+</synopsis>
+</refsect1>
+<refsect1 id="Genericmenuitem.implemented-interfaces" role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+Genericmenuitem implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>,  <link linkend="GtkBuildable">GtkBuildable</link> and  <link linkend="GtkActivatable">GtkActivatable</link>.</para>
+</refsect1>
+
+<refsect1 id="Genericmenuitem.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+<refsect1 id="Genericmenuitem.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="GENERICMENUITEM-TYPE:CAPS" role="macro">
+<title>GENERICMENUITEM_TYPE</title>
+<indexterm zone="GENERICMENUITEM-TYPE:CAPS"><primary>GENERICMENUITEM_TYPE</primary></indexterm>
+<programlisting>#define GENERICMENUITEM_TYPE            (genericmenuitem_get_type ())
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="GENERICMENUITEM:CAPS" role="macro">
+<title>GENERICMENUITEM()</title>
+<indexterm zone="GENERICMENUITEM:CAPS"><primary>GENERICMENUITEM</primary></indexterm>
+<programlisting>#define GENERICMENUITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GENERICMENUITEM_TYPE, Genericmenuitem))
+</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="GENERICMENUITEM-CLASS:CAPS" role="macro">
+<title>GENERICMENUITEM_CLASS()</title>
+<indexterm zone="GENERICMENUITEM-CLASS:CAPS"><primary>GENERICMENUITEM_CLASS</primary></indexterm>
+<programlisting>#define GENERICMENUITEM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GENERICMENUITEM_TYPE, GenericmenuitemClass))
+</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>klass</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="IS-GENERICMENUITEM:CAPS" role="macro">
+<title>IS_GENERICMENUITEM()</title>
+<indexterm zone="IS-GENERICMENUITEM:CAPS"><primary>IS_GENERICMENUITEM</primary></indexterm>
+<programlisting>#define IS_GENERICMENUITEM(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GENERICMENUITEM_TYPE))
+</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="IS-GENERICMENUITEM-CLASS:CAPS" role="macro">
+<title>IS_GENERICMENUITEM_CLASS()</title>
+<indexterm zone="IS-GENERICMENUITEM-CLASS:CAPS"><primary>IS_GENERICMENUITEM_CLASS</primary></indexterm>
+<programlisting>#define IS_GENERICMENUITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GENERICMENUITEM_TYPE))
+</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>klass</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="GENERICMENUITEM-GET-CLASS:CAPS" role="macro">
+<title>GENERICMENUITEM_GET_CLASS()</title>
+<indexterm zone="GENERICMENUITEM-GET-CLASS:CAPS"><primary>GENERICMENUITEM_GET_CLASS</primary></indexterm>
+<programlisting>#define GENERICMENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GENERICMENUITEM_TYPE, GenericmenuitemClass))
+</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="Genericmenuitem-struct" role="struct">
+<title>Genericmenuitem</title>
+<indexterm zone="Genericmenuitem-struct"><primary>Genericmenuitem</primary></indexterm>
+<programlisting>typedef struct _Genericmenuitem Genericmenuitem;</programlisting>
+<variablelist role="struct">
+</variablelist></refsect2>
+<refsect2 id="GenericmenuitemClass" role="struct">
+<title>GenericmenuitemClass</title>
+<indexterm zone="GenericmenuitemClass"><primary>GenericmenuitemClass</primary></indexterm>
+<programlisting>typedef struct {
+	GtkCheckMenuItemClass parent_class;
+} GenericmenuitemClass;
+</programlisting>
+<variablelist role="struct">
+<varlistentry><term><link linkend="GtkCheckMenuItemClass"><type>GtkCheckMenuItemClass</type></link>&#160;<structfield id="GenericmenuitemClass.parent-class">parent_class</structfield>;</term>
+<listitem><simpara>Our parent <link linkend="GtkCheckMenuItemClass"><type>GtkCheckMenuItemClass</type></link>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="GenericmenuitemPrivate" role="struct">
+<title>GenericmenuitemPrivate</title>
+<indexterm zone="GenericmenuitemPrivate"><primary>GenericmenuitemPrivate</primary></indexterm>
+<programlisting>typedef struct _GenericmenuitemPrivate GenericmenuitemPrivate;</programlisting>
+<variablelist role="struct">
+</variablelist></refsect2>
+<refsect2 id="GenericmenuitemCheckType" role="enum">
+<title>enum GenericmenuitemCheckType</title>
+<indexterm zone="GenericmenuitemCheckType"><primary>GenericmenuitemCheckType</primary></indexterm>
+<programlisting>enum GenericmenuitemCheckType {
+	GENERICMENUITEM_CHECK_TYPE_NONE,
+	GENERICMENUITEM_CHECK_TYPE_CHECKBOX,
+	GENERICMENUITEM_CHECK_TYPE_RADIO
+};
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="GenericmenuitemState" role="enum">
+<title>enum GenericmenuitemState</title>
+<indexterm zone="GenericmenuitemState"><primary>GenericmenuitemState</primary></indexterm>
+<programlisting>enum GenericmenuitemState {
+	GENERICMENUITEM_STATE_UNCHECKED,
+	GENERICMENUITEM_STATE_CHECKED,
+	GENERICMENUITEM_STATE_INDETERMINATE
+};
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="genericmenuitem-get-type" role="function">
+<title>genericmenuitem_get_type ()</title>
+<indexterm zone="genericmenuitem-get-type"><primary>genericmenuitem_get_type</primary></indexterm>
+<programlisting><link linkend="GType"><returnvalue>GType</returnvalue></link>               genericmenuitem_get_type            (<parameter><type>void</type></parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="genericmenuitem-set-check-type" role="function">
+<title>genericmenuitem_set_check_type ()</title>
+<indexterm zone="genericmenuitem-set-check-type"><primary>genericmenuitem_set_check_type</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                genericmenuitem_set_check_type      (<parameter><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> *item</parameter>,
+                                                         <parameter><link linkend="GenericmenuitemCheckType"><type>GenericmenuitemCheckType</type></link> check_type</parameter>);</programlisting>
+<para>
+This function changes the type of the checkmark that
+	appears in the left hand gutter for the menuitem.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&#160;:</term>
+<listitem><simpara><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> to set the type on
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>check_type</parameter>&#160;:</term>
+<listitem><simpara>Which type of check should be displayed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="genericmenuitem-set-state" role="function">
+<title>genericmenuitem_set_state ()</title>
+<indexterm zone="genericmenuitem-set-state"><primary>genericmenuitem_set_state</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                genericmenuitem_set_state           (<parameter><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> *item</parameter>,
+                                                         <parameter><link linkend="GenericmenuitemState"><type>GenericmenuitemState</type></link> state</parameter>);</programlisting>
+<para>
+Sets the state of the check in the menu item.  It does
+	not require, but isn't really useful if the type of
+	check that the menuitem is set to <link linkend="GENERICMENUITEM-CHECK-TYPE-NONE:CAPS"><type>GENERICMENUITEM_CHECK_TYPE_NONE</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&#160;:</term>
+<listitem><simpara><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> to set the type on
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="genericmenuitem-set-image" role="function">
+<title>genericmenuitem_set_image ()</title>
+<indexterm zone="genericmenuitem-set-image"><primary>genericmenuitem_set_image</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                genericmenuitem_set_image           (<parameter><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> *item</parameter>,
+                                                         <parameter><link linkend="GtkWidget"><type>GtkWidget</type></link> *image</parameter>);</programlisting>
+<para>
+Sets the image of the menu item.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&#160;:</term>
+<listitem><simpara>A <link linkend="Genericmenuitem"><type>Genericmenuitem</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>image</parameter>&#160;:</term>
+<listitem><simpara>The image to set as the image of <parameter>item</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="genericmenuitem-get-image" role="function">
+<title>genericmenuitem_get_image ()</title>
+<indexterm zone="genericmenuitem-get-image"><primary>genericmenuitem_get_image</primary></indexterm>
+<programlisting><link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *         genericmenuitem_get_image           (<parameter><link linkend="Genericmenuitem"><type>Genericmenuitem</type></link> *item</parameter>);</programlisting>
+<para>
+Returns the image if there is one.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&#160;:</term>
+<listitem><simpara>A <link linkend="Genericmenuitem"><type>Genericmenuitem</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A pointer to the image of the item or <link linkend="NULL:CAPS"><type>NULL</type></link>
+		if there isn't one.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>

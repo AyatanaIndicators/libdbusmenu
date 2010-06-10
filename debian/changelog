@@ -1,3 +1,22 @@
+libdbusmenu (0.3.2-0ubuntu1) UNRELEASED; urgency=low
+
+  * debian/control
+    - added doc packages
+    - added build dep for gtk-doc-tools
+  * debian/libdbusmenu-glib-doc.install added
+  * debian/libdbusmenu-gtk-doc.install added
+  * debian/rules 
+    - enabled gtk-doc for configure
+
+  [Ted Gould]
+  * New upstream release.
+    * Set the 'child-display' property on menuitems that
+      have child menuitems.
+    * gtk-doc support
+    * Document the 'shortcut' property
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Jun 2010 16:33:42 -0400
+
 libdbusmenu (0.3.1-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
@@ -14,6 +33,22 @@ libdbusmenu (0.3.1-0ubuntu1) maverick; urgency=low
     typelib file.
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 04 Jun 2010 14:42:26 -0500
+
+libdbusmenu (0.3.0-0ubuntu1~ppa1) lucid; urgency=low
+
+  * New upstream release.
+    * Add function to get submenu of GTK-ified items
+    * Fix signal prototype of ID update
+    * Fixing up VAPI files to build them correctly
+  	* Fixing the version string in the GIR file
+    * Fix documentation title page
+    * Reject text nodes early (warnings with Qt integration)
+  * debian/libdbusmenu-glib-dev.install: Updating gir and vapi file
+    names for package list.
+  * debian/gir1.0-dbusmenu-glib-0.2.install: Changing the name of the
+    typelib file.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 May 2010 11:47:05 -0500
 
 libdbusmenu (0.2.9-0ubuntu3) lucid; urgency=low
 

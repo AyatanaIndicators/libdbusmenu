@@ -58,6 +58,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_STATE          "toggle-state"
+#define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "child-display"
 
 #define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
 #define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
@@ -67,6 +68,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       -1
 
 #define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
+
+#define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
 
 /**
  * DbusmenuMenuitem:
