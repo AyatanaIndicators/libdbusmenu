@@ -142,7 +142,7 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 	Return value: Whether it was successful at setting the property.
 */
 gboolean
-dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gchar * shortcut)
+dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, const gchar * shortcut)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
 	g_return_val_if_fail(shortcut != NULL, FALSE);
@@ -156,6 +156,14 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gcha
 		g_warning("Unable to parse shortcut string '%s'", shortcut);
 		return FALSE;
 	}
+
+	return dbusmenu_menuitem_property_set_shortcut(menuitem, key, modifier);
+}
+
+gboolean
+dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key, GdkModifierType modifier)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
 
 	GPtrArray * array = g_ptr_array_new();
 
@@ -172,8 +180,7 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gcha
 		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_SUPER));
 	}
 
-	gint len = g_utf8_strlen(shortcut, -1);
-	g_ptr_array_add(array, g_strdup(shortcut + len - 1));
+	g_ptr_array_add(array, g_strdup(gdk_keyval_name(key)));
 
 	GPtrArray * wrapper = g_ptr_array_new();
 	g_ptr_array_add(wrapper, array);
@@ -190,17 +197,16 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gcha
 /**
 	dbusmenu_menuitem_property_get_shortcut:
 	@menuitem: The #DbusmenuMenuitem to get the shortcut off
+	@key: Location to put the key value
+	@modifier: Location to put the modifier mask
 
-	This function gets a GTK shortcut string as defined in
-	#gtk_accelerator_parse from the data that is transferred
-	over DBusmenu.
-
-	Return value: Either the string or #NULL if there is none.
+	This function gets a GTK shortcut as a key and a mask
+	for use to set the accelerators.
 */
-gchar *
-dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem)
+void
+dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifier)
 {
-	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(menuitem));
 
-	return NULL;
+	return;
 }

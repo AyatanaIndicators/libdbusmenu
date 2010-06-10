@@ -32,11 +32,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libdbusmenu-glib/menuitem.h>
+#include <gdk/gdk.h>
 
 gboolean dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar * property, const GdkPixbuf * data);
 GdkPixbuf * dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar * property);
 
-gboolean dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, const gchar * shortcut);
-gchar * dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem);
+gboolean dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key, GdkModifierType modifier);
+gboolean dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, const gchar * shortcut);
+void dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifiers);
 
 #endif
