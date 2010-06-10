@@ -1,4 +1,4 @@
-libdbusmenu (0.3.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.2-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Set the 'child-display' property on menuitems that
@@ -6,7 +6,7 @@ libdbusmenu (0.3.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * gtk-doc support
     * Document the 'shortcut' property
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Jun 2010 12:21:31 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Jun 2010 12:38:27 -0500
 
 libdbusmenu (0.3.1-0ubuntu1) maverick; urgency=low
 
