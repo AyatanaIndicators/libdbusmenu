@@ -47,7 +47,12 @@ CFILE_GLOB=$(top_srcdir)/libdbusmenu-glib/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=menuitem-marshal.h server-marshal.h menuitem-private.h
+IGNORE_HFILES= \
+	menuitem-marshal.h \
+	server-marshal.h \
+	menuitem-private.h \
+	dbusmenu-client.h \
+	dbusmenu-server.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
