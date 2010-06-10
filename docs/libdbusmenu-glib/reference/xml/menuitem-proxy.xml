@@ -4,9 +4,9 @@
 [
   <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
 ]>
-<refentry id="DbusmenuMenuitemProxy">
+<refentry id="libdbusmenu-glib-DbusmenuMenuitemProxy">
 <refmeta>
-<refentrytitle role="top_of_page" id="DbusmenuMenuitemProxy.top_of_page">DbusmenuMenuitemProxy</refentrytitle>
+<refentrytitle role="top_of_page" id="libdbusmenu-glib-DbusmenuMenuitemProxy.top_of_page">DbusmenuMenuitemProxy</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   LIBDBUSMENU-GLIB Library
@@ -17,41 +17,30 @@
 <refpurpose></refpurpose>
 </refnamediv>
 
-<refsynopsisdiv id="DbusmenuMenuitemProxy.synopsis" role="synopsis">
+<refsynopsisdiv id="libdbusmenu-glib-DbusmenuMenuitemProxy.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
-<synopsis>                    <link linkend="DbusmenuMenuitemProxy-struct">DbusmenuMenuitemProxy</link>;
+<synopsis>                    <link linkend="DbusmenuMenuitemProxy">DbusmenuMenuitemProxy</link>;
                     <link linkend="DbusmenuMenuitemProxyClass">DbusmenuMenuitemProxyClass</link>;
 <link linkend="DbusmenuMenuitemProxy"><returnvalue>DbusmenuMenuitemProxy</returnvalue></link> * <link linkend="dbusmenu-menuitem-proxy-new">dbusmenu_menuitem_proxy_new</link>     (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>);
 <link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  <link linkend="dbusmenu-menuitem-proxy-get-wrapped">dbusmenu_menuitem_proxy_get_wrapped</link> (<parameter><link linkend="DbusmenuMenuitemProxy"><type>DbusmenuMenuitemProxy</type></link> *pmi</parameter>);
 </synopsis>
 </refsynopsisdiv>
-<refsect1 id="DbusmenuMenuitemProxy.object-hierarchy" role="object_hierarchy">
-<title role="object_hierarchy.title">Object Hierarchy</title>
-<synopsis>
-  <link linkend="GObject">GObject</link>
-   +----<link linkend="DbusmenuMenuitem">DbusmenuMenuitem</link>
-         +----DbusmenuMenuitemProxy
-</synopsis>
-</refsect1>
-<refsect1 id="DbusmenuMenuitemProxy.properties" role="properties">
-<title role="properties.title">Properties</title>
-<synopsis>
-  &quot;<link linkend="DbusmenuMenuitemProxy--menu-item">menu-item</link>&quot;                <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link>*     : Read / Write / Construct Only
-</synopsis>
-</refsect1>
 
-<refsect1 id="DbusmenuMenuitemProxy.description" role="desc">
+<refsect1 id="libdbusmenu-glib-DbusmenuMenuitemProxy.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 </para>
 </refsect1>
-<refsect1 id="DbusmenuMenuitemProxy.details" role="details">
+<refsect1 id="libdbusmenu-glib-DbusmenuMenuitemProxy.details" role="details">
 <title role="details.title">Details</title>
-<refsect2 id="DbusmenuMenuitemProxy-struct" role="struct">
+<refsect2 id="DbusmenuMenuitemProxy" role="struct">
 <title>DbusmenuMenuitemProxy</title>
-<indexterm zone="DbusmenuMenuitemProxy-struct"><primary>DbusmenuMenuitemProxy</primary></indexterm>
-<programlisting>typedef struct _DbusmenuMenuitemProxy DbusmenuMenuitemProxy;</programlisting>
+<indexterm zone="DbusmenuMenuitemProxy"><primary>DbusmenuMenuitemProxy</primary></indexterm>
+<programlisting>typedef struct {
+	DbusmenuMenuitem parent;
+} DbusmenuMenuitemProxy;
+</programlisting>
 <para>
 </para></refsect2>
 <refsect2 id="DbusmenuMenuitemProxyClass" role="struct">
@@ -99,13 +88,6 @@ Accesses the private variable of which <link linkend="DbusmenuMenuitem"><type>Db
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
-</refsect1>
-<refsect1 id="DbusmenuMenuitemProxy.property-details" role="property_details">
-<title role="property_details.title">Property Details</title>
-<refsect2 id="DbusmenuMenuitemProxy--menu-item" role="property"><title>The <literal>&quot;menu-item&quot;</literal> property</title>
-<indexterm zone="DbusmenuMenuitemProxy--menu-item"><primary>DbusmenuMenuitemProxy:menu-item</primary></indexterm>
-<programlisting>  &quot;menu-item&quot;                <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link>*     : Read / Write / Construct Only</programlisting>
-<para>An instance of the DbusmenuMenuitem class that this menuitem will mimic.</para></refsect2>
 </refsect1>
 
 </refentry>

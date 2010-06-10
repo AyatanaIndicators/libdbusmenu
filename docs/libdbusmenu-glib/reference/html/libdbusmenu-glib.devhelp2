@@ -4,12 +4,10 @@
   <chapters>
     <sub name="API" link="ch01.html">
       <sub name="DbusmenuServer" link="libdbusmenu-glib-DbusmenuServer.html"/>
-      <sub name="DbusmenuMenuitemProxy" link="DbusmenuMenuitemProxy.html"/>
-      <sub name="DbusmenuMenuitem" link="DbusmenuMenuitem.html"/>
+      <sub name="DbusmenuMenuitemProxy" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html"/>
+      <sub name="DbusmenuMenuitem" link="libdbusmenu-glib-DbusmenuMenuitem.html"/>
       <sub name="DbusmenuClient" link="libdbusmenu-glib-DbusmenuClient.html"/>
-      <sub name="DbusmenuClientMenuitem" link="DbusmenuClientMenuitem.html"/>
-      <sub name="dbusmenu-client" link="libdbusmenu-glib-dbusmenu-client.html"/>
-      <sub name="dbusmenu-server" link="libdbusmenu-glib-dbusmenu-server.html"/>
+      <sub name="DbusmenuClientMenuitem" link="libdbusmenu-glib-DbusmenuClientMenuitem.html"/>
     </sub>
     <sub name="Object Hierarchy" link="object-tree.html"/>
     <sub name="API Index" link="api-index-full.html"/>
@@ -23,77 +21,72 @@
     <keyword type="macro" name="DBUSMENU_SERVER_PROP_DBUS_OBJECT" link="libdbusmenu-glib-DbusmenuServer.html#DBUSMENU-SERVER-PROP-DBUS-OBJECT:CAPS"/>
     <keyword type="macro" name="DBUSMENU_SERVER_PROP_ROOT_NODE" link="libdbusmenu-glib-DbusmenuServer.html#DBUSMENU-SERVER-PROP-ROOT-NODE:CAPS"/>
     <keyword type="macro" name="DBUSMENU_SERVER_PROP_VERSION" link="libdbusmenu-glib-DbusmenuServer.html#DBUSMENU-SERVER-PROP-VERSION:CAPS"/>
+    <keyword type="struct" name="DbusmenuServer" link="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"/>
     <keyword type="struct" name="DbusmenuServerClass" link="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServerClass"/>
     <keyword type="function" name="dbusmenu_server_new ()" link="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-new"/>
     <keyword type="function" name="dbusmenu_server_set_root ()" link="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-set-root"/>
-    <keyword type="struct" name="DbusmenuMenuitemProxy" link="DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy-struct"/>
-    <keyword type="struct" name="DbusmenuMenuitemProxyClass" link="DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxyClass"/>
-    <keyword type="function" name="dbusmenu_menuitem_proxy_new ()" link="DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-new"/>
-    <keyword type="function" name="dbusmenu_menuitem_proxy_get_wrapped ()" link="DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-get-wrapped"/>
-    <keyword type="property" name="The &quot;menu-item&quot; property" link="DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy--menu-item"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-PROPERTY-CHANGED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-ITEM-ACTIVATED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-ADDED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-REMOVED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-MOVED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_REALIZED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-REALIZED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-REALIZED-ID:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_TYPE" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TYPE:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_VISIBLE" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-VISIBLE:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_ENABLED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ENABLED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_LABEL" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-LABEL:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_ICON_NAME" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ICON-NAME:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_ICON_DATA" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ICON-DATA:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-TYPE:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_CHECK" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_RADIO" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-CHECKED:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNKNOWN:CAPS"/>
-    <keyword type="macro" name="DBUSMENU_MENUITEM_ICON_NAME_BLANK" link="DbusmenuMenuitem.html#DBUSMENU-MENUITEM-ICON-NAME-BLANK:CAPS"/>
-    <keyword type="struct" name="DbusmenuMenuitem" link="DbusmenuMenuitem.html#DbusmenuMenuitem-struct"/>
-    <keyword type="function" name="dbusmenu_menuitem_about_to_show_cb ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-about-to-show-cb"/>
-    <keyword type="function" name="dbusmenu_menuitem_buildxml_slot_t ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-buildxml-slot-t"/>
-    <keyword type="struct" name="DbusmenuMenuitemClass" link="DbusmenuMenuitem.html#DbusmenuMenuitemClass"/>
-    <keyword type="function" name="dbusmenu_menuitem_new ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-new"/>
-    <keyword type="function" name="dbusmenu_menuitem_new_with_id ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-new-with-id"/>
-    <keyword type="function" name="dbusmenu_menuitem_get_id ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-get-id"/>
-    <keyword type="function" name="dbusmenu_menuitem_get_children ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-get-children"/>
-    <keyword type="function" name="dbusmenu_menuitem_take_children ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-take-children"/>
-    <keyword type="function" name="dbusmenu_menuitem_get_position ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-get-position"/>
-    <keyword type="function" name="dbusmenu_menuitem_get_position_realized ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-get-position-realized"/>
-    <keyword type="function" name="dbusmenu_menuitem_child_append ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-child-append"/>
-    <keyword type="function" name="dbusmenu_menuitem_child_prepend ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-child-prepend"/>
-    <keyword type="function" name="dbusmenu_menuitem_child_delete ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-child-delete"/>
-    <keyword type="function" name="dbusmenu_menuitem_child_add_position ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-child-add-position"/>
-    <keyword type="function" name="dbusmenu_menuitem_child_reorder ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-child-reorder"/>
-    <keyword type="function" name="dbusmenu_menuitem_child_find ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-child-find"/>
-    <keyword type="function" name="dbusmenu_menuitem_find_id ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-find-id"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_set ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-set"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_set_value ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-value"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_set_bool ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-bool"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_set_int ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-int"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_get ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-get"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_get_value ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-value"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_get_bool ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-bool"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_get_int ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-int"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_exist ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-exist"/>
-    <keyword type="function" name="dbusmenu_menuitem_properties_list ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-properties-list"/>
-    <keyword type="function" name="dbusmenu_menuitem_properties_copy ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-properties-copy"/>
-    <keyword type="function" name="dbusmenu_menuitem_property_remove ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-property-remove"/>
-    <keyword type="function" name="dbusmenu_menuitem_set_root ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-set-root"/>
-    <keyword type="function" name="dbusmenu_menuitem_get_root ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-get-root"/>
-    <keyword type="function" name="dbusmenu_menuitem_foreach ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-foreach"/>
-    <keyword type="function" name="dbusmenu_menuitem_handle_event ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-handle-event"/>
-    <keyword type="function" name="dbusmenu_menuitem_send_about_to_show ()" link="DbusmenuMenuitem.html#dbusmenu-menuitem-send-about-to-show"/>
-    <keyword type="property" name="The &quot;id&quot; property" link="DbusmenuMenuitem.html#DbusmenuMenuitem--id"/>
-    <keyword type="signal" name="The &quot;child-added&quot; signal" link="DbusmenuMenuitem.html#DbusmenuMenuitem-child-added"/>
-    <keyword type="signal" name="The &quot;child-moved&quot; signal" link="DbusmenuMenuitem.html#DbusmenuMenuitem-child-moved"/>
-    <keyword type="signal" name="The &quot;child-removed&quot; signal" link="DbusmenuMenuitem.html#DbusmenuMenuitem-child-removed"/>
-    <keyword type="signal" name="The &quot;item-activated&quot; signal" link="DbusmenuMenuitem.html#DbusmenuMenuitem-item-activated"/>
-    <keyword type="signal" name="The &quot;property-changed&quot; signal" link="DbusmenuMenuitem.html#DbusmenuMenuitem-property-changed"/>
-    <keyword type="signal" name="The &quot;realized&quot; signal" link="DbusmenuMenuitem.html#DbusmenuMenuitem-realized"/>
+    <keyword type="struct" name="DbusmenuMenuitemProxy" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy"/>
+    <keyword type="struct" name="DbusmenuMenuitemProxyClass" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxyClass"/>
+    <keyword type="function" name="dbusmenu_menuitem_proxy_new ()" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-new"/>
+    <keyword type="function" name="dbusmenu_menuitem_proxy_get_wrapped ()" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-get-wrapped"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-PROPERTY-CHANGED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-ITEM-ACTIVATED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-ADDED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-REMOVED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-MOVED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_REALIZED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-REALIZED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-REALIZED-ID:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_TYPE" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TYPE:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_VISIBLE" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-VISIBLE:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_ENABLED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ENABLED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_LABEL" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-LABEL:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_ICON_NAME" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ICON-NAME:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_ICON_DATA" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ICON-DATA:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-TYPE:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_CHECK" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_RADIO" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-CHECKED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNKNOWN:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_ICON_NAME_BLANK" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-ICON-NAME-BLANK:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-CHILD-DISPLAY-SUBMENU:CAPS"/>
+    <keyword type="struct" name="DbusmenuMenuitem" link="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"/>
+    <keyword type="function" name="dbusmenu_menuitem_about_to_show_cb ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-about-to-show-cb"/>
+    <keyword type="function" name="dbusmenu_menuitem_buildxml_slot_t ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-buildxml-slot-t"/>
+    <keyword type="struct" name="DbusmenuMenuitemClass" link="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitemClass"/>
+    <keyword type="function" name="dbusmenu_menuitem_new ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-new"/>
+    <keyword type="function" name="dbusmenu_menuitem_new_with_id ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-new-with-id"/>
+    <keyword type="function" name="dbusmenu_menuitem_get_id ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-id"/>
+    <keyword type="function" name="dbusmenu_menuitem_get_children ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-children"/>
+    <keyword type="function" name="dbusmenu_menuitem_take_children ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-take-children"/>
+    <keyword type="function" name="dbusmenu_menuitem_get_position ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-position"/>
+    <keyword type="function" name="dbusmenu_menuitem_get_position_realized ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-position-realized"/>
+    <keyword type="function" name="dbusmenu_menuitem_child_append ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-append"/>
+    <keyword type="function" name="dbusmenu_menuitem_child_prepend ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-prepend"/>
+    <keyword type="function" name="dbusmenu_menuitem_child_delete ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-delete"/>
+    <keyword type="function" name="dbusmenu_menuitem_child_add_position ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-add-position"/>
+    <keyword type="function" name="dbusmenu_menuitem_child_reorder ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-reorder"/>
+    <keyword type="function" name="dbusmenu_menuitem_child_find ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-find"/>
+    <keyword type="function" name="dbusmenu_menuitem_find_id ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-find-id"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_set ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_set_value ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-value"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_set_bool ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-bool"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_set_int ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-int"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_get ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_get_value ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-value"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_get_bool ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-bool"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_get_int ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-int"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_exist ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-exist"/>
+    <keyword type="function" name="dbusmenu_menuitem_properties_list ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-properties-list"/>
+    <keyword type="function" name="dbusmenu_menuitem_properties_copy ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-properties-copy"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_remove ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-remove"/>
+    <keyword type="function" name="dbusmenu_menuitem_set_root ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-set-root"/>
+    <keyword type="function" name="dbusmenu_menuitem_get_root ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-root"/>
+    <keyword type="function" name="dbusmenu_menuitem_foreach ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-foreach"/>
+    <keyword type="function" name="dbusmenu_menuitem_handle_event ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-handle-event"/>
+    <keyword type="function" name="dbusmenu_menuitem_send_about_to_show ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-send-about-to-show"/>
     <keyword type="macro" name="DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED" link="libdbusmenu-glib-DbusmenuClient.html#DBUSMENU-CLIENT-SIGNAL-LAYOUT-UPDATED:CAPS"/>
     <keyword type="macro" name="DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED" link="libdbusmenu-glib-DbusmenuClient.html#DBUSMENU-CLIENT-SIGNAL-ROOT-CHANGED:CAPS"/>
     <keyword type="macro" name="DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM" link="libdbusmenu-glib-DbusmenuClient.html#DBUSMENU-CLIENT-SIGNAL-NEW-MENUITEM:CAPS"/>
@@ -102,6 +95,7 @@
     <keyword type="macro" name="DBUSMENU_CLIENT_TYPES_DEFAULT" link="libdbusmenu-glib-DbusmenuClient.html#DBUSMENU-CLIENT-TYPES-DEFAULT:CAPS"/>
     <keyword type="macro" name="DBUSMENU_CLIENT_TYPES_SEPARATOR" link="libdbusmenu-glib-DbusmenuClient.html#DBUSMENU-CLIENT-TYPES-SEPARATOR:CAPS"/>
     <keyword type="macro" name="DBUSMENU_CLIENT_TYPES_IMAGE" link="libdbusmenu-glib-DbusmenuClient.html#DBUSMENU-CLIENT-TYPES-IMAGE:CAPS"/>
+    <keyword type="struct" name="DbusmenuClient" link="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClient"/>
     <keyword type="struct" name="DbusmenuClientClass" link="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClientClass"/>
     <keyword type="function" name="DbusmenuClientTypeHandler ()" link="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClientTypeHandler"/>
     <keyword type="function" name="dbusmenu_client_new ()" link="libdbusmenu-glib-DbusmenuClient.html#dbusmenu-client-new"/>
@@ -109,56 +103,9 @@
     <keyword type="function" name="dbusmenu_client_add_type_handler ()" link="libdbusmenu-glib-DbusmenuClient.html#dbusmenu-client-add-type-handler"/>
     <keyword type="function" name="dbusmenu_client_send_event ()" link="libdbusmenu-glib-DbusmenuClient.html#dbusmenu-client-send-event"/>
     <keyword type="function" name="dbusmenu_client_send_about_to_show ()" link="libdbusmenu-glib-DbusmenuClient.html#dbusmenu-client-send-about-to-show"/>
-    <keyword type="macro" name="DBUSMENU_CLIENT_MENUITEM_TYPE" link="DbusmenuClientMenuitem.html#DBUSMENU-CLIENT-MENUITEM-TYPE:CAPS"/>
-    <keyword type="struct" name="DbusmenuClientMenuitem" link="DbusmenuClientMenuitem.html#DbusmenuClientMenuitem-struct"/>
-    <keyword type="struct" name="DbusmenuClientMenuitemClass" link="DbusmenuClientMenuitem.html#DbusmenuClientMenuitemClass"/>
-    <keyword type="function" name="dbusmenu_client_menuitem_new ()" link="DbusmenuClientMenuitem.html#dbusmenu-client-menuitem-new"/>
-    <keyword type="macro" name="DBUS_GLIB_CLIENT_WRAPPERS_org_ayatana_dbusmenu" link="libdbusmenu-glib-dbusmenu-client.html#DBUS-GLIB-CLIENT-WRAPPERS-org-ayatana-dbusmenu"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_layout ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-layout"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_layout_reply ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-layout-reply"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_layout_async ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-layout-async"/>
-    <keyword type="function" name="dbus_g_proxy_begin_call ()" link="libdbusmenu-glib-dbusmenu-client.html#dbus-g-proxy-begin-call"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_group_properties ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-group-properties"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_group_properties_reply ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-group-properties-reply"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_group_properties_async ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-group-properties-async"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_children ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-children"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_children_reply ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-children-reply"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_children_async ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-children-async"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_property ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-property"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_property_reply ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-property-reply"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_property_async ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-property-async"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_properties ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-properties"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_properties_reply ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-properties-reply"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_get_properties_async ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-get-properties-async"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_event ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-event"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_event_reply ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-event-reply"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_event_async ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-event-async"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_about_to_show ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-about-to-show"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_about_to_show_reply ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-about-to-show-reply"/>
-    <keyword type="function" name="org_ayatana_dbusmenu_about_to_show_async ()" link="libdbusmenu-glib-dbusmenu-client.html#org-ayatana-dbusmenu-about-to-show-async"/>
-    <keyword type="macro" name="g_marshal_value_peek_boolean()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-boolean"/>
-    <keyword type="macro" name="g_marshal_value_peek_char()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-char"/>
-    <keyword type="macro" name="g_marshal_value_peek_uchar()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-uchar"/>
-    <keyword type="macro" name="g_marshal_value_peek_int()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-int"/>
-    <keyword type="macro" name="g_marshal_value_peek_uint()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-uint"/>
-    <keyword type="macro" name="g_marshal_value_peek_long()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-long"/>
-    <keyword type="macro" name="g_marshal_value_peek_ulong()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-ulong"/>
-    <keyword type="macro" name="g_marshal_value_peek_int64()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-int64"/>
-    <keyword type="macro" name="g_marshal_value_peek_uint64()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-uint64"/>
-    <keyword type="macro" name="g_marshal_value_peek_enum()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-enum"/>
-    <keyword type="macro" name="g_marshal_value_peek_flags()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-flags"/>
-    <keyword type="macro" name="g_marshal_value_peek_float()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-float"/>
-    <keyword type="macro" name="g_marshal_value_peek_double()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-double"/>
-    <keyword type="macro" name="g_marshal_value_peek_string()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-string"/>
-    <keyword type="macro" name="g_marshal_value_peek_param()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-param"/>
-    <keyword type="macro" name="g_marshal_value_peek_boxed()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-boxed"/>
-    <keyword type="macro" name="g_marshal_value_peek_pointer()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-pointer"/>
-    <keyword type="macro" name="g_marshal_value_peek_object()" link="libdbusmenu-glib-dbusmenu-server.html#g-marshal-value-peek-object"/>
-    <keyword type="function" name="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_POINTER_POINTER ()" link="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-POINTER-POINTER"/>
-    <keyword type="function" name="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER_POINTER ()" link="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER-POINTER"/>
-    <keyword type="function" name="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_BOXED_POINTER_POINTER ()" link="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-BOXED-POINTER-POINTER"/>
-    <keyword type="function" name="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_STRING_BOXED_UINT_POINTER ()" link="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-STRING-BOXED-UINT-POINTER"/>
-    <keyword type="function" name="dbus_glib_marshal__dbusmenu_server_BOOLEAN__INT_POINTER_POINTER ()" link="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--INT-POINTER-POINTER"/>
-    <keyword type="function" name="dbus_glib_marshal__dbusmenu_server_BOOLEAN__BOXED_BOXED_POINTER_POINTER ()" link="libdbusmenu-glib-dbusmenu-server.html#dbus-glib-marshal--dbusmenu-server-BOOLEAN--BOXED-BOXED-POINTER-POINTER"/>
+    <keyword type="macro" name="DBUSMENU_CLIENT_MENUITEM_TYPE" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#DBUSMENU-CLIENT-MENUITEM-TYPE:CAPS"/>
+    <keyword type="struct" name="DbusmenuClientMenuitem" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitem"/>
+    <keyword type="struct" name="DbusmenuClientMenuitemClass" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitemClass"/>
+    <keyword type="function" name="dbusmenu_client_menuitem_new ()" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#dbusmenu-client-menuitem-new"/>
   </functions>
 </book>

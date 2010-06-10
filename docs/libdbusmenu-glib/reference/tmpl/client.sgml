@@ -78,6 +78,13 @@ DbusmenuClient
 
 
 
+<!-- ##### STRUCT DbusmenuClient ##### -->
+<para>
+
+</para>
+
+@parent: 
+
 <!-- ##### STRUCT DbusmenuClientClass ##### -->
 <para>
 

@@ -27,6 +27,7 @@
 #define             <link linkend="DBUSMENU-SERVER-PROP-DBUS-OBJECT:CAPS">DBUSMENU_SERVER_PROP_DBUS_OBJECT</link>
 #define             <link linkend="DBUSMENU-SERVER-PROP-ROOT-NODE:CAPS">DBUSMENU_SERVER_PROP_ROOT_NODE</link>
 #define             <link linkend="DBUSMENU-SERVER-PROP-VERSION:CAPS">DBUSMENU_SERVER_PROP_VERSION</link>
+                    <link linkend="DbusmenuServer">DbusmenuServer</link>;
                     <link linkend="DbusmenuServerClass">DbusmenuServerClass</link>;
 <link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *    <link linkend="dbusmenu-server-new">dbusmenu_server_new</link>                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-server-set-root">dbusmenu_server_set_root</link>            (<parameter><link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> *server</parameter>,
@@ -90,6 +91,22 @@
 </programlisting>
 <para>
 </para></refsect2>
+<refsect2 id="DbusmenuServer" role="struct">
+<title>DbusmenuServer</title>
+<indexterm zone="DbusmenuServer"><primary>DbusmenuServer</primary></indexterm>
+<programlisting>typedef struct {
+	GObject parent;
+} DbusmenuServer;
+</programlisting>
+<para>
+A server which represents a sharing of a set of
+	<link linkend="DbusmenuMenuitems"><type>DbusmenuMenuitems</type></link> across DBus to a <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link>.
+</para><variablelist role="struct">
+<varlistentry><term><link linkend="GObject"><type>GObject</type></link>&#160;<structfield id="DbusmenuServer.parent">parent</structfield>;</term>
+<listitem><simpara><link linkend="GObject"><type>GObject</type></link>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2 id="DbusmenuServerClass" role="struct">
 <title>DbusmenuServerClass</title>
 <indexterm zone="DbusmenuServerClass"><primary>DbusmenuServerClass</primary></indexterm>

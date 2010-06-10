@@ -71,6 +71,13 @@ DbusmenuServer
 
 
 
+<!-- ##### STRUCT DbusmenuServer ##### -->
+<para>
+
+</para>
+
+@parent: 
+
 <!-- ##### STRUCT DbusmenuServerClass ##### -->
 <para>
 

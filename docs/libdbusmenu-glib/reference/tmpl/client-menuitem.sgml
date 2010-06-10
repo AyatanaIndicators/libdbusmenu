@@ -34,6 +34,7 @@ DbusmenuClientMenuitem
 
 </para>
 
+@parent: 
 
 <!-- ##### STRUCT DbusmenuClientMenuitemClass ##### -->
 <para>

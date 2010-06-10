@@ -4,9 +4,9 @@
 [
   <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
 ]>
-<refentry id="DbusmenuMenuitem">
+<refentry id="libdbusmenu-glib-DbusmenuMenuitem">
 <refmeta>
-<refentrytitle role="top_of_page" id="DbusmenuMenuitem.top_of_page">DbusmenuMenuitem</refentrytitle>
+<refentrytitle role="top_of_page" id="libdbusmenu-glib-DbusmenuMenuitem.top_of_page">DbusmenuMenuitem</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>
   LIBDBUSMENU-GLIB Library
@@ -16,12 +16,12 @@
 <refname>DbusmenuMenuitem</refname>
 <refpurpose>A lowlevel represenation of a menuitem</refpurpose>
 </refnamediv>
-<refsect1 id="DbusmenuMenuitem.stability-level">
+<refsect1 id="libdbusmenu-glib-DbusmenuMenuitem.stability-level">
 <title>Stability Level</title>
 Unstable, unless otherwise indicated
 </refsect1>
 
-<refsynopsisdiv id="DbusmenuMenuitem.synopsis" role="synopsis">
+<refsynopsisdiv id="libdbusmenu-glib-DbusmenuMenuitem.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
@@ -42,13 +42,15 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-ICON-DATA:CAPS">DBUSMENU_MENUITEM_PROP_ICON_DATA</link>
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-TOGGLE-TYPE:CAPS">DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE</link>
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS">DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</link>
+#define             <link linkend="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS">DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS">DBUSMENU_MENUITEM_TOGGLE_CHECK</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS">DBUSMENU_MENUITEM_TOGGLE_RADIO</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS">DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-STATE-CHECKED:CAPS">DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-STATE-UNKNOWN:CAPS">DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN</link>
 #define             <link linkend="DBUSMENU-MENUITEM-ICON-NAME-BLANK:CAPS">DBUSMENU_MENUITEM_ICON_NAME_BLANK</link>
-                    <link linkend="DbusmenuMenuitem-struct">DbusmenuMenuitem</link>;
+#define             <link linkend="DBUSMENU-MENUITEM-CHILD-DISPLAY-SUBMENU:CAPS">DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU</link>
+                    <link linkend="DbusmenuMenuitem">DbusmenuMenuitem</link>;
 <link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="dbusmenu-menuitem-about-to-show-cb">*dbusmenu_menuitem_about_to_show_cb</link>)
                                                         (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter><link linkend="gpointer"><type>gpointer</type></link> user_data</parameter>);
@@ -127,34 +129,8 @@ const <link linkend="GValue"><returnvalue>GValue</returnvalue></link> *      <li
                                                          <parameter><link linkend="gpointer"><type>gpointer</type></link> cb_data</parameter>);
 </synopsis>
 </refsynopsisdiv>
-<refsect1 id="DbusmenuMenuitem.object-hierarchy" role="object_hierarchy">
-<title role="object_hierarchy.title">Object Hierarchy</title>
-<synopsis>
-  <link linkend="GObject">GObject</link>
-   +----DbusmenuMenuitem
-         +----<link linkend="DbusmenuClientMenuitem">DbusmenuClientMenuitem</link>
-         +----<link linkend="DbusmenuMenuitemProxy">DbusmenuMenuitemProxy</link>
-</synopsis>
-</refsect1>
-<refsect1 id="DbusmenuMenuitem.properties" role="properties">
-<title role="properties.title">Properties</title>
-<synopsis>
-  &quot;<link linkend="DbusmenuMenuitem--id">id</link>&quot;                       <link linkend="gint"><type>gint</type></link>                  : Read / Write / Construct Only
-</synopsis>
-</refsect1>
-<refsect1 id="DbusmenuMenuitem.signals" role="signal_proto">
-<title role="signal_proto.title">Signals</title>
-<synopsis>
-  &quot;<link linkend="DbusmenuMenuitem-child-added">child-added</link>&quot;                                    : Run Last
-  &quot;<link linkend="DbusmenuMenuitem-child-moved">child-moved</link>&quot;                                    : Run Last
-  &quot;<link linkend="DbusmenuMenuitem-child-removed">child-removed</link>&quot;                                  : Run Last
-  &quot;<link linkend="DbusmenuMenuitem-item-activated">item-activated</link>&quot;                                 : Run Last
-  &quot;<link linkend="DbusmenuMenuitem-property-changed">property-changed</link>&quot;                               : Run Last
-  &quot;<link linkend="DbusmenuMenuitem-realized">realized</link>&quot;                                       : Run Last
-</synopsis>
-</refsect1>
 
-<refsect1 id="DbusmenuMenuitem.description" role="desc">
+<refsect1 id="libdbusmenu-glib-DbusmenuMenuitem.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 A <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> is the lowest level of represenation of a
@@ -171,7 +147,7 @@ are simple, but then they can be attached to more complex
 objects and handled appropriately.
 </para>
 </refsect1>
-<refsect1 id="DbusmenuMenuitem.details" role="details">
+<refsect1 id="libdbusmenu-glib-DbusmenuMenuitem.details" role="details">
 <title role="details.title">Details</title>
 <refsect2 id="DBUSMENU-MENUITEM-SIGNAL-PROPERTY-CHANGED:CAPS" role="macro">
 <title>DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED</title>
@@ -278,6 +254,13 @@ objects and handled appropriately.
 </programlisting>
 <para>
 </para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</title>
+<indexterm zone="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS"><primary>DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "child-display"
+</programlisting>
+<para>
+</para></refsect2>
 <refsect2 id="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" role="macro">
 <title>DBUSMENU_MENUITEM_TOGGLE_CHECK</title>
 <indexterm zone="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS"><primary>DBUSMENU_MENUITEM_TOGGLE_CHECK</primary></indexterm>
@@ -320,10 +303,20 @@ objects and handled appropriately.
 </programlisting>
 <para>
 </para></refsect2>
-<refsect2 id="DbusmenuMenuitem-struct" role="struct">
+<refsect2 id="DBUSMENU-MENUITEM-CHILD-DISPLAY-SUBMENU:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU</title>
+<indexterm zone="DBUSMENU-MENUITEM-CHILD-DISPLAY-SUBMENU:CAPS"><primary>DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DbusmenuMenuitem" role="struct">
 <title>DbusmenuMenuitem</title>
-<indexterm zone="DbusmenuMenuitem-struct"><primary>DbusmenuMenuitem</primary></indexterm>
-<programlisting>typedef struct _DbusmenuMenuitem DbusmenuMenuitem;</programlisting>
+<indexterm zone="DbusmenuMenuitem"><primary>DbusmenuMenuitem</primary></indexterm>
+<programlisting>typedef struct {
+	GObject parent;
+} DbusmenuMenuitem;
+</programlisting>
 <para>
 This is the <link linkend="GObject"><type>GObject</type></link> based object that represents a menu
 item.  It gets created the same on both the client and
@@ -1030,137 +1023,6 @@ This function is used to send the even that the submenu
 <listitem><simpara> Data to pass to the callback.. closure</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
-</refsect1>
-<refsect1 id="DbusmenuMenuitem.property-details" role="property_details">
-<title role="property_details.title">Property Details</title>
-<refsect2 id="DbusmenuMenuitem--id" role="property"><title>The <literal>&quot;id&quot;</literal> property</title>
-<indexterm zone="DbusmenuMenuitem--id"><primary>DbusmenuMenuitem:id</primary></indexterm>
-<programlisting>  &quot;id&quot;                       <link linkend="gint"><type>gint</type></link>                  : Read / Write / Construct Only</programlisting>
-<para>This is a unique indentifier for the menu item.</para><para>Allowed values: [G_MAXULONG,30000]</para>
-<para>Default value: -1</para>
-</refsect2>
-</refsect1>
-<refsect1 id="DbusmenuMenuitem.signal-details" role="signals">
-<title role="signals.title">Signal Details</title>
-<refsect2 id="DbusmenuMenuitem-child-added" role="signal"><title>The <literal>&quot;child-added&quot;</literal> signal</title>
-<indexterm zone="DbusmenuMenuitem-child-added"><primary>DbusmenuMenuitem::child-added</primary></indexterm>
-<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *arg0,
-                                                        <link linkend="GObject"><type>GObject</type></link>          *arg1,
-                                                        <link linkend="guint"><type>guint</type></link>             arg2,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>          user_data)      : Run Last</programlisting>
-<para>
-Signaled when the child menuitem has been added to
-		the parent.
-</para><variablelist role="params">
-<varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> which is the parent.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> which is the child.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg2</parameter>&#160;:</term>
-<listitem><simpara>The position that the child is being added in.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
-<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2 id="DbusmenuMenuitem-child-moved" role="signal"><title>The <literal>&quot;child-moved&quot;</literal> signal</title>
-<indexterm zone="DbusmenuMenuitem-child-moved"><primary>DbusmenuMenuitem::child-moved</primary></indexterm>
-<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *arg0,
-                                                        <link linkend="GObject"><type>GObject</type></link>          *arg1,
-                                                        <link linkend="guint"><type>guint</type></link>             arg2,
-                                                        <link linkend="guint"><type>guint</type></link>             arg3,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>          user_data)      : Run Last</programlisting>
-<para>
-Signaled when the child menuitem has had it's location
-		in the list change.
-</para><variablelist role="params">
-<varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> which is the parent.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> which is the child.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg2</parameter>&#160;:</term>
-<listitem><simpara>The position that the child is being moved to.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg3</parameter>&#160;:</term>
-<listitem><simpara>The position that the child is was in.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
-<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2 id="DbusmenuMenuitem-child-removed" role="signal"><title>The <literal>&quot;child-removed&quot;</literal> signal</title>
-<indexterm zone="DbusmenuMenuitem-child-removed"><primary>DbusmenuMenuitem::child-removed</primary></indexterm>
-<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *arg0,
-                                                        <link linkend="GObject"><type>GObject</type></link>          *arg1,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>          user_data)      : Run Last</programlisting>
-<para>
-Signaled when the child menuitem has been requested to
-		be removed from the parent.  This signal is called when
-		it has been removed from the list but not yet had
-		<link linkend="g-object-unref"><type>g_object_unref</type></link> called on it.
-</para><variablelist role="params">
-<varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> which was the parent.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> which was the child.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
-<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2 id="DbusmenuMenuitem-item-activated" role="signal"><title>The <literal>&quot;item-activated&quot;</literal> signal</title>
-<indexterm zone="DbusmenuMenuitem-item-activated"><primary>DbusmenuMenuitem::item-activated</primary></indexterm>
-<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *arg0,
-                                                        <link linkend="guint"><type>guint</type></link>             arg1,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>          user_data)      : Run Last</programlisting>
-<para>
-Emitted on the objects on the server side when
-		they are signaled on the client side.
-</para><variablelist role="params">
-<varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> object.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The timestamp of when it was activated
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
-<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2 id="DbusmenuMenuitem-property-changed" role="signal"><title>The <literal>&quot;property-changed&quot;</literal> signal</title>
-<indexterm zone="DbusmenuMenuitem-property-changed"><primary>DbusmenuMenuitem::property-changed</primary></indexterm>
-<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *arg0,
-                                                        <link linkend="gchar"><type>gchar</type></link>            *arg1,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>          arg2,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>          user_data)      : Run Last</programlisting>
-<para>
-Emitted everytime a property on a menuitem is either
-		updated or added.
-</para><variablelist role="params">
-<varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> object.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The name of the property that changed
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg2</parameter>&#160;:</term>
-<listitem><simpara>The new value of the property
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
-<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2 id="DbusmenuMenuitem-realized" role="signal"><title>The <literal>&quot;realized&quot;</literal> signal</title>
-<indexterm zone="DbusmenuMenuitem-realized"><primary>DbusmenuMenuitem::realized</primary></indexterm>
-<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *arg0,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>          user_data)      : Run Last</programlisting>
-<para>
-Emitted when the initial request for properties
-		is complete on the item.  If there is a type
-		handler configured for the "type" parameter
-		that will be executed before this is signaled.
-</para><variablelist role="params">
-<varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> object.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
-<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2>
 </refsect1>
 
 </refentry>

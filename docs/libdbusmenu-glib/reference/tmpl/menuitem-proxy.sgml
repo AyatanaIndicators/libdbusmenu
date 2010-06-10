@@ -27,11 +27,7 @@ DbusmenuMenuitemProxy
 
 </para>
 
-
-<!-- ##### ARG DbusmenuMenuitemProxy:menu-item ##### -->
-<para>
-
-</para>
+@parent: 
 
 <!-- ##### STRUCT DbusmenuMenuitemProxyClass ##### -->
 <para>

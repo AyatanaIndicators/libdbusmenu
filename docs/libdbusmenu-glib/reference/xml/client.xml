@@ -35,6 +35,7 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-CLIENT-TYPES-DEFAULT:CAPS">DBUSMENU_CLIENT_TYPES_DEFAULT</link>
 #define             <link linkend="DBUSMENU-CLIENT-TYPES-SEPARATOR:CAPS">DBUSMENU_CLIENT_TYPES_SEPARATOR</link>
 #define             <link linkend="DBUSMENU-CLIENT-TYPES-IMAGE:CAPS">DBUSMENU_CLIENT_TYPES_IMAGE</link>
+                    <link linkend="DbusmenuClient">DbusmenuClient</link>;
                     <link linkend="DbusmenuClientClass">DbusmenuClientClass</link>;
 <link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            (<link linkend="DbusmenuClientTypeHandler">*DbusmenuClientTypeHandler</link>)        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *newitem</parameter>,
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *parent</parameter>,
@@ -134,6 +135,22 @@ The client exists as a mirror to the server.  For most folks
 </programlisting>
 <para>
 </para></refsect2>
+<refsect2 id="DbusmenuClient" role="struct">
+<title>DbusmenuClient</title>
+<indexterm zone="DbusmenuClient"><primary>DbusmenuClient</primary></indexterm>
+<programlisting>typedef struct {
+	GObject parent;
+} DbusmenuClient;
+</programlisting>
+<para>
+The client for a <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> creating a shared
+	object set of <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects.
+</para><variablelist role="struct">
+<varlistentry><term><link linkend="GObject"><type>GObject</type></link>&#160;<structfield id="DbusmenuClient.parent">parent</structfield>;</term>
+<listitem><simpara><link linkend="GObject"><type>GObject</type></link>.
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2 id="DbusmenuClientClass" role="struct">
 <title>DbusmenuClientClass</title>
 <indexterm zone="DbusmenuClientClass"><primary>DbusmenuClientClass</primary></indexterm>
