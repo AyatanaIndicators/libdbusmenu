@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="libdbusmenu-gtk-menuitem">
+<refmeta>
+<refentrytitle role="top_of_page" id="libdbusmenu-gtk-menuitem.top_of_page">menuitem</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GTK Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>menuitem</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="libdbusmenu-gtk-menuitem.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-set-image">dbusmenu_menuitem_property_set_image</link>
+                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *menuitem</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
+                                                         <parameter>const <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> *data</parameter>);
+<link linkend="GdkPixbuf"><returnvalue>GdkPixbuf</returnvalue></link> *         <link linkend="dbusmenu-menuitem-property-get-image">dbusmenu_menuitem_property_get_image</link>
+                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *menuitem</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="libdbusmenu-gtk-menuitem.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+<refsect1 id="libdbusmenu-gtk-menuitem.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="dbusmenu-menuitem-property-set-image" role="function">
+<title>dbusmenu_menuitem_property_set_image ()</title>
+<indexterm zone="dbusmenu-menuitem-property-set-image"><primary>dbusmenu_menuitem_property_set_image</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            dbusmenu_menuitem_property_set_image
+                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *menuitem</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
+                                                         <parameter>const <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> *data</parameter>);</programlisting>
+<para>
+This function takes the pixbuf that is stored in <parameter>data</parameter> and
+	turns it into a base64 encoded PNG so that it can be placed
+	onto a standard <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> property.
+</para><variablelist role="params">
+<varlistentry><term><parameter>menuitem</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to set the property on.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>property</parameter>&#160;:</term>
+<listitem><simpara>Name of the property to set.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&#160;:</term>
+<listitem><simpara>The image to place on the property.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> Whether the function was able to set the property
+		or not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-menuitem-property-get-image" role="function">
+<title>dbusmenu_menuitem_property_get_image ()</title>
+<indexterm zone="dbusmenu-menuitem-property-get-image"><primary>dbusmenu_menuitem_property_get_image</primary></indexterm>
+<programlisting><link linkend="GdkPixbuf"><returnvalue>GdkPixbuf</returnvalue></link> *         dbusmenu_menuitem_property_get_image
+                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *menuitem</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);</programlisting>
+<para>
+This function looks on the menu item for a property by the
+	name of <parameter>property</parameter>.  If one exists it tries to turn it into
+	a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link>.  It assumes that the property is a base64 encoded
+	PNG file like the one created by <link linkend="dbusmenu-menuite-property-set-image"><type>dbusmenu_menuite_property_set_image</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>menuitem</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="DbusmenuMenuite"><type>DbusmenuMenuite</type></link> to look for the property on
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>property</parameter>&#160;:</term>
+<listitem><simpara>The name of the property to look for.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A pixbuf or <link linkend="NULL:CAPS"><type>NULL</type></link> to signal error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>

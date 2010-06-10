@@ -517,6 +517,9 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 	GList * children = priv->children;
 	priv->children = NULL;
 	g_list_foreach(children, take_children_signal, mi);
+
+	dbusmenu_menuitem_property_remove(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
+	
 	return children;
 }
 
@@ -622,6 +625,10 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
 
+	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
+		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
+	}
+
 	priv->children = g_list_append(priv->children, child);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child added %d (%s) at %d", ID(mi), LABEL(mi), ID(child), LABEL(child), g_list_length(priv->children) - 1);
@@ -649,6 +656,10 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
+	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
+		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
+	}
 
 	priv->children = g_list_prepend(priv->children, child);
 	#ifdef MASSIVEDEBUGGING
@@ -683,6 +694,11 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	#endif
 	g_signal_emit(G_OBJECT(mi), signals[CHILD_REMOVED], 0, child, TRUE);
 	g_object_unref(G_OBJECT(child));
+
+	if (priv->children == NULL) {
+		dbusmenu_menuitem_property_remove(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
+	}
+
 	return TRUE;
 }
 
@@ -706,6 +722,10 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
+	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
+		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
+	}
 
 	priv->children = g_list_insert(priv->children, child, position);
 	#ifdef MASSIVEDEBUGGING

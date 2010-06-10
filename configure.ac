@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.3.1, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.3.2, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.3.1, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.3.2, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -20,6 +20,13 @@ AC_SUBST(VERSION)
 AC_CONFIG_MACRO_DIR([m4])
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+
+###########################
+# GTK Doc 
+###########################
+
+GTK_DOC_CHECK([1.4])
+GNOME_DOC_INIT
 
 ###########################
 # Dependencies - GLib
@@ -119,6 +126,13 @@ libdbusmenu-gtk/dbusmenu-gtk.pc
 tools/Makefile
 tools/testapp/Makefile
 tests/Makefile
+docs/Makefile
+docs/libdbusmenu-glib/Makefile
+docs/libdbusmenu-glib/reference/Makefile
+docs/libdbusmenu-glib/reference/version.xml
+docs/libdbusmenu-gtk/Makefile
+docs/libdbusmenu-gtk/reference/Makefile
+docs/libdbusmenu-gtk/reference/version.xml
 ])
 
 ###########################

@@ -8,7 +8,7 @@ SUBDIRS = \
 	libdbusmenu-gtk \
 	tools \
 	tests \
+	docs \
 	po
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-introspection
-
+DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc
