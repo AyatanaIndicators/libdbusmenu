@@ -1,12 +1,21 @@
-libdbusmenu (0.3.2-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.3.2-0ubuntu1) UNRELEASED; urgency=low
 
+  * debian/control
+    - added doc packages
+    - added build dep for gtk-doc-tools
+  * debian/libdbusmenu-glib-doc.install added
+  * debian/libdbusmenu-gtk-doc.install added
+  * debian/rules 
+    - enabled gtk-doc for configure
+
+  [Ted Gould]
   * New upstream release.
     * Set the 'child-display' property on menuitems that
       have child menuitems.
     * gtk-doc support
     * Document the 'shortcut' property
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Jun 2010 12:38:27 -0500
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Jun 2010 16:33:42 -0400
 
 libdbusmenu (0.3.1-0ubuntu1) maverick; urgency=low
 
