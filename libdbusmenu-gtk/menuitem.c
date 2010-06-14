@@ -198,7 +198,7 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	g_ptr_array_add(wrapper, array);
 
 	GValue value = {0};
-	g_value_init(&value, G_TYPE_BOXED);
+	g_value_init(&value, G_TYPE_PTR_ARRAY);
 	g_value_set_boxed(&value, wrapper);
 
 	dbusmenu_menuitem_property_set_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT, &value);
