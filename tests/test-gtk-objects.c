@@ -108,6 +108,14 @@ test_object_prop_shortcut (void)
 	const GValue * val = dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SHORTCUT);
 	g_assert(val != NULL);
 
+	/* Check to see if we love it */
+	guint newkey = 0;
+	GdkModifierType newmodifier = 0;
+	dbusmenu_menuitem_property_get_shortcut(item, &newkey, &newmodifier);
+
+	g_assert(key == newkey);
+	g_assert(newmodifier == modifier);
+
 	g_object_unref(item);
 
 	return;
