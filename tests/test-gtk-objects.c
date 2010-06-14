@@ -21,6 +21,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-gtk/menuitem.h>
+#include <gdk/gdkkeysyms.h>
 
 #define TEST_IMAGE  SRCDIR "/" "test-gtk-objects.jpg"
 
@@ -84,12 +85,41 @@ test_object_prop_pixbuf (void)
 	return;
 }
 
+/* Setting and getting a shortcut */
+static void
+test_object_prop_shortcut (void)
+{
+	/* Build a menu item */
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+
+	/* Test to make sure it's a happy object */
+	g_assert(item != NULL);
+	g_assert(G_IS_OBJECT(item));
+	g_assert(DBUSMENU_IS_MENUITEM(item));
+
+	guint key = GDK_c;
+	GdkModifierType modifier = GDK_CONTROL_MASK;
+
+	/* Set a shortcut */
+	gboolean success = dbusmenu_menuitem_property_set_shortcut(item, key, modifier);
+	g_assert(success);
+
+	/* Check for value */
+	const GValue * val = dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SHORTCUT);
+	g_assert(val != NULL);
+
+	g_object_unref(item);
+
+	return;
+}
+
 /* Build the test suite */
 static void
 test_gtk_objects_suite (void)
 {
 	g_test_add_func ("/dbusmenu/gtk/objects/menuitem/base",          test_object_menuitem);
 	g_test_add_func ("/dbusmenu/gtk/objects/menuitem/prop_pixbuf",   test_object_prop_pixbuf);
+	g_test_add_func ("/dbusmenu/gtk/objects/menuitem/prop_shortcut", test_object_prop_shortcut);
 	return;
 }
 
