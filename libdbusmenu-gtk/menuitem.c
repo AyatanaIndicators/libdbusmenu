@@ -268,7 +268,58 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 void
 dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifier)
 {
+	*key = 0;
+	*modifier = 0;
+
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(menuitem));
+
+	const GValue * wrapper = dbusmenu_menuitem_property_get_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT);
+	if (wrapper == NULL) {
+		return;
+	}
+
+	g_return_if_fail(G_VALUE_HOLDS_BOXED(wrapper));
+
+	GPtrArray * wrapperarray = (GPtrArray *)g_value_get_boxed(wrapper);
+	if (wrapperarray->len == 0) {
+		return;
+	}
+
+	if (wrapperarray->len != 1) {
+		g_warning("Shortcut is more than one entry.  Which we don't currently support.  Taking the first.");
+	}
+
+	GPtrArray * entryarray = g_ptr_array_index(wrapperarray, 0);
+	if (entryarray->len == 0) {
+		/* Seems a little odd, but really, we're saying that it isn't a
+		   shortcut, so I'm comfortable with exiting silently. */
+		return;
+	}
+
+	/* Parse through modifiers */
+	int i;
+	for (i = 0; i < entryarray->len - 1; i++) {
+		if (g_strcmp0(g_ptr_array_index(entryarray, i), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+			*modifier |= GDK_CONTROL_MASK;
+			continue;
+		}
+		if (g_strcmp0(g_ptr_array_index(entryarray, i), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+			*modifier |= GDK_MOD1_MASK;
+			continue;
+		}
+		if (g_strcmp0(g_ptr_array_index(entryarray, i), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+			*modifier |= GDK_SHIFT_MASK;
+			continue;
+		}
+		if (g_strcmp0(g_ptr_array_index(entryarray, i), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+			*modifier |= GDK_SUPER_MASK;
+			continue;
+		}
+	}
+
+	GdkModifierType tempmod;
+
+	gtk_accelerator_parse(g_ptr_array_index(entryarray, entryarray->len - 1), key, &tempmod);
 
 	return;
 }
