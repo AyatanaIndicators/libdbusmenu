@@ -99,6 +99,40 @@ dbusmenu_gtkclient_finalize (GObject *object)
 	return;
 }
 
+/**
+	dbusmenu_gtkclient_set_accel_group:
+	@client: To set the group on
+	@agroup: The new acceleration group
+
+	Sets the acceleration group for the menu items with accelerators
+	on this client.
+*/
+void
+dbusmenu_gtkclient_set_accel_group (DbusmenuGtkClient * client, GtkAccelGroup * agroup)
+{
+	g_return_if_fail(DBUSMENU_IS_GTKCLIENT(client));
+	g_return_if_fail(GTK_IS_ACCEL_GROUP(agroup));
+
+	return;
+}
+
+/**
+	dbusmenu_gtkclient_get_accel_group:
+	@client: Client to query for an accelerator group
+
+	Gets the accel group for this client.
+
+	Return value: Either a valid group or #NULL on error or
+		none set.
+*/
+GtkAccelGroup *
+dbusmenu_gtkclient_get_accel_group (DbusmenuGtkClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
+
+	return NULL;
+}
+
 /* Internal Functions */
 
 static const gchar * data_menuitem = "dbusmenugtk-data-gtkmenuitem";
