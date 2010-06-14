@@ -131,7 +131,7 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 }
 
 /**
-	dbusmenu_menuitem_property_set_shortcut:
+	dbusmenu_menuitem_property_set_shortcut_string:
 	@menuitem: The #DbusmenuMenuitem to set the shortcut on
 	@shortcut: String describing the shortcut
 
@@ -160,6 +160,17 @@ dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, con
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key, modifier);
 }
 
+/**
+	dbusmenu_menuitem_property_set_shortcut:
+	@menuitem: The #DbusmenuMenuitem to set the shortcut on
+	@key: The keycode of the key to send
+	@modifier: A bitmask of modifiers used to activate the item
+
+	Takes the modifer described by @key and @modifier and places that into
+	the format sending across Dbus for shortcuts.
+
+	Return value: Whether it was successful at setting the property.
+*/
 gboolean
 dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key, GdkModifierType modifier)
 {
@@ -194,6 +205,17 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	return TRUE;
 }
 
+/**
+	dbusmenu_menuitem_property_set_shortcut_menuitem:
+	@menuitem: The #DbusmenuMenuitem to set the shortcut on
+	@gmi: A menu item to steal the shortcut off of
+
+	Takes the shortcut that is installed on a menu item and calls
+	#dbusmenu_menuitem_property_set_shortcut with it.  It also sets
+	up listeners to watch it change.
+
+	Return value: Whether it was successful at setting the property.
+*/
 gboolean
 dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, const GtkMenuItem * gmi)
 {
