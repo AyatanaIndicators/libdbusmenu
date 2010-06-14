@@ -205,6 +205,14 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	return TRUE;
 }
 
+/* Look at the closures in an accel group and find
+   the one that matches the one we've been passed */
+static gboolean
+find_closure (GtkAccelKey * key, GClosure * closure, gpointer user_data)
+{
+	return closure == user_data;
+}
+
 /**
 	dbusmenu_menuitem_property_set_shortcut_menuitem:
 	@menuitem: The #DbusmenuMenuitem to set the shortcut on
@@ -219,8 +227,32 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 gboolean
 dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, const GtkMenuItem * gmi)
 {
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
+	g_return_val_if_fail(GTK_IS_MENU_ITEM(gmi), FALSE);
 
-	return FALSE;
+	GClosure * closure = NULL;
+	GList * clist;
+
+	clist = gtk_widget_list_accel_closures(GTK_WIDGET(gmi));
+	if (clist == NULL) {
+		g_warning("Menuitem does not have any closures.");
+		return FALSE;
+	}
+
+	closure = (GClosure *)clist->data;
+	g_list_free(clist);
+
+	GtkAccelGroup * group = gtk_accel_group_from_accel_closure(closure);
+	
+	/* Seriously, if this returns NULL something is seriously
+	   wrong in GTK. */
+	g_return_val_if_fail(group != NULL, FALSE);
+
+	GtkAccelKey * key = gtk_accel_group_find(group, find_closure, closure);
+	/* Again, not much we can do except complain loudly. */
+	g_return_val_if_fail(key != NULL, FALSE);
+
+	return dbusmenu_menuitem_property_set_shortcut(menuitem, key->accel_key, key->accel_mods);
 }
 
 /**
