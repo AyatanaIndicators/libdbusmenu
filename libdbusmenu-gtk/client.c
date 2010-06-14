@@ -120,12 +120,19 @@ dbusmenu_gtkclient_finalize (GObject *object)
 	return;
 }
 
+/* Structure for passing data to swap_agroup */
+typedef struct _swap_agroup_t swap_agroup_t;
+struct _swap_agroup_t {
+	DbusmenuGtkClient * client;
+	GtkAccelGroup * old_agroup;
+	GtkAccelGroup * new_agroup;
+};
+
+/* Looks at the old version of the accelerator group and
+   the new one and makes the state proper. */
 static void
 swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
-	gpointer * array = (gpointer *)userdata;
-	DbusmenuGtkClient * client = (DbusmenuGtkClient *)array[0];
-	GtkAccelGroup * old_agroup = (GtkAccelGroup *)array[1];
-	GtkAccelGroup * new_agroup = (GtkAccelGroup *)array[2];
+	swap_agroup_t * data = (swap_agroup_t *)userdata;
 
 	/* If we don't have a shortcut we don't care */
 	if (!dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
@@ -141,19 +148,19 @@ swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 		return;
 	}
 
-	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(client, mi);
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(data->client, mi);
 	if (gmi == NULL) {
 		return;
 	}
 
-	if (old_agroup != NULL) {
-		gtk_widget_remove_accelerator(GTK_WIDGET(gmi), old_agroup, key, modifiers);
+	if (data->old_agroup != NULL) {
+		gtk_widget_remove_accelerator(GTK_WIDGET(gmi), data->old_agroup, key, modifiers);
 	}
 
-	if (new_agroup != NULL) {
+	if (data->new_agroup != NULL) {
 		gtk_widget_add_accelerator(GTK_WIDGET(gmi),
 		                           "activate",
-		                           new_agroup,
+		                           data->new_agroup,
 		                           key,
 		                           modifiers,
 		                           GTK_ACCEL_VISIBLE);
@@ -180,18 +187,20 @@ dbusmenu_gtkclient_set_accel_group (DbusmenuGtkClient * client, GtkAccelGroup * 
 
 	DbusmenuMenuitem * root = dbusmenu_client_get_root(DBUSMENU_CLIENT(client));
 	if (root != NULL) {
-		gpointer data[3];
-		data[0] = client;
-		data[1] = priv->agroup;
-		data[2] = agroup;
+		swap_agroup_t data;
+		data.client = client;
+		data.old_agroup = priv->agroup;
+		data.new_agroup = agroup;
 
-		dbusmenu_menuitem_foreach(root, swap_agroup, data);
+		dbusmenu_menuitem_foreach(root, swap_agroup, &data);
 	}
 
 	if (priv->agroup != NULL) {
 		g_object_unref(priv->agroup);
 		priv->agroup = NULL;
 	}
+
+	priv->agroup = agroup;
 
 	return;
 }
