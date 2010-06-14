@@ -324,6 +324,7 @@ EXTRA_DIST = \
 	$(examples_DATA) \
 	run-xvfb.sh \
 	$(json_DATA) \
+	test-gtk-objects.jpg \
 	dbusmenu-gtk/dbusMenuTest \
 	dbusmenu-gtk/mago_tests/dbusmenu.xml \
 	dbusmenu-gtk/mago_tests/dbusmenu.py \
