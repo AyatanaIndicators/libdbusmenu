@@ -175,6 +175,7 @@ gboolean
 dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key, GdkModifierType modifier)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
+	g_return_val_if_fail(gtk_accelerator_valid(key, modifier), FALSE);
 
 	GPtrArray * array = g_ptr_array_new();
 
