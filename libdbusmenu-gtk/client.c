@@ -36,6 +36,15 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "genericmenuitem.h"
 
+/* Private */
+typedef struct _DbusmenuGtkClientPrivate DbusmenuGtkClientPrivate;
+struct _DbusmenuGtkClientPrivate {
+	GtkAccelGroup * agroup;
+};
+
+#define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) \
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientPrivate))
+
 /* Prototypes */
 static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
 static void dbusmenu_gtkclient_init       (DbusmenuGtkClient *self);
@@ -62,6 +71,8 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+	g_type_class_add_private (klass, sizeof (DbusmenuGtkClientPrivate));
+
 	object_class->dispose = dbusmenu_gtkclient_dispose;
 	object_class->finalize = dbusmenu_gtkclient_finalize;
 
@@ -73,6 +84,10 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(self);
+
+	priv->agroup = NULL;
+
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
 
@@ -85,6 +100,12 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 static void
 dbusmenu_gtkclient_dispose (GObject *object)
 {
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(object);
+
+	if (priv->agroup != NULL) {
+		g_object_unref(priv->agroup);
+		priv->agroup = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->dispose (object);
 	return;
