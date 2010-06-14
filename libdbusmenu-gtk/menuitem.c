@@ -194,6 +194,13 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	return TRUE;
 }
 
+gboolean
+dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, const GtkMenuItem * gmi)
+{
+
+	return FALSE;
+}
+
 /**
 	dbusmenu_menuitem_property_get_shortcut:
 	@menuitem: The #DbusmenuMenuitem to get the shortcut off
