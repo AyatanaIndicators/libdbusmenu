@@ -120,6 +120,48 @@ dbusmenu_gtkclient_finalize (GObject *object)
 	return;
 }
 
+static void
+swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
+	gpointer * array = (gpointer *)userdata;
+	DbusmenuGtkClient * client = (DbusmenuGtkClient *)array[0];
+	GtkAccelGroup * old_agroup = (GtkAccelGroup *)array[1];
+	GtkAccelGroup * new_agroup = (GtkAccelGroup *)array[2];
+
+	/* If we don't have a shortcut we don't care */
+	if (!dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
+		return;
+	}
+
+	guint key = 0;
+	GdkModifierType modifiers = 0;
+
+	dbusmenu_menuitem_property_get_shortcut(mi, &key, &modifiers);
+	
+	if (key == 0) {
+		return;
+	}
+
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(client, mi);
+	if (gmi == NULL) {
+		return;
+	}
+
+	if (old_agroup != NULL) {
+		gtk_widget_remove_accelerator(GTK_WIDGET(gmi), old_agroup, key, modifiers);
+	}
+
+	if (new_agroup != NULL) {
+		gtk_widget_add_accelerator(GTK_WIDGET(gmi),
+		                           "activate",
+		                           new_agroup,
+		                           key,
+		                           modifiers,
+		                           GTK_ACCEL_VISIBLE);
+	}
+
+	return;
+}
+
 /**
 	dbusmenu_gtkclient_set_accel_group:
 	@client: To set the group on
@@ -133,6 +175,23 @@ dbusmenu_gtkclient_set_accel_group (DbusmenuGtkClient * client, GtkAccelGroup * 
 {
 	g_return_if_fail(DBUSMENU_IS_GTKCLIENT(client));
 	g_return_if_fail(GTK_IS_ACCEL_GROUP(agroup));
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	DbusmenuMenuitem * root = dbusmenu_client_get_root(DBUSMENU_CLIENT(client));
+	if (root != NULL) {
+		gpointer data[3];
+		data[0] = client;
+		data[1] = priv->agroup;
+		data[2] = agroup;
+
+		dbusmenu_menuitem_foreach(root, swap_agroup, data);
+	}
+
+	if (priv->agroup != NULL) {
+		g_object_unref(priv->agroup);
+		priv->agroup = NULL;
+	}
 
 	return;
 }
@@ -151,7 +210,9 @@ dbusmenu_gtkclient_get_accel_group (DbusmenuGtkClient * client)
 {
 	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
 
-	return NULL;
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	return priv->agroup;
 }
 
 /* Internal Functions */
