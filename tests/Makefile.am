@@ -7,6 +7,7 @@ TESTS = \
 	test-glib-properties \
 	test-glib-proxy \
 	test-glib-simple-items \
+	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-reorder
 
@@ -20,6 +21,7 @@ check_PROGRAMS = \
 	test-glib-proxy-client \
 	test-glib-proxy-server \
 	test-glib-proxy-proxy \
+	test-gtk-objects \
 	test-gtk-label-client \
 	test-gtk-label-server \
 	test-glib-simple-items \
@@ -196,6 +198,33 @@ test_glib_simple_items_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+######################
+# Test GTK Object
+######################
+
+GTK_OBJECT_XML_REPORT = test-gtk-objects.xml
+
+test-gtk-objects-test: test-gtk-objects Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task gtester --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_OBJECT_XML_REPORT) --parameter ./test-gtk-objects >> $@
+	@chmod +x $@
+
+test_gtk_objects_SOURCES = \
+	test-gtk-objects.c
+
+test_gtk_objects_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUGTK_CFLAGS) \
+	-Wall -Werror
+
+test_gtk_objects_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGLIB_LIBS) \
+	$(DBUSMENUGTK_LIBS)
+
 #########################
 # Test GTK Label
 #########################
@@ -322,5 +351,6 @@ distclean-local:
 
 DISTCLEANFILES = \
 	$(TESTS) \
-	$(OBJECT_XML_REPORT)
+	$(OBJECT_XML_REPORT) \
+	$(GTK_OBJECT_XML_REPORT)
 

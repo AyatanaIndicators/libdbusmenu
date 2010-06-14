@@ -71,3 +71,6 @@ libdbusmenu-gtk/DbusmenuGtk-0.2.gir
 libdbusmenu-gtk/DbusmenuGtk-0.2.tmp.gir
 libdbusmenu-gtk/DbusmenuGtk-0.2.typelib
 libdbusmenu-gtk/DbusmenuGtk-0.2.vapi
+tests/test-gtk-objects
+tests/test-gtk-objects-test
+tests/test-gtk-objects.xml
