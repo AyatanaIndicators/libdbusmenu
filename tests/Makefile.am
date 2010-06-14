@@ -86,7 +86,7 @@ OBJECT_XML_REPORT = test-glib-objects.xml
 
 test-glib-objects-test: test-glib-objects Makefile.am
 	@echo "#!/bin/bash" > $@
-	@echo $(DBUS_RUNNER) --task gtester --parameter --verbose --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
+	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
 	@chmod +x $@
 
 test_glib_objects_SOURCES = \
@@ -207,7 +207,7 @@ GTK_OBJECT_XML_REPORT = test-gtk-objects.xml
 test-gtk-objects-test: test-gtk-objects Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) --task gtester --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_OBJECT_XML_REPORT) --parameter ./test-gtk-objects >> $@
+	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_OBJECT_XML_REPORT) --parameter ./test-gtk-objects >> $@
 	@chmod +x $@
 
 test_gtk_objects_SOURCES = \
