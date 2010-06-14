@@ -1,4 +1,4 @@
-libdbusmenu (0.3.2-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.3.2-0ubuntu1) maverick; urgency=low
 
   * debian/control
     - added doc packages
