@@ -217,6 +217,7 @@ test_gtk_objects_CFLAGS = \
 	-I $(srcdir)/.. \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUGTK_CFLAGS) \
+	-DSRCDIR="\"$(srcdir)\"" \
 	-Wall -Werror
 
 test_gtk_objects_LDADD = \
