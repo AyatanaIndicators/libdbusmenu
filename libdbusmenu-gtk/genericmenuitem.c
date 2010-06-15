@@ -196,6 +196,7 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 		labelw = GTK_LABEL(gtk_accel_label_new(label));
 		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
+		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 		gtk_widget_show(GTK_WIDGET(labelw));
 
 		/* Check to see if it needs to be in the bin for this
