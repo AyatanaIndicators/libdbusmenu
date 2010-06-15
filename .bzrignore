@@ -74,3 +74,6 @@ libdbusmenu-gtk/DbusmenuGtk-0.2.vapi
 tests/test-gtk-objects
 tests/test-gtk-objects-test
 tests/test-gtk-objects.xml
+tests/test-gtk-shortcut
+tests/test-gtk-shortcut-client
+tests/test-gtk-shortcut-server

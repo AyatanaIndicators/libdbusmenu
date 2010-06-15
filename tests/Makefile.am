@@ -9,6 +9,7 @@ TESTS = \
 	test-glib-simple-items \
 	test-gtk-objects-test \
 	test-gtk-label \
+	test-gtk-shortcut \
 	test-gtk-reorder
 
 check_PROGRAMS = \
@@ -24,6 +25,8 @@ check_PROGRAMS = \
 	test-gtk-objects \
 	test-gtk-label-client \
 	test-gtk-label-server \
+	test-gtk-shortcut-client \
+	test-gtk-shortcut-server \
 	test-glib-simple-items \
 	test-gtk-reorder-server
 
@@ -261,6 +264,46 @@ test_gtk_label_client_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+#########################
+# Test GTK Shortcut
+#########################
+
+test-gtk-shortcut: test-gtk-shortcut-client test-gtk-shortcut-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test_gtk_shortcut_server_SOURCES = \
+	test-gtk-shortcut-server.c
+
+test_gtk_shortcut_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_shortcut_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+test_gtk_shortcut_client_SOURCES = \
+	test-gtk-shortcut-client.c
+
+test_gtk_shortcut_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_shortcut_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
 	$(DBUSMENUGTK_LIBS) \
