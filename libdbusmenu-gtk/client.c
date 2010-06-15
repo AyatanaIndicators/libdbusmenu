@@ -169,6 +169,24 @@ swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 	return;
 }
 
+/* Refresh the shortcut for an entry */
+static void
+refresh_shortcut (DbusmenuGtkClient * client, DbusmenuMenuitem * mi)
+{
+	g_return_if_fail(DBUSMENU_IS_GTKCLIENT(client));
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	swap_agroup_t data;
+	data.client = client;
+	data.old_agroup = priv->agroup;
+	data.new_agroup = priv->agroup;
+
+	return swap_agroup(mi, &data);
+}
+
+
 /**
 	dbusmenu_gtkclient_set_accel_group:
 	@client: To set the group on
