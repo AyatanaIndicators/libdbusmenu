@@ -7,10 +7,11 @@ libdbusmenu (0.3.2-1) unstable; urgency=low
     - Update package descriptions.
     - Standards-Version: 3.8.4
     - Fix Homepage URL.
+    - Update Vcs-* fields.
   * debian/copyright:
     - Convert to DEP5 format.
 
- -- Evgeni Golov <evgeni@debian.org>  Tue, 15 Jun 2010 19:31:00 +0200
+ -- Evgeni Golov <evgeni@debian.org>  Tue, 15 Jun 2010 19:39:15 +0200
 
 libdbusmenu (0.3.2-0ubuntu1) maverick; urgency=low
 
