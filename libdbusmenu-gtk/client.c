@@ -368,6 +368,17 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMen
 	return;
 }
 
+/* Special handler for the shortcut changing as we need to have the
+   client for that one to get the accel group. */
+static void
+menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, DbusmenuGtkClient * client)
+{
+	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
+		refresh_shortcut(client, mi);
+	}
+	return;
+}
+
 /* Call back that happens when the DbusmenuMenuitem
    is destroyed.  We're making sure to clean up everything
    else down the pipe. */
@@ -434,6 +445,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_shortcut_change_cb), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
 
@@ -448,6 +460,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_ENABLED));
 	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
 	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
+	refresh_shortcut(client, item);
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
