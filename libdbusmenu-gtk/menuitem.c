@@ -160,6 +160,17 @@ dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, con
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key, modifier);
 }
 
+/* Append strings to an g_value_array */
+static void
+_g_value_array_append_string (GValueArray * array, const gchar * string)
+{
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_value_set_string(&value, string);
+	g_value_array_append(array, &value);
+	return;
+}
+
 /**
 	dbusmenu_menuitem_property_set_shortcut:
 	@menuitem: The #DbusmenuMenuitem to set the shortcut on
@@ -177,28 +188,31 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
 	g_return_val_if_fail(gtk_accelerator_valid(key, modifier), FALSE);
 
-	GPtrArray * array = g_ptr_array_new();
+	GValueArray * array = g_value_array_new(4); /* Four seems like the max we'd need, plus it's still small */
 
 	if (modifier & GDK_CONTROL_MASK) {
-		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_CONTROL));
+		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_CONTROL);
 	}
 	if (modifier & GDK_MOD1_MASK) {
-		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_ALT));
+		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_ALT);
 	}
 	if (modifier & GDK_SHIFT_MASK) {
-		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_SHIFT));
+		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_SHIFT);
 	}
 	if (modifier & GDK_SUPER_MASK) {
-		g_ptr_array_add(array, g_strdup(DBUSMENU_MENUITEM_SHORTCUT_SUPER));
+		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_SUPER);
 	}
 
-	g_ptr_array_add(array, g_strdup(gdk_keyval_name(key)));
+	_g_value_array_append_string(array, gdk_keyval_name(key));
 
-	GPtrArray * wrapper = g_ptr_array_new();
-	g_ptr_array_add(wrapper, array);
+	GValueArray * wrapper = g_value_array_new(1);
+	GValue wrap_val = {0};
+	g_value_init(&wrap_val, G_TYPE_VALUE_ARRAY);
+	g_value_set_boxed(&wrap_val, array);
+	g_value_array_append(wrapper, &wrap_val);
 
 	GValue value = {0};
-	g_value_init(&value, G_TYPE_PTR_ARRAY);
+	g_value_init(&value, G_TYPE_VALUE_ARRAY);
 	g_value_set_boxed(&value, wrapper);
 
 	dbusmenu_menuitem_property_set_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT, &value);
