@@ -1,7 +1,8 @@
 Source: libdbusmenu
 Section: gnome
 Priority: optional
-Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Maintainer: The Ayatana Packagers <pkg-ayatana-devel@lists.alioth.debian.org>
+Uploaders: Evgeni Golov <evgeni@debian.org>
 Build-Depends: debhelper (>= 5.0),
                cdbs (>= 0.4.41),
                libgtk2.0-dev (>= 2.12.0),
