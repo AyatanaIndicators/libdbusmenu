@@ -19,8 +19,8 @@ Build-Depends: debhelper (>= 5.0),
                gir1.0-glib-2.0,
                gir1.0-gtk-2.0,
                valac
-Standards-Version: 3.8.0
-Homepage: https://launchpad.net/libdbusmenu
+Standards-Version: 3.8.4
+Homepage: https://launchpad.net/dbusmenu
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-desktop/dbusmenu/ubuntu
 Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/dbusmenu/ubuntu
 
