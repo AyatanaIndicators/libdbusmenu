@@ -158,6 +158,8 @@ get_hpadding (GtkWidget * widget)
 static void
 set_label (GtkMenuItem * menu_item, const gchar * label)
 {
+	if (label == NULL) return;
+
 	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
 	GtkLabel * labelw = NULL;
 	gboolean suppress_update = FALSE;
