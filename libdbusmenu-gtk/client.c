@@ -158,9 +158,9 @@ swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 	if (accel_path != NULL) {
 		gtk_accel_map_change_entry(accel_path, key, modifiers, TRUE /* replace */);
 	} else {
-		gchar * accel_path = g_strdup_printf("<Appmenus>/Generated/%d", dbusmenu_menuitem_get_id(mi));
+		gchar * accel_path = g_strdup_printf("<Appmenus>/Generated/%X/%d", GPOINTER_TO_UINT(data->client), dbusmenu_menuitem_get_id(mi));
 		gtk_accel_map_add_entry(accel_path, key, modifiers);
-		gtk_menu_item_set_accel_path(gmi, accel_path);
+		gtk_widget_set_accel_path(GTK_WIDGET(gmi), accel_path, data->new_agroup);
 		g_free(accel_path);
 	}
 
