@@ -292,19 +292,18 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 		return;
 	}
 
-	g_return_if_fail(G_VALUE_HOLDS_BOXED(wrapper));
-
-	GPtrArray * wrapperarray = (GPtrArray *)g_value_get_boxed(wrapper);
-	if (wrapperarray->len == 0) {
+	GValueArray * wrapperarray = (GValueArray *)g_value_get_boxed(wrapper);
+	if (wrapperarray->n_values == 0) {
 		return;
 	}
 
-	if (wrapperarray->len != 1) {
+	if (wrapperarray->n_values != 1) {
 		g_warning("Shortcut is more than one entry.  Which we don't currently support.  Taking the first.");
 	}
 
-	GPtrArray * entryarray = g_ptr_array_index(wrapperarray, 0);
-	if (entryarray->len == 0) {
+	GValue * ventryarray = g_value_array_get_nth(wrapperarray, 0);
+	GValueArray * entryarray = (GValueArray *)g_value_get_boxed(ventryarray);
+	if (entryarray->n_values == 0) {
 		/* Seems a little odd, but really, we're saying that it isn't a
 		   shortcut, so I'm comfortable with exiting silently. */
 		return;
@@ -312,20 +311,20 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 
 	/* Parse through modifiers */
 	int i;
-	for (i = 0; i < entryarray->len - 1; i++) {
-		if (g_strcmp0(g_ptr_array_index(entryarray, i), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+	for (i = 0; i < entryarray->n_values - 1; i++) {
+		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
 			*modifier |= GDK_CONTROL_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_ptr_array_index(entryarray, i), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
 			*modifier |= GDK_MOD1_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_ptr_array_index(entryarray, i), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
 			*modifier |= GDK_SHIFT_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_ptr_array_index(entryarray, i), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
 			*modifier |= GDK_SUPER_MASK;
 			continue;
 		}
@@ -333,7 +332,7 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 
 	GdkModifierType tempmod;
 
-	gtk_accelerator_parse(g_ptr_array_index(entryarray, entryarray->len - 1), key, &tempmod);
+	gtk_accelerator_parse(g_value_get_string(g_value_array_get_nth(entryarray, entryarray->n_values - 1)), key, &tempmod);
 
 	return;
 }
