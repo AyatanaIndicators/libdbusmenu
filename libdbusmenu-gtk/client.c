@@ -153,17 +153,20 @@ swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 		return;
 	}
 
-	if (data->old_agroup != NULL) {
-		gtk_widget_remove_accelerator(GTK_WIDGET(gmi), data->old_agroup, key, modifiers);
+	const gchar * accel_path = gtk_menu_item_get_accel_path(gmi);
+
+	if (accel_path != NULL) {
+		gtk_accel_map_change_entry(accel_path, key, modifiers, TRUE /* replace */);
+	} else {
+		gchar * accel_path = g_strdup_printf("<Appmenus>/Generated/%d", dbusmenu_menuitem_get_id(mi));
+		gtk_accel_map_add_entry(accel_path, key, modifiers);
+		gtk_menu_item_set_accel_path(gmi, accel_path);
+		g_free(accel_path);
 	}
 
-	if (data->new_agroup != NULL) {
-		gtk_widget_add_accelerator(GTK_WIDGET(gmi),
-		                           "activate",
-		                           data->new_agroup,
-		                           key,
-		                           modifiers,
-		                           GTK_ACCEL_VISIBLE);
+	GtkMenu * submenu = dbusmenu_gtkclient_menuitem_get_submenu(data->client, mi);
+	if (submenu != NULL) {
+		gtk_menu_set_accel_group(submenu, data->new_agroup);
 	}
 
 	return;
