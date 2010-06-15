@@ -49,8 +49,8 @@ build_menu (void)
 	DbusmenuMenuitem * root = dbusmenu_menuitem_new();
 
 	item = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(item, DBUSMENU_MENUITEM_PROP_LABEL, "Control-C");
-	dbusmenu_menuitem_property_set_shortcut(item, GDK_c, GDK_CONTROL_MASK);
+	dbusmenu_menuitem_property_set(item, DBUSMENU_MENUITEM_PROP_LABEL, "Control-L");
+	dbusmenu_menuitem_property_set_shortcut(item, GDK_l, GDK_CONTROL_MASK);
 	dbusmenu_menuitem_child_append(root, item);
 	g_object_unref(item);
 
