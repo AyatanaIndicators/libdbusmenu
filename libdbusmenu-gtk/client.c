@@ -143,6 +143,8 @@ swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 	GdkModifierType modifiers = 0;
 
 	dbusmenu_menuitem_property_get_shortcut(mi, &key, &modifiers);
+
+	g_debug("Setting shortcut on '%s': %d %X", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL), key, modifiers);
 	
 	if (key == 0) {
 		return;
