@@ -4,8 +4,10 @@ libdbusmenu (0.3.2-1) unstable; urgency=low
   * debian/control:
     - Set Maintainer to pkg-ayatana.
     - Add myself as Uploader.
+  * debian/copyright:
+    - Convert to DEP5 format.
 
- -- Evgeni Golov <evgeni@debian.org>  Tue, 15 Jun 2010 19:25:56 +0200
+ -- Evgeni Golov <evgeni@debian.org>  Tue, 15 Jun 2010 19:28:18 +0200
 
 libdbusmenu (0.3.2-0ubuntu1) maverick; urgency=low
 
