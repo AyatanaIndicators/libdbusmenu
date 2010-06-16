@@ -1,3 +1,29 @@
+libdbusmenu (0.3.2-1ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Merging in Debian branch
+  * debian/control: Switching branch on this branch to be the
+    dbusmenu-team.
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 16 Jun 2010 10:38:24 -0500
+
+libdbusmenu (0.3.2-1) unstable; urgency=low
+
+  * Merge from Ubuntu.
+    Closes: #586069
+  * debian/control:
+    - Set Maintainer to pkg-ayatana.
+    - Add myself as Uploader.
+    - Update package descriptions.
+    - Standards-Version: 3.8.4
+    - Fix Homepage URL.
+    - Update Vcs-* fields.
+  * debian/copyright:
+    - Convert to DEP5 format.
+    - Add Ken and Sebastien, according to changelog.
+    - Add Aurélien Gâteau, according to headers.
+
+ -- Evgeni Golov <evgeni@debian.org>  Wed, 16 Jun 2010 11:37:08 +0200
+
 libdbusmenu (0.3.2-0ubuntu1) maverick; urgency=low
 
   * debian/control
