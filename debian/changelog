@@ -1,6 +1,7 @@
 libdbusmenu (0.3.2-1) unstable; urgency=low
 
   * Merge from Ubuntu.
+    Closes: #586069
   * debian/control:
     - Set Maintainer to pkg-ayatana.
     - Add myself as Uploader.
@@ -12,7 +13,7 @@ libdbusmenu (0.3.2-1) unstable; urgency=low
     - Convert to DEP5 format.
     - Add Ken and Sebastien, according to changelog.
 
- -- Evgeni Golov <evgeni@debian.org>  Wed, 16 Jun 2010 08:42:03 +0200
+ -- Evgeni Golov <evgeni@debian.org>  Wed, 16 Jun 2010 09:43:06 +0200
 
 libdbusmenu (0.3.2-0ubuntu1) maverick; urgency=low
 
