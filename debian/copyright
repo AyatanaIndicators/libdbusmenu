@@ -7,6 +7,13 @@ Files: *
 Copyright: 2009-2010 Ted Gould <ted@canonical.com>, Canonical Ltd.
 License: GPL-3
 
+Files: libdbusmenu-glib/dbus-menu.xml, tools/{dbusmenu-bench,testapp/main.c}
+
+Copyright: 2009-2010 Ted Gould <ted@canonical.com>, Canonical Ltd.
+Copyright: 2009-2010 Aurélien Gâteau <aurelien.gateau@canonical.com>
+
+License: GPL-3
+
 Files: debian/*
 Copyright: 2009-2010 Evgeni Golov <evgeni@debian.org>
 Copyright: 2009-2010 Ted Gould <ted@canonical.com>, Canonical Ltd.
