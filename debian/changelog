@@ -1,10 +1,10 @@
-libdbusmenu (0.3.2-1ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.2-1ubuntu1~ppa1) lucid; urgency=low
 
   * Merging in Debian branch
   * debian/control: Switching branch on this branch to be the
     dbusmenu-team.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 16 Jun 2010 10:38:24 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 16 Jun 2010 10:45:24 -0500
 
 libdbusmenu (0.3.2-1) unstable; urgency=low
 
