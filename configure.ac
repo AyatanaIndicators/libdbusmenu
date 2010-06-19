@@ -48,6 +48,7 @@ AC_SUBST(DBUSMENUGLIB_LIBS)
 ###########################
 
 GTK_REQUIRED_VERSION=2.16
+GTK3_REQUIRED_VERSION=2.90
 
 PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                 glib-2.0 >= $GLIB_REQUIRED_VERSION
@@ -56,6 +57,14 @@ PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
 
 AC_SUBST(DBUSMENUGTK_CFLAGS)
 AC_SUBST(DBUSMENUGTK_LIBS)
+
+PKG_CHECK_MODULES(DBUSMENUGTK3, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                                glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                libxml-2.0 >= $XML_REQUIRED_VERSION)
+
+AC_SUBST(DBUSMENUGTK3_CFLAGS)
+AC_SUBST(DBUSMENUGTK3_LIBS)
 
 ###########################
 # Dependencies - Testing
@@ -123,6 +132,7 @@ libdbusmenu-glib/Makefile
 libdbusmenu-glib/dbusmenu-glib.pc
 libdbusmenu-gtk/Makefile
 libdbusmenu-gtk/dbusmenu-gtk.pc
+libdbusmenu-gtk/dbusmenu-gtk3.pc
 tools/Makefile
 tools/testapp/Makefile
 tests/Makefile
