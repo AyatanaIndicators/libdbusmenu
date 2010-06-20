@@ -128,7 +128,7 @@ Description: typelib file for libdbusmenu-gtk1
 
 Package: libdbusmenu-glib-doc
 Section: doc
-Architecture: any
+Architecture: all
 Depends: ${misc:Depends}
 Description: library for passing menus over DBus - documentation
  libdbusmenu passes a menu structure across DBus so that a program can
@@ -139,7 +139,7 @@ Description: library for passing menus over DBus - documentation
 
 Package: libdbusmenu-gtk-doc
 Section: doc
-Architecture: any
+Architecture: all
 Depends: ${misc:Depends}
 Description: library for passing menus over DBus - GTK version documentation
  libdbusmenu passes a menu structure across DBus so that a program can
