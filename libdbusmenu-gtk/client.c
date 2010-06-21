@@ -130,13 +130,13 @@ struct _swap_agroup_t {
 
 /* Looks at the old version of the accelerator group and
    the new one and makes the state proper. */
-static void
-swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
-	swap_agroup_t * data = (swap_agroup_t *)userdata;
+static gboolean
+do_swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
+        swap_agroup_t * data = (swap_agroup_t *)userdata;
 
 	/* If we don't have a shortcut we don't care */
 	if (!dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
-		return;
+		return FALSE;
 	}
 
 	guint key = 0;
@@ -145,14 +145,14 @@ swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 	dbusmenu_menuitem_property_get_shortcut(mi, &key, &modifiers);
 
 	g_debug("Setting shortcut on '%s': %d %X", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL), key, modifiers);
-	
+
 	if (key == 0) {
-		return;
+		return FALSE;
 	}
 
 	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(data->client, mi);
 	if (gmi == NULL) {
-		return;
+		return FALSE;
 	}
 
 	const gchar * accel_path = gtk_menu_item_get_accel_path(gmi);
@@ -161,6 +161,7 @@ swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 		gtk_accel_map_change_entry(accel_path, key, modifiers, TRUE /* replace */);
 	} else {
 		gchar * accel_path = g_strdup_printf("<Appmenus>/Generated/%X/%d", GPOINTER_TO_UINT(data->client), dbusmenu_menuitem_get_id(mi));
+
 		gtk_accel_map_add_entry(accel_path, key, modifiers);
 		gtk_widget_set_accel_path(GTK_WIDGET(gmi), accel_path, data->new_agroup);
 		g_free(accel_path);
@@ -171,7 +172,14 @@ swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 		gtk_menu_set_accel_group(submenu, data->new_agroup);
 	}
 
-	return;
+	return TRUE;
+}
+
+static void
+swap_agroup (DbusmenuMenuitem *mi, gpointer userdata) {
+        do_swap_agroup (mi, userdata);
+
+        return;  /* See what I did here, Ted? :)  */
 }
 
 /* Refresh the shortcut for an entry */
@@ -188,7 +196,17 @@ refresh_shortcut (DbusmenuGtkClient * client, DbusmenuMenuitem * mi)
 	data.old_agroup = priv->agroup;
 	data.new_agroup = priv->agroup;
 
-	return swap_agroup(mi, &data);
+	if (do_swap_agroup(mi, &data)) {
+                guint key;
+                GdkModifierType mod;
+                GtkMenuItem *gmi = dbusmenu_gtkclient_menuitem_get (client, mi);
+
+                dbusmenu_menuitem_property_get_shortcut (mi, &key, &mod);
+
+                gtk_widget_add_accelerator (GTK_WIDGET (gmi), "activate", priv->agroup, key, mod, GTK_ACCEL_VISIBLE);
+        }
+
+        return;
 }
 
 
