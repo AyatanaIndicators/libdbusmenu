@@ -58,6 +58,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_STATE          "toggle-state"
+#define DBUSMENU_MENUITEM_PROP_SHORTCUT              "shortcut"
 #define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "children-display"
 
 #define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
@@ -68,6 +69,11 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       -1
 
 #define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
+
+#define DBUSMENU_MENUITEM_SHORTCUT_CONTROL           "Control"
+#define DBUSMENU_MENUITEM_SHORTCUT_ALT               "Alt"
+#define DBUSMENU_MENUITEM_SHORTCUT_SHIFT             "Shift"
+#define DBUSMENU_MENUITEM_SHORTCUT_SUPER             "Super"
 
 #define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
 
