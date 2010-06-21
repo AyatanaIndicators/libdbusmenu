@@ -30,6 +30,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include <dbus/dbus-glib-bindings.h>
+
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
@@ -397,6 +399,25 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 	return build_proxies(client);
 }
 
+/* This is the response to see if the name has an owner.  If
+   it does, then we should build the proxies here.  Race condition
+   check. */
+static void
+name_owner_check (DBusGProxy *proxy, gboolean has_owner, GError *error, gpointer userdata)
+{
+	if (error != NULL) {
+		return;
+	}
+
+	if (!has_owner) {
+		return;
+	}
+
+	DbusmenuClient * client = DBUSMENU_CLIENT(userdata);
+	build_proxies(client);
+	return;
+}
+
 /* This function builds the DBus proxy which will look out for
    the service coming up. */
 static void
@@ -425,6 +446,13 @@ build_dbus_proxy (DbusmenuClient * client)
 	                        G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->dbusproxy, "NameOwnerChanged",
 	                            G_CALLBACK(dbus_owner_change), client, NULL);
+
+	/* Now let's check to make sure we're not in some race
+	   condition case. */
+	org_freedesktop_DBus_name_has_owner_async(priv->dbusproxy,
+	                                          priv->dbus_name,
+	                                          name_owner_check,
+	                                          client);
 
 	return;
 }

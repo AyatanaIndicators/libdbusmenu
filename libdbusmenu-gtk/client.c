@@ -36,6 +36,15 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "genericmenuitem.h"
 
+/* Private */
+typedef struct _DbusmenuGtkClientPrivate DbusmenuGtkClientPrivate;
+struct _DbusmenuGtkClientPrivate {
+	GtkAccelGroup * agroup;
+};
+
+#define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) \
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientPrivate))
+
 /* Prototypes */
 static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
 static void dbusmenu_gtkclient_init       (DbusmenuGtkClient *self);
@@ -62,6 +71,8 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+	g_type_class_add_private (klass, sizeof (DbusmenuGtkClientPrivate));
+
 	object_class->dispose = dbusmenu_gtkclient_dispose;
 	object_class->finalize = dbusmenu_gtkclient_finalize;
 
@@ -73,6 +84,10 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(self);
+
+	priv->agroup = NULL;
+
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
 
@@ -85,6 +100,12 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 static void
 dbusmenu_gtkclient_dispose (GObject *object)
 {
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(object);
+
+	if (priv->agroup != NULL) {
+		g_object_unref(priv->agroup);
+		priv->agroup = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->dispose (object);
 	return;
@@ -97,6 +118,151 @@ dbusmenu_gtkclient_finalize (GObject *object)
 
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->finalize (object);
 	return;
+}
+
+/* Structure for passing data to swap_agroup */
+typedef struct _swap_agroup_t swap_agroup_t;
+struct _swap_agroup_t {
+	DbusmenuGtkClient * client;
+	GtkAccelGroup * old_agroup;
+	GtkAccelGroup * new_agroup;
+};
+
+/* Looks at the old version of the accelerator group and
+   the new one and makes the state proper. */
+static gboolean
+do_swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
+        swap_agroup_t * data = (swap_agroup_t *)userdata;
+
+	/* If we don't have a shortcut we don't care */
+	if (!dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
+		return FALSE;
+	}
+
+	guint key = 0;
+	GdkModifierType modifiers = 0;
+
+	dbusmenu_menuitem_property_get_shortcut(mi, &key, &modifiers);
+
+	g_debug("Setting shortcut on '%s': %d %X", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL), key, modifiers);
+
+	if (key == 0) {
+		return FALSE;
+	}
+
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(data->client, mi);
+	if (gmi == NULL) {
+		return FALSE;
+	}
+
+	const gchar * accel_path = gtk_menu_item_get_accel_path(gmi);
+
+	if (accel_path != NULL) {
+		gtk_accel_map_change_entry(accel_path, key, modifiers, TRUE /* replace */);
+	} else {
+		gchar * accel_path = g_strdup_printf("<Appmenus>/Generated/%X/%d", GPOINTER_TO_UINT(data->client), dbusmenu_menuitem_get_id(mi));
+
+		gtk_accel_map_add_entry(accel_path, key, modifiers);
+		gtk_widget_set_accel_path(GTK_WIDGET(gmi), accel_path, data->new_agroup);
+		g_free(accel_path);
+	}
+
+	GtkMenu * submenu = dbusmenu_gtkclient_menuitem_get_submenu(data->client, mi);
+	if (submenu != NULL) {
+		gtk_menu_set_accel_group(submenu, data->new_agroup);
+	}
+
+	return TRUE;
+}
+
+static void
+swap_agroup (DbusmenuMenuitem *mi, gpointer userdata) {
+        do_swap_agroup (mi, userdata);
+
+        return;  /* See what I did here, Ted? :)  */
+}
+
+/* Refresh the shortcut for an entry */
+static void
+refresh_shortcut (DbusmenuGtkClient * client, DbusmenuMenuitem * mi)
+{
+	g_return_if_fail(DBUSMENU_IS_GTKCLIENT(client));
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	swap_agroup_t data;
+	data.client = client;
+	data.old_agroup = priv->agroup;
+	data.new_agroup = priv->agroup;
+
+	if (do_swap_agroup(mi, &data)) {
+                guint key;
+                GdkModifierType mod;
+                GtkMenuItem *gmi = dbusmenu_gtkclient_menuitem_get (client, mi);
+
+                dbusmenu_menuitem_property_get_shortcut (mi, &key, &mod);
+
+                gtk_widget_add_accelerator (GTK_WIDGET (gmi), "activate", priv->agroup, key, mod, GTK_ACCEL_VISIBLE);
+        }
+
+        return;
+}
+
+
+/**
+	dbusmenu_gtkclient_set_accel_group:
+	@client: To set the group on
+	@agroup: The new acceleration group
+
+	Sets the acceleration group for the menu items with accelerators
+	on this client.
+*/
+void
+dbusmenu_gtkclient_set_accel_group (DbusmenuGtkClient * client, GtkAccelGroup * agroup)
+{
+	g_return_if_fail(DBUSMENU_IS_GTKCLIENT(client));
+	g_return_if_fail(GTK_IS_ACCEL_GROUP(agroup));
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	DbusmenuMenuitem * root = dbusmenu_client_get_root(DBUSMENU_CLIENT(client));
+	if (root != NULL) {
+		swap_agroup_t data;
+		data.client = client;
+		data.old_agroup = priv->agroup;
+		data.new_agroup = agroup;
+
+		dbusmenu_menuitem_foreach(root, swap_agroup, &data);
+	}
+
+	if (priv->agroup != NULL) {
+		g_object_unref(priv->agroup);
+		priv->agroup = NULL;
+	}
+
+	priv->agroup = agroup;
+
+	return;
+}
+
+/**
+	dbusmenu_gtkclient_get_accel_group:
+	@client: Client to query for an accelerator group
+
+	Gets the accel group for this client.
+
+	Return value: Either a valid group or #NULL on error or
+		none set.
+*/
+GtkAccelGroup *
+dbusmenu_gtkclient_get_accel_group (DbusmenuGtkClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	return priv->agroup;
 }
 
 /* Internal Functions */
@@ -225,6 +391,17 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMen
 	return;
 }
 
+/* Special handler for the shortcut changing as we need to have the
+   client for that one to get the accel group. */
+static void
+menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, DbusmenuGtkClient * client)
+{
+	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
+		refresh_shortcut(client, mi);
+	}
+	return;
+}
+
 /* Call back that happens when the DbusmenuMenuitem
    is destroyed.  We're making sure to clean up everything
    else down the pipe. */
@@ -291,6 +468,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_shortcut_change_cb), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
 
@@ -305,6 +483,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_ENABLED));
 	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
 	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
+	refresh_shortcut(client, item);
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {

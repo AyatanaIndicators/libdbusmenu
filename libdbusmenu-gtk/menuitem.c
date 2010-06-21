@@ -27,6 +27,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 */
 
 #include "menuitem.h"
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 /**
 	dbusmenu_menuitem_property_set_image:
@@ -128,3 +130,209 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 	return icon;
 }
 
+/**
+	dbusmenu_menuitem_property_set_shortcut_string:
+	@menuitem: The #DbusmenuMenuitem to set the shortcut on
+	@shortcut: String describing the shortcut
+
+	This function takes a GTK shortcut string as defined in
+	#gtk_accelerator_parse and turns that into the information
+	required to send it over DBusmenu.
+
+	Return value: Whether it was successful at setting the property.
+*/
+gboolean
+dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, const gchar * shortcut)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
+	g_return_val_if_fail(shortcut != NULL, FALSE);
+
+	guint key = 0;
+	GdkModifierType modifier = 0;
+
+	gtk_accelerator_parse(shortcut, &key, &modifier);
+
+	if (key == 0) {
+		g_warning("Unable to parse shortcut string '%s'", shortcut);
+		return FALSE;
+	}
+
+	return dbusmenu_menuitem_property_set_shortcut(menuitem, key, modifier);
+}
+
+/* Append strings to an g_value_array */
+static void
+_g_value_array_append_string (GValueArray * array, const gchar * string)
+{
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_value_set_string(&value, string);
+	g_value_array_append(array, &value);
+	return;
+}
+
+/**
+	dbusmenu_menuitem_property_set_shortcut:
+	@menuitem: The #DbusmenuMenuitem to set the shortcut on
+	@key: The keycode of the key to send
+	@modifier: A bitmask of modifiers used to activate the item
+
+	Takes the modifer described by @key and @modifier and places that into
+	the format sending across Dbus for shortcuts.
+
+	Return value: Whether it was successful at setting the property.
+*/
+gboolean
+dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key, GdkModifierType modifier)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
+	g_return_val_if_fail(gtk_accelerator_valid(key, modifier), FALSE);
+
+	GValueArray * array = g_value_array_new(4); /* Four seems like the max we'd need, plus it's still small */
+
+	if (modifier & GDK_CONTROL_MASK) {
+		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_CONTROL);
+	}
+	if (modifier & GDK_MOD1_MASK) {
+		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_ALT);
+	}
+	if (modifier & GDK_SHIFT_MASK) {
+		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_SHIFT);
+	}
+	if (modifier & GDK_SUPER_MASK) {
+		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_SUPER);
+	}
+
+	_g_value_array_append_string(array, gdk_keyval_name(key));
+
+	GValueArray * wrapper = g_value_array_new(1);
+	GValue wrap_val = {0};
+	g_value_init(&wrap_val, G_TYPE_VALUE_ARRAY);
+	g_value_set_boxed(&wrap_val, array);
+	g_value_array_append(wrapper, &wrap_val);
+
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_VALUE_ARRAY);
+	g_value_set_boxed(&value, wrapper);
+
+	dbusmenu_menuitem_property_set_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT, &value);
+
+	return TRUE;
+}
+
+/* Look at the closures in an accel group and find
+   the one that matches the one we've been passed */
+static gboolean
+find_closure (GtkAccelKey * key, GClosure * closure, gpointer user_data)
+{
+	return closure == user_data;
+}
+
+/**
+	dbusmenu_menuitem_property_set_shortcut_menuitem:
+	@menuitem: The #DbusmenuMenuitem to set the shortcut on
+	@gmi: A menu item to steal the shortcut off of
+
+	Takes the shortcut that is installed on a menu item and calls
+	#dbusmenu_menuitem_property_set_shortcut with it.  It also sets
+	up listeners to watch it change.
+
+	Return value: Whether it was successful at setting the property.
+*/
+gboolean
+dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, const GtkMenuItem * gmi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
+	g_return_val_if_fail(GTK_IS_MENU_ITEM(gmi), FALSE);
+
+	GClosure * closure = NULL;
+	GList * clist;
+
+	clist = gtk_widget_list_accel_closures(GTK_WIDGET(gmi));
+	if (clist == NULL) {
+		g_warning("Menuitem does not have any closures.");
+		return FALSE;
+	}
+
+	closure = (GClosure *)clist->data;
+	g_list_free(clist);
+
+	GtkAccelGroup * group = gtk_accel_group_from_accel_closure(closure);
+	
+	/* Seriously, if this returns NULL something is seriously
+	   wrong in GTK. */
+	g_return_val_if_fail(group != NULL, FALSE);
+
+	GtkAccelKey * key = gtk_accel_group_find(group, find_closure, closure);
+	/* Again, not much we can do except complain loudly. */
+	g_return_val_if_fail(key != NULL, FALSE);
+
+	return dbusmenu_menuitem_property_set_shortcut(menuitem, key->accel_key, key->accel_mods);
+}
+
+/**
+	dbusmenu_menuitem_property_get_shortcut:
+	@menuitem: The #DbusmenuMenuitem to get the shortcut off
+	@key: Location to put the key value
+	@modifier: Location to put the modifier mask
+
+	This function gets a GTK shortcut as a key and a mask
+	for use to set the accelerators.
+*/
+void
+dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifier)
+{
+	*key = 0;
+	*modifier = 0;
+
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(menuitem));
+
+	const GValue * wrapper = dbusmenu_menuitem_property_get_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT);
+	if (wrapper == NULL) {
+		return;
+	}
+
+	GValueArray * wrapperarray = (GValueArray *)g_value_get_boxed(wrapper);
+	if (wrapperarray->n_values == 0) {
+		return;
+	}
+
+	if (wrapperarray->n_values != 1) {
+		g_warning("Shortcut is more than one entry.  Which we don't currently support.  Taking the first.");
+	}
+
+	GValue * ventryarray = g_value_array_get_nth(wrapperarray, 0);
+	GValueArray * entryarray = (GValueArray *)g_value_get_boxed(ventryarray);
+	if (entryarray->n_values == 0) {
+		/* Seems a little odd, but really, we're saying that it isn't a
+		   shortcut, so I'm comfortable with exiting silently. */
+		return;
+	}
+
+	/* Parse through modifiers */
+	int i;
+	for (i = 0; i < entryarray->n_values - 1; i++) {
+		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+			*modifier |= GDK_CONTROL_MASK;
+			continue;
+		}
+		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+			*modifier |= GDK_MOD1_MASK;
+			continue;
+		}
+		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+			*modifier |= GDK_SHIFT_MASK;
+			continue;
+		}
+		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+			*modifier |= GDK_SUPER_MASK;
+			continue;
+		}
+	}
+
+	GdkModifierType tempmod;
+
+	gtk_accelerator_parse(g_value_get_string(g_value_array_get_nth(entryarray, entryarray->n_values - 1)), key, &tempmod);
+
+	return;
+}
