@@ -77,3 +77,6 @@ tests/test-gtk-objects.xml
 tests/test-gtk-shortcut
 tests/test-gtk-shortcut-client
 tests/test-gtk-shortcut-server
+tests/test-glib-submenu
+tests/test-glib-submenu-client
+tests/test-glib-submenu-server

@@ -59,6 +59,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_STATE          "toggle-state"
 #define DBUSMENU_MENUITEM_PROP_SHORTCUT              "shortcut"
+#define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "children-display"
 
 #define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
 #define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
@@ -74,6 +75,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SHORTCUT_SHIFT             "Shift"
 #define DBUSMENU_MENUITEM_SHORTCUT_SUPER             "Super"
 
+#define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
 
 /**
  * DbusmenuMenuitem:

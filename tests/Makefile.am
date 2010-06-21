@@ -8,6 +8,7 @@ TESTS = \
 	test-glib-proxy \
 	test-glib-simple-items \
 	test-gtk-objects-test \
+	test-glib-submenu \
 	test-gtk-label \
 	test-gtk-shortcut \
 	test-gtk-reorder
@@ -23,6 +24,8 @@ check_PROGRAMS = \
 	test-glib-proxy-server \
 	test-glib-proxy-proxy \
 	test-gtk-objects \
+	test-glib-submenu-client \
+	test-glib-submenu-server \
 	test-gtk-label-client \
 	test-gtk-label-server \
 	test-gtk-shortcut-client \
@@ -80,6 +83,38 @@ test_glib_layout_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+######################
+# Test Glib Submenu
+######################
+
+test-glib-submenu: test-glib-submenu-client test-glib-submenu-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-submenu-client --task-name Client --task ./test-glib-submenu-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test_glib_submenu_server_SOURCES = \
+	test-glib-submenu.h \
+	test-glib-submenu-server.c
+
+test_glib_submenu_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_submenu_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_submenu_client_SOURCES = \
+	test-glib-submenu.h \
+	test-glib-submenu-client.c
+
+test_glib_submenu_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_submenu_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
 
 ######################
 # Test Glib Object
