@@ -3,7 +3,7 @@ libdbusmenu (0.3.2-1ubuntu1~ppa3) lucid; urgency=low
   * Upstream Merge
     * Fixing getting accelerators from menuitems
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 11:10:59 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 11:28:20 -0500
 
 libdbusmenu (0.3.2-1ubuntu1~ppa2) lucid; urgency=low
 
