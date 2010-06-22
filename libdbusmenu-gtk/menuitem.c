@@ -246,19 +246,20 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 	g_return_val_if_fail(GTK_IS_MENU_ITEM(gmi), FALSE);
 
 	GClosure * closure = NULL;
-	GList * clist;
+        GtkWidget *label = GTK_BIN (gmi)->child;
 
-	clist = gtk_widget_list_accel_closures(GTK_WIDGET(gmi));
-	if (clist == NULL) {
-		g_warning("Menuitem does not have any closures.");
-		return FALSE;
-	}
+        if (GTK_IS_ACCEL_LABEL (label))
+          {
+            g_object_get (label,
+                          "accel-closure", &closure,
+                          NULL);
+          }
 
-	closure = (GClosure *)clist->data;
-	g_list_free(clist);
+        if (closure == NULL)
+          return FALSE;
 
 	GtkAccelGroup * group = gtk_accel_group_from_accel_closure(closure);
-	
+
 	/* Seriously, if this returns NULL something is seriously
 	   wrong in GTK. */
 	g_return_val_if_fail(group != NULL, FALSE);
@@ -266,6 +267,9 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 	GtkAccelKey * key = gtk_accel_group_find(group, find_closure, closure);
 	/* Again, not much we can do except complain loudly. */
 	g_return_val_if_fail(key != NULL, FALSE);
+
+        if (!gtk_accelerator_valid (key->accel_key, key->accel_mods))
+            return FALSE;
 
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key->accel_key, key->accel_mods);
 }
