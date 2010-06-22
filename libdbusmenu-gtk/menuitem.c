@@ -295,7 +295,7 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	if (wrapper == NULL) {
 		return;
 	}
-	if (!G_VALUE_HOLDS(wrapper, G_TYPE_PTR_ARRAY)) {
+	if (!G_VALUE_HOLDS(wrapper, G_TYPE_BOXED)) {
 		g_warning("Unexpected shortcut structure.  Wrapper is: %s", G_VALUE_TYPE_NAME(wrapper));
 		return;
 	}
@@ -310,7 +310,7 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	}
 
 	GValue * ventryarray = g_ptr_array_index(wrapperarray, 0);
-	if (!G_VALUE_HOLDS(ventryarray, G_TYPE_STRV)) {
+	if (!G_VALUE_HOLDS(ventryarray, G_TYPE_BOXED)) {
 		g_warning("Unexpected shortcut structure.  Value array is: %s", G_VALUE_TYPE_NAME(ventryarray));
 		return;
 	}
