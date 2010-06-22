@@ -1,3 +1,10 @@
+libdbusmenu (0.3.2-1ubuntu1~ppa4~value1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Checking to ensure our values are what we expect
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 14:21:45 -0500
+
 libdbusmenu (0.3.2-1ubuntu1~ppa3) lucid; urgency=low
 
   * Upstream Merge

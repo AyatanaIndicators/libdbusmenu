@@ -295,6 +295,9 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	if (wrapper == NULL) {
 		return;
 	}
+	if (!G_VALUE_HOLDS_BOXED(wrapper)) {
+		return;
+	}
 
 	GValueArray * wrapperarray = (GValueArray *)g_value_get_boxed(wrapper);
 	if (wrapperarray->n_values == 0) {
@@ -306,6 +309,10 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	}
 
 	GValue * ventryarray = g_value_array_get_nth(wrapperarray, 0);
+	if (!G_VALUE_HOLDS_BOXED(ventryarray)) {
+		return;
+	}
+
 	GValueArray * entryarray = (GValueArray *)g_value_get_boxed(ventryarray);
 	if (entryarray->n_values == 0) {
 		/* Seems a little odd, but really, we're saying that it isn't a
@@ -316,19 +323,25 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	/* Parse through modifiers */
 	int i;
 	for (i = 0; i < entryarray->n_values - 1; i++) {
-		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+		GValue * value = g_value_array_get_nth(entryarray, i);
+
+		if (!G_VALUE_HOLDS_STRING(value)) {
+			continue;
+		}
+
+		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
 			*modifier |= GDK_CONTROL_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
 			*modifier |= GDK_MOD1_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
 			*modifier |= GDK_SHIFT_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
 			*modifier |= GDK_SUPER_MASK;
 			continue;
 		}
@@ -336,7 +349,13 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 
 	GdkModifierType tempmod;
 
-	gtk_accelerator_parse(g_value_get_string(g_value_array_get_nth(entryarray, entryarray->n_values - 1)), key, &tempmod);
+	GValue * accelval = g_value_array_get_nth(entryarray, entryarray->n_values - 1);
+	if (!G_VALUE_HOLDS_STRING(accelval)) {
+		*modifier = 0;
+		return;
+	}
+
+	gtk_accelerator_parse(g_value_get_string(accelval), key, &tempmod);
 
 	return;
 }
