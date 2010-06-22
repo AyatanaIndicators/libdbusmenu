@@ -323,23 +323,25 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	/* Parse through modifiers */
 	int i;
 	for (i = 0; i < entryarray->n_values - 1; i++) {
-		if (!G_VALUE_HOLDS_STRING(g_value_array_get_nth(entryarray, i))) {
+		GValue * value = g_value_array_get_nth(entryarray, i);
+
+		if (!G_VALUE_HOLDS_STRING(value)) {
 			continue;
 		}
 
-		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
 			*modifier |= GDK_CONTROL_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
 			*modifier |= GDK_MOD1_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
 			*modifier |= GDK_SHIFT_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(g_value_array_get_nth(entryarray, i)), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
 			*modifier |= GDK_SUPER_MASK;
 			continue;
 		}
