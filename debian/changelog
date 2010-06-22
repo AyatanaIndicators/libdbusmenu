@@ -1,9 +1,9 @@
-libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish2) UNRELEASED; urgency=low
+libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish2) lucid; urgency=low
 
   * Upstream merge
     * Lowering protection on type checking
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 16:51:01 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 16:52:50 -0500
 
 libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish1) lucid; urgency=low
 
