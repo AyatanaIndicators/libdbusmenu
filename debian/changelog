@@ -1,9 +1,9 @@
-libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish1) UNRELEASED; urgency=low
+libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish1) lucid; urgency=low
 
   * Upstream Merge
     * Changing the format on the get side of things
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 16:37:31 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 16:40:11 -0500
 
 libdbusmenu (0.3.2-1ubuntu1~ppa4) lucid; urgency=low
 
