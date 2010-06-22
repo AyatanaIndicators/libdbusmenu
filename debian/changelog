@@ -1,3 +1,10 @@
+libdbusmenu (0.3.2-1ubuntu1~ppa4~value3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Useful warning messages
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 14:48:56 -0500
+
 libdbusmenu (0.3.2-1ubuntu1~ppa4~value2) lucid; urgency=low
 
   * Upstream Merge
