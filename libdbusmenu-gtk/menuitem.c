@@ -295,28 +295,28 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	if (wrapper == NULL) {
 		return;
 	}
-	if (!G_VALUE_HOLDS(wrapper, G_TYPE_VALUE_ARRAY)) {
+	if (!G_VALUE_HOLDS(wrapper, G_TYPE_PTR_ARRAY)) {
 		g_warning("Unexpected shortcut structure.  Wrapper is: %s", G_VALUE_TYPE_NAME(wrapper));
 		return;
 	}
 
-	GValueArray * wrapperarray = (GValueArray *)g_value_get_boxed(wrapper);
-	if (wrapperarray->n_values == 0) {
+	GPtrArray * wrapperarray = (GPtrArray *)g_value_get_boxed(wrapper);
+	if (wrapperarray->len == 0) {
 		return;
 	}
 
-	if (wrapperarray->n_values != 1) {
+	if (wrapperarray->len != 1) {
 		g_warning("Shortcut is more than one entry.  Which we don't currently support.  Taking the first.");
 	}
 
-	GValue * ventryarray = g_value_array_get_nth(wrapperarray, 0);
-	if (!G_VALUE_HOLDS(ventryarray, G_TYPE_VALUE_ARRAY)) {
+	GValue * ventryarray = g_ptr_array_index(wrapperarray, 0);
+	if (!G_VALUE_HOLDS(ventryarray, G_TYPE_STRV)) {
 		g_warning("Unexpected shortcut structure.  Value array is: %s", G_VALUE_TYPE_NAME(ventryarray));
 		return;
 	}
 
-	GValueArray * entryarray = (GValueArray *)g_value_get_boxed(ventryarray);
-	if (entryarray->n_values == 0) {
+	gchar ** entryarray = (gchar **)g_value_get_boxed(ventryarray);
+	if (entryarray == NULL || entryarray[0] == NULL) {
 		/* Seems a little odd, but really, we're saying that it isn't a
 		   shortcut, so I'm comfortable with exiting silently. */
 		return;
@@ -324,40 +324,31 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 
 	/* Parse through modifiers */
 	int i;
-	for (i = 0; i < entryarray->n_values - 1; i++) {
-		GValue * value = g_value_array_get_nth(entryarray, i);
+	for (i = 0; entryarray[i + 1] != NULL; i++) {
+		gchar * value = entryarray[i];
 
-		if (!G_VALUE_HOLDS_STRING(value)) {
-			continue;
-		}
-
-		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+		if (g_strcmp0(value, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
 			*modifier |= GDK_CONTROL_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+		if (g_strcmp0(value, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
 			*modifier |= GDK_MOD1_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+		if (g_strcmp0(value, DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
 			*modifier |= GDK_SHIFT_MASK;
 			continue;
 		}
-		if (g_strcmp0(g_value_get_string(value), DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+		if (g_strcmp0(value, DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
 			*modifier |= GDK_SUPER_MASK;
 			continue;
 		}
 	}
 
 	GdkModifierType tempmod;
-
-	GValue * accelval = g_value_array_get_nth(entryarray, entryarray->n_values - 1);
-	if (!G_VALUE_HOLDS_STRING(accelval)) {
-		*modifier = 0;
-		return;
-	}
-
-	gtk_accelerator_parse(g_value_get_string(accelval), key, &tempmod);
+	gchar * accelval = entryarray[i];
+	gtk_accelerator_parse(accelval, key, &tempmod);
 
 	return;
 }
+
