@@ -295,7 +295,7 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	if (wrapper == NULL) {
 		return;
 	}
-	if (!G_VALUE_HOLDS_BOXED(wrapper)) {
+	if (!G_VALUE_HOLDS(wrapper, G_TYPE_VALUE_ARRAY)) {
 		return;
 	}
 
@@ -309,7 +309,7 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	}
 
 	GValue * ventryarray = g_value_array_get_nth(wrapperarray, 0);
-	if (!G_VALUE_HOLDS_BOXED(ventryarray)) {
+	if (!G_VALUE_HOLDS(ventryarray, G_TYPE_VALUE_ARRAY)) {
 		return;
 	}
 
