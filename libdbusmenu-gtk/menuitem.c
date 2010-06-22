@@ -349,7 +349,13 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 
 	GdkModifierType tempmod;
 
-	gtk_accelerator_parse(g_value_get_string(g_value_array_get_nth(entryarray, entryarray->n_values - 1)), key, &tempmod);
+	GValue * accelval = g_value_array_get_nth(entryarray, entryarray->n_values - 1);
+	if (!G_VALUE_HOLDS_STRING(accelval)) {
+		*modifier = 0;
+		return;
+	}
+
+	gtk_accelerator_parse(g_value_get_string(accelval), key, &tempmod);
 
 	return;
 }
