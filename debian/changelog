@@ -1,9 +1,9 @@
-libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish3) UNRELEASED; urgency=low
+libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish3) lucid; urgency=low
 
   * Upstream merge
   	* Checking for collections
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 23 Jun 2010 09:19:02 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Jun 2010 09:23:31 -0500
 
 libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish2) lucid; urgency=low
 
