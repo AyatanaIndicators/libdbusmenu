@@ -275,12 +275,16 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key->accel_key, key->accel_mods);
 }
 
+/* A set of typed data for the interator */
 typedef struct _iter_data_t iter_data_t;
 struct _iter_data_t {
 	guint * key;
 	GdkModifierType * modifier;
 };
 
+/* Goes through the wrapper items.  In reality we only support one
+   so it checks to see if a key is set first.  But, we could possibly,
+   support more in the future. */
 static void
 _wrapper_iterator (const GValue * value, gpointer user_data)
 {
