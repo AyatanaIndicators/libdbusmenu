@@ -214,6 +214,7 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	GValue strval = {0,};
 	g_value_init(&strval, G_TYPE_STRV);
 	g_value_take_boxed(&strval, array->data);
+	g_array_free(array, FALSE);
 
 	dbus_g_type_specialized_collection_append(&ctx, &strval);
 	dbus_g_type_specialized_collection_end_append(&ctx);
