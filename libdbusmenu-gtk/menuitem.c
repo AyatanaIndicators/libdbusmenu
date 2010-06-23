@@ -201,15 +201,22 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	const gchar * keyname = gdk_keyval_name(key);
 	g_array_append_val(array, keyname);
 
-	GPtrArray * wrapper = g_ptr_array_new();
-	GValue wrap_val = {0};
-	g_value_init(&wrap_val, G_TYPE_STRV);
-	g_value_set_boxed(&wrap_val, array->data);
-	g_ptr_array_add(wrapper, &wrap_val);
+	GType type = dbus_g_type_get_collection("GPtrArray", G_TYPE_STRV);
+	GPtrArray * wrapper = (GPtrArray *)dbus_g_type_specialized_construct(type);
 
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_PTR_ARRAY);
-	g_value_set_boxed(&value, wrapper);
+	GValue value = {0,};
+	g_value_init(&value, type);
+	g_value_take_boxed(&value, wrapper);
+
+	DBusGTypeSpecializedAppendContext ctx;
+	dbus_g_type_specialized_init_append(&value, &ctx);
+
+	GValue strval = {0,};
+	g_value_init(&strval, G_TYPE_STRV);
+	g_value_take_boxed(&strval, array->data);
+
+	dbus_g_type_specialized_collection_append(&ctx, &strval);
+	dbus_g_type_specialized_collection_end_append(&ctx);
 
 	dbusmenu_menuitem_property_set_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT, &value);
 
