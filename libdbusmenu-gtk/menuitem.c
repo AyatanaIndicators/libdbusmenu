@@ -275,27 +275,6 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key->accel_key, key->accel_mods);
 }
 
-static const gchar * wrapper_type_name =      "wrapper-type";
-static const gchar * string_array_type_name = "string-array-type";
-
-static GType wrapper_type = 0;
-static GType string_array_type = 0;
-
-/* Works with dbus to get types for the collections that we're using.
-   Should be pretty quick if we've done this once already. */
-static void
-setup_collections (void) {
-	if (string_array_type == 0) {
-		dbus_g_type_get_collection(string_array_type_name, G_TYPE_STRING);
-	}
-
-	if (wrapper_type == 0) {
-		dbus_g_type_get_collection(wrapper_type_name, string_array_type);
-	}
-
-	return;
-}
-
 /**
 	dbusmenu_menuitem_property_get_shortcut:
 	@menuitem: The #DbusmenuMenuitem to get the shortcut off
@@ -312,13 +291,12 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	*modifier = 0;
 
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(menuitem));
-	setup_collections();
 
 	const GValue * wrapper = dbusmenu_menuitem_property_get_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT);
 	if (wrapper == NULL) {
 		return;
 	}
-	if (!G_VALUE_HOLDS(wrapper, wrapper_type)) {
+	if (!G_VALUE_HOLDS(wrapper, G_TYPE_BOXED)) {
 		g_warning("Unexpected shortcut structure.  Wrapper is: %s", G_VALUE_TYPE_NAME(wrapper));
 		return;
 	}
@@ -333,7 +311,7 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	}
 
 	GValue * ventryarray = g_ptr_array_index(wrapperarray, 0);
-	if (!G_VALUE_HOLDS(ventryarray, string_array_type)) {
+	if (!G_VALUE_HOLDS(ventryarray, G_TYPE_BOXED)) {
 		g_warning("Unexpected shortcut structure.  Value array is: %s", G_VALUE_TYPE_NAME(ventryarray));
 		return;
 	}
