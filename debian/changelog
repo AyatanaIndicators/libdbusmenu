@@ -1,3 +1,11 @@
+libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish6) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Fixing our setting of the shortcut to match the same
+      collection style structure.
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Jun 2010 14:51:10 -0500
+
 libdbusmenu (0.3.2-1ubuntu1~ppa5~qtish5) lucid; urgency=low
 
   * Upstream merge

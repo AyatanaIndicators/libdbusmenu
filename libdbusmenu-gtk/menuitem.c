@@ -161,17 +161,6 @@ dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, con
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key, modifier);
 }
 
-/* Append strings to an g_value_array */
-static void
-_g_value_array_append_string (GValueArray * array, const gchar * string)
-{
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_STRING);
-	g_value_set_string(&value, string);
-	g_value_array_append(array, &value);
-	return;
-}
-
 /**
 	dbusmenu_menuitem_property_set_shortcut:
 	@menuitem: The #DbusmenuMenuitem to set the shortcut on
@@ -189,32 +178,46 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
 	g_return_val_if_fail(gtk_accelerator_valid(key, modifier), FALSE);
 
-	GValueArray * array = g_value_array_new(4); /* Four seems like the max we'd need, plus it's still small */
+	GArray * array = g_array_sized_new(TRUE, TRUE, sizeof(gchar *), 4); /* Four seems like the max we'd need, plus it's still small */
+
+	const gchar * control_val = DBUSMENU_MENUITEM_SHORTCUT_CONTROL;
+	const gchar * alt_val = DBUSMENU_MENUITEM_SHORTCUT_ALT;
+	const gchar * shift_val = DBUSMENU_MENUITEM_SHORTCUT_SHIFT;
+	const gchar * super_val = DBUSMENU_MENUITEM_SHORTCUT_SUPER;
 
 	if (modifier & GDK_CONTROL_MASK) {
-		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_CONTROL);
+		g_array_append_val(array, control_val);
 	}
 	if (modifier & GDK_MOD1_MASK) {
-		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_ALT);
+		g_array_append_val(array, alt_val);
 	}
 	if (modifier & GDK_SHIFT_MASK) {
-		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_SHIFT);
+		g_array_append_val(array, shift_val);
 	}
 	if (modifier & GDK_SUPER_MASK) {
-		_g_value_array_append_string(array, DBUSMENU_MENUITEM_SHORTCUT_SUPER);
+		g_array_append_val(array, super_val);
 	}
 
-	_g_value_array_append_string(array, gdk_keyval_name(key));
+	const gchar * keyname = gdk_keyval_name(key);
+	g_array_append_val(array, keyname);
 
-	GValueArray * wrapper = g_value_array_new(1);
-	GValue wrap_val = {0};
-	g_value_init(&wrap_val, G_TYPE_VALUE_ARRAY);
-	g_value_set_boxed(&wrap_val, array);
-	g_value_array_append(wrapper, &wrap_val);
+	GType type = dbus_g_type_get_collection("GPtrArray", G_TYPE_STRV);
+	GPtrArray * wrapper = (GPtrArray *)dbus_g_type_specialized_construct(type);
 
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_VALUE_ARRAY);
-	g_value_set_boxed(&value, wrapper);
+	GValue value = {0,};
+	g_value_init(&value, type);
+	g_value_take_boxed(&value, wrapper);
+
+	DBusGTypeSpecializedAppendContext ctx;
+	dbus_g_type_specialized_init_append(&value, &ctx);
+
+	GValue strval = {0,};
+	g_value_init(&strval, G_TYPE_STRV);
+	g_value_take_boxed(&strval, array->data);
+	g_array_free(array, FALSE);
+
+	dbus_g_type_specialized_collection_append(&ctx, &strval);
+	dbus_g_type_specialized_collection_end_append(&ctx);
 
 	dbusmenu_menuitem_property_set_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT, &value);
 
@@ -275,12 +278,16 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key->accel_key, key->accel_mods);
 }
 
+/* A set of typed data for the interator */
 typedef struct _iter_data_t iter_data_t;
 struct _iter_data_t {
 	guint * key;
 	GdkModifierType * modifier;
 };
 
+/* Goes through the wrapper items.  In reality we only support one
+   so it checks to see if a key is set first.  But, we could possibly,
+   support more in the future. */
 static void
 _wrapper_iterator (const GValue * value, gpointer user_data)
 {
