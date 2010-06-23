@@ -279,40 +279,7 @@ typedef struct _iter_data_t iter_data_t;
 struct _iter_data_t {
 	guint * key;
 	GdkModifierType * modifier;
-	const gchar * last_string;
 };
-
-static void
-_string_iterator (const GValue * value, gpointer user_data)
-{
-	iter_data_t * iter_data = (iter_data_t *)user_data;
-
-	if (!G_VALUE_HOLDS_STRING(value)) {
-		return;
-	}
-
-	const gchar * string = g_value_get_string(value);
-	iter_data->last_string = string;
-
-	if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
-		*iter_data->modifier |= GDK_CONTROL_MASK;
-		return;
-	}
-	if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
-		*iter_data->modifier |= GDK_MOD1_MASK;
-		return;
-	}
-	if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
-		*iter_data->modifier |= GDK_SHIFT_MASK;
-		return;
-	}
-	if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
-		*iter_data->modifier |= GDK_SUPER_MASK;
-		return;
-	}
-
-	return;
-}
 
 static void
 _wrapper_iterator (const GValue * value, gpointer user_data)
@@ -324,15 +291,43 @@ _wrapper_iterator (const GValue * value, gpointer user_data)
 		return;
 	}
 
-	if (!dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
+	if (!G_VALUE_HOLDS(value, G_TYPE_STRV)) {
 		g_warning("Unexpected shortcut structure.  Value array is: %s", G_VALUE_TYPE_NAME(value));
+		return;
 	}
 
-	dbus_g_type_collection_value_iterate(value, _string_iterator, iter_data);
+	gchar ** stringarray = (gchar **)g_value_get_boxed(value);
+	if (stringarray == NULL) {
+		return;
+	}
 
-	if (iter_data->last_string != NULL) {
+	const gchar * last_string = NULL;
+	int i;
+
+	for (i = 0; stringarray[i] != NULL; i++) {
+		last_string = stringarray[i];
+
+		if (g_strcmp0(last_string, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+			*iter_data->modifier |= GDK_CONTROL_MASK;
+			continue;
+		}
+		if (g_strcmp0(last_string, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+			*iter_data->modifier |= GDK_MOD1_MASK;
+			continue;
+		}
+		if (g_strcmp0(last_string, DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+			*iter_data->modifier |= GDK_SHIFT_MASK;
+			continue;
+		}
+		if (g_strcmp0(last_string, DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+			*iter_data->modifier |= GDK_SUPER_MASK;
+			continue;
+		}
+	}
+
+	if (last_string != NULL) {
 		GdkModifierType tempmod;
-		gtk_accelerator_parse(iter_data->last_string, iter_data->key, &tempmod);
+		gtk_accelerator_parse(last_string, iter_data->key, &tempmod);
 	}	
 
 	return;
@@ -367,7 +362,6 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	iter_data_t iter_data;
 	iter_data.key = key;
 	iter_data.modifier = modifier;
-	iter_data.last_string = NULL;
 
 	dbus_g_type_collection_value_iterate(wrapper, _wrapper_iterator, &iter_data);
 
