@@ -275,23 +275,65 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key->accel_key, key->accel_mods);
 }
 
-static const gchar * wrapper_type_name =      "wrapper-type";
-static const gchar * string_array_type_name = "string-array-type";
+typedef struct _iter_data_t iter_data_t;
+struct _iter_data_t {
+	guint * key;
+	GdkModifierType * modifier;
+	const gchar * last_string;
+};
 
-static GType wrapper_type = 0;
-static GType string_array_type = 0;
-
-/* Works with dbus to get types for the collections that we're using.
-   Should be pretty quick if we've done this once already. */
 static void
-setup_collections (void) {
-	if (string_array_type == 0) {
-		dbus_g_type_get_collection(string_array_type_name, G_TYPE_STRING);
+_string_iterator (const GValue * value, gpointer user_data)
+{
+	iter_data_t * iter_data = (iter_data_t *)user_data;
+
+	if (!G_VALUE_HOLDS_STRING(value)) {
+		return;
 	}
 
-	if (wrapper_type == 0) {
-		dbus_g_type_get_collection(wrapper_type_name, string_array_type);
+	const gchar * string = g_value_get_string(value);
+	iter_data->last_string = string;
+
+	if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+		*iter_data->modifier |= GDK_CONTROL_MASK;
+		return;
 	}
+	if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+		*iter_data->modifier |= GDK_MOD1_MASK;
+		return;
+	}
+	if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+		*iter_data->modifier |= GDK_SHIFT_MASK;
+		return;
+	}
+	if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+		*iter_data->modifier |= GDK_SUPER_MASK;
+		return;
+	}
+
+	return;
+}
+
+static void
+_wrapper_iterator (const GValue * value, gpointer user_data)
+{
+	iter_data_t * iter_data = (iter_data_t *)user_data;
+
+	if (*iter_data->key != 0) {
+		g_warning("Shortcut is more than one entry.  Which we don't currently support.  Taking the first.");
+		return;
+	}
+
+	if (!dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
+		g_warning("Unexpected shortcut structure.  Value array is: %s", G_VALUE_TYPE_NAME(value));
+	}
+
+	dbus_g_type_collection_value_iterate(value, _string_iterator, iter_data);
+
+	if (iter_data->last_string != NULL) {
+		GdkModifierType tempmod;
+		gtk_accelerator_parse(iter_data->last_string, iter_data->key, &tempmod);
+	}	
 
 	return;
 }
@@ -312,65 +354,22 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	*modifier = 0;
 
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(menuitem));
-	setup_collections();
 
 	const GValue * wrapper = dbusmenu_menuitem_property_get_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT);
 	if (wrapper == NULL) {
 		return;
 	}
-	if (!G_VALUE_HOLDS(wrapper, wrapper_type)) {
+	if (!dbus_g_type_is_collection(G_VALUE_TYPE(wrapper))) {
 		g_warning("Unexpected shortcut structure.  Wrapper is: %s", G_VALUE_TYPE_NAME(wrapper));
 		return;
 	}
 
-	GPtrArray * wrapperarray = (GPtrArray *)g_value_get_boxed(wrapper);
-	if (wrapperarray->len == 0) {
-		return;
-	}
+	iter_data_t iter_data;
+	iter_data.key = key;
+	iter_data.modifier = modifier;
+	iter_data.last_string = NULL;
 
-	if (wrapperarray->len != 1) {
-		g_warning("Shortcut is more than one entry.  Which we don't currently support.  Taking the first.");
-	}
-
-	GValue * ventryarray = g_ptr_array_index(wrapperarray, 0);
-	if (!G_VALUE_HOLDS(ventryarray, string_array_type)) {
-		g_warning("Unexpected shortcut structure.  Value array is: %s", G_VALUE_TYPE_NAME(ventryarray));
-		return;
-	}
-
-	gchar ** entryarray = (gchar **)g_value_get_boxed(ventryarray);
-	if (entryarray == NULL || entryarray[0] == NULL) {
-		/* Seems a little odd, but really, we're saying that it isn't a
-		   shortcut, so I'm comfortable with exiting silently. */
-		return;
-	}
-
-	/* Parse through modifiers */
-	int i;
-	for (i = 0; entryarray[i + 1] != NULL; i++) {
-		gchar * value = entryarray[i];
-
-		if (g_strcmp0(value, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
-			*modifier |= GDK_CONTROL_MASK;
-			continue;
-		}
-		if (g_strcmp0(value, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
-			*modifier |= GDK_MOD1_MASK;
-			continue;
-		}
-		if (g_strcmp0(value, DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
-			*modifier |= GDK_SHIFT_MASK;
-			continue;
-		}
-		if (g_strcmp0(value, DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
-			*modifier |= GDK_SUPER_MASK;
-			continue;
-		}
-	}
-
-	GdkModifierType tempmod;
-	gchar * accelval = entryarray[i];
-	gtk_accelerator_parse(accelval, key, &tempmod);
+	dbus_g_type_collection_value_iterate(wrapper, _wrapper_iterator, &iter_data);
 
 	return;
 }
