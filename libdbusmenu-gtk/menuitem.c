@@ -29,6 +29,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include <dbus/dbus-gtype-specialized.h>
 
 /**
 	dbusmenu_menuitem_property_set_image:
@@ -274,6 +275,27 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 	return dbusmenu_menuitem_property_set_shortcut(menuitem, key->accel_key, key->accel_mods);
 }
 
+static const gchar * wrapper_type_name =      "wrapper-type";
+static const gchar * string_array_type_name = "string-array-type";
+
+static GType wrapper_type = 0;
+static GType string_array_type = 0;
+
+/* Works with dbus to get types for the collections that we're using.
+   Should be pretty quick if we've done this once already. */
+static void
+setup_collections (void) {
+	if (string_array_type == 0) {
+		dbus_g_type_get_collection(string_array_type_name, G_TYPE_STRING);
+	}
+
+	if (wrapper_type == 0) {
+		dbus_g_type_get_collection(wrapper_type_name, string_array_type);
+	}
+
+	return;
+}
+
 /**
 	dbusmenu_menuitem_property_get_shortcut:
 	@menuitem: The #DbusmenuMenuitem to get the shortcut off
@@ -290,6 +312,7 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	*modifier = 0;
 
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(menuitem));
+	setup_collections();
 
 	const GValue * wrapper = dbusmenu_menuitem_property_get_value(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT);
 	if (wrapper == NULL) {
