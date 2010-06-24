@@ -158,6 +158,8 @@ get_hpadding (GtkWidget * widget)
 static void
 set_label (GtkMenuItem * menu_item, const gchar * label)
 {
+	if (label == NULL) return;
+
 	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
 	GtkLabel * labelw = NULL;
 	gboolean suppress_update = FALSE;
@@ -191,9 +193,10 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 	   update the one that we already have. */
 	if (labelw == NULL) {
 		/* Build it */
-		labelw = GTK_LABEL(gtk_label_new(label));
+		labelw = GTK_LABEL(gtk_accel_label_new(label));
 		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
+		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 		gtk_widget_show(GTK_WIDGET(labelw));
 
 		/* Check to see if it needs to be in the bin for this
