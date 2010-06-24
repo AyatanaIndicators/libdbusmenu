@@ -144,11 +144,11 @@ do_swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 
 	dbusmenu_menuitem_property_get_shortcut(mi, &key, &modifiers);
 
-	g_debug("Setting shortcut on '%s': %d %X", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL), key, modifiers);
-
 	if (key == 0) {
 		return FALSE;
 	}
+
+	g_debug("Setting shortcut on '%s': %d %X", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL), key, modifiers);
 
 	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(data->client, mi);
 	if (gmi == NULL) {
@@ -197,16 +197,18 @@ refresh_shortcut (DbusmenuGtkClient * client, DbusmenuMenuitem * mi)
 	data.new_agroup = priv->agroup;
 
 	if (do_swap_agroup(mi, &data)) {
-                guint key;
-                GdkModifierType mod;
-                GtkMenuItem *gmi = dbusmenu_gtkclient_menuitem_get (client, mi);
+		guint key = 0;
+		GdkModifierType mod = 0;
+		GtkMenuItem *gmi = dbusmenu_gtkclient_menuitem_get (client, mi);
 
-                dbusmenu_menuitem_property_get_shortcut (mi, &key, &mod);
+		dbusmenu_menuitem_property_get_shortcut (mi, &key, &mod);
 
-                gtk_widget_add_accelerator (GTK_WIDGET (gmi), "activate", priv->agroup, key, mod, GTK_ACCEL_VISIBLE);
-        }
+		if (key != 0) {
+			gtk_widget_add_accelerator (GTK_WIDGET (gmi), "activate", priv->agroup, key, mod, GTK_ACCEL_VISIBLE);
+		}
+	}
 
-        return;
+	return;
 }
 
 
