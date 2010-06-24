@@ -1,4 +1,4 @@
-libdbusmenu (0.3.3-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.3.3-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Adding support for menu shortcuts (LP: #591293)
