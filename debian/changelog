@@ -1,10 +1,10 @@
-libdbusmenu (0.3.2-1ubuntu1~ppa5) UNRELEASED; urgency=low
+libdbusmenu (0.3.2-1ubuntu1~ppa5) lucid; urgency=low
 
   * Upstream merge
     * Changing the shortcut implementation to match the Qt
       implementation of dbusmenu.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Jun 2010 08:57:34 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 24 Jun 2010 09:01:02 -0500
 
 libdbusmenu (0.3.2-1ubuntu1~ppa4) lucid; urgency=low
 
