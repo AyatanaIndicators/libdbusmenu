@@ -1,40 +1,15 @@
-libdbusmenu (0.3.2-1ubuntu1~ppa5) lucid; urgency=low
+libdbusmenu (0.3.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream merge
-    * Changing the shortcut implementation to match the Qt
-      implementation of dbusmenu.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Jun 2010 09:01:02 -0500
-
-libdbusmenu (0.3.2-1ubuntu1~ppa4) lucid; urgency=low
-
-  * Upstream Merge
-    * Checking to ensure our values are what we expect
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 14:55:51 -0500
-
-libdbusmenu (0.3.2-1ubuntu1~ppa3) lucid; urgency=low
-
-  * Upstream Merge
-    * Fixing getting accelerators from menuitems
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Jun 2010 11:28:20 -0500
-
-libdbusmenu (0.3.2-1ubuntu1~ppa2) lucid; urgency=low
-
-  * Upstream Merge
-    * Adding support for menu shortcuts
+  * New upstream release.
+    * Adding support for menu shortcuts (LP: #591293)
     * Fixing distcheck of documentation builds
-
- -- Ted Gould <ted@ubuntu.com>  Mon, 21 Jun 2010 15:19:18 -0500
-
-libdbusmenu (0.3.2-1ubuntu1~ppa1) lucid; urgency=low
-
+    * Autogen.sh fix for adding custom prefix (LP: #595565)
+    * Fixing children property name to match spec (LP: #597321)
   * Merging in Debian branch
   * debian/control: Switching branch on this branch to be the
     dbusmenu-team.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 16 Jun 2010 10:45:24 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 24 Jun 2010 09:21:02 -0500
 
 libdbusmenu (0.3.2-1) unstable; urgency=low
 
