@@ -1,4 +1,4 @@
-libdbusmenu (0.3.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.3-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Adding support for menu shortcuts (LP: #591293)
@@ -10,7 +10,7 @@ libdbusmenu (0.3.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
     dbusmenu-team.
   * debian/rules: Updating shlibs to 0.3.3 for shortcut API additions
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Jun 2010 09:30:21 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 24 Jun 2010 09:32:42 -0500
 
 libdbusmenu (0.3.2-1) unstable; urgency=low
 
