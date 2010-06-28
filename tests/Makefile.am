@@ -7,8 +7,9 @@ TESTS = \
 	test-glib-properties \
 	test-glib-proxy \
 	test-glib-simple-items \
-	test-gtk-objects-test \
 	test-glib-submenu \
+	test-json \
+	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-shortcut \
 	test-gtk-reorder
@@ -31,7 +32,8 @@ check_PROGRAMS = \
 	test-gtk-shortcut-client \
 	test-gtk-shortcut-server \
 	test-glib-simple-items \
-	test-gtk-reorder-server
+	test-gtk-reorder-server \
+	test-json-server
 
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
 
@@ -115,6 +117,42 @@ test_glib_layout_client_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_layout_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+######################
+# Test JSON
+######################
+
+test-json: test-json-client test-json-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) --task ./test-json-client --task-name Client --task ./test-json-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test_json_server_SOURCES = \
+	test-json-server.c
+
+test_json_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	-I $(srcdir) \
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	-Wall -Werror
+
+test_json_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	libdbusmenu-jsonloader.la \
+	$(DBUSMENUTESTS_LIBS) \
+	$(DBUSMENUGLIB_LIBS)
+
+test_json_client_SOURCES = \
+	test-json-client.c
+
+test_json_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_json_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
