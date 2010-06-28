@@ -90,8 +90,14 @@ collection_dumper (const GValue * value, int depth)
 	g_ptr_array_add(array, g_strdup_printf("\n%s]", space));
 
 	g_free(space);
-	
-	gchar * retstr = g_strjoinv(NULL, (gchar **)array->pdata);
+
+	gchar * retstr = NULL;
+	if (array->len == 3) {
+		retstr = g_strdup_printf("[%s]", ((gchar *)array->pdata[1]) + depth + 1/*for newline*/);
+	} else {
+		retstr = g_strjoinv(NULL, (gchar **)array->pdata);
+	}
+
 	g_ptr_array_free(array, TRUE);
 
 	return retstr;
