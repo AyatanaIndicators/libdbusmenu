@@ -29,6 +29,17 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static GMainLoop * mainloop = NULL;
 
+static gchar *
+strv_dumper(const GValue * value)
+{
+	gchar ** strv = (gchar **)g_value_get_boxed(value);
+
+	gchar * joined = g_strjoinv("\", \"", strv);
+	gchar * retval = g_strdup_printf("[\"%s\"]", joined);
+	g_free(joined);
+	return retval;
+}
+
 typedef struct _collection_iterator_t collection_iterator_t;
 struct _collection_iterator_t {
 	gchar * space;
@@ -41,7 +52,13 @@ collection_iterate (const GValue * value, gpointer user_data)
 {
 	collection_iterator_t * iter = (collection_iterator_t *)user_data;
 
-	gchar * str = g_strdup_value_contents(value);
+	gchar * str;
+	if (G_VALUE_TYPE(value) == G_TYPE_STRV) {
+		str = strv_dumper(value);
+	} else {
+		str = g_strdup_value_contents(value);
+	}
+
 	gchar * retval = NULL;
 
 	if (iter->first) {
