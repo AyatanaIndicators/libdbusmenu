@@ -25,7 +25,103 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-glib/menuitem.h>
 
+#include <dbus/dbus-gtype-specialized.h>
+
 static GMainLoop * mainloop = NULL;
+
+static gchar * value2string (const GValue * value, int depth);
+
+static gchar *
+strv_dumper(const GValue * value)
+{
+	gchar ** strv = (gchar **)g_value_get_boxed(value);
+
+	gchar * joined = g_strjoinv("\", \"", strv);
+	gchar * retval = g_strdup_printf("[\"%s\"]", joined);
+	g_free(joined);
+	return retval;
+}
+
+typedef struct _collection_iterator_t collection_iterator_t;
+struct _collection_iterator_t {
+	gchar * space;
+	GPtrArray * array;
+	gboolean first;
+	int depth;
+};
+
+static void
+collection_iterate (const GValue * value, gpointer user_data)
+{
+	collection_iterator_t * iter = (collection_iterator_t *)user_data;
+
+	gchar * str = value2string(value, iter->depth);
+	gchar * retval = NULL;
+
+	if (iter->first) {
+		iter->first = FALSE;
+		retval = g_strdup_printf("\n%s%s", iter->space, str);
+	} else {
+		retval = g_strdup_printf(",\n%s%s", iter->space, str);
+	}
+
+	g_ptr_array_add(iter->array, retval);
+	g_free(str);
+
+	return;
+}
+
+static gchar *
+collection_dumper (const GValue * value, int depth)
+{
+	gchar * space = g_strnfill(depth, ' ');
+	GPtrArray * array = g_ptr_array_new_with_free_func(g_free);
+
+	g_ptr_array_add(array, g_strdup("["));
+
+	collection_iterator_t iter;
+	iter.space = space;
+	iter.array = array;
+	iter.first = TRUE;
+	iter.depth = depth + 2;
+
+	dbus_g_type_collection_value_iterate(value, collection_iterate, &iter);
+
+	g_ptr_array_add(array, g_strdup_printf("\n%s]", space));
+
+	g_free(space);
+
+	gchar * retstr = NULL;
+	if (array->len == 3) {
+		retstr = g_strdup_printf("[%s]", ((gchar *)array->pdata[1]) + depth + 1/*for newline*/);
+	} else {
+		retstr = g_strjoinv(NULL, (gchar **)array->pdata);
+	}
+
+	g_ptr_array_free(array, TRUE);
+
+	return retstr;
+}
+
+static gchar *
+value2string (const GValue * value, int depth)
+{
+	gchar * str = NULL;
+
+	if (value == NULL) {
+		return g_strdup("(null)");
+	}
+
+	if (dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
+		str = collection_dumper(value, depth);
+	} else if (G_VALUE_TYPE(value) == G_TYPE_STRV) {
+		str = strv_dumper(value);
+	} else {
+		str = g_strdup_value_contents(value);
+	}
+
+	return str;
+}
 
 static void
 print_menuitem (DbusmenuMenuitem * item, int depth)
@@ -36,11 +132,10 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	GList * properties = dbusmenu_menuitem_properties_list(item);
 	GList * property;
 	for (property = properties; property != NULL; property = g_list_next(property)) {
-		GValue value = {0};
-		g_value_init(&value, G_TYPE_STRING);
-		g_value_transform(dbusmenu_menuitem_property_get_value(item, (gchar *)property->data), &value);
-		g_print(",\n%s\"%s\": \"%s\"", space, (gchar *)property->data, g_value_get_string(&value));
-		g_value_unset(&value);
+		const GValue * value = dbusmenu_menuitem_property_get_value(item, (gchar *)property->data);
+		gchar * str = value2string(value, depth + g_utf8_strlen((gchar *)property->data, -1) + 2 /*quotes*/ + 2 /*: */);
+		g_print(",\n%s\"%s\": %s", space, (gchar *)property->data, str);
+		g_free(str);
 	}
 	g_list_free(properties);
 
