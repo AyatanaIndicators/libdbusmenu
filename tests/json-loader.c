@@ -17,6 +17,31 @@ node2value (JsonNode * node)
 	}
 
 	if (JSON_NODE_TYPE(node) == JSON_NODE_ARRAY) {
+		JsonArray * array = json_node_get_array(node);
+		JsonNode * first = json_array_get_element(array, 0);
+
+		if (JSON_NODE_TYPE(first) == JSON_NODE_VALUE) {
+
+		} else {
+			GValue * subvalue = node2value(first);
+			GType type = dbus_g_type_get_collection("GPtrArray", G_VALUE_TYPE(subvalue));
+			gpointer * wrapper = dbus_g_type_specialized_construct(type);
+
+			g_value_init(value, type);
+			g_value_take_boxed(value, wrapper);
+
+			DBusGTypeSpecializedAppendContext ctx;
+			dbus_g_type_specialized_init_append(value, &ctx);
+
+			dbus_g_type_specialized_collection_append(&ctx, subvalue);
+			int i;
+			for (i = 1; i < json_array_get_length(array); i++) {
+				GValue * subvalue = node2value(node);
+				dbus_g_type_specialized_collection_append(&ctx, subvalue);
+			}
+
+			dbus_g_type_specialized_collection_end_append(&ctx);
+		}
 	}
 
 	if (JSON_NODE_TYPE(node) == JSON_NODE_OBJECT) {
@@ -50,11 +75,9 @@ node2value (JsonNode * node)
 				g_free(value);
 			}
 		}
-
 	}
 
-	g_free(value);
-	return NULL;
+	return value;
 }
 
 static void
