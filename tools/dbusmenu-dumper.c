@@ -32,7 +32,19 @@ static GMainLoop * mainloop = NULL;
 static gchar *
 collection_dumper (const GValue * value, int depth)
 {
-	return g_strdup("<collection>");
+	gchar * space = g_strnfill(depth, ' ');
+	GPtrArray * array = g_ptr_array_new_with_free_func(g_free);
+
+	g_ptr_array_add(array, g_strdup("[\n"));
+	g_ptr_array_add(array, g_strdup_printf("%s<collection>\n", space));
+	g_ptr_array_add(array, g_strdup_printf("%s]", space));
+
+	g_free(space);
+	
+	gchar * retstr = g_strjoinv(NULL, (gchar **)array->pdata);
+	g_ptr_array_free(array, TRUE);
+
+	return retstr;
 }
 
 static void
@@ -47,7 +59,7 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 		const GValue * value = dbusmenu_menuitem_property_get_value(item, (gchar *)property->data);
 		gchar * str = NULL;
 		if (dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
-			str = collection_dumper(value, depth + g_utf8_strlen((gchar *)property->data, -1) + 2);
+			str = collection_dumper(value, depth + g_utf8_strlen((gchar *)property->data, -1) + 2 /*quotes*/ + 2 /*: */);
 		} else {
 			str = g_strdup_value_contents(value);
 		}
