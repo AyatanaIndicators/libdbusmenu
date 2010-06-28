@@ -25,7 +25,15 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-glib/menuitem.h>
 
+#include <dbus/dbus-gtype-specialized.h>
+
 static GMainLoop * mainloop = NULL;
+
+static gchar *
+collection_dumper (const GValue * value)
+{
+	return g_strdup("<collection>");
+}
 
 static void
 print_menuitem (DbusmenuMenuitem * item, int depth)
@@ -37,7 +45,12 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	GList * property;
 	for (property = properties; property != NULL; property = g_list_next(property)) {
 		const GValue * value = dbusmenu_menuitem_property_get_value(item, (gchar *)property->data);
-		gchar * str = g_strdup_value_contents(value);
+		gchar * str = NULL;
+		if (dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
+			str = collection_dumper(value);
+		} else {
+			str = g_strdup_value_contents(value);
+		}
 		g_print(",\n%s\"%s\": %s", space, (gchar *)property->data, str);
 		g_free(str);
 	}
