@@ -21,6 +21,37 @@ node2value (JsonNode * node)
 		JsonNode * first = json_array_get_element(array, 0);
 
 		if (JSON_NODE_TYPE(first) == JSON_NODE_VALUE) {
+			GValue subvalue = {0};
+			json_node_get_value(first, &subvalue);
+
+			if (G_VALUE_TYPE(&subvalue) == G_TYPE_STRING) {
+				GArray * garray = g_array_sized_new(TRUE, TRUE, sizeof(gchar *), json_array_get_length(array));
+				g_value_init(value, G_TYPE_STRV);
+				g_value_take_boxed(value, garray->data);
+
+				int i;
+				for (i = 0; i < json_array_get_length(array); i++) {
+					const gchar * str = json_node_get_string(first);
+					gchar * dupstr = g_strdup(str);
+					g_array_append_val(garray, dupstr);
+				}
+
+				g_array_free(garray, FALSE);
+			} else {
+				GValueArray * varray = g_value_array_new(json_array_get_length(array));
+				g_value_init(value, G_TYPE_VALUE_ARRAY);
+				g_value_take_boxed(value, varray);
+
+				g_value_array_append(varray, &subvalue);
+				g_value_unset(&subvalue);
+
+				int i;
+				for (i = 1; i < json_array_get_length(array); i++) {
+					json_node_get_value(first, &subvalue);
+					g_value_array_append(varray, &subvalue);
+					g_value_unset(&subvalue);
+				}
+			}
 
 		} else {
 			GValue * subvalue = node2value(first);
