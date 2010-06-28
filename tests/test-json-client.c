@@ -23,7 +23,7 @@ main (int argv, char ** argc)
 	gboolean has_owner = FALSE;
 	gint owner_count = 0;
 	while (!has_owner && owner_count < 10000) {
-		org_freedesktop_DBus_name_has_owner(bus_proxy, "org.test", &has_owner, NULL);
+		org_freedesktop_DBus_name_has_owner(bus_proxy, "org.dbusmenu.test", &has_owner, NULL);
 		owner_count++;
 	}
 
@@ -36,8 +36,10 @@ main (int argv, char ** argc)
 
 	g_debug("Initing");
 
-	mainloop = g_main_loop_new(NULL, FALSE);
-	g_main_loop_run(mainloop);
+	gchar * command = g_strdup_printf("%s --dbus-name=org.dbusmenu.test --dbus-object=/org/test > %s", argc[1], argc[2]);
+	g_debug("Executing: %s", command);
+
+	g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
 
 	g_debug("Exiting");
 
