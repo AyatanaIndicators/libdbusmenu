@@ -57,6 +57,7 @@ libdbusmenu_jsonloader_la_LDFLAGS = \
 
 libdbusmenu_jsonloader_la_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
 	-I $(srcdir)/.. \
 	-Wall \
 	-Werror \
@@ -320,6 +321,7 @@ test_gtk_label_server_CFLAGS = \
 test_gtk_label_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	libdbusmenu-jsonloader.la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 

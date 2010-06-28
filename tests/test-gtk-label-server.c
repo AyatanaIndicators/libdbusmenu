@@ -30,74 +30,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 
 #include <json-glib/json-glib.h>
-
-static void
-menuitem_click(DbusmenuMenuitem * mi, guint32 time, gpointer user_data)
-{
-	g_debug("Clicked on: %d @ %d", dbusmenu_menuitem_get_id(mi), time);
-	return;
-}
-
-static void
-set_props (DbusmenuMenuitem * mi, JsonObject * node)
-{
-	if (node == NULL) return;
-
-	GList * members = NULL;
-	for (members = json_object_get_members(node); members != NULL; members = g_list_next(members)) {
-		const gchar * member = members->data;
-
-		if (!g_strcmp0(member, "id")) { continue; }
-		if (!g_strcmp0(member, "submenu")) { continue; }
-
-		JsonNode * lnode = json_object_get_member(node, member);
-		if (JSON_NODE_TYPE(lnode) != JSON_NODE_VALUE) { continue; }
-
-		GValue value = {0};
-		json_node_get_value(lnode, &value);
-		dbusmenu_menuitem_property_set_value(mi, member, &value);
-		g_value_unset(&value);
-	}
-
-	return;
-}
-
-static DbusmenuMenuitem *
-layout2menuitem (JsonNode * inlayout)
-{
-	if (inlayout == NULL) return NULL;
-	if (JSON_NODE_TYPE(inlayout) != JSON_NODE_OBJECT) return NULL;
-
-	JsonObject * layout = json_node_get_object(inlayout);
-
-	DbusmenuMenuitem * local = NULL;
-	if (json_object_has_member(layout, "id")) {
-		JsonNode * node = json_object_get_member(layout, "id");
-		g_return_val_if_fail(JSON_NODE_TYPE(node) == JSON_NODE_VALUE, NULL);
-		local = dbusmenu_menuitem_new_with_id(json_node_get_int(node));
-	} else {
-		local = dbusmenu_menuitem_new();
-	}
-	g_signal_connect(G_OBJECT(local), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_click), NULL);
-
-	set_props(local, layout);
-	
-	if (json_object_has_member(layout, "submenu")) {
-		JsonNode * node = json_object_get_member(layout, "submenu");
-		g_return_val_if_fail(JSON_NODE_TYPE(node) == JSON_NODE_ARRAY, local);
-		JsonArray * array = json_node_get_array(node);
-		guint count;
-		for (count = 0; count < json_array_get_length(array); count++) {
-			DbusmenuMenuitem * child = layout2menuitem(json_array_get_element(array, count));
-			if (child != NULL) {
-				dbusmenu_menuitem_child_append(local, child);
-			}
-		}
-	}
-
-	/* g_debug("Layout to menu return: 0x%X", (unsigned int)local); */
-	return local;
-}
+#include "json-loader.h"
 
 static JsonArray * root_array = NULL;
 static guint layouton = 0;
@@ -114,7 +47,7 @@ timer_func (gpointer data)
 	}
 	g_debug("Updating to Layout %d", layouton);
 
-	dbusmenu_server_set_root(server, layout2menuitem(json_array_get_element(root_array, layouton)));
+	dbusmenu_server_set_root(server, dbusmenu_json_build_from_node(json_array_get_element(root_array, layouton)));
 	layouton++;
 
 	return TRUE;
