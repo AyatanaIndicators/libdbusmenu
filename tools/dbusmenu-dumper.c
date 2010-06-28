@@ -29,15 +29,50 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static GMainLoop * mainloop = NULL;
 
+typedef struct _collection_iterator_t collection_iterator_t;
+struct _collection_iterator_t {
+	gchar * space;
+	GPtrArray * array;
+	gboolean first;
+};
+
+static void
+collection_iterate (const GValue * value, gpointer user_data)
+{
+	collection_iterator_t * iter = (collection_iterator_t *)user_data;
+
+	gchar * str = g_strdup_value_contents(value);
+	gchar * retval = NULL;
+
+	if (iter->first) {
+		iter->first = FALSE;
+		retval = g_strdup_printf("\n%s%s", iter->space, str);
+	} else {
+		retval = g_strdup_printf(",\n%s%s", iter->space, str);
+	}
+
+	g_ptr_array_add(iter->array, retval);
+	g_free(str);
+
+	return;
+}
+
 static gchar *
 collection_dumper (const GValue * value, int depth)
 {
 	gchar * space = g_strnfill(depth, ' ');
 	GPtrArray * array = g_ptr_array_new_with_free_func(g_free);
 
-	g_ptr_array_add(array, g_strdup("[\n"));
-	g_ptr_array_add(array, g_strdup_printf("%s<collection>\n", space));
-	g_ptr_array_add(array, g_strdup_printf("%s]", space));
+	g_ptr_array_add(array, g_strdup("["));
+
+	collection_iterator_t iter;
+	iter.space = space;
+	iter.array = array;
+	iter.first = TRUE;
+
+	dbus_g_type_collection_value_iterate(value, collection_iterate, &iter);
+
+	g_ptr_array_add(array, g_strdup_printf("\n%s]", space));
 
 	g_free(space);
 	
