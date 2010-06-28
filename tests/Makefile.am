@@ -495,7 +495,8 @@ EXTRA_DIST = \
 	dbusmenu-gtk/mago_tests/data/several_submenus_recursive.json \
 	dbusmenu-gtk/mago_tests/data/several_submenus_utf8.json \
 	dbusmenu-gtk/mago_tests/data/static.json \
-	dbusmenu-gtk/mago_tests/data/test-gtk-label.json
+	dbusmenu-gtk/mago_tests/data/test-gtk-label.json \
+	test-json-01.json
 
 CLEANFILES = \
 	dbusmenu-gtk/mago_tests/dbusmenu.pyc
