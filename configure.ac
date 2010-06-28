@@ -126,6 +126,7 @@ libdbusmenu-gtk/dbusmenu-gtk.pc
 tools/Makefile
 tools/testapp/Makefile
 tests/Makefile
+tests/dbusmenu-jsonloader.pc
 docs/Makefile
 docs/libdbusmenu-glib/Makefile
 docs/libdbusmenu-glib/reference/Makefile

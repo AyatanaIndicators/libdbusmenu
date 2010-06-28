@@ -36,6 +36,40 @@ check_PROGRAMS = \
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
 
 ######################
+# JSON Loader lib
+######################
+
+lib_LTLIBRARIES = libdbusmenu-jsonloader.la
+
+libdbusmenu_jsonloaderincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-jsonloader/
+
+libdbusmenu_jsonloaderinclude_HEADERS = \
+	json-loader.h
+
+libdbusmenu_jsonloader_la_SOURCES = \
+	json-loader.h \
+	json-loader.c
+
+libdbusmenu_jsonloader_la_LDFLAGS = \
+	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
+	-no-undefined \
+	-export-symbols-regex "^[^_].*"
+
+libdbusmenu_jsonloader_la_CFLAGS = \
+	$(DBUSMENUGLIB_CFLAGS) \
+	-I $(srcdir)/.. \
+	-Wall \
+	-Werror \
+	-DG_DISABLE_DEPRECATED \
+	-DG_LOG_DOMAIN="\"LIBDBUSMENU-JSONLOADER\""
+
+libdbusmenu_jsonloader_la_LIBADD = \
+	$(DBUSMENUGLIB_LIBS)
+
+pkgconfig_DATA = dbusmenu-jsonloader.pc
+pkgconfigdir = $(libdir)/pkgconfig
+
+######################
 # Test GLib server
 ######################
 
