@@ -108,6 +108,10 @@ value2string (const GValue * value, int depth)
 {
 	gchar * str = NULL;
 
+	if (value == NULL) {
+		return g_strdup("(null)");
+	}
+
 	if (dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
 		str = collection_dumper(value, depth);
 	} else if (G_VALUE_TYPE(value) == G_TYPE_STRV) {
