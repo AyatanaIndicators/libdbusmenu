@@ -186,3 +186,4 @@ tests/dbusmenu-jsonloader.pc
 tests/libdbusmenu-jsonloader.la
 tests/libdbusmenu_jsonloader_la-json-loader.lo
 tests/test-json-server
+tests/test-json-client

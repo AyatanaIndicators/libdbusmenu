@@ -33,6 +33,7 @@ check_PROGRAMS = \
 	test-gtk-shortcut-server \
 	test-glib-simple-items \
 	test-gtk-reorder-server \
+	test-json-client \
 	test-json-server
 
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
