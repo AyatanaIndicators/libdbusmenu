@@ -2,9 +2,27 @@
 #include "json-loader.h"
 
 static GValue *
-handle_complex_types (JsonNode * node)
+node2value (JsonNode * node)
 {
+	if (node == NULL) {
+		return NULL;
+	}
 
+	GValue * value = g_new0(GValue, 1);
+
+	if (JSON_NODE_TYPE(node) == JSON_NODE_VALUE) {
+		json_node_get_value(node, value);
+		return value;
+	}
+
+	if (JSON_NODE_TYPE(node) == JSON_NODE_ARRAY) {
+	}
+	
+
+	if (JSON_NODE_TYPE(node) == JSON_NODE_OBJECT) {
+	}
+
+	g_free(value);
 	return NULL;
 }
 
@@ -21,19 +39,12 @@ set_props (DbusmenuMenuitem * mi, JsonObject * node)
 		if (!g_strcmp0(member, "submenu")) { continue; }
 
 		JsonNode * lnode = json_object_get_member(node, member);
+		GValue * value = node2value(lnode);
 
-		if (JSON_NODE_TYPE(lnode) != JSON_NODE_VALUE) {
-			GValue * value = handle_complex_types(lnode);
-			if (value != NULL) {
-				dbusmenu_menuitem_property_set_value(mi, member, value);
-				g_value_unset(value);
-				g_free(value);
-			}
-		} else {
-			GValue value = {0};
-			json_node_get_value(lnode, &value);
-			dbusmenu_menuitem_property_set_value(mi, member, &value);
-			g_value_unset(&value);
+		if (value != NULL) {
+			dbusmenu_menuitem_property_set_value(mi, member, value);
+			g_value_unset(value);
+			g_free(value);
 		}
 	}
 
