@@ -1,9 +1,9 @@
-libdbusmenu (0.3.3-0ubuntu2~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.3-0ubuntu2~ppa1) lucid; urgency=low
 
   * Upstream Merge
     * Fixing up value handling in dbusmenu-dumper
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 28 Jun 2010 13:14:13 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 28 Jun 2010 13:15:12 -0500
 
 libdbusmenu (0.3.3-0ubuntu1) maverick; urgency=low
 
