@@ -30,7 +30,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 static GMainLoop * mainloop = NULL;
 
 static gchar *
-collection_dumper (const GValue * value)
+collection_dumper (const GValue * value, int depth)
 {
 	return g_strdup("<collection>");
 }
@@ -47,7 +47,7 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 		const GValue * value = dbusmenu_menuitem_property_get_value(item, (gchar *)property->data);
 		gchar * str = NULL;
 		if (dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
-			str = collection_dumper(value);
+			str = collection_dumper(value, depth + g_utf8_strlen((gchar *)property->data, -1) + 2);
 		} else {
 			str = g_strdup_value_contents(value);
 		}
