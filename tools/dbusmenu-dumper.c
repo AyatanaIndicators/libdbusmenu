@@ -29,6 +29,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static GMainLoop * mainloop = NULL;
 
+static gchar * value2string (const GValue * value, int depth);
+
 static gchar *
 strv_dumper(const GValue * value)
 {
@@ -45,6 +47,7 @@ struct _collection_iterator_t {
 	gchar * space;
 	GPtrArray * array;
 	gboolean first;
+	int depth;
 };
 
 static void
@@ -52,13 +55,7 @@ collection_iterate (const GValue * value, gpointer user_data)
 {
 	collection_iterator_t * iter = (collection_iterator_t *)user_data;
 
-	gchar * str;
-	if (G_VALUE_TYPE(value) == G_TYPE_STRV) {
-		str = strv_dumper(value);
-	} else {
-		str = g_strdup_value_contents(value);
-	}
-
+	gchar * str = value2string(value, iter->depth);
 	gchar * retval = NULL;
 
 	if (iter->first) {
@@ -86,6 +83,7 @@ collection_dumper (const GValue * value, int depth)
 	iter.space = space;
 	iter.array = array;
 	iter.first = TRUE;
+	iter.depth = depth + 2;
 
 	dbus_g_type_collection_value_iterate(value, collection_iterate, &iter);
 
@@ -99,6 +97,22 @@ collection_dumper (const GValue * value, int depth)
 	return retstr;
 }
 
+static gchar *
+value2string (const GValue * value, int depth)
+{
+	gchar * str = NULL;
+
+	if (dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
+		str = collection_dumper(value, depth);
+	} else if (G_VALUE_TYPE(value) == G_TYPE_STRV) {
+		str = strv_dumper(value);
+	} else {
+		str = g_strdup_value_contents(value);
+	}
+
+	return str;
+}
+
 static void
 print_menuitem (DbusmenuMenuitem * item, int depth)
 {
@@ -109,12 +123,7 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	GList * property;
 	for (property = properties; property != NULL; property = g_list_next(property)) {
 		const GValue * value = dbusmenu_menuitem_property_get_value(item, (gchar *)property->data);
-		gchar * str = NULL;
-		if (dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
-			str = collection_dumper(value, depth + g_utf8_strlen((gchar *)property->data, -1) + 2 /*quotes*/ + 2 /*: */);
-		} else {
-			str = g_strdup_value_contents(value);
-		}
+		gchar * str = value2string(value, depth + g_utf8_strlen((gchar *)property->data, -1) + 2 /*quotes*/ + 2 /*: */);
 		g_print(",\n%s\"%s\": %s", space, (gchar *)property->data, str);
 		g_free(str);
 	}
