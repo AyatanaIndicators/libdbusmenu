@@ -3,8 +3,10 @@ libdbusmenu (0.3.3-0ubuntu2~ppa2~json1) UNRELEASED; urgency=low
   * Upstream Merge
     * Adding more through JSON support for testing
   * Autogen
+  * debian/control, debian/libdbusmenu-jsonloader*install: Adding
+    two binary packages for the jsonloader test library.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 28 Jun 2010 23:05:22 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 28 Jun 2010 23:10:11 -0500
 
 libdbusmenu (0.3.3-0ubuntu2~ppa1) lucid; urgency=low
 
