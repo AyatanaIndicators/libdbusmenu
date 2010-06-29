@@ -1,14 +1,17 @@
 
 DBUS_RUNNER=dbus-test-runner
 
+CLEANFILES=
+
 TESTS = \
 	test-glib-objects-test \
 	test-glib-layout \
 	test-glib-properties \
 	test-glib-proxy \
 	test-glib-simple-items \
-	test-gtk-objects-test \
 	test-glib-submenu \
+	test-json \
+	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-shortcut \
 	test-gtk-reorder
@@ -31,9 +34,46 @@ check_PROGRAMS = \
 	test-gtk-shortcut-client \
 	test-gtk-shortcut-server \
 	test-glib-simple-items \
-	test-gtk-reorder-server
+	test-gtk-reorder-server \
+	test-json-client \
+	test-json-server
 
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
+
+######################
+# JSON Loader lib
+######################
+
+lib_LTLIBRARIES = libdbusmenu-jsonloader.la
+
+libdbusmenu_jsonloaderincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-jsonloader/
+
+libdbusmenu_jsonloaderinclude_HEADERS = \
+	json-loader.h
+
+libdbusmenu_jsonloader_la_SOURCES = \
+	json-loader.h \
+	json-loader.c
+
+libdbusmenu_jsonloader_la_LDFLAGS = \
+	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
+	-no-undefined \
+	-export-symbols-regex "^[^_].*"
+
+libdbusmenu_jsonloader_la_CFLAGS = \
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	-I $(srcdir)/.. \
+	-Wall \
+	-Werror \
+	-DG_DISABLE_DEPRECATED \
+	-DG_LOG_DOMAIN="\"LIBDBUSMENU-JSONLOADER\""
+
+libdbusmenu_jsonloader_la_LIBADD = \
+	$(DBUSMENUGLIB_LIBS)
+
+pkgconfig_DATA = dbusmenu-jsonloader.pc
+pkgconfigdir = $(libdir)/pkgconfig
 
 ######################
 # Test GLib server
@@ -81,6 +121,47 @@ test_glib_layout_client_CFLAGS = \
 
 test_glib_layout_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+######################
+# Test JSON
+######################
+
+test-json: test-json-client test-json-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-json-client --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@echo diff $(srcdir)/test-json-01.json test-json-01.output.json \> /dev/null >> $@
+	@chmod +x $@
+
+CLEANFILES += test-json-01.output.json
+
+test_json_server_SOURCES = \
+	test-json-server.c
+
+test_json_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	-I $(srcdir) \
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	-Wall -Werror
+
+test_json_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	libdbusmenu-jsonloader.la \
+	$(DBUSMENUTESTS_LIBS) \
+	$(DBUSMENUGLIB_LIBS)
+
+test_json_client_SOURCES = \
+	test-json-client.c
+
+test_json_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_json_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUTESTS_LIBS) \
 	$(DBUSMENUGLIB_LIBS)
 
 ######################
@@ -286,6 +367,7 @@ test_gtk_label_server_CFLAGS = \
 test_gtk_label_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	libdbusmenu-jsonloader.la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -421,9 +503,10 @@ EXTRA_DIST = \
 	dbusmenu-gtk/mago_tests/data/several_submenus_recursive.json \
 	dbusmenu-gtk/mago_tests/data/several_submenus_utf8.json \
 	dbusmenu-gtk/mago_tests/data/static.json \
-	dbusmenu-gtk/mago_tests/data/test-gtk-label.json
+	dbusmenu-gtk/mago_tests/data/test-gtk-label.json \
+	test-json-01.json
 
-CLEANFILES = \
+CLEANFILES += \
 	dbusmenu-gtk/mago_tests/dbusmenu.pyc
 
 distclean-local:

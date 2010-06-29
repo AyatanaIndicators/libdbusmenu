@@ -116,6 +116,12 @@ value2string (const GValue * value, int depth)
 		str = collection_dumper(value, depth);
 	} else if (G_VALUE_TYPE(value) == G_TYPE_STRV) {
 		str = strv_dumper(value);
+	} else if (G_VALUE_TYPE(value) == G_TYPE_BOOLEAN) {
+		if (g_value_get_boolean(value)) {
+			str = g_strdup("true");
+		} else {
+			str = g_strdup("false");
+		}
 	} else {
 		str = g_strdup_value_contents(value);
 	}

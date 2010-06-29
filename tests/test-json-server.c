@@ -1,7 +1,7 @@
 /*
-A test for libdbusmenu to ensure its quality.
+Test to check the json-loader and dbusmenu-dumper
 
-Copyright 2009 Canonical Ltd.
+Copyright 2010 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
@@ -26,52 +26,26 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib-bindings.h>
 
-#include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
+#include <libdbusmenu-glib/menuitem.h>
 
-#include <json-glib/json-glib.h>
 #include "json-loader.h"
 
-static JsonArray * root_array = NULL;
-static guint layouton = 0;
-static DbusmenuServer * server = NULL;
 static GMainLoop * mainloop = NULL;
 
 static gboolean
 timer_func (gpointer data)
 {
-	if (layouton == json_array_get_length(root_array)) {
-		g_debug("Completed %d layouts", layouton);
-		g_main_loop_quit(mainloop);
-		return FALSE;
-	}
-	g_debug("Updating to Layout %d", layouton);
-
-	dbusmenu_server_set_root(server, dbusmenu_json_build_from_node(json_array_get_element(root_array, layouton)));
-	layouton++;
-
-	return TRUE;
+	g_main_loop_quit(mainloop);
+	return FALSE;
 }
 
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
-	JsonParser * parser = json_parser_new();
 	GError * error = NULL;
-	if (!json_parser_load_from_file(parser, argv[1], &error)) {
-		g_debug("Failed parsing file %s because: %s", argv[1], error->message);
-		return 1;
-	}
-	JsonNode * root_node = json_parser_get_root(parser);
-	if (JSON_NODE_TYPE(root_node) != JSON_NODE_ARRAY) {
-		g_debug("Root node is not an array, fail.  It's an: %s", json_node_type_name(root_node));
-		return 1;
-	}
 
-	root_array = json_node_get_array(root_node);
-	g_debug("%d layouts in test description '%s'", json_array_get_length(root_array), argv[1]);
+	g_type_init();
 
 	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
@@ -79,7 +53,7 @@ main (int argc, char ** argv)
 	DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
 	guint nameret = 0;
 
-	if (!org_freedesktop_DBus_request_name(bus_proxy, "glib.label.test", 0, &nameret, &error)) {
+	if (!org_freedesktop_DBus_request_name(bus_proxy, "org.dbusmenu.test", 0, &nameret, &error)) {
 		g_error("Unable to call to request name");
 		return 1;
 	}
@@ -89,10 +63,14 @@ main (int argc, char ** argv)
 		return 1;
 	}
 
-	server = dbusmenu_server_new("/org/test");
+	DbusmenuServer * server = dbusmenu_server_new("/org/test");
 
-	timer_func(NULL);
-	g_timeout_add_seconds(5, timer_func, NULL);
+	DbusmenuMenuitem * root = dbusmenu_json_build_from_file(argv[1]);
+	g_return_val_if_fail(root!=NULL, 1);
+
+	dbusmenu_server_set_root(server, root);
+
+	g_timeout_add(10000, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
@@ -101,4 +79,3 @@ main (int argc, char ** argv)
 
 	return 0;
 }
-
