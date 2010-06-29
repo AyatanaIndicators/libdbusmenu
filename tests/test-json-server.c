@@ -49,7 +49,7 @@ main (int argc, char ** argv)
 
 	dbusmenu_server_set_root(server, root);
 
-	g_timeout_add(3000, timer_func, NULL);
+	g_timeout_add(10000, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
