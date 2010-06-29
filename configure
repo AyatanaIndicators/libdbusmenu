@@ -12684,6 +12684,7 @@ fi
 ###########################
 
 JSON_GLIB_REQUIRED_VERSION=0.6.0
+GIO_UNIX_REQUIRED_VERSION=2.24
 
 
 pkg_failed=no
@@ -12695,12 +12696,15 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_DBUSMENUTESTS_CFLAGS="$DBUSMENUTESTS_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"json-glib-1.0 >= \$JSON_GLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"json-glib-1.0 >= \$JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= \$GIO_UNIX_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_DBUSMENUTESTS_CFLAGS=`$PKG_CONFIG --cflags "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION" 2>/dev/null`
+  pkg_cv_DBUSMENUTESTS_CFLAGS=`$PKG_CONFIG --cflags "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -12713,12 +12717,15 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_DBUSMENUTESTS_LIBS="$DBUSMENUTESTS_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"json-glib-1.0 >= \$JSON_GLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"json-glib-1.0 >= \$JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= \$GIO_UNIX_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_DBUSMENUTESTS_LIBS=`$PKG_CONFIG --libs "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION" 2>/dev/null`
+  pkg_cv_DBUSMENUTESTS_LIBS=`$PKG_CONFIG --libs "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -12737,14 +12744,17 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        DBUSMENUTESTS_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION"`
+	        DBUSMENUTESTS_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION"`
         else
-	        DBUSMENUTESTS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION"`
+	        DBUSMENUTESTS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$DBUSMENUTESTS_PKG_ERRORS" >&5
 
-	as_fn_error "Package requirements (json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION) were not met:
+	as_fn_error "Package requirements (json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION) were not met:
 
 $DBUSMENUTESTS_PKG_ERRORS
 
@@ -13673,7 +13683,7 @@ fi
 # Files
 ###########################
 
-ac_config_files="$ac_config_files Makefile po/Makefile.in libdbusmenu-glib/Makefile libdbusmenu-glib/dbusmenu-glib.pc libdbusmenu-gtk/Makefile libdbusmenu-gtk/dbusmenu-gtk.pc tools/Makefile tools/testapp/Makefile tests/Makefile docs/Makefile docs/libdbusmenu-glib/Makefile docs/libdbusmenu-glib/reference/Makefile docs/libdbusmenu-glib/reference/version.xml docs/libdbusmenu-gtk/Makefile docs/libdbusmenu-gtk/reference/Makefile docs/libdbusmenu-gtk/reference/version.xml"
+ac_config_files="$ac_config_files Makefile po/Makefile.in libdbusmenu-glib/Makefile libdbusmenu-glib/dbusmenu-glib.pc libdbusmenu-gtk/Makefile libdbusmenu-gtk/dbusmenu-gtk.pc tools/Makefile tools/testapp/Makefile tests/Makefile tests/dbusmenu-jsonloader.pc docs/Makefile docs/libdbusmenu-glib/Makefile docs/libdbusmenu-glib/reference/Makefile docs/libdbusmenu-glib/reference/version.xml docs/libdbusmenu-gtk/Makefile docs/libdbusmenu-gtk/reference/Makefile docs/libdbusmenu-gtk/reference/version.xml"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -14698,6 +14708,7 @@ do
     "tools/Makefile") CONFIG_FILES="$CONFIG_FILES tools/Makefile" ;;
     "tools/testapp/Makefile") CONFIG_FILES="$CONFIG_FILES tools/testapp/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
+    "tests/dbusmenu-jsonloader.pc") CONFIG_FILES="$CONFIG_FILES tests/dbusmenu-jsonloader.pc" ;;
     "docs/Makefile") CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
     "docs/libdbusmenu-glib/Makefile") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-glib/Makefile" ;;
     "docs/libdbusmenu-glib/reference/Makefile") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-glib/reference/Makefile" ;;
