@@ -70,6 +70,7 @@ libdbusmenu_jsonloader_la_CFLAGS = \
 	-DG_LOG_DOMAIN="\"LIBDBUSMENU-JSONLOADER\""
 
 libdbusmenu_jsonloader_la_LIBADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
