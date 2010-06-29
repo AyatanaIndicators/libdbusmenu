@@ -127,7 +127,9 @@ test_glib_layout_client_LDADD = \
 
 test-json: test-json-client test-json-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-json-client --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@echo diff test-json-01.json output.json \> /dev/null >> $@
 	@chmod +x $@
 
 test_json_server_SOURCES = \
