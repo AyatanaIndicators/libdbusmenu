@@ -71,7 +71,7 @@ libdbusmenu_jsonloader_la_CFLAGS = \
 
 libdbusmenu_jsonloader_la_LIBADD = \
 	$(DBUSMENUGLIB_LIBS) \
-	$(DBUSMENUTEST_LIBS)
+	$(DBUSMENUTESTS_LIBS)
 
 pkgconfig_DATA = dbusmenu-jsonloader.pc
 pkgconfigdir = $(libdir)/pkgconfig
