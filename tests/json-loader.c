@@ -31,7 +31,7 @@ node2value (JsonNode * node)
 
 				int i;
 				for (i = 0; i < json_array_get_length(array); i++) {
-					const gchar * str = json_node_get_string(first);
+					const gchar * str = json_node_get_string(json_array_get_element(array, i));
 					gchar * dupstr = g_strdup(str);
 					g_array_append_val(garray, dupstr);
 				}
