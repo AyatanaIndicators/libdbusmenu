@@ -1,6 +1,8 @@
 
 DBUS_RUNNER=dbus-test-runner
 
+CLEANFILES=
+
 TESTS = \
 	test-glib-objects-test \
 	test-glib-layout \
@@ -128,9 +130,11 @@ test_glib_layout_client_LDADD = \
 test-json: test-json-client test-json-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) --task ./test-json-client --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
-	@echo diff test-json-01.json output.json \> /dev/null >> $@
+	@echo $(DBUS_RUNNER) --task ./test-json-client --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@echo diff $(srcdir)/test-json-01.json test-json-01.output.json \> /dev/null >> $@
 	@chmod +x $@
+
+CLEANFILES += test-json-01.output.json
 
 test_json_server_SOURCES = \
 	test-json-server.c
@@ -502,7 +506,7 @@ EXTRA_DIST = \
 	dbusmenu-gtk/mago_tests/data/test-gtk-label.json \
 	test-json-01.json
 
-CLEANFILES = \
+CLEANFILES += \
 	dbusmenu-gtk/mago_tests/dbusmenu.pyc
 
 distclean-local:
