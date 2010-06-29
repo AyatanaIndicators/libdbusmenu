@@ -1,4 +1,5 @@
 #include <glib.h>
+#include <gio/gio.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -36,10 +37,16 @@ main (int argv, char ** argc)
 
 	g_debug("Initing");
 
-	gchar * command = g_strdup_printf("%s --dbus-name=org.dbusmenu.test --dbus-object=/org/test > %s", argc[1], argc[2]);
+	gchar * command = g_strdup_printf("%s --dbus-name=org.dbusmenu.test --dbus-object=/org/test", argc[1]);
 	g_debug("Executing: %s", command);
 
-	g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
+	gchar * output;
+	g_spawn_command_line_sync(command, &output, NULL, NULL, NULL);
+
+	GFile * ofile = g_file_new_for_commandline_arg(argc[2]);
+	if (ofile != NULL) {
+		g_file_replace_contents(ofile, output, g_utf8_strlen(output, -1), NULL, FALSE, 0, NULL, NULL, NULL);
+	}
 
 	g_debug("Exiting");
 

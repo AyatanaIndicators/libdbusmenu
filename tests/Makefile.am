@@ -155,6 +155,7 @@ test_json_client_CFLAGS = \
 
 test_json_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUTESTS_LIBS) \
 	$(DBUSMENUGLIB_LIBS)
 
 ######################
