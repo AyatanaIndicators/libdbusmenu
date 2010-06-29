@@ -1098,8 +1098,8 @@
             },
             {
               "id": 171,
-              "shortcut": [["F11"]],
               "enabled": true,
+              "shortcut": [["F11"]],
               "toggle-state": 0,
               "label": "Fullscreen",
               "toggle-type": "checkmark",
