@@ -1,9 +1,9 @@
-libdbusmenu (0.3.3-0ubuntu2~ppa2~json3~subs1) UNRELEASED; urgency=low
+libdbusmenu (0.3.3-0ubuntu2~ppa2~json3~subs1) lucid; urgency=low
 
   * Upstream merge
     * Block building submenus on separators
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 29 Jun 2010 19:06:44 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 29 Jun 2010 19:10:49 -0500
 
 libdbusmenu (0.3.3-0ubuntu2~ppa2~json2) lucid; urgency=low
 
