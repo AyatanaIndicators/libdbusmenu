@@ -28,7 +28,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 GMainLoop * mainloop = NULL;
 
 int
-main (int argv, char ** argc)
+main (int argc, char ** argv)
 {
 	g_type_init();
 	g_debug("Wait for friends");
@@ -58,13 +58,13 @@ main (int argv, char ** argc)
 
 	g_debug("Initing");
 
-	gchar * command = g_strdup_printf("%s --dbus-name=org.dbusmenu.test --dbus-object=/org/test", argc[1]);
+	gchar * command = g_strdup_printf("%s --dbus-name=org.dbusmenu.test --dbus-object=/org/test", argv[1]);
 	g_debug("Executing: %s", command);
 
 	gchar * output;
 	g_spawn_command_line_sync(command, &output, NULL, NULL, NULL);
 
-	GFile * ofile = g_file_new_for_commandline_arg(argc[2]);
+	GFile * ofile = g_file_new_for_commandline_arg(argv[2]);
 	if (ofile != NULL) {
 		g_file_replace_contents(ofile, output, g_utf8_strlen(output, -1), NULL, FALSE, 0, NULL, NULL, NULL);
 	}
