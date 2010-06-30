@@ -62,8 +62,10 @@ AC_SUBST(DBUSMENUGTK_LIBS)
 ###########################
 
 JSON_GLIB_REQUIRED_VERSION=0.6.0
+GIO_UNIX_REQUIRED_VERSION=2.24
 
-PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION)
+PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION)
 
 AC_SUBST(DBUSMENUTESTS_CFLAGS)
 AC_SUBST(DBUSMENUTESTS_LIBS)
@@ -126,6 +128,7 @@ libdbusmenu-gtk/dbusmenu-gtk.pc
 tools/Makefile
 tools/testapp/Makefile
 tests/Makefile
+tests/dbusmenu-jsonloader.pc
 docs/Makefile
 docs/libdbusmenu-glib/Makefile
 docs/libdbusmenu-glib/reference/Makefile

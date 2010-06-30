@@ -182,3 +182,9 @@ docs/libdbusmenu-gtk/reference/tmpl/menuitem.sgml
 docs/libdbusmenu-gtk/reference/tmpl/menuitem.sgml.bak
 gtk-doc.make
 m4/gtk-doc.m4
+tests/dbusmenu-jsonloader.pc
+tests/libdbusmenu-jsonloader.la
+tests/libdbusmenu_jsonloader_la-json-loader.lo
+tests/test-json-server
+tests/test-json-client
+tests/test-json
