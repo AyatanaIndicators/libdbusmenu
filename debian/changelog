@@ -2,8 +2,9 @@ libdbusmenu (0.3.3-1) unstable; urgency=low
 
   * Merge Ubuntu.
     Preserve Maintainer and Vcs-* fields.
+  * Standards-Version: 3.9.0
 
- -- Evgeni Golov <evgeni@debian.org>  Thu, 01 Jul 2010 11:28:16 +0200
+ -- Evgeni Golov <evgeni@debian.org>  Thu, 01 Jul 2010 11:40:04 +0200
 
 libdbusmenu (0.3.3-0ubuntu1) maverick; urgency=low
 

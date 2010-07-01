@@ -19,7 +19,7 @@ Build-Depends: debhelper (>= 5.0),
                gir1.0-glib-2.0,
                gir1.0-gtk-2.0,
                valac
-Standards-Version: 3.8.4
+Standards-Version: 3.9.0
 Homepage: https://launchpad.net/dbusmenu
 Vcs-Bzr: http://bzr.debian.org/bzr/pkg-ayatana/libdbusmenu/debian
 Vcs-Browser: http://bzr.debian.org/loggerhead/pkg-ayatana/libdbusmenu/debian
