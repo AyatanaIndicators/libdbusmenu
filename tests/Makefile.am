@@ -7,8 +7,10 @@ TESTS = \
 	test-glib-properties \
 	test-glib-proxy \
 	test-glib-simple-items \
+	test-gtk-objects-test \
 	test-glib-submenu \
 	test-gtk-label \
+	test-gtk-shortcut \
 	test-gtk-reorder
 
 check_PROGRAMS = \
@@ -21,10 +23,13 @@ check_PROGRAMS = \
 	test-glib-proxy-client \
 	test-glib-proxy-server \
 	test-glib-proxy-proxy \
+	test-gtk-objects \
 	test-glib-submenu-client \
 	test-glib-submenu-server \
 	test-gtk-label-client \
 	test-gtk-label-server \
+	test-gtk-shortcut-client \
+	test-gtk-shortcut-server \
 	test-glib-simple-items \
 	test-gtk-reorder-server
 
@@ -119,7 +124,7 @@ OBJECT_XML_REPORT = test-glib-objects.xml
 
 test-glib-objects-test: test-glib-objects Makefile.am
 	@echo "#!/bin/bash" > $@
-	@echo $(DBUS_RUNNER) --task gtester --parameter --verbose --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
+	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
 	@chmod +x $@
 
 test_glib_objects_SOURCES = \
@@ -231,6 +236,34 @@ test_glib_simple_items_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+######################
+# Test GTK Object
+######################
+
+GTK_OBJECT_XML_REPORT = test-gtk-objects.xml
+
+test-gtk-objects-test: test-gtk-objects Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_OBJECT_XML_REPORT) --parameter ./test-gtk-objects >> $@
+	@chmod +x $@
+
+test_gtk_objects_SOURCES = \
+	test-gtk-objects.c
+
+test_gtk_objects_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUGTK_CFLAGS) \
+	-DSRCDIR="\"$(srcdir)\"" \
+	-Wall -Werror
+
+test_gtk_objects_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGLIB_LIBS) \
+	$(DBUSMENUGTK_LIBS)
+
 #########################
 # Test GTK Label
 #########################
@@ -266,6 +299,46 @@ test_gtk_label_client_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+#########################
+# Test GTK Shortcut
+#########################
+
+test-gtk-shortcut: test-gtk-shortcut-client test-gtk-shortcut-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test_gtk_shortcut_server_SOURCES = \
+	test-gtk-shortcut-server.c
+
+test_gtk_shortcut_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_shortcut_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+test_gtk_shortcut_client_SOURCES = \
+	test-gtk-shortcut-client.c
+
+test_gtk_shortcut_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_shortcut_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
 	$(DBUSMENUGTK_LIBS) \
@@ -329,6 +402,7 @@ EXTRA_DIST = \
 	$(examples_DATA) \
 	run-xvfb.sh \
 	$(json_DATA) \
+	test-gtk-objects.jpg \
 	dbusmenu-gtk/dbusMenuTest \
 	dbusmenu-gtk/mago_tests/dbusmenu.xml \
 	dbusmenu-gtk/mago_tests/dbusmenu.py \
@@ -357,5 +431,6 @@ distclean-local:
 
 DISTCLEANFILES = \
 	$(TESTS) \
-	$(OBJECT_XML_REPORT)
+	$(OBJECT_XML_REPORT) \
+	$(GTK_OBJECT_XML_REPORT)
 
