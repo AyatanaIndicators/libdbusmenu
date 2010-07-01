@@ -1,0 +1,4023 @@
+{
+  "id": 0,
+  "children-display": "submenu",
+  "submenu": [
+      {
+        "id": 5,
+        "enabled": true,
+        "label": "File",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 6,
+              "shortcut": [["Control", "q"]],
+              "enabled": true,
+              "label": "Quit",
+              "visible": true
+            },
+            {
+              "id": 7,
+              "shortcut": [["Control", "Shift", "w"]],
+              "enabled": true,
+              "label": "Close all",
+              "visible": true
+            },
+            {
+              "id": 8,
+              "shortcut": [["Control", "w"]],
+              "enabled": true,
+              "label": "Close",
+              "visible": true
+            },
+            {
+              "id": 9,
+              "type": "separator"
+            },
+            {
+              "id": 10,
+              "enabled": true,
+              "label": "Send by Email...",
+              "visible": true
+            },
+            {
+              "id": 11,
+              "shortcut": [["Control", "p"]],
+              "enabled": true,
+              "label": "Print...",
+              "visible": true
+            },
+            {
+              "id": 12,
+              "enabled": true,
+              "label": "Page Setup",
+              "visible": true
+            },
+            {
+              "id": 13,
+              "type": "separator"
+            },
+            {
+              "id": 14,
+              "enabled": true,
+              "label": "Revert",
+              "visible": true
+            },
+            {
+              "id": 15,
+              "enabled": true,
+              "label": "Save as Template...",
+              "visible": true
+            },
+            {
+              "id": 16,
+              "enabled": true,
+              "label": "Save a Copy...",
+              "visible": true
+            },
+            {
+              "id": 17,
+              "shortcut": [["Control", "Shift", "s"]],
+              "enabled": true,
+              "label": "Save As...",
+              "visible": true
+            },
+            {
+              "id": 18,
+              "shortcut": [["Control", "s"]],
+              "enabled": true,
+              "label": "Save",
+              "visible": true
+            },
+            {
+              "id": 19,
+              "type": "separator"
+            },
+            {
+              "id": 20,
+              "enabled": true,
+              "label": "Open Recent",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 21,
+                    "enabled": true,
+                    "label": "Document History",
+                    "visible": true
+                  },
+                  {
+                    "id": 22,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 23,
+                    "shortcut": [["Control", "2"]],
+                    "enabled": true,
+                    "label": "giggity.jpg",
+                    "visible": true
+                  },
+                  {
+                    "id": 24,
+                    "shortcut": [["Control", "1"]],
+                    "enabled": true,
+                    "label": "Icon Height.svg",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 25,
+              "enabled": true,
+              "label": "Open Location...",
+              "visible": true
+            },
+            {
+              "id": 26,
+              "shortcut": [["Control", "Alt", "o"]],
+              "enabled": true,
+              "label": "Open as Layers...",
+              "visible": true
+            },
+            {
+              "id": 27,
+              "shortcut": [["Control", "o"]],
+              "enabled": true,
+              "label": "Open...",
+              "visible": true
+            },
+            {
+              "id": 28,
+              "enabled": true,
+              "label": "Create",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 29,
+                    "enabled": true,
+                    "label": "Web Page Themes",
+                    "children-display": "submenu",
+                    "visible": true,
+                    "submenu": [
+                        {
+                          "id": 30,
+                          "enabled": true,
+                          "label": "Classic.Gimp.Org",
+                          "children-display": "submenu",
+                          "visible": true,
+                          "submenu": [
+                              {
+                                "id": 31,
+                                "enabled": true,
+                                "label": "Tube Sub-Sub-Button Label...",
+                                "visible": true
+                              },
+                              {
+                                "id": 32,
+                                "enabled": true,
+                                "label": "Tube Sub-Button Label...",
+                                "visible": true
+                              },
+                              {
+                                "id": 33,
+                                "enabled": true,
+                                "label": "Tube Button Label...",
+                                "visible": true
+                              },
+                              {
+                                "id": 34,
+                                "enabled": true,
+                                "label": "Small Header...",
+                                "visible": true
+                              },
+                              {
+                                "id": 35,
+                                "enabled": true,
+                                "label": "General Tube Labels...",
+                                "visible": true
+                              },
+                              {
+                                "id": 36,
+                                "enabled": true,
+                                "label": "Big Header...",
+                                "visible": true
+                              }
+                          ]
+                        },
+                        {
+                          "id": 37,
+                          "enabled": true,
+                          "label": "Beveled Pattern",
+                          "children-display": "submenu",
+                          "visible": true,
+                          "submenu": [
+                              {
+                                "id": 38,
+                                "enabled": true,
+                                "label": "Hrule...",
+                                "visible": true
+                              },
+                              {
+                                "id": 39,
+                                "enabled": true,
+                                "label": "Heading...",
+                                "visible": true
+                              },
+                              {
+                                "id": 40,
+                                "enabled": true,
+                                "label": "Button...",
+                                "visible": true
+                              },
+                              {
+                                "id": 41,
+                                "enabled": true,
+                                "label": "Bullet...",
+                                "visible": true
+                              },
+                              {
+                                "id": 42,
+                                "enabled": true,
+                                "label": "Arrow...",
+                                "visible": true
+                              }
+                          ]
+                        },
+                        {
+                          "id": 43,
+                          "enabled": true,
+                          "label": "Alien Glow",
+                          "children-display": "submenu",
+                          "visible": true,
+                          "submenu": [
+                              {
+                                "id": 44,
+                                "enabled": true,
+                                "label": "Hrule...",
+                                "visible": true
+                              },
+                              {
+                                "id": 45,
+                                "enabled": true,
+                                "label": "Button...",
+                                "visible": true
+                              },
+                              {
+                                "id": 46,
+                                "enabled": true,
+                                "label": "Bullet...",
+                                "visible": true
+                              },
+                              {
+                                "id": 47,
+                                "enabled": true,
+                                "label": "Arrow...",
+                                "visible": true
+                              }
+                          ]
+                        }
+                    ]
+                  },
+                  {
+                    "id": 48,
+                    "enabled": true,
+                    "label": "Patterns",
+                    "children-display": "submenu",
+                    "visible": true,
+                    "submenu": [
+                        {
+                          "id": 49,
+                          "enabled": true,
+                          "label": "Truchet...",
+                          "visible": true
+                        },
+                        {
+                          "id": 50,
+                          "enabled": true,
+                          "label": "Swirly...",
+                          "visible": true
+                        },
+                        {
+                          "id": 51,
+                          "enabled": true,
+                          "label": "Swirl-Tile...",
+                          "visible": true
+                        },
+                        {
+                          "id": 52,
+                          "enabled": true,
+                          "label": "Render Map...",
+                          "visible": true
+                        },
+                        {
+                          "id": 53,
+                          "enabled": true,
+                          "label": "Land...",
+                          "visible": true
+                        },
+                        {
+                          "id": 54,
+                          "enabled": true,
+                          "label": "Flatland...",
+                          "visible": true
+                        },
+                        {
+                          "id": 55,
+                          "enabled": true,
+                          "label": "Camouflage...",
+                          "visible": true
+                        },
+                        {
+                          "id": 56,
+                          "enabled": true,
+                          "label": "3D Truchet...",
+                          "visible": true
+                        }
+                    ]
+                  },
+                  {
+                    "id": 57,
+                    "enabled": true,
+                    "label": "Logos",
+                    "children-display": "submenu",
+                    "visible": true,
+                    "submenu": [
+                        {
+                          "id": 58,
+                          "enabled": true,
+                          "label": "Web Title Header...",
+                          "visible": true
+                        },
+                        {
+                          "id": 59,
+                          "enabled": true,
+                          "label": "Textured...",
+                          "visible": true
+                        },
+                        {
+                          "id": 60,
+                          "enabled": true,
+                          "label": "Text Circle...",
+                          "visible": true
+                        },
+                        {
+                          "id": 61,
+                          "enabled": true,
+                          "label": "Starscape...",
+                          "visible": true
+                        },
+                        {
+                          "id": 62,
+                          "enabled": true,
+                          "label": "Speed Text...",
+                          "visible": true
+                        },
+                        {
+                          "id": 63,
+                          "enabled": true,
+                          "label": "SOTA Chrome...",
+                          "visible": true
+                        },
+                        {
+                          "id": 64,
+                          "enabled": true,
+                          "label": "Particle Trace...",
+                          "visible": true
+                        },
+                        {
+                          "id": 65,
+                          "enabled": true,
+                          "label": "Newsprint Text...",
+                          "visible": true
+                        },
+                        {
+                          "id": 66,
+                          "enabled": true,
+                          "label": "Neon...",
+                          "visible": true
+                        },
+                        {
+                          "id": 67,
+                          "enabled": true,
+                          "label": "Imigre-26...",
+                          "visible": true
+                        },
+                        {
+                          "id": 68,
+                          "enabled": true,
+                          "label": "Gradient Bevel...",
+                          "visible": true
+                        },
+                        {
+                          "id": 69,
+                          "enabled": true,
+                          "label": "Glowing Hot...",
+                          "visible": true
+                        },
+                        {
+                          "id": 70,
+                          "enabled": true,
+                          "label": "Glossy...",
+                          "visible": true
+                        },
+                        {
+                          "id": 71,
+                          "enabled": true,
+                          "label": "Frosty...",
+                          "visible": true
+                        },
+                        {
+                          "id": 72,
+                          "enabled": true,
+                          "label": "Crystal...",
+                          "visible": true
+                        },
+                        {
+                          "id": 73,
+                          "enabled": true,
+                          "label": "Cool Metal...",
+                          "visible": true
+                        },
+                        {
+                          "id": 74,
+                          "enabled": true,
+                          "label": "Comic Book...",
+                          "visible": true
+                        },
+                        {
+                          "id": 75,
+                          "enabled": true,
+                          "label": "Chrome...",
+                          "visible": true
+                        },
+                        {
+                          "id": 76,
+                          "enabled": true,
+                          "label": "Chip Away...",
+                          "visible": true
+                        },
+                        {
+                          "id": 77,
+                          "enabled": true,
+                          "label": "Chalk...",
+                          "visible": true
+                        },
+                        {
+                          "id": 78,
+                          "enabled": true,
+                          "label": "Carved...",
+                          "visible": true
+                        },
+                        {
+                          "id": 79,
+                          "enabled": true,
+                          "label": "Bovination...",
+                          "visible": true
+                        },
+                        {
+                          "id": 80,
+                          "enabled": true,
+                          "label": "Blended...",
+                          "visible": true
+                        },
+                        {
+                          "id": 81,
+                          "enabled": true,
+                          "label": "Basic I...",
+                          "visible": true
+                        },
+                        {
+                          "id": 82,
+                          "enabled": true,
+                          "label": "Basic II...",
+                          "visible": true
+                        },
+                        {
+                          "id": 83,
+                          "enabled": true,
+                          "label": "Alien Neon...",
+                          "visible": true
+                        },
+                        {
+                          "id": 84,
+                          "enabled": true,
+                          "label": "Alien Glow...",
+                          "visible": true
+                        },
+                        {
+                          "id": 85,
+                          "enabled": true,
+                          "label": "3D Outline...",
+                          "visible": true
+                        }
+                    ]
+                  },
+                  {
+                    "id": 86,
+                    "enabled": true,
+                    "label": "Buttons",
+                    "children-display": "submenu",
+                    "visible": true,
+                    "submenu": [
+                        {
+                          "id": 87,
+                          "enabled": true,
+                          "label": "Simple Beveled Button...",
+                          "visible": true
+                        },
+                        {
+                          "id": 88,
+                          "enabled": true,
+                          "label": "Round Button...",
+                          "visible": true
+                        }
+                    ]
+                  },
+                  {
+                    "id": 89,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 90,
+                    "enabled": true,
+                    "label": "xscanimage",
+                    "children-display": "submenu",
+                    "visible": true,
+                    "submenu": [
+                        {
+                          "id": 91,
+                          "enabled": false,
+                          "label": "Device dialog...",
+                          "visible": true
+                        }
+                    ]
+                  },
+                  {
+                    "id": 92,
+                    "enabled": true,
+                    "label": "Screenshot...",
+                    "visible": true
+                  },
+                  {
+                    "id": 93,
+                    "shortcut": [["Control", "Shift", "v"]],
+                    "enabled": true,
+                    "label": "From Clipboard",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 94,
+              "shortcut": [["Control", "n"]],
+              "enabled": true,
+              "label": "New...",
+              "visible": true
+            }
+        ]
+      },
+      {
+        "id": 95,
+        "enabled": true,
+        "label": "Edit",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 96,
+              "enabled": true,
+              "label": "Units",
+              "visible": true
+            },
+            {
+              "id": 97,
+              "enabled": true,
+              "label": "Modules",
+              "visible": true
+            },
+            {
+              "id": 98,
+              "enabled": true,
+              "label": "Keyboard Shortcuts",
+              "visible": true
+            },
+            {
+              "id": 99,
+              "enabled": true,
+              "label": "Preferences",
+              "visible": true
+            },
+            {
+              "id": 100,
+              "type": "separator"
+            },
+            {
+              "id": 101,
+              "enabled": false,
+              "label": "Stroke Path...",
+              "visible": true
+            },
+            {
+              "id": 102,
+              "enabled": false,
+              "label": "Stroke Selection...",
+              "visible": true
+            },
+            {
+              "id": 103,
+              "shortcut": [["Control", "semicolon"]],
+              "enabled": true,
+              "label": "Fill with Pattern",
+              "visible": true
+            },
+            {
+              "id": 104,
+              "shortcut": [["Control", "period"]],
+              "enabled": true,
+              "label": "Fill with BG Color",
+              "visible": true
+            },
+            {
+              "id": 105,
+              "shortcut": [["Control", "comma"]],
+              "enabled": true,
+              "label": "Fill with FG Color",
+              "visible": true
+            },
+            {
+              "id": 106,
+              "shortcut": [["Delete"]],
+              "enabled": true,
+              "label": "Clear",
+              "visible": true
+            },
+            {
+              "id": 107,
+              "type": "separator"
+            },
+            {
+              "id": 108,
+              "enabled": true,
+              "label": "Buffer",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 109,
+                    "enabled": true,
+                    "label": "Paste Named...",
+                    "visible": true
+                  },
+                  {
+                    "id": 110,
+                    "enabled": true,
+                    "label": "Copy Visible Named...",
+                    "visible": true
+                  },
+                  {
+                    "id": 111,
+                    "enabled": true,
+                    "label": "Copy Named...",
+                    "visible": true
+                  },
+                  {
+                    "id": 112,
+                    "enabled": true,
+                    "label": "Cut Named...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 113,
+              "enabled": true,
+              "label": "Paste as",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 114,
+                    "enabled": true,
+                    "label": "New Pattern...",
+                    "visible": true
+                  },
+                  {
+                    "id": 115,
+                    "enabled": true,
+                    "label": "New Brush...",
+                    "visible": true
+                  },
+                  {
+                    "id": 116,
+                    "enabled": true,
+                    "label": "New Layer",
+                    "visible": true
+                  },
+                  {
+                    "id": 117,
+                    "shortcut": [["Control", "Shift", "v"]],
+                    "enabled": true,
+                    "label": "New Image",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 118,
+              "enabled": true,
+              "label": "Paste Into",
+              "visible": true
+            },
+            {
+              "id": 119,
+              "shortcut": [["Control", "v"]],
+              "enabled": true,
+              "label": "Paste",
+              "visible": true
+            },
+            {
+              "id": 120,
+              "shortcut": [["Control", "Shift", "c"]],
+              "enabled": true,
+              "label": "Copy Visible",
+              "visible": true
+            },
+            {
+              "id": 121,
+              "shortcut": [["Control", "c"]],
+              "enabled": true,
+              "label": "Copy",
+              "visible": true
+            },
+            {
+              "id": 122,
+              "shortcut": [["Control", "x"]],
+              "enabled": true,
+              "label": "Cut",
+              "visible": true
+            },
+            {
+              "id": 123,
+              "type": "separator"
+            },
+            {
+              "id": 124,
+              "enabled": true,
+              "label": "Undo History",
+              "visible": true
+            },
+            {
+              "id": 3,
+              "enabled": false,
+              "label": "_Fade...",
+              "visible": true
+            },
+            {
+              "id": 2,
+              "shortcut": [["Control", "y"]],
+              "enabled": false,
+              "label": "_Redo",
+              "visible": true
+            },
+            {
+              "id": 1,
+              "shortcut": [["Control", "z"]],
+              "enabled": false,
+              "label": "_Undo",
+              "visible": true
+            }
+        ]
+      },
+      {
+        "id": 125,
+        "enabled": true,
+        "label": "Select",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 126,
+              "enabled": false,
+              "label": "To Path",
+              "visible": true
+            },
+            {
+              "id": 127,
+              "enabled": true,
+              "label": "Save to Channel",
+              "visible": true
+            },
+            {
+              "id": 128,
+              "shortcut": [["Shift", "q"]],
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Toggle Quick Mask",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 129,
+              "type": "separator"
+            },
+            {
+              "id": 130,
+              "enabled": true,
+              "label": "Distort...",
+              "visible": true
+            },
+            {
+              "id": 131,
+              "enabled": false,
+              "label": "Border...",
+              "visible": true
+            },
+            {
+              "id": 132,
+              "enabled": false,
+              "label": "Grow...",
+              "visible": true
+            },
+            {
+              "id": 133,
+              "enabled": false,
+              "label": "Shrink...",
+              "visible": true
+            },
+            {
+              "id": 134,
+              "enabled": false,
+              "label": "Sharpen",
+              "visible": true
+            },
+            {
+              "id": 135,
+              "enabled": false,
+              "label": "Feather...",
+              "visible": true
+            },
+            {
+              "id": 136,
+              "type": "separator"
+            },
+            {
+              "id": 137,
+              "enabled": true,
+              "label": "Selection Editor",
+              "visible": true
+            },
+            {
+              "id": 138,
+              "shortcut": [["Shift", "v"]],
+              "enabled": false,
+              "label": "From Path",
+              "visible": true
+            },
+            {
+              "id": 139,
+              "shortcut": [["Shift", "o"]],
+              "enabled": true,
+              "label": "By Color",
+              "visible": true
+            },
+            {
+              "id": 140,
+              "shortcut": [["Control", "Shift", "l"]],
+              "enabled": false,
+              "label": "Float",
+              "visible": true
+            },
+            {
+              "id": 141,
+              "shortcut": [["Control", "i"]],
+              "enabled": true,
+              "label": "Invert",
+              "visible": true
+            },
+            {
+              "id": 142,
+              "shortcut": [["Control", "Shift", "a"]],
+              "enabled": false,
+              "label": "None",
+              "visible": true
+            },
+            {
+              "id": 143,
+              "shortcut": [["Control", "a"]],
+              "enabled": true,
+              "label": "All",
+              "visible": true
+            }
+        ]
+      },
+      {
+        "id": 144,
+        "enabled": true,
+        "label": "View",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 145,
+              "enabled": true,
+              "toggle-state": 1,
+              "label": "Show Statusbar",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 146,
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Show Scrollbars",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 147,
+              "shortcut": [["Control", "Shift", "r"]],
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Show Rulers",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 148,
+              "enabled": true,
+              "toggle-state": 1,
+              "label": "Show Menubar",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 149,
+              "enabled": true,
+              "label": "Padding Color",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 150,
+                    "enabled": true,
+                    "label": "As in Preferences",
+                    "visible": true
+                  },
+                  {
+                    "id": 151,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 152,
+                    "enabled": true,
+                    "label": "Select Custom Color...",
+                    "visible": true
+                  },
+                  {
+                    "id": 153,
+                    "enabled": true,
+                    "label": "Dark Check Color",
+                    "visible": true
+                  },
+                  {
+                    "id": 154,
+                    "enabled": true,
+                    "label": "Light Check Color",
+                    "visible": true
+                  },
+                  {
+                    "id": 155,
+                    "enabled": true,
+                    "label": "From Theme",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 156,
+              "type": "separator"
+            },
+            {
+              "id": 157,
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Snap to Active Path",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 158,
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Snap to Canvas Edges",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 159,
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Snap to Grid",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 160,
+              "enabled": true,
+              "toggle-state": 1,
+              "label": "Snap to Guides",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 161,
+              "type": "separator"
+            },
+            {
+              "id": 162,
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Show Sample Points",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 163,
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Show Grid",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 164,
+              "shortcut": [["Control", "Shift", "t"]],
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Show Guides",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 165,
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Show Layer Boundary",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 166,
+              "shortcut": [["Control", "t"]],
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Show Selection",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 167,
+              "type": "separator"
+            },
+            {
+              "id": 168,
+              "enabled": true,
+              "label": "Display Filters...",
+              "visible": true
+            },
+            {
+              "id": 169,
+              "enabled": true,
+              "label": "Navigation Window",
+              "visible": true
+            },
+            {
+              "id": 170,
+              "type": "separator"
+            },
+            {
+              "id": 171,
+              "enabled": true,
+              "shortcut": [["F11"]],
+              "toggle-state": 0,
+              "label": "Fullscreen",
+              "toggle-type": "checkmark",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 172,
+                    "enabled": true,
+                    "label": "Open Display...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 173,
+              "shortcut": [["Control", "e"]],
+              "enabled": true,
+              "label": "Shrink Wrap",
+              "visible": true
+            },
+            {
+              "id": 174,
+              "type": "separator"
+            },
+            {
+              "id": 175,
+              "enabled": true,
+              "label": "_Zoom (67%)",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 176,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "Othe_r (67%)...",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 177,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 178,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "1:16  (6.25%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 179,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "1:8  (12.5%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 180,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "1:4  (25%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 181,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "1:2  (50%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 182,
+                    "shortcut": [["1"]],
+                    "enabled": true,
+                    "toggle-state": 1,
+                    "label": "1:1  (100%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 183,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "2:1  (200%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 184,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "4:1  (400%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 185,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "8:1  (800%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 186,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "16:1  (1600%)",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 187,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 188,
+                    "enabled": true,
+                    "label": "Fill Window",
+                    "visible": true
+                  },
+                  {
+                    "id": 189,
+                    "shortcut": [["Control", "Shift", "e"]],
+                    "enabled": true,
+                    "label": "Fit Image in Window",
+                    "visible": true
+                  },
+                  {
+                    "id": 190,
+                    "shortcut": [["plus"]],
+                    "enabled": true,
+                    "label": "Zoom In",
+                    "visible": true
+                  },
+                  {
+                    "id": 191,
+                    "shortcut": [["minus"]],
+                    "enabled": true,
+                    "label": "Zoom Out",
+                    "visible": true
+                  },
+                  {
+                    "id": 4,
+                    "shortcut": [["grave"]],
+                    "enabled": true,
+                    "label": "Re_vert Zoom (67%)",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 192,
+              "enabled": true,
+              "toggle-state": 1,
+              "label": "Dot for Dot",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 193,
+              "enabled": true,
+              "label": "New View",
+              "visible": true
+            }
+        ]
+      },
+      {
+        "id": 194,
+        "enabled": true,
+        "label": "Image",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 195,
+              "shortcut": [["Alt", "Return"]],
+              "enabled": true,
+              "label": "Image Properties",
+              "visible": true
+            },
+            {
+              "id": 196,
+              "enabled": true,
+              "label": "Configure Grid...",
+              "visible": true
+            },
+            {
+              "id": 197,
+              "enabled": true,
+              "label": "Guides",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 198,
+                    "enabled": true,
+                    "label": "Remove all Guides",
+                    "visible": true
+                  },
+                  {
+                    "id": 199,
+                    "enabled": true,
+                    "label": "New Guides from Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 200,
+                    "enabled": true,
+                    "label": "New Guide...",
+                    "visible": true
+                  },
+                  {
+                    "id": 201,
+                    "enabled": true,
+                    "label": "New Guide (by Percent)...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 202,
+              "type": "separator"
+            },
+            {
+              "id": 203,
+              "enabled": true,
+              "label": "Align Visible Layers...",
+              "visible": true
+            },
+            {
+              "id": 204,
+              "enabled": true,
+              "label": "Flatten Image",
+              "visible": true
+            },
+            {
+              "id": 205,
+              "shortcut": [["Control", "m"]],
+              "enabled": true,
+              "label": "Merge Visible Layers...",
+              "visible": true
+            },
+            {
+              "id": 206,
+              "type": "separator"
+            },
+            {
+              "id": 207,
+              "enabled": true,
+              "label": "Zealous Crop",
+              "visible": true
+            },
+            {
+              "id": 208,
+              "enabled": true,
+              "label": "Autocrop Image",
+              "visible": true
+            },
+            {
+              "id": 209,
+              "enabled": false,
+              "label": "Crop to Selection",
+              "visible": true
+            },
+            {
+              "id": 210,
+              "type": "separator"
+            },
+            {
+              "id": 211,
+              "enabled": true,
+              "label": "Scale Image...",
+              "visible": true
+            },
+            {
+              "id": 212,
+              "enabled": true,
+              "label": "Print Size...",
+              "visible": true
+            },
+            {
+              "id": 213,
+              "enabled": false,
+              "label": "Fit Canvas to Selection",
+              "visible": true
+            },
+            {
+              "id": 214,
+              "enabled": true,
+              "label": "Fit Canvas to Layers",
+              "visible": true
+            },
+            {
+              "id": 215,
+              "enabled": true,
+              "label": "Canvas Size...",
+              "visible": true
+            },
+            {
+              "id": 216,
+              "type": "separator"
+            },
+            {
+              "id": 217,
+              "enabled": true,
+              "label": "Transform",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 218,
+                    "enabled": true,
+                    "label": "Guillotine",
+                    "visible": true
+                  },
+                  {
+                    "id": 219,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 220,
+                    "enabled": true,
+                    "label": "Rotate 180\302\260",
+                    "visible": true
+                  },
+                  {
+                    "id": 221,
+                    "enabled": true,
+                    "label": "Rotate 90\302\260 counter-clockwise",
+                    "visible": true
+                  },
+                  {
+                    "id": 222,
+                    "enabled": true,
+                    "label": "Rotate 90\302\260 clockwise",
+                    "visible": true
+                  },
+                  {
+                    "id": 223,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 224,
+                    "enabled": true,
+                    "label": "Flip Vertically",
+                    "visible": true
+                  },
+                  {
+                    "id": 225,
+                    "enabled": true,
+                    "label": "Flip Horizontally",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 226,
+              "enabled": true,
+              "label": "Mode",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 227,
+                    "enabled": true,
+                    "label": "Convert to Color Profile...",
+                    "visible": true
+                  },
+                  {
+                    "id": 228,
+                    "enabled": true,
+                    "label": "Assign Color Profile...",
+                    "visible": true
+                  },
+                  {
+                    "id": 229,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 230,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "Indexed...",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 231,
+                    "enabled": true,
+                    "toggle-state": 0,
+                    "label": "Grayscale",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 232,
+                    "enabled": true,
+                    "toggle-state": 1,
+                    "label": "RGB",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 233,
+              "shortcut": [["Control", "d"]],
+              "enabled": true,
+              "label": "Duplicate",
+              "visible": true
+            }
+        ]
+      },
+      {
+        "id": 234,
+        "enabled": true,
+        "label": "Layer",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 235,
+              "enabled": true,
+              "label": "Autocrop Layer",
+              "visible": true
+            },
+            {
+              "id": 236,
+              "enabled": false,
+              "label": "Crop to Selection",
+              "visible": true
+            },
+            {
+              "id": 237,
+              "enabled": true,
+              "label": "Scale Layer...",
+              "visible": true
+            },
+            {
+              "id": 238,
+              "enabled": true,
+              "label": "Layer to Image Size",
+              "visible": true
+            },
+            {
+              "id": 239,
+              "enabled": true,
+              "label": "Layer Boundary Size...",
+              "visible": true
+            },
+            {
+              "id": 240,
+              "type": "separator"
+            },
+            {
+              "id": 241,
+              "enabled": true,
+              "label": "Transform",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 242,
+                    "shortcut": [["Control", "Shift", "o"]],
+                    "enabled": true,
+                    "label": "Offset...",
+                    "visible": true
+                  },
+                  {
+                    "id": 243,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 244,
+                    "enabled": true,
+                    "label": "Arbitrary Rotation...",
+                    "visible": true
+                  },
+                  {
+                    "id": 245,
+                    "enabled": true,
+                    "label": "Rotate 180\302\260",
+                    "visible": true
+                  },
+                  {
+                    "id": 246,
+                    "enabled": true,
+                    "label": "Rotate 90\302\260 counter-clockwise",
+                    "visible": true
+                  },
+                  {
+                    "id": 247,
+                    "enabled": true,
+                    "label": "Rotate 90\302\260 clockwise",
+                    "visible": true
+                  },
+                  {
+                    "id": 248,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 249,
+                    "enabled": true,
+                    "label": "Flip Vertically",
+                    "visible": true
+                  },
+                  {
+                    "id": 250,
+                    "enabled": true,
+                    "label": "Flip Horizontally",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 251,
+              "enabled": true,
+              "label": "Transparency",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 252,
+                    "enabled": true,
+                    "label": "Intersect with Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 253,
+                    "enabled": true,
+                    "label": "Subtract from Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 254,
+                    "enabled": true,
+                    "label": "Add to Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 255,
+                    "enabled": true,
+                    "label": "Alpha to Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 256,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 257,
+                    "enabled": true,
+                    "label": "Threshold Alpha...",
+                    "visible": true
+                  },
+                  {
+                    "id": 258,
+                    "enabled": true,
+                    "label": "Semi-Flatten",
+                    "visible": true
+                  },
+                  {
+                    "id": 259,
+                    "enabled": true,
+                    "label": "Color to Alpha...",
+                    "visible": true
+                  },
+                  {
+                    "id": 260,
+                    "enabled": true,
+                    "label": "Remove Alpha Channel",
+                    "visible": true
+                  },
+                  {
+                    "id": 261,
+                    "enabled": false,
+                    "label": "Add Alpha Channel",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 262,
+              "enabled": true,
+              "label": "Mask",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 263,
+                    "enabled": false,
+                    "label": "Intersect with Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 264,
+                    "enabled": false,
+                    "label": "Subtract from Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 265,
+                    "enabled": false,
+                    "label": "Add to Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 266,
+                    "enabled": false,
+                    "label": "Mask to Selection",
+                    "visible": true
+                  },
+                  {
+                    "id": 267,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 268,
+                    "enabled": false,
+                    "toggle-state": 0,
+                    "label": "Disable Layer Mask",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 269,
+                    "enabled": false,
+                    "toggle-state": 0,
+                    "label": "Edit Layer Mask",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 270,
+                    "enabled": false,
+                    "toggle-state": 0,
+                    "label": "Show Layer Mask",
+                    "toggle-type": "checkmark",
+                    "visible": true
+                  },
+                  {
+                    "id": 271,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 272,
+                    "enabled": false,
+                    "label": "Delete Layer Mask",
+                    "visible": true
+                  },
+                  {
+                    "id": 273,
+                    "enabled": false,
+                    "label": "Apply Layer Mask",
+                    "visible": true
+                  },
+                  {
+                    "id": 274,
+                    "enabled": true,
+                    "label": "Add Layer Mask...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 275,
+              "enabled": true,
+              "label": "Stack",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 276,
+                    "enabled": true,
+                    "label": "Reverse Layer Order",
+                    "visible": true
+                  },
+                  {
+                    "id": 277,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 278,
+                    "enabled": false,
+                    "label": "Layer to Bottom",
+                    "visible": true
+                  },
+                  {
+                    "id": 279,
+                    "enabled": false,
+                    "label": "Layer to Top",
+                    "visible": true
+                  },
+                  {
+                    "id": 280,
+                    "enabled": false,
+                    "label": "Lower Layer",
+                    "visible": true
+                  },
+                  {
+                    "id": 281,
+                    "enabled": false,
+                    "label": "Raise Layer",
+                    "visible": true
+                  },
+                  {
+                    "id": 282,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 283,
+                    "shortcut": [["End"]],
+                    "enabled": false,
+                    "label": "Select Bottom Layer",
+                    "visible": true
+                  },
+                  {
+                    "id": 284,
+                    "shortcut": [["Home"]],
+                    "enabled": false,
+                    "label": "Select Top Layer",
+                    "visible": true
+                  },
+                  {
+                    "id": 285,
+                    "shortcut": [["Page_Down"]],
+                    "enabled": false,
+                    "label": "Select Next Layer",
+                    "visible": true
+                  },
+                  {
+                    "id": 286,
+                    "shortcut": [["Page_Up"]],
+                    "enabled": false,
+                    "label": "Select Previous Layer",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 287,
+              "type": "separator",
+              "children-display": "submenu",
+              "submenu": [
+                  {
+                    "id": 288,
+                    "enabled": false,
+                    "label": "Empty",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 289,
+              "enabled": true,
+              "label": "Delete Layer",
+              "visible": true
+            },
+            {
+              "id": 290,
+              "enabled": false,
+              "label": "Merge Down",
+              "visible": true
+            },
+            {
+              "id": 291,
+              "shortcut": [["Control", "h"]],
+              "enabled": false,
+              "label": "Anchor Layer",
+              "visible": true
+            },
+            {
+              "id": 292,
+              "shortcut": [["Control", "Shift", "d"]],
+              "enabled": true,
+              "label": "Duplicate Layer",
+              "visible": true
+            },
+            {
+              "id": 293,
+              "enabled": true,
+              "label": "New from Visible",
+              "visible": true
+            },
+            {
+              "id": 294,
+              "shortcut": [["Control", "Shift", "n"]],
+              "enabled": true,
+              "label": "New Layer...",
+              "visible": true
+            }
+        ]
+      },
+      {
+        "id": 295,
+        "enabled": true,
+        "label": "Colors",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 296,
+              "enabled": true,
+              "label": "Retinex...",
+              "visible": true
+            },
+            {
+              "id": 297,
+              "enabled": true,
+              "label": "Maximum RGB...",
+              "visible": true
+            },
+            {
+              "id": 298,
+              "enabled": false,
+              "label": "Hot...",
+              "visible": true
+            },
+            {
+              "id": 299,
+              "enabled": true,
+              "label": "Filter Pack...",
+              "visible": true
+            },
+            {
+              "id": 300,
+              "enabled": true,
+              "label": "Color to Alpha...",
+              "visible": true
+            },
+            {
+              "id": 301,
+              "enabled": true,
+              "label": "Colorify...",
+              "visible": true
+            },
+            {
+              "id": 302,
+              "type": "separator"
+            },
+            {
+              "id": 303,
+              "enabled": true,
+              "label": "Info",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 304,
+                    "enabled": true,
+                    "label": "Smooth Palette...",
+                    "visible": true
+                  },
+                  {
+                    "id": 305,
+                    "enabled": true,
+                    "label": "Colorcube Analysis...",
+                    "visible": true
+                  },
+                  {
+                    "id": 306,
+                    "enabled": true,
+                    "label": "Border Average...",
+                    "visible": true
+                  },
+                  {
+                    "id": 307,
+                    "enabled": true,
+                    "label": "Histogram",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 308,
+              "enabled": true,
+              "label": "Map",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 309,
+                    "enabled": true,
+                    "label": "Sample Colorize...",
+                    "visible": true
+                  },
+                  {
+                    "id": 310,
+                    "enabled": true,
+                    "label": "Rotate Colors...",
+                    "visible": true
+                  },
+                  {
+                    "id": 311,
+                    "enabled": true,
+                    "label": "Palette Map",
+                    "visible": true
+                  },
+                  {
+                    "id": 312,
+                    "enabled": true,
+                    "label": "Gradient Map",
+                    "visible": true
+                  },
+                  {
+                    "id": 313,
+                    "enabled": true,
+                    "label": "Color Exchange...",
+                    "visible": true
+                  },
+                  {
+                    "id": 314,
+                    "enabled": true,
+                    "label": "Alien Map...",
+                    "visible": true
+                  },
+                  {
+                    "id": 315,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 316,
+                    "enabled": false,
+                    "label": "Set Colormap...",
+                    "visible": true
+                  },
+                  {
+                    "id": 317,
+                    "enabled": false,
+                    "label": "Rearrange Colormap...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 318,
+              "enabled": true,
+              "label": "Components",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 319,
+                    "enabled": false,
+                    "label": "Recompose",
+                    "visible": true
+                  },
+                  {
+                    "id": 320,
+                    "enabled": true,
+                    "label": "Decompose...",
+                    "visible": true
+                  },
+                  {
+                    "id": 321,
+                    "enabled": false,
+                    "label": "Compose...",
+                    "visible": true
+                  },
+                  {
+                    "id": 322,
+                    "enabled": true,
+                    "label": "Channel Mixer...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 323,
+              "enabled": true,
+              "label": "Auto",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 324,
+                    "enabled": true,
+                    "label": "Stretch HSV",
+                    "visible": true
+                  },
+                  {
+                    "id": 325,
+                    "enabled": true,
+                    "label": "Stretch Contrast",
+                    "visible": true
+                  },
+                  {
+                    "id": 326,
+                    "enabled": true,
+                    "label": "Normalize",
+                    "visible": true
+                  },
+                  {
+                    "id": 327,
+                    "enabled": true,
+                    "label": "Color Enhance",
+                    "visible": true
+                  },
+                  {
+                    "id": 328,
+                    "enabled": true,
+                    "label": "White Balance",
+                    "visible": true
+                  },
+                  {
+                    "id": 329,
+                    "enabled": true,
+                    "label": "Equalize",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 330,
+              "type": "separator"
+            },
+            {
+              "id": 331,
+              "enabled": true,
+              "toggle-state": 0,
+              "label": "Use GEGL",
+              "toggle-type": "checkmark",
+              "visible": true
+            },
+            {
+              "id": 332,
+              "type": "separator"
+            },
+            {
+              "id": 333,
+              "enabled": true,
+              "label": "Value Invert",
+              "visible": true
+            },
+            {
+              "id": 334,
+              "enabled": true,
+              "label": "Invert",
+              "visible": true
+            },
+            {
+              "id": 335,
+              "type": "separator"
+            },
+            {
+              "id": 336,
+              "enabled": true,
+              "label": "Desaturate...",
+              "visible": true
+            },
+            {
+              "id": 337,
+              "enabled": true,
+              "label": "Posterize...",
+              "visible": true
+            },
+            {
+              "id": 338,
+              "enabled": true,
+              "label": "Curves...",
+              "visible": true
+            },
+            {
+              "id": 339,
+              "enabled": true,
+              "label": "Levels...",
+              "visible": true
+            },
+            {
+              "id": 340,
+              "enabled": true,
+              "label": "Threshold...",
+              "visible": true
+            },
+            {
+              "id": 341,
+              "enabled": true,
+              "label": "Brightness-Contrast...",
+              "visible": true
+            },
+            {
+              "id": 342,
+              "enabled": true,
+              "label": "Colorize...",
+              "visible": true
+            },
+            {
+              "id": 343,
+              "enabled": true,
+              "label": "Hue-Saturation...",
+              "visible": true
+            },
+            {
+              "id": 344,
+              "enabled": true,
+              "label": "Color Balance...",
+              "visible": true
+            }
+        ]
+      },
+      {
+        "id": 345,
+        "enabled": true,
+        "label": "Tools",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 346,
+              "shortcut": [["x"]],
+              "enabled": true,
+              "label": "Swap Colors",
+              "visible": true
+            },
+            {
+              "id": 347,
+              "shortcut": [["d"]],
+              "enabled": true,
+              "label": "Default Colors",
+              "visible": true
+            },
+            {
+              "id": 348,
+              "shortcut": [["Control", "b"]],
+              "enabled": true,
+              "label": "Toolbox",
+              "visible": true
+            },
+            {
+              "id": 349,
+              "type": "separator"
+            },
+            {
+              "id": 350,
+              "enabled": true,
+              "label": "GEGL Operation...",
+              "visible": true
+            },
+            {
+              "id": 351,
+              "shortcut": [["t"]],
+              "enabled": true,
+              "label": "Text",
+              "visible": true
+            },
+            {
+              "id": 352,
+              "shortcut": [["Shift", "m"]],
+              "enabled": true,
+              "label": "Measure",
+              "visible": true
+            },
+            {
+              "id": 353,
+              "shortcut": [["z"]],
+              "enabled": true,
+              "label": "Zoom",
+              "visible": true
+            },
+            {
+              "id": 354,
+              "shortcut": [["o"]],
+              "enabled": true,
+              "label": "Color Picker",
+              "visible": true
+            },
+            {
+              "id": 355,
+              "shortcut": [["b"]],
+              "enabled": true,
+              "label": "Paths",
+              "visible": true
+            },
+            {
+              "id": 356,
+              "enabled": true,
+              "label": "Color Tools",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 357,
+                    "enabled": true,
+                    "label": "Desaturate...",
+                    "visible": true
+                  },
+                  {
+                    "id": 358,
+                    "enabled": true,
+                    "label": "Posterize...",
+                    "visible": true
+                  },
+                  {
+                    "id": 359,
+                    "enabled": true,
+                    "label": "Curves...",
+                    "visible": true
+                  },
+                  {
+                    "id": 360,
+                    "enabled": true,
+                    "label": "Levels...",
+                    "visible": true
+                  },
+                  {
+                    "id": 361,
+                    "enabled": true,
+                    "label": "Threshold...",
+                    "visible": true
+                  },
+                  {
+                    "id": 362,
+                    "enabled": true,
+                    "label": "Brightness-Contrast...",
+                    "visible": true
+                  },
+                  {
+                    "id": 363,
+                    "enabled": true,
+                    "label": "Colorize...",
+                    "visible": true
+                  },
+                  {
+                    "id": 364,
+                    "enabled": true,
+                    "label": "Hue-Saturation...",
+                    "visible": true
+                  },
+                  {
+                    "id": 365,
+                    "enabled": true,
+                    "label": "Color Balance...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 366,
+              "enabled": true,
+              "label": "Transform Tools",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 367,
+                    "shortcut": [["Shift", "f"]],
+                    "enabled": true,
+                    "label": "Flip",
+                    "visible": true
+                  },
+                  {
+                    "id": 368,
+                    "shortcut": [["Shift", "p"]],
+                    "enabled": true,
+                    "label": "Perspective",
+                    "visible": true
+                  },
+                  {
+                    "id": 369,
+                    "shortcut": [["Shift", "s"]],
+                    "enabled": true,
+                    "label": "Shear",
+                    "visible": true
+                  },
+                  {
+                    "id": 370,
+                    "shortcut": [["Shift", "t"]],
+                    "enabled": true,
+                    "label": "Scale",
+                    "visible": true
+                  },
+                  {
+                    "id": 371,
+                    "shortcut": [["Shift", "r"]],
+                    "enabled": true,
+                    "label": "Rotate",
+                    "visible": true
+                  },
+                  {
+                    "id": 372,
+                    "shortcut": [["Shift", "c"]],
+                    "enabled": true,
+                    "label": "Crop",
+                    "visible": true
+                  },
+                  {
+                    "id": 373,
+                    "shortcut": [["m"]],
+                    "enabled": true,
+                    "label": "Move",
+                    "visible": true
+                  },
+                  {
+                    "id": 374,
+                    "shortcut": [["q"]],
+                    "enabled": true,
+                    "label": "Align",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 375,
+              "enabled": true,
+              "label": "Paint Tools",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 376,
+                    "shortcut": [["Shift", "d"]],
+                    "enabled": true,
+                    "label": "Dodge / Burn",
+                    "visible": true
+                  },
+                  {
+                    "id": 377,
+                    "shortcut": [["s"]],
+                    "enabled": true,
+                    "label": "Smudge",
+                    "visible": true
+                  },
+                  {
+                    "id": 378,
+                    "shortcut": [["Shift", "u"]],
+                    "enabled": true,
+                    "label": "Blur / Sharpen",
+                    "visible": true
+                  },
+                  {
+                    "id": 379,
+                    "enabled": true,
+                    "label": "Perspective Clone",
+                    "visible": true
+                  },
+                  {
+                    "id": 380,
+                    "shortcut": [["h"]],
+                    "enabled": true,
+                    "label": "Heal",
+                    "visible": true
+                  },
+                  {
+                    "id": 381,
+                    "shortcut": [["c"]],
+                    "enabled": true,
+                    "label": "Clone",
+                    "visible": true
+                  },
+                  {
+                    "id": 382,
+                    "shortcut": [["k"]],
+                    "enabled": true,
+                    "label": "Ink",
+                    "visible": true
+                  },
+                  {
+                    "id": 383,
+                    "shortcut": [["a"]],
+                    "enabled": true,
+                    "label": "Airbrush",
+                    "visible": true
+                  },
+                  {
+                    "id": 384,
+                    "shortcut": [["Shift", "e"]],
+                    "enabled": true,
+                    "label": "Eraser",
+                    "visible": true
+                  },
+                  {
+                    "id": 385,
+                    "shortcut": [["p"]],
+                    "enabled": true,
+                    "label": "Paintbrush",
+                    "visible": true
+                  },
+                  {
+                    "id": 386,
+                    "shortcut": [["n"]],
+                    "enabled": true,
+                    "label": "Pencil",
+                    "visible": true
+                  },
+                  {
+                    "id": 387,
+                    "shortcut": [["l"]],
+                    "enabled": true,
+                    "label": "Blend",
+                    "visible": true
+                  },
+                  {
+                    "id": 388,
+                    "shortcut": [["Shift", "b"]],
+                    "enabled": true,
+                    "label": "Bucket Fill",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 389,
+              "enabled": true,
+              "label": "Selection Tools",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 390,
+                    "shortcut": [["i"]],
+                    "enabled": true,
+                    "label": "Intelligent Scissors",
+                    "visible": true
+                  },
+                  {
+                    "id": 391,
+                    "shortcut": [["Shift", "o"]],
+                    "enabled": true,
+                    "label": "By Color Select",
+                    "visible": true
+                  },
+                  {
+                    "id": 392,
+                    "shortcut": [["u"]],
+                    "enabled": true,
+                    "label": "Fuzzy Select",
+                    "visible": true
+                  },
+                  {
+                    "id": 393,
+                    "enabled": true,
+                    "label": "Foreground Select",
+                    "visible": true
+                  },
+                  {
+                    "id": 394,
+                    "shortcut": [["f"]],
+                    "enabled": true,
+                    "label": "Free Select",
+                    "visible": true
+                  },
+                  {
+                    "id": 395,
+                    "shortcut": [["e"]],
+                    "enabled": true,
+                    "label": "Ellipse Select",
+                    "visible": true
+                  },
+                  {
+                    "id": 396,
+                    "shortcut": [["r"]],
+                    "enabled": true,
+                    "label": "Rectangle Select",
+                    "visible": true
+                  }
+              ]
+            }
+        ]
+      },
+      {
+        "id": 397,
+        "enabled": true,
+        "label": "Filters",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 398,
+              "enabled": true,
+              "label": "Script-Fu",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 399,
+                    "enabled": true,
+                    "label": "Start Server...",
+                    "visible": true
+                  },
+                  {
+                    "id": 400,
+                    "enabled": true,
+                    "label": "Refresh Scripts",
+                    "visible": true
+                  },
+                  {
+                    "id": 401,
+                    "enabled": true,
+                    "label": "Console",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 402,
+              "enabled": true,
+              "label": "Python-Fu",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 403,
+                    "enabled": true,
+                    "label": "Console",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 404,
+              "type": "separator"
+            },
+            {
+              "id": 405,
+              "enabled": true,
+              "label": "Alpha to Logo",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 406,
+                    "enabled": true,
+                    "label": "Textured...",
+                    "visible": true
+                  },
+                  {
+                    "id": 407,
+                    "enabled": true,
+                    "label": "Particle Trace...",
+                    "visible": true
+                  },
+                  {
+                    "id": 408,
+                    "enabled": true,
+                    "label": "Neon...",
+                    "visible": true
+                  },
+                  {
+                    "id": 409,
+                    "enabled": true,
+                    "label": "Gradient Bevel...",
+                    "visible": true
+                  },
+                  {
+                    "id": 410,
+                    "enabled": true,
+                    "label": "Glowing Hot...",
+                    "visible": true
+                  },
+                  {
+                    "id": 411,
+                    "enabled": true,
+                    "label": "Glossy...",
+                    "visible": true
+                  },
+                  {
+                    "id": 412,
+                    "enabled": true,
+                    "label": "Frosty...",
+                    "visible": true
+                  },
+                  {
+                    "id": 413,
+                    "enabled": true,
+                    "label": "Cool Metal...",
+                    "visible": true
+                  },
+                  {
+                    "id": 414,
+                    "enabled": true,
+                    "label": "Comic Book...",
+                    "visible": true
+                  },
+                  {
+                    "id": 415,
+                    "enabled": true,
+                    "label": "Chrome...",
+                    "visible": true
+                  },
+                  {
+                    "id": 416,
+                    "enabled": true,
+                    "label": "Chip Away...",
+                    "visible": true
+                  },
+                  {
+                    "id": 417,
+                    "enabled": true,
+                    "label": "Chalk...",
+                    "visible": true
+                  },
+                  {
+                    "id": 418,
+                    "enabled": true,
+                    "label": "Bovination...",
+                    "visible": true
+                  },
+                  {
+                    "id": 419,
+                    "enabled": true,
+                    "label": "Blended...",
+                    "visible": true
+                  },
+                  {
+                    "id": 420,
+                    "enabled": true,
+                    "label": "Basic I...",
+                    "visible": true
+                  },
+                  {
+                    "id": 421,
+                    "enabled": true,
+                    "label": "Basic II...",
+                    "visible": true
+                  },
+                  {
+                    "id": 422,
+                    "enabled": true,
+                    "label": "Alien Neon...",
+                    "visible": true
+                  },
+                  {
+                    "id": 423,
+                    "enabled": true,
+                    "label": "Alien Glow...",
+                    "visible": true
+                  },
+                  {
+                    "id": 424,
+                    "enabled": true,
+                    "label": "3D Outline...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 425,
+              "type": "separator"
+            },
+            {
+              "id": 426,
+              "enabled": true,
+              "label": "Animation",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 427,
+                    "enabled": true,
+                    "label": "Unoptimize",
+                    "visible": true
+                  },
+                  {
+                    "id": 428,
+                    "enabled": true,
+                    "label": "Playback...",
+                    "visible": true
+                  },
+                  {
+                    "id": 429,
+                    "enabled": true,
+                    "label": "Optimize (for GIF)",
+                    "visible": true
+                  },
+                  {
+                    "id": 430,
+                    "enabled": true,
+                    "label": "Optimize (Difference)",
+                    "visible": true
+                  },
+                  {
+                    "id": 431,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 432,
+                    "enabled": true,
+                    "label": "Waves...",
+                    "visible": true
+                  },
+                  {
+                    "id": 433,
+                    "enabled": true,
+                    "label": "Spinning Globe...",
+                    "visible": true
+                  },
+                  {
+                    "id": 434,
+                    "enabled": true,
+                    "label": "Rippling...",
+                    "visible": true
+                  },
+                  {
+                    "id": 435,
+                    "enabled": true,
+                    "label": "Burn-In...",
+                    "visible": true
+                  },
+                  {
+                    "id": 436,
+                    "enabled": true,
+                    "label": "Blend...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 437,
+              "enabled": true,
+              "label": "Web",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 438,
+                    "enabled": true,
+                    "label": "Slice...",
+                    "visible": true
+                  },
+                  {
+                    "id": 439,
+                    "enabled": true,
+                    "label": "Semi-Flatten",
+                    "visible": true
+                  },
+                  {
+                    "id": 440,
+                    "enabled": true,
+                    "label": "Image Map...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 441,
+              "enabled": true,
+              "label": "Render",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 442,
+                    "enabled": true,
+                    "label": "Spyrogimp...",
+                    "visible": true
+                  },
+                  {
+                    "id": 443,
+                    "enabled": true,
+                    "label": "Sphere Designer...",
+                    "visible": true
+                  },
+                  {
+                    "id": 444,
+                    "enabled": true,
+                    "label": "Line Nova...",
+                    "visible": true
+                  },
+                  {
+                    "id": 445,
+                    "enabled": true,
+                    "label": "Lava...",
+                    "visible": true
+                  },
+                  {
+                    "id": 446,
+                    "enabled": true,
+                    "label": "Gfig...",
+                    "visible": true
+                  },
+                  {
+                    "id": 447,
+                    "enabled": true,
+                    "label": "Fractal Explorer...",
+                    "visible": true
+                  },
+                  {
+                    "id": 448,
+                    "enabled": true,
+                    "label": "Circuit...",
+                    "visible": true
+                  },
+                  {
+                    "id": 449,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 450,
+                    "enabled": true,
+                    "label": "Pattern",
+                    "children-display": "submenu",
+                    "visible": true,
+                    "submenu": [
+                        {
+                          "id": 451,
+                          "enabled": true,
+                          "label": "Sinus...",
+                          "visible": true
+                        },
+                        {
+                          "id": 452,
+                          "enabled": true,
+                          "label": "Qbist...",
+                          "visible": true
+                        },
+                        {
+                          "id": 453,
+                          "enabled": true,
+                          "label": "Maze...",
+                          "visible": true
+                        },
+                        {
+                          "id": 454,
+                          "enabled": true,
+                          "label": "Jigsaw...",
+                          "visible": true
+                        },
+                        {
+                          "id": 455,
+                          "enabled": true,
+                          "label": "Grid...",
+                          "visible": true
+                        },
+                        {
+                          "id": 456,
+                          "enabled": true,
+                          "label": "Diffraction Patterns...",
+                          "visible": true
+                        },
+                        {
+                          "id": 457,
+                          "enabled": true,
+                          "label": "CML Explorer...",
+                          "visible": true
+                        },
+                        {
+                          "id": 458,
+                          "enabled": true,
+                          "label": "Checkerboard...",
+                          "visible": true
+                        }
+                    ]
+                  },
+                  {
+                    "id": 459,
+                    "enabled": true,
+                    "label": "Nature",
+                    "children-display": "submenu",
+                    "visible": true,
+                    "submenu": [
+                        {
+                          "id": 460,
+                          "enabled": true,
+                          "label": "IFS Fractal...",
+                          "visible": true
+                        },
+                        {
+                          "id": 461,
+                          "enabled": true,
+                          "label": "Flame...",
+                          "visible": true
+                        }
+                    ]
+                  },
+                  {
+                    "id": 462,
+                    "enabled": true,
+                    "label": "Clouds",
+                    "children-display": "submenu",
+                    "visible": true,
+                    "submenu": [
+                        {
+                          "id": 463,
+                          "enabled": true,
+                          "label": "Solid Noise...",
+                          "visible": true
+                        },
+                        {
+                          "id": 464,
+                          "enabled": true,
+                          "label": "Plasma...",
+                          "visible": true
+                        },
+                        {
+                          "id": 465,
+                          "enabled": true,
+                          "label": "Fog...",
+                          "visible": true
+                        },
+                        {
+                          "id": 466,
+                          "enabled": true,
+                          "label": "Difference Clouds...",
+                          "visible": true
+                        }
+                    ]
+                  }
+              ]
+            },
+            {
+              "id": 467,
+              "enabled": true,
+              "label": "Map",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 468,
+                    "enabled": true,
+                    "label": "Warp...",
+                    "visible": true
+                  },
+                  {
+                    "id": 469,
+                    "enabled": true,
+                    "label": "Tile...",
+                    "visible": true
+                  },
+                  {
+                    "id": 470,
+                    "enabled": true,
+                    "label": "Small Tiles...",
+                    "visible": true
+                  },
+                  {
+                    "id": 471,
+                    "enabled": true,
+                    "label": "Paper Tile...",
+                    "visible": true
+                  },
+                  {
+                    "id": 472,
+                    "enabled": true,
+                    "label": "Map Object...",
+                    "visible": true
+                  },
+                  {
+                    "id": 473,
+                    "enabled": true,
+                    "label": "Make Seamless",
+                    "visible": true
+                  },
+                  {
+                    "id": 474,
+                    "enabled": true,
+                    "label": "Illusion...",
+                    "visible": true
+                  },
+                  {
+                    "id": 475,
+                    "enabled": true,
+                    "label": "Fractal Trace...",
+                    "visible": true
+                  },
+                  {
+                    "id": 476,
+                    "enabled": true,
+                    "label": "Displace...",
+                    "visible": true
+                  },
+                  {
+                    "id": 477,
+                    "enabled": true,
+                    "label": "Bump Map...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 478,
+              "enabled": true,
+              "label": "Decor",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 479,
+                    "enabled": false,
+                    "label": "Stencil Chrome...",
+                    "visible": true
+                  },
+                  {
+                    "id": 480,
+                    "enabled": false,
+                    "label": "Stencil Carve...",
+                    "visible": true
+                  },
+                  {
+                    "id": 481,
+                    "enabled": false,
+                    "label": "Slide...",
+                    "visible": true
+                  },
+                  {
+                    "id": 482,
+                    "enabled": false,
+                    "label": "Round Corners...",
+                    "visible": true
+                  },
+                  {
+                    "id": 483,
+                    "enabled": true,
+                    "label": "Old Photo...",
+                    "visible": true
+                  },
+                  {
+                    "id": 484,
+                    "enabled": true,
+                    "label": "Fuzzy Border...",
+                    "visible": true
+                  },
+                  {
+                    "id": 485,
+                    "enabled": true,
+                    "label": "Coffee Stain...",
+                    "visible": true
+                  },
+                  {
+                    "id": 486,
+                    "enabled": true,
+                    "label": "Add Border...",
+                    "visible": true
+                  },
+                  {
+                    "id": 487,
+                    "enabled": true,
+                    "label": "Add Bevel...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 488,
+              "enabled": true,
+              "label": "Artistic",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 489,
+                    "enabled": true,
+                    "label": "Weave...",
+                    "visible": true
+                  },
+                  {
+                    "id": 490,
+                    "enabled": true,
+                    "label": "Van Gogh (LIC)...",
+                    "visible": true
+                  },
+                  {
+                    "id": 491,
+                    "enabled": true,
+                    "label": "Softglow...",
+                    "visible": true
+                  },
+                  {
+                    "id": 492,
+                    "enabled": true,
+                    "label": "Predator...",
+                    "visible": true
+                  },
+                  {
+                    "id": 493,
+                    "enabled": true,
+                    "label": "Photocopy...",
+                    "visible": true
+                  },
+                  {
+                    "id": 494,
+                    "enabled": true,
+                    "label": "Oilify...",
+                    "visible": true
+                  },
+                  {
+                    "id": 495,
+                    "enabled": true,
+                    "label": "GIMPressionist...",
+                    "visible": true
+                  },
+                  {
+                    "id": 496,
+                    "enabled": true,
+                    "label": "Cubism...",
+                    "visible": true
+                  },
+                  {
+                    "id": 497,
+                    "enabled": true,
+                    "label": "Clothify...",
+                    "visible": true
+                  },
+                  {
+                    "id": 498,
+                    "enabled": true,
+                    "label": "Cartoon...",
+                    "visible": true
+                  },
+                  {
+                    "id": 499,
+                    "enabled": true,
+                    "label": "Apply Canvas...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 500,
+              "enabled": true,
+              "label": "Combine",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 501,
+                    "enabled": true,
+                    "label": "Filmstrip...",
+                    "visible": true
+                  },
+                  {
+                    "id": 502,
+                    "enabled": true,
+                    "label": "Depth Merge...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 503,
+              "enabled": true,
+              "label": "Generic",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 504,
+                    "enabled": true,
+                    "label": "Erode",
+                    "visible": true
+                  },
+                  {
+                    "id": 505,
+                    "enabled": true,
+                    "label": "Dilate",
+                    "visible": true
+                  },
+                  {
+                    "id": 506,
+                    "enabled": true,
+                    "label": "Convolution Matrix...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 507,
+              "enabled": true,
+              "label": "Edge-Detect",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 508,
+                    "enabled": true,
+                    "label": "Sobel...",
+                    "visible": true
+                  },
+                  {
+                    "id": 509,
+                    "enabled": true,
+                    "label": "Neon...",
+                    "visible": true
+                  },
+                  {
+                    "id": 510,
+                    "enabled": true,
+                    "label": "Laplace",
+                    "visible": true
+                  },
+                  {
+                    "id": 511,
+                    "enabled": true,
+                    "label": "Edge...",
+                    "visible": true
+                  },
+                  {
+                    "id": 512,
+                    "enabled": true,
+                    "label": "Difference of Gaussians...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 513,
+              "enabled": true,
+              "label": "Noise",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 514,
+                    "enabled": true,
+                    "label": "Spread...",
+                    "visible": true
+                  },
+                  {
+                    "id": 515,
+                    "enabled": true,
+                    "label": "Slur...",
+                    "visible": true
+                  },
+                  {
+                    "id": 516,
+                    "enabled": true,
+                    "label": "RGB Noise...",
+                    "visible": true
+                  },
+                  {
+                    "id": 517,
+                    "enabled": true,
+                    "label": "Pick...",
+                    "visible": true
+                  },
+                  {
+                    "id": 518,
+                    "enabled": true,
+                    "label": "Hurl...",
+                    "visible": true
+                  },
+                  {
+                    "id": 519,
+                    "enabled": true,
+                    "label": "HSV Noise...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 520,
+              "enabled": true,
+              "label": "Light and Shadow",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 521,
+                    "enabled": true,
+                    "label": "Glass Tile...",
+                    "visible": true
+                  },
+                  {
+                    "id": 522,
+                    "enabled": true,
+                    "label": "Apply Lens...",
+                    "visible": true
+                  },
+                  {
+                    "id": 523,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 524,
+                    "enabled": true,
+                    "label": "Xach-Effect...",
+                    "visible": true
+                  },
+                  {
+                    "id": 525,
+                    "enabled": true,
+                    "label": "Perspective...",
+                    "visible": true
+                  },
+                  {
+                    "id": 526,
+                    "enabled": true,
+                    "label": "Drop Shadow...",
+                    "visible": true
+                  },
+                  {
+                    "id": 527,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 528,
+                    "enabled": true,
+                    "label": "Supernova...",
+                    "visible": true
+                  },
+                  {
+                    "id": 529,
+                    "enabled": true,
+                    "label": "Sparkle...",
+                    "visible": true
+                  },
+                  {
+                    "id": 530,
+                    "enabled": true,
+                    "label": "Lighting Effects...",
+                    "visible": true
+                  },
+                  {
+                    "id": 531,
+                    "enabled": true,
+                    "label": "Lens Flare...",
+                    "visible": true
+                  },
+                  {
+                    "id": 532,
+                    "enabled": true,
+                    "label": "Gradient Flare...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 533,
+              "enabled": true,
+              "label": "Distorts",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 534,
+                    "enabled": true,
+                    "label": "Wind...",
+                    "visible": true
+                  },
+                  {
+                    "id": 535,
+                    "enabled": true,
+                    "label": "Whirl and Pinch...",
+                    "visible": true
+                  },
+                  {
+                    "id": 536,
+                    "enabled": true,
+                    "label": "Waves...",
+                    "visible": true
+                  },
+                  {
+                    "id": 537,
+                    "enabled": true,
+                    "label": "Video...",
+                    "visible": true
+                  },
+                  {
+                    "id": 538,
+                    "enabled": true,
+                    "label": "Value Propagate...",
+                    "visible": true
+                  },
+                  {
+                    "id": 539,
+                    "enabled": true,
+                    "label": "Shift...",
+                    "visible": true
+                  },
+                  {
+                    "id": 540,
+                    "enabled": true,
+                    "label": "Ripple...",
+                    "visible": true
+                  },
+                  {
+                    "id": 541,
+                    "enabled": true,
+                    "label": "Polar Coordinates...",
+                    "visible": true
+                  },
+                  {
+                    "id": 542,
+                    "enabled": true,
+                    "label": "Pagecurl...",
+                    "visible": true
+                  },
+                  {
+                    "id": 543,
+                    "enabled": true,
+                    "label": "Newsprint...",
+                    "visible": true
+                  },
+                  {
+                    "id": 544,
+                    "enabled": true,
+                    "label": "Mosaic...",
+                    "visible": true
+                  },
+                  {
+                    "id": 545,
+                    "enabled": true,
+                    "label": "Lens Distortion...",
+                    "visible": true
+                  },
+                  {
+                    "id": 546,
+                    "enabled": true,
+                    "label": "IWarp...",
+                    "visible": true
+                  },
+                  {
+                    "id": 547,
+                    "enabled": true,
+                    "label": "Erase Every Other Row...",
+                    "visible": true
+                  },
+                  {
+                    "id": 548,
+                    "enabled": true,
+                    "label": "Engrave...",
+                    "visible": true
+                  },
+                  {
+                    "id": 549,
+                    "enabled": true,
+                    "label": "Emboss...",
+                    "visible": true
+                  },
+                  {
+                    "id": 550,
+                    "enabled": true,
+                    "label": "Curve Bend...",
+                    "visible": true
+                  },
+                  {
+                    "id": 551,
+                    "enabled": true,
+                    "label": "Blinds...",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 552,
+              "enabled": true,
+              "label": "Enhance",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 553,
+                    "enabled": true,
+                    "label": "Unsharp Mask...",
+                    "visible": true
+                  },
+                  {
+                    "id": 554,
+                    "enabled": true,
+                    "label": "Sharpen...",
+                    "visible": true
+                  },
+                  {
+                    "id": 555,
+                    "enabled": true,
+                    "label": "Red Eye Removal...",
+                    "visible": true
+                  },
+                  {
+                    "id": 556,
+                    "enabled": false,
+                    "label": "NL Filter...",
+                    "visible": true
+                  },
+                  {
+                    "id": 557,
+                    "enabled": true,
+                    "label": "Destripe...",
+                    "visible": true
+                  },
+                  {
+                    "id": 558,
+                    "enabled": true,
+                    "label": "Despeckle...",
+                    "visible": true
+                  },
+                  {
+                    "id": 559,
+                    "enabled": true,
+                    "label": "Deinterlace...",
+                    "visible": true
+                  },
+                  {
+                    "id": 560,
+                    "enabled": true,
+                    "label": "Antialias",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 561,
+              "enabled": true,
+              "label": "Blur",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 562,
+                    "enabled": true,
+                    "label": "Tileable Blur...",
+                    "visible": true
+                  },
+                  {
+                    "id": 563,
+                    "enabled": true,
+                    "label": "Selective Gaussian Blur...",
+                    "visible": true
+                  },
+                  {
+                    "id": 564,
+                    "enabled": true,
+                    "label": "Pixelize...",
+                    "visible": true
+                  },
+                  {
+                    "id": 565,
+                    "enabled": true,
+                    "label": "Motion Blur...",
+                    "visible": true
+                  },
+                  {
+                    "id": 566,
+                    "enabled": true,
+                    "label": "Gaussian Blur...",
+                    "visible": true
+                  },
+                  {
+                    "id": 567,
+                    "enabled": true,
+                    "label": "Blur",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 568,
+              "type": "separator"
+            },
+            {
+              "id": 569,
+              "enabled": true,
+              "label": "Reset all Filters",
+              "visible": true
+            },
+            {
+              "id": 570,
+              "shortcut": [["Control", "Shift", "f"]],
+              "enabled": false,
+              "label": "Re-Show Last",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 571,
+                    "enabled": false,
+                    "label": "Empty",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 572,
+              "shortcut": [["Control", "f"]],
+              "enabled": false,
+              "label": "Repeat Last",
+              "visible": true
+            }
+        ]
+      },
+      {
+        "id": 573,
+        "enabled": true,
+        "label": "Windows",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 574,
+              "shortcut": [["Control", "b"]],
+              "enabled": true,
+              "label": "Toolbox",
+              "visible": true
+            },
+            {
+              "id": 575,
+              "type": "separator"
+            },
+            {
+              "id": 576,
+              "enabled": true,
+              "label": "Dockable Dialogs",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 577,
+                    "enabled": true,
+                    "label": "Error Console",
+                    "visible": true
+                  },
+                  {
+                    "id": 578,
+                    "enabled": true,
+                    "label": "Tools",
+                    "visible": true
+                  },
+                  {
+                    "id": 579,
+                    "enabled": true,
+                    "label": "Templates",
+                    "visible": true
+                  },
+                  {
+                    "id": 580,
+                    "enabled": true,
+                    "label": "Document History",
+                    "visible": true
+                  },
+                  {
+                    "id": 581,
+                    "enabled": true,
+                    "label": "Images",
+                    "visible": true
+                  },
+                  {
+                    "id": 582,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 583,
+                    "enabled": true,
+                    "label": "Buffers",
+                    "visible": true
+                  },
+                  {
+                    "id": 584,
+                    "enabled": true,
+                    "label": "Fonts",
+                    "visible": true
+                  },
+                  {
+                    "id": 585,
+                    "enabled": true,
+                    "label": "Palettes",
+                    "visible": true
+                  },
+                  {
+                    "id": 586,
+                    "shortcut": [["Control", "g"]],
+                    "enabled": true,
+                    "label": "Gradients",
+                    "visible": true
+                  },
+                  {
+                    "id": 587,
+                    "shortcut": [["Control", "Shift", "p"]],
+                    "enabled": true,
+                    "label": "Patterns",
+                    "visible": true
+                  },
+                  {
+                    "id": 588,
+                    "shortcut": [["Control", "Shift", "b"]],
+                    "enabled": true,
+                    "label": "Brushes",
+                    "visible": true
+                  },
+                  {
+                    "id": 589,
+                    "enabled": true,
+                    "label": "Colors",
+                    "visible": true
+                  },
+                  {
+                    "id": 590,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 591,
+                    "enabled": true,
+                    "label": "Sample Points",
+                    "visible": true
+                  },
+                  {
+                    "id": 592,
+                    "enabled": true,
+                    "label": "Pointer",
+                    "visible": true
+                  },
+                  {
+                    "id": 593,
+                    "enabled": true,
+                    "label": "Undo History",
+                    "visible": true
+                  },
+                  {
+                    "id": 594,
+                    "enabled": true,
+                    "label": "Navigation",
+                    "visible": true
+                  },
+                  {
+                    "id": 595,
+                    "enabled": true,
+                    "label": "Selection Editor",
+                    "visible": true
+                  },
+                  {
+                    "id": 596,
+                    "enabled": true,
+                    "label": "Histogram",
+                    "visible": true
+                  },
+                  {
+                    "id": 597,
+                    "enabled": true,
+                    "label": "Colormap",
+                    "visible": true
+                  },
+                  {
+                    "id": 598,
+                    "enabled": true,
+                    "label": "Paths",
+                    "visible": true
+                  },
+                  {
+                    "id": 599,
+                    "enabled": true,
+                    "label": "Channels",
+                    "visible": true
+                  },
+                  {
+                    "id": 600,
+                    "shortcut": [["Control", "l"]],
+                    "enabled": true,
+                    "label": "Layers",
+                    "visible": true
+                  },
+                  {
+                    "id": 601,
+                    "type": "separator"
+                  },
+                  {
+                    "id": 602,
+                    "enabled": true,
+                    "label": "Device Status",
+                    "visible": true
+                  },
+                  {
+                    "id": 603,
+                    "enabled": true,
+                    "label": "Tool Options",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 604,
+              "enabled": true,
+              "label": "Recently Closed Docks",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 605,
+                    "enabled": false,
+                    "label": "Empty",
+                    "visible": true
+                  }
+              ]
+            }
+        ]
+      },
+      {
+        "id": 606,
+        "enabled": true,
+        "label": "Help",
+        "children-display": "submenu",
+        "visible": true,
+        "submenu": [
+            {
+              "id": 607,
+              "enabled": true,
+              "label": "User Manual",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 608,
+                    "enabled": true,
+                    "label": "Working with Digital Camera Photos",
+                    "visible": true
+                  },
+                  {
+                    "id": 609,
+                    "enabled": true,
+                    "label": "Using Paths",
+                    "visible": true
+                  },
+                  {
+                    "id": 610,
+                    "enabled": true,
+                    "label": "Preparing your Images for the Web",
+                    "visible": true
+                  },
+                  {
+                    "id": 611,
+                    "enabled": true,
+                    "label": "How to Use Dialogs",
+                    "visible": true
+                  },
+                  {
+                    "id": 612,
+                    "enabled": true,
+                    "label": "Drawing Simple Objects",
+                    "visible": true
+                  },
+                  {
+                    "id": 613,
+                    "enabled": true,
+                    "label": "Create, Open and Save Files",
+                    "visible": true
+                  },
+                  {
+                    "id": 614,
+                    "enabled": true,
+                    "label": "Basic Concepts",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 615,
+              "enabled": true,
+              "label": "GIMP Online",
+              "children-display": "submenu",
+              "visible": true,
+              "submenu": [
+                  {
+                    "id": 616,
+                    "enabled": true,
+                    "label": "User Manual Web Site",
+                    "visible": true
+                  },
+                  {
+                    "id": 617,
+                    "enabled": true,
+                    "label": "Plug-in Registry",
+                    "visible": true
+                  },
+                  {
+                    "id": 618,
+                    "enabled": true,
+                    "label": "Main Web Site",
+                    "visible": true
+                  },
+                  {
+                    "id": 619,
+                    "enabled": true,
+                    "label": "Developer Web Site",
+                    "visible": true
+                  }
+              ]
+            },
+            {
+              "id": 620,
+              "type": "separator"
+            },
+            {
+              "id": 621,
+              "enabled": true,
+              "label": "Procedure Browser",
+              "visible": true
+            },
+            {
+              "id": 622,
+              "enabled": true,
+              "label": "Plug-In Browser",
+              "visible": true
+            },
+            {
+              "id": 623,
+              "type": "separator"
+            },
+            {
+              "id": 624,
+              "enabled": true,
+              "label": "About",
+              "visible": true
+            },
+            {
+              "id": 625,
+              "enabled": true,
+              "label": "Tip of the Day",
+              "visible": true
+            },
+            {
+              "id": 626,
+              "shortcut": [["Shift", "F1"]],
+              "enabled": true,
+              "label": "Context Help",
+              "visible": true
+            },
+            {
+              "id": 627,
+              "shortcut": [["F1"]],
+              "enabled": true,
+              "label": "Help",
+              "visible": true
+            }
+        ]
+      }
+  ]
+}

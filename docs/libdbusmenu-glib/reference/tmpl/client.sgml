@@ -9,12 +9,10 @@ DbusmenuClient
 
 </para>
 
-
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -159,6 +157,7 @@ DbusmenuClient
 
 @client: 
 @id: 
+@gpointer user_data:
 @gpointer user_data: 
 @cb_data: 
 

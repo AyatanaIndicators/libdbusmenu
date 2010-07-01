@@ -43,14 +43,14 @@
 <span class="returnvalue">DbusmenuGtkClient</span> * <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-new" title="dbusmenu_gtkclient_new ()">dbusmenu_gtkclient_new</a>              (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_name</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_object</code></em>);
 <a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span class="returnvalue">GtkMenuItem</span></a> *       <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-menuitem-get" title="dbusmenu_gtkclient_menuitem_get ()">dbusmenu_gtkclient_menuitem_get</a>     (<em class="parameter"><code><span class="type">DbusmenuGtkClient</span> *client</code></em>,
-                                                         <em class="parameter"><code><span class="type">DbusmenuMenuitem</span> *item</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *item</code></em>);
 <a href="/usr/share/gtk-doc/html/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *           <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-menuitem-get-submenu" title="dbusmenu_gtkclient_menuitem_get_submenu ()">dbusmenu_gtkclient_menuitem_get_submenu</a>
                                                         (<em class="parameter"><code><span class="type">DbusmenuGtkClient</span> *client</code></em>,
-                                                         <em class="parameter"><code><span class="type">DbusmenuMenuitem</span> *item</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *item</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-newitem-base" title="dbusmenu_gtkclient_newitem_base ()">dbusmenu_gtkclient_newitem_base</a>     (<em class="parameter"><code><span class="type">DbusmenuGtkClient</span> *client</code></em>,
-                                                         <em class="parameter"><code><span class="type">DbusmenuMenuitem</span> *item</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *item</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> *gmi</code></em>,
-                                                         <em class="parameter"><code><span class="type">DbusmenuMenuitem</span> *parent</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *parent</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -95,7 +95,7 @@
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><span class="type">DbusmenuClientClass</span> <em class="structfield"><code><a name="DbusmenuGtkClientClass.parent-class"></a>parent_class</code></em>;</span></p></td>
+<td><p><span class="term"><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuClient.html#DbusmenuClientClass"><span class="type">DbusmenuClientClass</span></a> <em class="structfield"><code><a name="DbusmenuGtkClientClass.parent-class"></a>parent_class</code></em>;</span></p></td>
 <td>
 <span class="type">GtkMenuClass</span>
 </td>
@@ -134,15 +134,15 @@
 <pre class="programlisting"><span class="returnvalue">DbusmenuGtkClient</span> * dbusmenu_gtkclient_new              (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_name</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_object</code></em>);</pre>
 <p>
-Creates a new <span class="type">DbusmenuGtkClient</span> object and creates a <span class="type">DbusmenuClient</span>
-	that connects across DBus to a <span class="type">DbusmenuServer</span>.
+Creates a new <span class="type">DbusmenuGtkClient</span> object and creates a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuClient.html#DbusmenuClient"><span class="type">DbusmenuClient</span></a>
+	that connects across DBus to a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dbus_name</code></em> :</span></p></td>
-<td>Name of the <span class="type">DbusmenuServer</span> on DBus
+<td>Name of the <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a> on DBus
 </td>
 </tr>
 <tr>
@@ -162,10 +162,10 @@ Creates a new <span class="type">DbusmenuGtkClient</span> object and creates a <
 <div class="refsect2" title="dbusmenu_gtkclient_menuitem_get ()">
 <a name="dbusmenu-gtkclient-menuitem-get"></a><h3>dbusmenu_gtkclient_menuitem_get ()</h3>
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span class="returnvalue">GtkMenuItem</span></a> *       dbusmenu_gtkclient_menuitem_get     (<em class="parameter"><code><span class="type">DbusmenuGtkClient</span> *client</code></em>,
-                                                         <em class="parameter"><code><span class="type">DbusmenuMenuitem</span> *item</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *item</code></em>);</pre>
 <p>
 This grabs the <a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> that is associated with the
-	<span class="type">DbusmenuMenuitem</span>.
+	<a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -178,7 +178,7 @@ This grabs the <a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span clas
 <tr>
 <td><p><span class="term"><em class="parameter"><code>item</code></em> :</span></p></td>
 <td>
-<span class="type">DbusmenuMenuitem</span> to get associated <a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> on.
+<a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to get associated <a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> on.
 </td>
 </tr>
 <tr>
@@ -194,7 +194,7 @@ This grabs the <a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span clas
 <a name="dbusmenu-gtkclient-menuitem-get-submenu"></a><h3>dbusmenu_gtkclient_menuitem_get_submenu ()</h3>
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *           dbusmenu_gtkclient_menuitem_get_submenu
                                                         (<em class="parameter"><code><span class="type">DbusmenuGtkClient</span> *client</code></em>,
-                                                         <em class="parameter"><code><span class="type">DbusmenuMenuitem</span> *item</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *item</code></em>);</pre>
 <p>
 This grabs the submenu associated with the menuitem.
 </p>
@@ -209,7 +209,7 @@ This grabs the submenu associated with the menuitem.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>item</code></em> :</span></p></td>
 <td>
-<span class="type">DbusmenuMenuitem</span> to get associated <a href="/usr/share/gtk-doc/html/gtk/GtkMenu.html"><span class="type">GtkMenu</span></a> on.
+<a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to get associated <a href="/usr/share/gtk-doc/html/gtk/GtkMenu.html"><span class="type">GtkMenu</span></a> on.
 </td>
 </tr>
 <tr>
@@ -224,9 +224,9 @@ This grabs the submenu associated with the menuitem.
 <div class="refsect2" title="dbusmenu_gtkclient_newitem_base ()">
 <a name="dbusmenu-gtkclient-newitem-base"></a><h3>dbusmenu_gtkclient_newitem_base ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                dbusmenu_gtkclient_newitem_base     (<em class="parameter"><code><span class="type">DbusmenuGtkClient</span> *client</code></em>,
-                                                         <em class="parameter"><code><span class="type">DbusmenuMenuitem</span> *item</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *item</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> *gmi</code></em>,
-                                                         <em class="parameter"><code><span class="type">DbusmenuMenuitem</span> *parent</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *parent</code></em>);</pre>
 <p>
 This function provides some of the basic connectivity for being in
 	the GTK world.  Things like visibility and sensitivity of the item are
@@ -236,7 +236,7 @@ This function provides some of the basic connectivity for being in
 </p>
 <p>
 	This also handles passing the "activate" signal back to the
-	<span class="type">DbusmenuMenuitem</span> side of thing.
+	<a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> side of thing.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -248,7 +248,7 @@ This function provides some of the basic connectivity for being in
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>item</code></em> :</span></p></td>
-<td>The <span class="type">DbusmenuMenuitem</span> to attach the GTK-isms to
+<td>The <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to attach the GTK-isms to
 </td>
 </tr>
 <tr>
@@ -258,7 +258,7 @@ This function provides some of the basic connectivity for being in
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>parent</code></em> :</span></p></td>
-<td>The parent <span class="type">DbusmenuMenuitem</span>
+<td>The parent <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>
 </td>
 </tr>
 </tbody>

@@ -1,3 +1,14 @@
+libdbusmenu (0.3.4-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Block building submenus on separators (LP: #598620)
+    * Adding more through JSON support for testing
+    * Fixing up value handling in dbusmenu-dumper
+  * debian/control, debian/libdbusmenu-jsonloader*install: Adding
+    two binary packages for the jsonloader test library.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Jul 2010 09:00:16 -0500
+
 libdbusmenu (0.3.3-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
