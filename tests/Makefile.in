@@ -93,7 +93,9 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(examplesdir)" \
 	"$(DESTDIR)$(libdbusmenu_jsonloaderincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libdbusmenu_jsonloader_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libdbusmenu_jsonloader_la_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_libdbusmenu_jsonloader_la_OBJECTS =  \
 	libdbusmenu_jsonloader_la-json-loader.lo
 libdbusmenu_jsonloader_la_OBJECTS =  \
