@@ -1,53 +1,40 @@
-This package was debianized by Ted Gould <ted@canonical.com> on
-Wed, 11 Feb 2009 15:41:06 -0600.
+Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
+Name: libdbusmenu
+Maintainer: Ted Gould <ted@canonical.com>
+Source: https://launchpad.net/dbusmenu
 
-It was downloaded from <http://launchpad.net/indicator-applet/>
+Files: *
+Copyright: 2009-2010 Ted Gould <ted@canonical.com>, Canonical Ltd.
+License: GPL-3
 
-Upstream Author:
+Files: libdbusmenu-{glib,gtk}/*
+Copyright: 2009-2010 Ted Gould <ted@canonical.com>, Canonical Ltd.
+License: LGPL-2.1 | LGPL-3
 
-    Ted Gould <ted@canonical.com>
+Files: libdbusmenu-glib/dbus-menu.xml
+Copyright: 2009-2010 Ted Gould <ted@canonical.com>, Canonical Ltd.
+Copyright: 2009-2010 Aurélien Gâteau <aurelien.gateau@canonical.com>
+License: LGPL-2.1 | LGPL-3
 
-Copyright:
+Files: tools/{dbusmenu-bench,testapp/main.c}
+Copyright: 2009-2010 Aurélien Gâteau <aurelien.gateau@canonical.com>
+License: LGPL-2.1 | LGPL-3
 
-    Copyright (C) 2009 Canonical Ltd.
+Files: debian/*
+Copyright: 2009-2010 Evgeni Golov <evgeni@debian.org>
+Copyright: 2009-2010 Ted Gould <ted@canonical.com>, Canonical Ltd.
+Copyright: 2009-2010 Sebastien Bacher <seb128@ubuntu.com>
+Copyright: 2009-2010 Ken VanDine <ken.vandine@canonical.com>
+License: GPL-3
 
-License:
+License: GPL-3
+ On Debian systems, the complete text of the GNU General
+ Public License version 3 can be found in `/usr/share/common-licenses/GPL-3'.
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, version 3 of the License.
+License: LGPL-2.1
+ On Debian systems, the complete text of the GNU Lesser General
+ Public License version 2.1 can be found in `/usr/share/common-licenses/LGPL-2.1'.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-
-On Debian systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL-3'.
-
-License for libindicate/* (libindicate0 and libindicate-dev packages):
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 or 3 of the License.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-On Debian systems, the complete text of the GNU Lesser General Public License
-can be found in `/usr/share/common-licenses/LGPL-2.1' and
-`/usr/share/common-licenses/LGPL-3'.
-
-The Debian packaging is (C) 2009, Canonical Ltd. and
-is licensed under the GPLv3, see `/usr/share/common-licenses/GPL-3'.
+License: LGPL-3
+ On Debian systems, the complete text of the GNU Lesser General
+ Public License version 3 can be found in `/usr/share/common-licenses/LGPL-3'.
