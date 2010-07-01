@@ -503,6 +503,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 	#endif
 
 	if (dbusmenu_menuitem_get_root(mi)) { return; }
+	if (g_strcmp0(dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_TYPE), DBUSMENU_CLIENT_TYPES_SEPARATOR) == 0) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	GtkMenu * menu = GTK_MENU(ann_menu);
