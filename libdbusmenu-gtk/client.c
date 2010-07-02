@@ -148,7 +148,9 @@ do_swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 		return FALSE;
 	}
 
+	#ifdef MASSIVEDEBUGGING
 	g_debug("Setting shortcut on '%s': %d %X", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL), key, modifiers);
+	#endif
 
 	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(data->client, mi);
 	if (gmi == NULL) {
