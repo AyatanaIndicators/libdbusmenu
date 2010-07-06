@@ -1,4 +1,4 @@
-libdbusmenu (0.3.4-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.3.4-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Block building submenus on separators (LP: #598620)
