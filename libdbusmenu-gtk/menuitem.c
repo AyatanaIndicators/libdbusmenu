@@ -264,9 +264,10 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 
 	GtkAccelGroup * group = gtk_accel_group_from_accel_closure(closure);
 
-	/* Seriously, if this returns NULL something is seriously
-	   wrong in GTK. */
-	g_return_val_if_fail(group != NULL, FALSE);
+	/* Apparently this is more common than I thought. */
+	if (group == NULL) {
+		return FALSE;
+	}
 
 	GtkAccelKey * key = gtk_accel_group_find(group, find_closure, closure);
 	/* Again, not much we can do except complain loudly. */
