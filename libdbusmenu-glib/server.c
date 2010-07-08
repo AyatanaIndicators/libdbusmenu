@@ -225,15 +225,22 @@ static void
 set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(obj);
+	GError * error = NULL;
 
 	switch (id) {
 	case PROP_DBUS_OBJECT:
 		g_return_if_fail(priv->dbusobject == NULL);
 		priv->dbusobject = g_value_dup_string(value);
-		DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-		dbus_g_connection_register_g_object(connection,
-											priv->dbusobject,
-											obj);
+		DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+
+		if (connection == NULL || error != NULL) {
+			g_warning("Unable to get session bus: %s", error == NULL ? "No message" : error->message);
+			if (error != NULL) { g_error_free(error); }
+		} else {
+			dbus_g_connection_register_g_object(connection,
+			                                    priv->dbusobject,
+			                                    obj);
+		}
 		break;
 	case PROP_ROOT_NODE:
 		if (priv->root != NULL) {

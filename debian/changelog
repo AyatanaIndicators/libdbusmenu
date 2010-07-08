@@ -1,3 +1,12 @@
+libdbusmenu (0.3.5-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    ∘ Protect against NULL nodes (LP: #602444)
+    ∘ Remove extra warnings and messages
+    ∘ Handle not having a session bus better (LP: #598715)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 08 Jul 2010 10:24:18 -0500
+
 libdbusmenu (0.3.4-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
@@ -8,6 +17,15 @@ libdbusmenu (0.3.4-0ubuntu1) maverick; urgency=low
     two binary packages for the jsonloader test library.
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 01 Jul 2010 09:00:16 -0500
+
+libdbusmenu (0.3.3-1) unstable; urgency=low
+
+  * Merge Ubuntu.
+    Preserve Maintainer and Vcs-* fields.
+  * Standards-Version: 3.9.0
+  * Source-Format: 1.0 for now
+
+ -- Evgeni Golov <evgeni@debian.org>  Thu, 01 Jul 2010 11:42:23 +0200
 
 libdbusmenu (0.3.3-0ubuntu1) maverick; urgency=low
 
@@ -34,12 +52,13 @@ libdbusmenu (0.3.2-1) unstable; urgency=low
     - Standards-Version: 3.8.4
     - Fix Homepage URL.
     - Update Vcs-* fields.
+    - -doc packages are Arch:all
   * debian/copyright:
     - Convert to DEP5 format.
     - Add Ken and Sebastien, according to changelog.
     - Add Aurélien Gâteau, according to headers.
 
- -- Evgeni Golov <evgeni@debian.org>  Wed, 16 Jun 2010 11:37:08 +0200
+ -- Evgeni Golov <evgeni@debian.org>  Sun, 20 Jun 2010 13:56:00 +0200
 
 libdbusmenu (0.3.2-0ubuntu1) maverick; urgency=low
 
