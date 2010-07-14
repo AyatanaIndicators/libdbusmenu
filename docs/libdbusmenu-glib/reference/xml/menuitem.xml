@@ -257,7 +257,7 @@ objects and handled appropriately.
 <refsect2 id="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS" role="macro">
 <title>DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</title>
 <indexterm zone="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS"><primary>DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</primary></indexterm>
-<programlisting>#define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "child-display"
+<programlisting>#define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "children-display"
 </programlisting>
 <para>
 </para></refsect2>

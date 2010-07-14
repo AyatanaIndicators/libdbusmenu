@@ -148,3 +148,31 @@ Description: library for passing menus over DBus - GTK+ version documentation
  .
  This package contains developer documentation for libdbusmenu-gtk.
 
+Package: libdbusmenu-jsonloader1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: library for passing menus over DBus - Test lib
+ libdbusmenu passes a menu structure across DBus so that a program can
+ create a menu simply without worrying about how it is displayed on the
+ other side of the bus.
+ .
+ This package contains shared libraries to be by test suites in applications
+ or libraries using dbusmenu.
+
+Package: libdbusmenu-jsonloader-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libdbus-glib-1-dev (>= 0.76),
+         libdbusmenu-glib-dev (= ${binary:Version}),
+         libjson-glib-dev
+Description: library for passing menus over DBus - Test lib
+ libdbusmenu passes a menu structure across DBus so that a program can
+ create a menu simply without worrying about how it is displayed on the
+ other side of the bus.
+ .
+ This package contains files that are needed to build test suites in 
+ applications or libraries using dbusmenu.

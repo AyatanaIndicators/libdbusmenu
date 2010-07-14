@@ -561,6 +561,9 @@ build_proxies (DbusmenuClient * client)
 static gint
 parse_node_get_id (xmlNodePtr node)
 {
+	if (node == NULL) {
+		return -1;
+	}
 	if (node->type != XML_ELEMENT_NODE) {
 		return -1;
 	}
@@ -885,6 +888,10 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 16*1024), "dbusmenu.xml", NULL, 0);
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
+
+	if (root == NULL) {
+		g_warning("Unable to get root node of menu XML");
+	}
 
 	DbusmenuMenuitem * oldroot = priv->root;
 

@@ -1,3 +1,29 @@
+libdbusmenu (0.3.5-1) unstable; urgency=low
+
+  * 
+
+ -- Evgeni Golov <evgeni@debian.org>  Wed, 14 Jul 2010 10:19:38 +0200
+
+libdbusmenu (0.3.5-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    ∘ Protect against NULL nodes (LP: #602444)
+    ∘ Remove extra warnings and messages
+    ∘ Handle not having a session bus better (LP: #598715)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 08 Jul 2010 10:24:18 -0500
+
+libdbusmenu (0.3.4-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Block building submenus on separators (LP: #598620)
+    * Adding more through JSON support for testing
+    * Fixing up value handling in dbusmenu-dumper
+  * debian/control, debian/libdbusmenu-jsonloader*install: Adding
+    two binary packages for the jsonloader test library.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Jul 2010 09:00:16 -0500
+
 libdbusmenu (0.3.3-1) unstable; urgency=low
 
   * Merge Ubuntu.
