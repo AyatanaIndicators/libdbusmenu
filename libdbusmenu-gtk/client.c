@@ -148,7 +148,9 @@ do_swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 		return FALSE;
 	}
 
+	#ifdef MASSIVEDEBUGGING
 	g_debug("Setting shortcut on '%s': %d %X", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL), key, modifiers);
+	#endif
 
 	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(data->client, mi);
 	if (gmi == NULL) {
@@ -503,6 +505,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 	#endif
 
 	if (dbusmenu_menuitem_get_root(mi)) { return; }
+	if (g_strcmp0(dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_TYPE), DBUSMENU_CLIENT_TYPES_SEPARATOR) == 0) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	GtkMenu * menu = GTK_MENU(ann_menu);
