@@ -169,7 +169,7 @@ Depends: ${shlibs:Depends},
          libdbus-glib-1-dev (>= 0.76),
          libdbusmenu-glib-dev (= ${binary:Version}),
          libjson-glib-dev
-Description: library for passing menus over DBus - Test lib
+Description: library for passing menus over DBus - Test lib development files
  libdbusmenu passes a menu structure across DBus so that a program can
  create a menu simply without worrying about how it is displayed on the
  other side of the bus.
