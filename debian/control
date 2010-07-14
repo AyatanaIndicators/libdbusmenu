@@ -158,8 +158,8 @@ Description: library for passing menus over DBus - Test lib
  create a menu simply without worrying about how it is displayed on the
  other side of the bus.
  .
- This package contains shared libraries to be by test suites in applications
- or libraries using dbusmenu.
+ This package contains shared libraries to be used by test suites in
+ applications or libraries using dbusmenu.
 
 Package: libdbusmenu-jsonloader-dev
 Section: libdevel
