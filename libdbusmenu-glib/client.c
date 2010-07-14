@@ -716,6 +716,17 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 void
 dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, const GValue * value, guint timestamp)
 {
+	g_return_if_fail(DBUSMENU_IS_CLIENT(client));
+	g_return_if_fail(id >= 0);
+	g_return_if_fail(name != NULL);
+
+	if (value == NULL) {
+		GValue internalval = {0};
+		g_value_init(&internalval, G_TYPE_INT);
+		g_value_set_int(&internalval, 0);
+		value = &internalval;
+	}
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, GINT_TO_POINTER(id));
 	return;
