@@ -175,6 +175,5 @@ Description: library for passing menus over DBus - Test lib
  create a menu simply without worrying about how it is displayed on the
  other side of the bus.
  .
- This package contains files that are needed to build test suites in applications
- or libraries using dbusmenu.
-
+ This package contains files that are needed to build test suites in 
+ applications or libraries using dbusmenu.
