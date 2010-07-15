@@ -40,8 +40,8 @@
 <pre class="synopsis">#define             <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#DBUSMENU-GTKCLIENT-TYPE:CAPS" title="DBUSMENU_GTKCLIENT_TYPE">DBUSMENU_GTKCLIENT_TYPE</a>
 #define             <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#DBUSMENU-GTKCLIENT-SIGNAL-ROOT-CHANGED:CAPS" title="DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED">DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED</a>
                     <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#DbusmenuGtkClientClass" title="DbusmenuGtkClientClass">DbusmenuGtkClientClass</a>;
-<span class="returnvalue">DbusmenuGtkClient</span> * <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-new" title="dbusmenu_gtkclient_new ()">dbusmenu_gtkclient_new</a>              (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_object</code></em>);
+<span class="returnvalue">DbusmenuGtkClient</span> * <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-new" title="dbusmenu_gtkclient_new ()">dbusmenu_gtkclient_new</a>              (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_name</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_object</code></em>);
 <a href="/usr/share/gtk-doc/html/gtk/GtkMenuItem.html"><span class="returnvalue">GtkMenuItem</span></a> *       <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-menuitem-get" title="dbusmenu_gtkclient_menuitem_get ()">dbusmenu_gtkclient_menuitem_get</a>     (<em class="parameter"><code><span class="type">DbusmenuGtkClient</span> *client</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *item</code></em>);
 <a href="/usr/share/gtk-doc/html/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *           <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-menuitem-get-submenu" title="dbusmenu_gtkclient_menuitem_get_submenu ()">dbusmenu_gtkclient_menuitem_get_submenu</a>
@@ -131,8 +131,8 @@
 <hr>
 <div class="refsect2" title="dbusmenu_gtkclient_new ()">
 <a name="dbusmenu-gtkclient-new"></a><h3>dbusmenu_gtkclient_new ()</h3>
-<pre class="programlisting"><span class="returnvalue">DbusmenuGtkClient</span> * dbusmenu_gtkclient_new              (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_object</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">DbusmenuGtkClient</span> * dbusmenu_gtkclient_new              (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_name</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_object</code></em>);</pre>
 <p>
 Creates a new <span class="type">DbusmenuGtkClient</span> object and creates a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuClient.html#DbusmenuClient"><span class="type">DbusmenuClient</span></a>
 	that connects across DBus to a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a>.

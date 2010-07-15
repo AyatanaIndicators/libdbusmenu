@@ -1,3 +1,10 @@
+libdbusmenu (0.3.6-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    ∘ Protect against NULL values as event
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 15 Jul 2010 09:38:38 -0500
+
 libdbusmenu (0.3.5-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
