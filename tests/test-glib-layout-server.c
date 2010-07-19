@@ -78,6 +78,7 @@ main (int argc, char ** argv)
 	GError * error = NULL;
 
 	g_type_init();
+	g_log_set_always_fatal(G_LOG_LEVEL_WARNING);
 
 	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));

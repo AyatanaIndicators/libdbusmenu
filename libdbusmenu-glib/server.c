@@ -37,8 +37,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 /* DBus Prototypes */
 static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error);
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
-static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * properties, GHashTable ** dict, GError ** error);
-static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
+static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
+static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
@@ -480,7 +480,7 @@ _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * propert
 }
 
 static gboolean
-_dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * properties, GHashTable ** dict, GError ** error)
+_dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
@@ -501,16 +501,45 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * p
 	return TRUE;
 }
 
+/* Handles getting a bunch of properties from a variety of menu items
+   to make one mega dbus message */
 static gboolean
-_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error)
+_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error)
 {
-	if (error != NULL) {
-		g_set_error(error,
-					error_quark(),
-					NOT_IMPLEMENTED,
-					"The GetGroupProperties function is not implemented, sorry.");
+	/* Build an initial pointer array */
+	*values = g_ptr_array_new();
+
+	/* Go through each ID to get that ID's properties */
+	int idcnt;
+	for (idcnt = 0; idcnt < ids->len; idcnt++) {
+		GHashTable * idprops = NULL;
+		GError * error = NULL;
+		gint id = g_array_index(ids, int, idcnt);
+
+		/* Get the properties for this ID the old fashioned way. */
+		if (!_dbusmenu_server_get_properties(server, id, properties, &idprops, &error)) {
+			g_warning("Error getting the properties from ID %d: %s", id, error->message);
+			g_error_free(error);
+			error = NULL;
+			continue;
+		}
+
+		GValueArray * valarray = g_value_array_new(2);
+
+		GValue idval = {0};
+		g_value_init(&idval, G_TYPE_INT);
+		g_value_set_int(&idval, id);
+		g_value_array_append(valarray, &idval);
+
+		GValue propval = {0};
+		g_value_init(&propval, G_TYPE_HASH_TABLE);
+		g_value_set_boxed(&propval, idprops);
+		g_value_array_append(valarray, &propval);
+
+		g_ptr_array_add(*values, valarray);
 	}
-	return FALSE;
+
+	return TRUE;
 }
 
 static void
