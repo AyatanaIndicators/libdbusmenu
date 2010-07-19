@@ -109,6 +109,7 @@ static gint parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
 static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
+static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -310,6 +311,16 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal funcs */
 
+/* A function to group all the get_properties commands to make them
+   more efficient over dbus. */
+static void
+get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	org_ayatana_dbusmenu_get_properties_async(priv->menuproxy, id, properties, callback, user_data);
+	return;
+}
+
 /* Annoying little wrapper to make the right function update */
 static void
 layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient * client)
@@ -370,7 +381,7 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 	gchar * properties[1] = {NULL}; /* This gets them all */
 	g_debug("Getting properties");
 	g_object_ref(menuitem);
-	org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
+	get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
 	return;
 }
 
@@ -821,7 +832,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 			gchar * properties[1] = {NULL}; /* This gets them all */
 			g_object_ref(item);
-			org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
+			get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
 		}
@@ -830,7 +841,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
 		gchar * properties[1] = {NULL}; /* This gets them all */
 		g_object_ref(item);
-		org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
+		get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
 	}
 
 	xmlNodePtr children;
