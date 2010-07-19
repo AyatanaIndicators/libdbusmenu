@@ -340,6 +340,33 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 static void 
 get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *error, gpointer userdata)
 {
+	GArray * listeners = (GArray *)userdata;
+	int i;
+
+	if (error != NULL) {
+		/* If we get an error, all our callbacks need to hear about it. */
+		g_warning("Group Properties error: %s", error->message);
+		for (i = 0; i < listeners->len; i++) {
+			properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
+			listener->callback(proxy, NULL, error, listener->user_data);
+		}
+		g_array_free(listeners, TRUE);
+		return;
+	}
+
+	/* Callback all the folks we can find */
+	for (i = 0; i < OUT_properties->len; i++) {
+		g_error("Properties type: %s", G_OBJECT_TYPE_NAME(g_ptr_array_index(OUT_properties, i)));
+
+	}
+
+	/* Provide errors for those who we can't */
+	for (i = 0; i < listeners->len; i++) {
+
+	}
+
+	/* Clean up */
+	g_array_free(listeners, TRUE);
 
 	return;
 }
@@ -357,6 +384,7 @@ get_properties_idle (gpointer user_data)
 		return FALSE;
 	}
 
+	/* Build up an ID list to pass */
 	GArray * idlist = g_array_new(FALSE, FALSE, sizeof(gint));
 	gint i;
 	for (i = 0; i < priv->delayed_property_listeners->len; i++) {
