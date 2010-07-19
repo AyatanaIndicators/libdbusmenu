@@ -51,6 +51,15 @@ AC_SUBST(DBUSMENUGTK_CFLAGS)
 AC_SUBST(DBUSMENUGTK_LIBS)
 
 ###########################
+# Dependencies - tools
+###########################
+
+PKG_CHECK_MODULES(DBUSMENUTOOLS, x11)
+
+AC_SUBST(DBUSMENUTOOLS_CFLAGS)
+AC_SUBST(DBUSMENUTOOLS_LIBS)
+
+###########################
 # Dependencies - Testing
 ###########################
 

@@ -10,11 +10,11 @@ dbusmenu_dumper_SOURCES = \
 
 dbusmenu_dumper_CFLAGS = \
 	-I $(srcdir)/.. \
-	$(DBUSMENUGLIB_CFLAGS) -I/usr/include/dbus-1.0 -Wall -Werror
+	$(DBUSMENUGLIB_CFLAGS) $(DBUSMENUTOOLS_CFLAGS) -Wall -Werror
 
 dbusmenu_dumper_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS) -lX11 -ldbus-glib-1
+	$(DBUSMENUGLIB_LIBS) $(DBUSMENUTOOLS_LIBS)
 
 doc_DATA = README.dbusmenu-bench
 
