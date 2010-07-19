@@ -78,6 +78,9 @@ struct _DbusmenuClientPrivate
 	DBusGProxy * dbusproxy;
 
 	GHashTable * type_handlers;
+
+	GArray * delayed_property_list;
+	GArray * delayed_property_listeners;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -86,6 +89,14 @@ struct _newItemPropData
 	DbusmenuClient * client;
 	DbusmenuMenuitem * item;
 	DbusmenuMenuitem * parent;
+};
+
+typedef struct _properties_listener_t properties_listener_t;
+struct _properties_listener_t {
+	DbusmenuClient * client;
+	gint id;
+	org_ayatana_dbusmenu_get_properties_reply callback;
+	gpointer user_data;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -212,6 +223,9 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
 	                                            g_free, NULL);
 
+	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
+	priv->delayed_property_listeners = g_array_new(FALSE, FALSE, sizeof(properties_listener_t));
+
 	return;
 }
 
@@ -219,6 +233,9 @@ static void
 dbusmenu_client_dispose (GObject *object)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(object);
+
+	/* TODO: Handle delayed_property_list */
+	/* TODO: Handle delayed_property_listeners */
 
 	if (priv->layoutcall != NULL) {
 		dbus_g_proxy_cancel_call(priv->menuproxy, priv->layoutcall);
@@ -317,6 +334,32 @@ static void
 get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (properties == NULL || properties[0] == NULL) {
+		/* get all case */
+		if (priv->delayed_property_list->len != 0) {
+			/* If there are entries in the list, then we'll need to
+			   remove them all, and start over */
+			gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
+			if (dataregion != NULL) {
+				g_strfreev(dataregion);
+			}
+			priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
+		}
+	} else {
+		/* there could be a list we care about */
+		/* TODO: No one uses this today */
+		/* TODO: Copy them into the list */
+	}
+
+	properties_listener_t listener = {0};
+	listener.client = client;
+	listener.id = id;
+	listener.callback = callback;
+	listener.user_data = user_data;
+
+	g_array_append_val(priv->delayed_property_listeners, listener);
+
 	org_ayatana_dbusmenu_get_properties_async(priv->menuproxy, id, properties, callback, user_data);
 	return;
 }
