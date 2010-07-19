@@ -81,6 +81,7 @@ struct _DbusmenuClientPrivate
 
 	GArray * delayed_property_list;
 	GArray * delayed_property_listeners;
+	gint delayed_idle;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -223,6 +224,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
 	                                            g_free, NULL);
 
+	priv->delayed_idle = 0;
 	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
 	priv->delayed_property_listeners = g_array_new(FALSE, FALSE, sizeof(properties_listener_t));
 
@@ -233,6 +235,11 @@ static void
 dbusmenu_client_dispose (GObject *object)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(object);
+
+	if (priv->delayed_idle != 0) {
+		g_source_remove(priv->delayed_idle);
+		priv->delayed_idle = 0;
+	}
 
 	/* TODO: Handle delayed_property_list */
 	/* TODO: Handle delayed_property_listeners */
@@ -328,6 +335,55 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal funcs */
 
+/* Call back from getting the group properties, now we need
+   to unwind and call the various functions. */
+static void 
+get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *error, gpointer userdata)
+{
+
+	return;
+}
+
+/* Idle handler to send out all of our property requests as one big
+   lovely property request. */
+static gboolean
+get_properties_idle (gpointer user_data)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
+	//org_ayatana_dbusmenu_get_properties_async(priv->menuproxy, id, properties, callback, user_data);
+
+	if (priv->delayed_property_listeners->len == 0) {
+		g_warning("Odd, idle func got no listeners.");
+		return FALSE;
+	}
+
+	GArray * idlist = g_array_new(FALSE, FALSE, sizeof(gint));
+	gint i;
+	for (i = 0; i < priv->delayed_property_listeners->len; i++) {
+		g_array_append_val(idlist, g_array_index(priv->delayed_property_listeners, properties_listener_t, i).id);
+	}
+
+	org_ayatana_dbusmenu_get_group_properties_async(priv->menuproxy, idlist, (const gchar **)priv->delayed_property_list->data, get_properties_callback, priv->delayed_property_listeners);
+
+	/* Free ID List */
+	g_array_free(idlist, TRUE);
+
+	/* Free properties */
+	gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
+	if (dataregion != NULL) {
+		g_strfreev(dataregion);
+	}
+	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
+
+	/* Rebuild the listeners */
+	priv->delayed_property_listeners = g_array_new(FALSE, FALSE, sizeof(properties_listener_t));
+
+	/* Make sure we set for a new idle */
+	priv->delayed_idle = 0;
+
+	return FALSE;
+}
+
 /* A function to group all the get_properties commands to make them
    more efficient over dbus. */
 static void
@@ -360,7 +416,10 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 
 	g_array_append_val(priv->delayed_property_listeners, listener);
 
-	org_ayatana_dbusmenu_get_properties_async(priv->menuproxy, id, properties, callback, user_data);
+	if (priv->delayed_idle == 0) {
+		priv->delayed_idle = g_idle_add(get_properties_idle, client);
+	}
+
 	return;
 }
 
