@@ -122,6 +122,7 @@ static void update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError
 static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
 static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
+static GQuark error_domain (void);
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -261,7 +262,7 @@ dbusmenu_client_dispose (GObject *object)
 			properties_listener_t * listener = &g_array_index(priv->delayed_property_listeners, properties_listener_t, i);
 			if (!listener->replied) {
 				if (localerror == NULL) {
-					g_set_error_literal(&localerror, 0, 0, "DbusmenuClient Shutdown");
+					g_set_error_literal(&localerror, error_domain(), 0, "DbusmenuClient Shutdown");
 				}
 				listener->callback(priv->menuproxy, NULL, localerror, listener->user_data);
 			}
@@ -365,6 +366,16 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal funcs */
 
+static GQuark
+error_domain (void)
+{
+	static GQuark error = 0;
+	if (error == 0) {
+		error = g_quark_from_static_string(G_LOG_DOMAIN "-CLIENT");
+	}
+	return error;
+}
+
 /* Quick little function to search through the listeners and find
    one that matches an ID */
 static properties_listener_t *
@@ -447,7 +458,7 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 		properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
 		if (!listener->replied) {
 			if (localerror == NULL) {
-				g_set_error_literal(&localerror, 0, 0, "Error getting properties for ID");
+				g_set_error_literal(&localerror, error_domain(), 0, "Error getting properties for ID");
 			}
 			listener->callback(proxy, NULL, localerror, listener->user_data);
 		}
@@ -512,7 +523,7 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 	if (find_listener(priv->delayed_property_listeners, 0, id) != NULL) {
 		g_warning("Asking for properties from same ID twice: %d", id);
 		GError * localerror = NULL;
-		g_set_error_literal(&localerror, 0, 0, "ID already queued");
+		g_set_error_literal(&localerror, error_domain(), 0, "ID already queued");
 		callback(priv->menuproxy, NULL, localerror, user_data);
 		g_error_free(localerror);
 		return;
