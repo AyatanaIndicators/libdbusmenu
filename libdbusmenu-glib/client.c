@@ -618,10 +618,9 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	gchar * properties[1] = {NULL}; /* This gets them all */
 	g_debug("Getting properties");
 	g_object_ref(menuitem);
-	get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
+	get_properties_globber(client, id, NULL, menuitem_get_properties_cb, menuitem);
 	return;
 }
 
@@ -1073,18 +1072,16 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			propdata->item    = item;
 			propdata->parent  = parent;
 
-			gchar * properties[1] = {NULL}; /* This gets them all */
 			g_object_ref(item);
-			get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
+			get_properties_globber(client, id, NULL, menuitem_get_properties_new_cb, propdata);
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
 		}
 	} else {
 		/* Refresh the properties */
 		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
-		gchar * properties[1] = {NULL}; /* This gets them all */
 		g_object_ref(item);
-		get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
+		get_properties_globber(client, id, NULL, menuitem_get_properties_replace_cb, item);
 	}
 
 	xmlNodePtr children;
