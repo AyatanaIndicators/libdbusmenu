@@ -639,10 +639,9 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	gchar * properties[1] = {NULL}; /* This gets them all */
 	g_debug("Getting properties");
 	g_object_ref(menuitem);
-	get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
+	get_properties_globber(client, id, NULL, menuitem_get_properties_cb, menuitem);
 	return;
 }
 
