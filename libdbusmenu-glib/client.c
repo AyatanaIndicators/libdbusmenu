@@ -390,7 +390,9 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 	GArray * listeners = (GArray *)userdata;
 	int i;
 
+	#ifdef MASSIVEDEBUGGING
 	g_debug("Get properties callback: %d", OUT_properties->len);
+	#endif
 
 	if (error != NULL) {
 		/* If we get an error, all our callbacks need to hear about it. */
