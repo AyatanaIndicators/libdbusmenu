@@ -906,16 +906,19 @@ menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties,
 static void
 menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
+	g_return_if_fail(data != NULL);
+	newItemPropData * propdata = (newItemPropData *)data;
+
 	if (error != NULL) {
 		g_warning("Error getting properties on a new menuitem: %s", error->message);
-		g_object_unref(data);
+		g_object_unref(propdata->item);
+		g_free(data);
 		return;
 	}
-	g_return_if_fail(data != NULL);
 
-	newItemPropData * propdata = (newItemPropData *)data;
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
 
+	/* Extra ref as get_properties will unref once itself */
 	g_object_ref(propdata->item);
 	menuitem_get_properties_cb (proxy, properties, error, propdata->item);
 
