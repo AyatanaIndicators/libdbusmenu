@@ -55,7 +55,8 @@ am_dbusmenu_dumper_OBJECTS =  \
 dbusmenu_dumper_OBJECTS = $(am_dbusmenu_dumper_OBJECTS)
 am__DEPENDENCIES_1 =
 dbusmenu_dumper_DEPENDENCIES =  \
-	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1)
+	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -173,6 +174,8 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
+DBUSMENUDUMPER_CFLAGS = @DBUSMENUDUMPER_CFLAGS@
+DBUSMENUDUMPER_LIBS = @DBUSMENUDUMPER_LIBS@
 DBUSMENUGLIB_CFLAGS = @DBUSMENUGLIB_CFLAGS@
 DBUSMENUGLIB_LIBS = @DBUSMENUGLIB_LIBS@
 DBUSMENUGTK_CFLAGS = @DBUSMENUGTK_CFLAGS@
@@ -325,11 +328,14 @@ dbusmenu_dumper_SOURCES = \
 
 dbusmenu_dumper_CFLAGS = \
 	-I $(srcdir)/.. \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUDUMPER_CFLAGS) \
+	-Wall -Werror
 
 dbusmenu_dumper_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+	$(DBUSMENUGLIB_LIBS) \
+	$(DBUSMENUDUMPER_LIBS)
 
 doc_DATA = README.dbusmenu-bench
 EXTRA_DIST = \
