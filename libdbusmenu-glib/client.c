@@ -1038,6 +1038,36 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 	return;
 }
 
+/* Builds a new child with property requests and everything
+   else to clean up the code a bit */
+static DbusmenuMenuitem *
+parse_layout_new_child (gint id, DbusmenuClient * client, DbusmenuMenuitem * parent)
+{
+	DbusmenuMenuitem * item = NULL;
+
+	/* Build a new item */
+	item = DBUSMENU_MENUITEM(dbusmenu_client_menuitem_new(id, client));
+	if (parent == NULL) {
+		dbusmenu_menuitem_set_root(item, TRUE);
+	}
+
+	/* Get the properties queued up for this item */
+	/* Not happy allocating about this, but I need these :( */
+	newItemPropData * propdata = g_new0(newItemPropData, 1);
+	if (propdata != NULL) {
+		propdata->client  = client;
+		propdata->item    = item;
+		propdata->parent  = parent;
+
+		g_object_ref(item);
+		get_properties_globber(client, id, NULL, menuitem_get_properties_new_cb, propdata);
+	} else {
+		g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
+	}
+
+	return item;
+}
+
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
@@ -1060,25 +1090,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 
 		/* Build a new item */
-		item = DBUSMENU_MENUITEM(dbusmenu_client_menuitem_new(id, client));
-		if (parent == NULL) {
-			dbusmenu_menuitem_set_root(item, TRUE);
-		}
-
-		/* Get the properties queued up for this item */
-		/* Not happy about this, but I need these :( */
-		newItemPropData * propdata = g_new0(newItemPropData, 1);
-		if (propdata != NULL) {
-			propdata->client  = client;
-			propdata->item    = item;
-			propdata->parent  = parent;
-
-			gchar * properties[1] = {NULL}; /* This gets them all */
-			g_object_ref(item);
-			get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
-		} else {
-			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
-		}
+		item = parse_layout_new_child(id, client, parent);
 	} else {
 		/* Refresh the properties */
 		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
