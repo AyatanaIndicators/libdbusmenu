@@ -1089,20 +1089,9 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client looking at node with id: %d", id);
 	#endif
-	/* If we don't have any item, or the IDs don't match */
-	if (item == NULL || dbusmenu_menuitem_get_id(item) != id) {
-		if (item != NULL) {
-			if (parent != NULL) {
-				dbusmenu_menuitem_child_delete(parent, item);
-			}
-			item = NULL;
-		}
 
-		/* Build a new item */
-		item = parse_layout_new_child(id, client, parent);
-	} else {
-		parse_layout_update(item, client);
-	}
+	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(id == dbusmenu_menuitem_get_id(item), NULL);
 
 	xmlNodePtr children;
 	guint position;
@@ -1133,6 +1122,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			g_object_unref(childmi);
 		} else {
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
+			parse_layout_update(childmi, client);
 		}
 
 		parse_layout_xml(client, children, childmi, item, proxy);
@@ -1174,6 +1164,10 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	}
 
 	DbusmenuMenuitem * oldroot = priv->root;
+
+	if (priv->root == NULL) {
+		priv->root = parse_layout_new_child(0, client, NULL);
+	}
 
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
 	xmlFreeDoc(xmldoc);
