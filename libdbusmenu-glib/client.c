@@ -1082,6 +1082,7 @@ parse_layout_update (DbusmenuMenuitem * item, DbusmenuClient * client)
 static DbusmenuMenuitem *
 parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
 {
+	/* First verify and figure out what we've got */
 	gint id = parse_node_get_id(node);
 	if (id < 0) {
 		return NULL;
@@ -1093,11 +1094,14 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(id == dbusmenu_menuitem_get_id(item), NULL);
 
+	/* Some variables */
 	xmlNodePtr children;
 	guint position;
 	GList * oldchildren = g_list_copy(dbusmenu_menuitem_get_children(item));
 	/* g_debug("Starting old children: %d", g_list_length(oldchildren)); */
 
+	/* Go through all the XML Nodes and make sure that we have menuitems
+	   to cover those XML nodes. */
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
 		/* g_debug("Looking at child: %d", position); */
 		gint childid = parse_node_get_id(children);
@@ -1106,6 +1110,8 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 		DbusmenuMenuitem * childmi = NULL;
 
+		/* First see if we can recycle a node that we've already built
+		   on this menu item */
 		GList * childsearch = NULL;
 		for (childsearch = oldchildren; childsearch != NULL; childsearch = g_list_next(childsearch)) {
 			DbusmenuMenuitem * cs_mi = DBUSMENU_MENUITEM(childsearch->data);
@@ -1117,16 +1123,19 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 
 		if (childmi == NULL) {
+			/* If we can't recycle, then we build a new one */
 			childmi = parse_layout_new_child(childid, client, item);
 			dbusmenu_menuitem_child_add_position(item, childmi, position);
 			g_object_unref(childmi);
 		} else {
+			/* If we can recycle, make sure it's in the right place */
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
 			parse_layout_update(childmi, client);
 		}
 	}
 
-	/* g_debug("Stopping old children: %d", g_list_length(oldchildren)); */
+	/* Remove any children that are no longer used by this version of
+	   the layout. */
 	GList * oldchildleft = NULL;
 	for (oldchildleft = oldchildren; oldchildleft != NULL; oldchildleft = g_list_next(oldchildleft)) {
 		DbusmenuMenuitem * oldmi = DBUSMENU_MENUITEM(oldchildleft->data);
