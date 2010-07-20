@@ -1068,6 +1068,15 @@ parse_layout_new_child (gint id, DbusmenuClient * client, DbusmenuMenuitem * par
 	return item;
 }
 
+/* Refresh the properties on this item */
+static void
+parse_layout_update (DbusmenuMenuitem * item, DbusmenuClient * client)
+{
+	g_object_ref(item);
+	get_properties_globber(client, dbusmenu_menuitem_get_id(item), NULL, menuitem_get_properties_replace_cb, item);
+	return;
+}
+
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
@@ -1092,11 +1101,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		/* Build a new item */
 		item = parse_layout_new_child(id, client, parent);
 	} else {
-		/* Refresh the properties */
-		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
-		gchar * properties[1] = {NULL}; /* This gets them all */
-		g_object_ref(item);
-		get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
+		parse_layout_update(item, client);
 	}
 
 	xmlNodePtr children;
