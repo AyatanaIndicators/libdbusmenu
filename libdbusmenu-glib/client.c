@@ -241,8 +241,38 @@ dbusmenu_client_dispose (GObject *object)
 		priv->delayed_idle = 0;
 	}
 
-	/* TODO: Handle delayed_property_list */
-	/* TODO: Handle delayed_property_listeners */
+	/* Only used for queueing up a new command, so we can
+	   just drop this array. */
+	if (priv->delayed_property_list == NULL) {
+		gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
+		if (dataregion != NULL) {
+			g_strfreev(dataregion);
+		}
+		priv->delayed_property_list = NULL;
+	}
+
+	if (priv->delayed_property_listeners == NULL) {
+		gint i;
+		GError * localerror = NULL;
+
+		/* Making sure all the callbacks get called so that if they had
+		   memory in their user_data that needs to be free'd that happens. */
+		for (i = 0; i < priv->delayed_property_listeners->len; i++) {
+			properties_listener_t * listener = &g_array_index(priv->delayed_property_listeners, properties_listener_t, i);
+			if (!listener->replied) {
+				if (localerror == NULL) {
+					g_set_error_literal(&localerror, 0, 0, "DbusmenuClient Shutdown");
+				}
+				listener->callback(priv->menuproxy, NULL, localerror, listener->user_data);
+			}
+		}
+		if (localerror != NULL) {
+			g_error_free(localerror);
+		}
+
+		g_array_free(priv->delayed_property_listeners, TRUE);
+		priv->delayed_property_listeners = NULL;
+	}
 
 	if (priv->layoutcall != NULL) {
 		dbus_g_proxy_cancel_call(priv->menuproxy, priv->layoutcall);
