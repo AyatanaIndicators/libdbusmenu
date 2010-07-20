@@ -429,8 +429,12 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 
 		properties_listener_t * listener = find_listener(listeners, 0, id);
 
-		listener->callback(proxy, properties, NULL, listener->user_data);
-		listener->replied = TRUE;
+		if (!listener->replied) {
+			listener->callback(proxy, properties, NULL, listener->user_data);
+			listener->replied = TRUE;
+		} else {
+			g_warning("Odd, we've already replied to the listener on ID %d", id);
+		}
 	}
 
 	/* Provide errors for those who we can't */
