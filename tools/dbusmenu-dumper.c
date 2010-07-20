@@ -314,7 +314,8 @@ usage (void)
 
 static GOptionEntry general_options[] = {
 	{"dbus-name",     'd',  0,                        G_OPTION_ARG_CALLBACK,  option_dbusname, "The name of the program to connect to (i.e. org.test.bob", "dbusname"},
-	{"dbus-object",   'o',  0,                        G_OPTION_ARG_CALLBACK,  option_dbusobject, "The path to the Dbus object (i.e /org/test/bob/alvin)", "dbusobject"}
+	{"dbus-object",   'o',  0,                        G_OPTION_ARG_CALLBACK,  option_dbusobject, "The path to the Dbus object (i.e /org/test/bob/alvin)", "dbusobject"},
+	{NULL}
 };
 
 int
@@ -350,7 +351,6 @@ main (int argc, char ** argv)
 			return 1;
 		}
 		g_debug("dbusname: %s, dbusobject: %s", dbusname, dbusobject);
-		return 1;
 	} else {
 		if (dbusname == NULL) {
 			g_printerr("ERROR: dbus-name not specified\n");
