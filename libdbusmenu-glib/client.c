@@ -94,10 +94,10 @@ struct _newItemPropData
 
 typedef struct _properties_listener_t properties_listener_t;
 struct _properties_listener_t {
-	DbusmenuClient * client;
 	gint id;
 	org_ayatana_dbusmenu_get_properties_reply callback;
 	gpointer user_data;
+	gboolean replied;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -398,11 +398,22 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 		properties_listener_t * listener = find_listener(listeners, 0, id);
 
 		listener->callback(proxy, properties, NULL, listener->user_data);
+		listener->replied = TRUE;
 	}
 
 	/* Provide errors for those who we can't */
+	GError * localerror = NULL;
 	for (i = 0; i < listeners->len; i++) {
-
+		properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
+		if (!listener->replied) {
+			if (localerror == NULL) {
+				g_set_error_literal(&localerror, 0, 0, "Error getting properties for ID");
+			}
+			listener->callback(proxy, NULL, localerror, listener->user_data);
+		}
+	}
+	if (localerror != NULL) {
+		g_error_free(localerror);
 	}
 
 	/* Clean up */
@@ -477,10 +488,10 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 	}
 
 	properties_listener_t listener = {0};
-	listener.client = client;
 	listener.id = id;
 	listener.callback = callback;
 	listener.user_data = user_data;
+	listener.replied = FALSE;
 
 	g_array_append_val(priv->delayed_property_listeners, listener);
 
