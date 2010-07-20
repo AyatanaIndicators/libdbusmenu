@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE  "item-property-updated"
 #define DBUSMENU_SERVER_SIGNAL_ID_UPDATE       "item-updated"
 #define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED  "layout-updated"
+#define DBUSMENU_SERVER_SIGNAL_ITEM_ACTIVATION "item-activation-requested"
 #define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE   DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED
 
 #define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
@@ -73,7 +74,7 @@ struct _DbusmenuServerClass {
 	void (*id_prop_update)(gint id, gchar * property, gchar * value);
 	void (*id_update)(gint id);
 	void (*layout_updated)(gint revision);
-	void (*item_activation_requested)(gint id, guint timestamp);
+	void (*item_activation)(gint id, guint timestamp);
 
 	/* Reserved */
 	void (*dbusmenu_server_reserved1)(void);

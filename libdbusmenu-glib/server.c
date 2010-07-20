@@ -65,6 +65,7 @@ enum {
 	ID_PROP_UPDATE,
 	ID_UPDATE,
 	LAYOUT_UPDATED,
+	ITEM_ACTIVATION,
 	LAST_SIGNAL
 };
 
@@ -165,6 +166,22 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         NULL, NULL,
 	                                         _dbusmenu_server_marshal_VOID__UINT_INT,
 	                                         G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_INT);
+	/**
+		DbusmenuServer::item-activation-requested:
+		@arg0: The #DbusmenuServer emitting the signal.
+		@arg1: The ID of the parent for this update.
+		@arg2: The timestamp of when the event happened
+
+		This is signaled when a menuitem under this server
+		sends it's activate signal.
+	*/
+	signals[ITEM_ACTIVATION] =  g_signal_new(DBUSMENU_SERVER_SIGNAL_ITEM_ACTIVATION,
+	                                         G_TYPE_FROM_CLASS(class),
+	                                         G_SIGNAL_RUN_LAST,
+	                                         G_STRUCT_OFFSET(DbusmenuServerClass, item_activation),
+	                                         NULL, NULL,
+	                                         _dbusmenu_server_marshal_VOID__INT_UINT,
+	                                         G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
 
 
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
