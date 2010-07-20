@@ -1167,6 +1167,8 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 	if (priv->root == NULL) {
 		priv->root = parse_layout_new_child(0, client, NULL);
+	} else {
+		parse_layout_update(priv->root, client);
 	}
 
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
