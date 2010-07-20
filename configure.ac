@@ -51,13 +51,16 @@ AC_SUBST(DBUSMENUGTK_CFLAGS)
 AC_SUBST(DBUSMENUGTK_LIBS)
 
 ###########################
-# Dependencies - tools
+# Dependencies - dumper
 ###########################
 
-PKG_CHECK_MODULES(DBUSMENUTOOLS, x11)
+X11_REQUIRED_VERSION=1.3
 
-AC_SUBST(DBUSMENUTOOLS_CFLAGS)
-AC_SUBST(DBUSMENUTOOLS_LIBS)
+PKG_CHECK_MODULES(DBUSMENUDUMPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                  x11 >= $X11_REQUIRED_VERSION)
+
+AC_SUBST(DBUSMENUDUMPER_CFLAGS)
+AC_SUBST(DBUSMENUDUMPER_LIBS)
 
 ###########################
 # Dependencies - Testing

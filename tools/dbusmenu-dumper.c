@@ -23,6 +23,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib.h>
 #include <dbus/dbus-glib.h>
 
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+#include <gtk/gtk.h>
+
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-glib/menuitem.h>
 
@@ -93,6 +97,12 @@ new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
 	return;
 }
 
+/* Window clicking ***************************************************/
+static GdkFilterReturn
+click_filter (GdkXEvent *gdk_xevent,
+              GdkEvent  *event,
+              gpointer   data);
+
 static Window
 find_real_window(Display * display, Window w, int depth)
 {
@@ -148,6 +158,91 @@ get_window_under_cursor()
 	return find_real_window(display, child, 0);
 }
 
+static void
+uninstall_click_filter (void)
+{
+	GdkWindow *root;
+
+	root = gdk_get_default_root_window ();
+	gdk_window_remove_filter (root, (GdkFilterFunc) click_filter, NULL);
+
+	gdk_pointer_ungrab (GDK_CURRENT_TIME);
+	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
+
+	gtk_main_quit ();
+}
+
+static GdkFilterReturn
+click_filter (GdkXEvent *gdk_xevent,
+              GdkEvent  *event,
+              gpointer   data)
+
+{
+	XEvent *xevent = (XEvent *) gdk_xevent;
+	gboolean *success = (gboolean *)data;
+
+	switch (xevent->type) {
+	case ButtonPress:
+		uninstall_click_filter();
+		*success = TRUE;
+		return GDK_FILTER_REMOVE;
+	case KeyPress:
+		if (xevent->xkey.keycode == XKeysymToKeycode(gdk_display, XK_Escape)) {
+			uninstall_click_filter();
+			*success = FALSE;
+			return GDK_FILTER_REMOVE;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return GDK_FILTER_CONTINUE;
+}
+
+static gboolean
+install_click_filter (gpointer data)
+{
+	GdkGrabStatus  status;
+	GdkCursor     *cross;
+	GdkWindow     *root;
+
+	root = gdk_get_default_root_window();
+
+	gdk_window_add_filter(root, (GdkFilterFunc) click_filter, data);
+
+	cross = gdk_cursor_new(GDK_CROSS);
+	status = gdk_pointer_grab(root, FALSE, GDK_BUTTON_PRESS_MASK,
+	                          NULL, cross, GDK_CURRENT_TIME);
+	gdk_cursor_unref(cross);
+
+	if (status != GDK_GRAB_SUCCESS) {
+		g_warning("Pointer grab failed.\n");
+		uninstall_click_filter();
+		return FALSE;
+	}
+
+	status = gdk_keyboard_grab(root, FALSE, GDK_CURRENT_TIME);
+	if (status != GDK_GRAB_SUCCESS) {
+		g_warning("Keyboard grab failed.\n");
+		uninstall_click_filter();
+		return FALSE;
+	}
+
+	gdk_flush();
+	return FALSE;
+}
+
+static gboolean
+wait_for_click (int argc, char **argv)
+{
+	gtk_init(&argc, &argv);
+	gboolean success;
+	g_idle_add (install_click_filter, (gpointer)(&success));
+	gtk_main ();
+	return success;
+}
+
 static gchar * dbusname = NULL;
 static gchar * dbusobject = NULL;
 
@@ -191,6 +286,7 @@ init_dbus_vars_from_window(Window window)
 	return TRUE;
 }
 
+/* Option parser *****************************************************/
 static gboolean
 option_dbusname (const gchar * arg, const gchar * value, gpointer data, GError ** error)
 {
@@ -245,6 +341,9 @@ main (int argc, char ** argv)
 	}
 
 	if (dbusname == NULL && dbusobject == NULL) {
+		if (!wait_for_click(argc, argv)) {
+			return 1;
+		}
 		Window window = get_window_under_cursor();
 		if (window == None) {
 			g_printerr("ERROR: could not get the id for the pointed window\n");
@@ -256,6 +355,7 @@ main (int argc, char ** argv)
 			return 1;
 		}
 		g_debug("dbusname: %s, dbusobject: %s", dbusname, dbusobject);
+		return 1;
 	} else {
 		if (dbusname == NULL) {
 			g_printerr("ERROR: dbus-name not specified\n");
