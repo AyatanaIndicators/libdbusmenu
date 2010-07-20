@@ -344,6 +344,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 				</dox:d>
 			</arg>
 		</signal>
+		<signal name="OpenMenu">
+			<arg type="i" name="id" direction="out" />
+		</signal>
 
 <!-- End of interesting stuff -->
 
