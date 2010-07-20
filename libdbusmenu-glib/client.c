@@ -521,10 +521,12 @@ get_properties_flush (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
-	if (priv->delayed_idle != 0) {
-		g_source_remove(priv->delayed_idle);
-		priv->delayed_idle = 0;
+	if (priv->delayed_idle == 0) {
+		return;
 	}
+
+	g_source_remove(priv->delayed_idle);
+	priv->delayed_idle = 0;
 
 	get_properties_idle(client);
 
