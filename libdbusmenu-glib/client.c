@@ -1124,8 +1124,6 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
 			parse_layout_update(childmi, client);
 		}
-
-		parse_layout_xml(client, children, childmi, item, proxy);
 	}
 
 	/* g_debug("Stopping old children: %d", g_list_length(oldchildren)); */
@@ -1138,6 +1136,23 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		dbusmenu_menuitem_child_delete(item, oldmi);
 	}
 	g_list_free(oldchildren);
+
+	/* We've got everything built up at this node and reconcilled */
+	/* now it's time to recurse down the tree. */
+	children = node->children;
+	GList * childmis = dbusmenu_menuitem_get_children(item);
+	while (children != NULL && childmis != NULL) {
+		parse_layout_xml(client, children, DBUSMENU_MENUITEM(childmis->data), item, proxy);
+
+		children = children->next;
+		childmis = g_list_next(childmis);
+	}
+	if (children != NULL) {
+		g_warning("Sync failed, now we've got extra XML nodes.");
+	}
+	if (childmis != NULL) {
+		g_warning("Sync failed, now we've got extra menu items.");
+	}
 
 	return item;
 }
