@@ -428,6 +428,10 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 		GHashTable * properties = g_value_get_boxed(vproperties);
 
 		properties_listener_t * listener = find_listener(listeners, 0, id);
+		if (listener == NULL) {
+			g_warning("Unable to find listener for ID %d", id);
+			continue;
+		}
 
 		if (!listener->replied) {
 			listener->callback(proxy, properties, NULL, listener->user_data);
