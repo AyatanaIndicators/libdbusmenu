@@ -354,6 +354,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 			<arg type="i" name="id" direction="out" >
 				<dox:d>ID of the menu that should be activated</dox:d>
 			</arg>
+			<arg type="u" name="timestamp" direction="out" >
+				<dox:d>The time that the event occured</dox:d>
+			</arg>
 		</signal>
 
 <!-- End of interesting stuff -->
