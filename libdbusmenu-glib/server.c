@@ -38,7 +38,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error);
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
-static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error);
+static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GValueArray ** values, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
@@ -504,10 +504,10 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** prop
 /* Handles getting a bunch of properties from a variety of menu items
    to make one mega dbus message */
 static gboolean
-_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error)
+_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GValueArray ** values, GError ** error)
 {
 	/* Build an initial pointer array */
-	*values = g_ptr_array_new();
+	*values = g_value_array_new(ids->len);
 
 	/* Go through each ID to get that ID's properties */
 	int idcnt;
@@ -536,7 +536,11 @@ _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gc
 		g_value_set_boxed(&propval, idprops);
 		g_value_array_append(valarray, &propval);
 
-		g_ptr_array_add(*values, valarray);
+		GValue * valwrapper = g_new0(GValue, 1);
+		g_value_init(valwrapper, G_TYPE_VALUE_ARRAY);
+		g_value_set_boxed(valwrapper, valarray);
+
+		g_value_array_append(*values, valwrapper);
 	}
 
 	return TRUE;
