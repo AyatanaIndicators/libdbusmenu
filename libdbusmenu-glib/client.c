@@ -514,6 +514,25 @@ get_properties_idle (gpointer user_data)
 	return FALSE;
 }
 
+/* Forces a call out to start getting properties with the menu items
+   that we have queued up already. */
+static void
+get_properties_flush (DbusmenuClient * client)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->delayed_idle != 0) {
+		g_source_remove(priv->delayed_idle);
+		priv->delayed_idle = 0;
+	}
+
+	get_properties_idle(client);
+
+	dbus_g_connection_flush(priv->session_bus);
+
+	return;
+}
+
 /* A function to group all the get_properties commands to make them
    more efficient over dbus. */
 static void
@@ -1147,6 +1166,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	g_list_free(oldchildren);
 
 	/* We've got everything built up at this node and reconcilled */
+
+	/* Flush the properties requests */
+	get_properties_flush(client);
+
 	/* now it's time to recurse down the tree. */
 	children = node->children;
 	GList * childmis = dbusmenu_menuitem_get_children(item);
