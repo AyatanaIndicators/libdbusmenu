@@ -335,6 +335,23 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal funcs */
 
+/* Quick little function to search through the listeners and find
+   one that matches an ID */
+static properties_listener_t *
+find_listener (GArray * listeners, guint index, gint id)
+{
+	if (index >= listeners->len) {
+		return NULL;
+	}
+
+	properties_listener_t * retval = &g_array_index(listeners, properties_listener_t, index);
+	if (retval->id == id) {
+		return retval;
+	}
+
+	return find_listener(listeners, index + 1, id);
+}
+
 /* Call back from getting the group properties, now we need
    to unwind and call the various functions. */
 static void 
@@ -375,9 +392,12 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 			g_warning("Properties Entry not holding an a{sv}: %s", G_VALUE_TYPE_NAME(vproperties));
 		}
 
-		// gint id = g_value_get_int(vid);
-		// GHashTable * properties = g_value_get_boxed(vproperties);
+		gint id = g_value_get_int(vid);
+		GHashTable * properties = g_value_get_boxed(vproperties);
 
+		properties_listener_t * listener = find_listener(listeners, 0, id);
+
+		listener->callback(proxy, properties, NULL, listener->user_data);
 	}
 
 	/* Provide errors for those who we can't */
