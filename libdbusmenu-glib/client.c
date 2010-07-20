@@ -343,6 +343,8 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 	GArray * listeners = (GArray *)userdata;
 	int i;
 
+	g_debug("Get properties callback: %d", OUT_properties->len);
+
 	if (error != NULL) {
 		/* If we get an error, all our callbacks need to hear about it. */
 		g_warning("Group Properties error: %s", error->message);
@@ -356,7 +358,25 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 
 	/* Callback all the folks we can find */
 	for (i = 0; i < OUT_properties->len; i++) {
-		g_error("Properties type: %s", G_OBJECT_TYPE_NAME(g_ptr_array_index(OUT_properties, i)));
+		GValueArray * varray = (GValueArray *)g_ptr_array_index(OUT_properties, i);
+
+		if (varray->n_values != 2) {
+			g_warning("Value Array is %d entries long but we expected 2.", varray->n_values);
+			continue;
+		}
+
+		GValue * vid = g_value_array_get_nth(varray, 0);
+		GValue * vproperties = g_value_array_get_nth(varray, 1);
+
+		if (G_VALUE_TYPE(vid) != G_TYPE_INT) {
+			g_warning("ID Entry not holding an int: %s", G_VALUE_TYPE_NAME(vid));
+		}
+		if (G_VALUE_TYPE(vproperties) != dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
+			g_warning("Properties Entry not holding an a{sv}: %s", G_VALUE_TYPE_NAME(vproperties));
+		}
+
+		// gint id = g_value_get_int(vid);
+		// GHashTable * properties = g_value_get_boxed(vproperties);
 
 	}
 
