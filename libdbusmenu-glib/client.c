@@ -1128,7 +1128,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 
 		if (childmi == NULL) {
-			childmi = parse_layout_new_child(id, client, parent);
+			childmi = parse_layout_new_child(childid, client, item);
 			dbusmenu_menuitem_child_add_position(item, childmi, position);
 			g_object_unref(childmi);
 		} else {
