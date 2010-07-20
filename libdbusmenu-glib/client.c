@@ -514,6 +514,27 @@ get_properties_idle (gpointer user_data)
 	return FALSE;
 }
 
+/* Forces a call out to start getting properties with the menu items
+   that we have queued up already. */
+static void
+get_properties_flush (DbusmenuClient * client)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->delayed_idle == 0) {
+		return;
+	}
+
+	g_source_remove(priv->delayed_idle);
+	priv->delayed_idle = 0;
+
+	get_properties_idle(client);
+
+	dbus_g_connection_flush(priv->session_bus);
+
+	return;
+}
+
 /* A function to group all the get_properties commands to make them
    more efficient over dbus. */
 static void
@@ -618,10 +639,9 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	gchar * properties[1] = {NULL}; /* This gets them all */
 	g_debug("Getting properties");
 	g_object_ref(menuitem);
-	get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
+	get_properties_globber(client, id, NULL, menuitem_get_properties_cb, menuitem);
 	return;
 }
 
@@ -1038,11 +1058,51 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 	return;
 }
 
+/* Builds a new child with property requests and everything
+   else to clean up the code a bit */
+static DbusmenuMenuitem *
+parse_layout_new_child (gint id, DbusmenuClient * client, DbusmenuMenuitem * parent)
+{
+	DbusmenuMenuitem * item = NULL;
+
+	/* Build a new item */
+	item = DBUSMENU_MENUITEM(dbusmenu_client_menuitem_new(id, client));
+	if (parent == NULL) {
+		dbusmenu_menuitem_set_root(item, TRUE);
+	}
+
+	/* Get the properties queued up for this item */
+	/* Not happy allocating about this, but I need these :( */
+	newItemPropData * propdata = g_new0(newItemPropData, 1);
+	if (propdata != NULL) {
+		propdata->client  = client;
+		propdata->item    = item;
+		propdata->parent  = parent;
+
+		g_object_ref(item);
+		get_properties_globber(client, id, NULL, menuitem_get_properties_new_cb, propdata);
+	} else {
+		g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
+	}
+
+	return item;
+}
+
+/* Refresh the properties on this item */
+static void
+parse_layout_update (DbusmenuMenuitem * item, DbusmenuClient * client)
+{
+	g_object_ref(item);
+	get_properties_globber(client, dbusmenu_menuitem_get_id(item), NULL, menuitem_get_properties_replace_cb, item);
+	return;
+}
+
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
 parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
 {
+	/* First verify and figure out what we've got */
 	gint id = parse_node_get_id(node);
 	if (id < 0) {
 		return NULL;
@@ -1050,48 +1110,18 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client looking at node with id: %d", id);
 	#endif
-	/* If we don't have any item, or the IDs don't match */
-	if (item == NULL || dbusmenu_menuitem_get_id(item) != id) {
-		if (item != NULL) {
-			if (parent != NULL) {
-				dbusmenu_menuitem_child_delete(parent, item);
-			}
-			item = NULL;
-		}
 
-		/* Build a new item */
-		item = DBUSMENU_MENUITEM(dbusmenu_client_menuitem_new(id, client));
-		if (parent == NULL) {
-			dbusmenu_menuitem_set_root(item, TRUE);
-		}
+	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(id == dbusmenu_menuitem_get_id(item), NULL);
 
-		/* Get the properties queued up for this item */
-		/* Not happy about this, but I need these :( */
-		newItemPropData * propdata = g_new0(newItemPropData, 1);
-		if (propdata != NULL) {
-			propdata->client  = client;
-			propdata->item    = item;
-			propdata->parent  = parent;
-
-			gchar * properties[1] = {NULL}; /* This gets them all */
-			g_object_ref(item);
-			get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
-		} else {
-			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
-		}
-	} else {
-		/* Refresh the properties */
-		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
-		gchar * properties[1] = {NULL}; /* This gets them all */
-		g_object_ref(item);
-		get_properties_globber(client, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
-	}
-
+	/* Some variables */
 	xmlNodePtr children;
 	guint position;
 	GList * oldchildren = g_list_copy(dbusmenu_menuitem_get_children(item));
 	/* g_debug("Starting old children: %d", g_list_length(oldchildren)); */
 
+	/* Go through all the XML Nodes and make sure that we have menuitems
+	   to cover those XML nodes. */
 	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
 		/* g_debug("Looking at child: %d", position); */
 		gint childid = parse_node_get_id(children);
@@ -1100,6 +1130,8 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 		DbusmenuMenuitem * childmi = NULL;
 
+		/* First see if we can recycle a node that we've already built
+		   on this menu item */
 		GList * childsearch = NULL;
 		for (childsearch = oldchildren; childsearch != NULL; childsearch = g_list_next(childsearch)) {
 			DbusmenuMenuitem * cs_mi = DBUSMENU_MENUITEM(childsearch->data);
@@ -1110,20 +1142,20 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			}
 		}
 
-		DbusmenuMenuitem * newchildmi = parse_layout_xml(client, children, childmi, item, proxy);
-
-		if (newchildmi != childmi) {
-			if (childmi != NULL) {
-				dbusmenu_menuitem_child_delete(item, childmi);
-			}
-			dbusmenu_menuitem_child_add_position(item, newchildmi, position);
-			g_object_unref(newchildmi);
+		if (childmi == NULL) {
+			/* If we can't recycle, then we build a new one */
+			childmi = parse_layout_new_child(childid, client, item);
+			dbusmenu_menuitem_child_add_position(item, childmi, position);
+			g_object_unref(childmi);
 		} else {
+			/* If we can recycle, make sure it's in the right place */
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
+			parse_layout_update(childmi, client);
 		}
 	}
 
-	/* g_debug("Stopping old children: %d", g_list_length(oldchildren)); */
+	/* Remove any children that are no longer used by this version of
+	   the layout. */
 	GList * oldchildleft = NULL;
 	for (oldchildleft = oldchildren; oldchildleft != NULL; oldchildleft = g_list_next(oldchildleft)) {
 		DbusmenuMenuitem * oldmi = DBUSMENU_MENUITEM(oldchildleft->data);
@@ -1133,6 +1165,27 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		dbusmenu_menuitem_child_delete(item, oldmi);
 	}
 	g_list_free(oldchildren);
+
+	/* We've got everything built up at this node and reconcilled */
+
+	/* Flush the properties requests */
+	get_properties_flush(client);
+
+	/* now it's time to recurse down the tree. */
+	children = node->children;
+	GList * childmis = dbusmenu_menuitem_get_children(item);
+	while (children != NULL && childmis != NULL) {
+		parse_layout_xml(client, children, DBUSMENU_MENUITEM(childmis->data), item, proxy);
+
+		children = children->next;
+		childmis = g_list_next(childmis);
+	}
+	if (children != NULL) {
+		g_warning("Sync failed, now we've got extra XML nodes.");
+	}
+	if (childmis != NULL) {
+		g_warning("Sync failed, now we've got extra menu items.");
+	}
 
 	return item;
 }
@@ -1159,6 +1212,12 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 	}
 
 	DbusmenuMenuitem * oldroot = priv->root;
+
+	if (priv->root == NULL) {
+		priv->root = parse_layout_new_child(0, client, NULL);
+	} else {
+		parse_layout_update(priv->root, client);
+	}
 
 	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
 	xmlFreeDoc(xmldoc);
