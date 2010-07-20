@@ -104,17 +104,17 @@ click_filter (GdkXEvent *gdk_xevent,
               gpointer   data);
 
 static Window
-find_real_window(Display * display, Window w, int depth)
+find_real_window (Window w, int depth)
 {
 	if (depth > 5) {
 		return None;
 	}
-	/*static*/ Atom wm_state = XInternAtom(display, "WM_STATE", False);
+	/*static*/ Atom wm_state = XInternAtom(gdk_display, "WM_STATE", False);
 	Atom type;
 	int format;
 	unsigned long nitems, after;
 	unsigned char* prop;
-	if (XGetWindowProperty(display, w, wm_state, 0, 0, False, AnyPropertyType,
+	if (XGetWindowProperty(gdk_display, w, wm_state, 0, 0, False, AnyPropertyType,
 				&type, &format, &nitems, &after, &prop) == Success) {
 		if (prop != NULL) {
 			XFree(prop);
@@ -127,10 +127,10 @@ find_real_window(Display * display, Window w, int depth)
 	Window* children;
 	unsigned int nchildren;
 	Window ret = None;
-	if (XQueryTree(display, w, &root, &parent, &children, &nchildren) != 0) {
+	if (XQueryTree(gdk_display, w, &root, &parent, &children, &nchildren) != 0) {
 		unsigned int i;
 		for(i = 0; i < nchildren && ret == None; ++i) {
-			ret = find_real_window(display, children[ i ], depth + 1);
+			ret = find_real_window(children[ i ], depth + 1);
 		}
 		if (children != NULL) {
 			XFree(children);
@@ -140,22 +140,17 @@ find_real_window(Display * display, Window w, int depth)
 }
 
 static Window
-get_window_under_cursor()
+get_window_under_cursor (void)
 {
-	Display * display = XOpenDisplay(NULL);
-	g_return_val_if_fail(display != NULL, None);
-
 	Window root;
 	Window child;
 	uint mask;
 	int rootX, rootY, winX, winY;
-	XGrabServer(display);
-	Window root_window = DefaultRootWindow(display);
-	XQueryPointer(display, root_window, &root, &child, &rootX, &rootY, &winX, &winY, &mask);
+	XQueryPointer(gdk_display, gdk_x11_get_default_root_xwindow(), &root, &child, &rootX, &rootY, &winX, &winY, &mask);
 	if (child == None) {
 		return None;
 	}
-	return find_real_window(display, child, 0);
+	return find_real_window(child, 0);
 }
 
 static void
@@ -234,9 +229,8 @@ install_click_filter (gpointer data)
 }
 
 static gboolean
-wait_for_click (int argc, char **argv)
+wait_for_click (void)
 {
-	gtk_init(&argc, &argv);
 	gboolean success;
 	g_idle_add (install_click_filter, (gpointer)(&success));
 	gtk_main ();
@@ -341,7 +335,8 @@ main (int argc, char ** argv)
 	}
 
 	if (dbusname == NULL && dbusobject == NULL) {
-		if (!wait_for_click(argc, argv)) {
+		gtk_init(&argc, &argv);
+		if (!wait_for_click()) {
 			return 1;
 		}
 		Window window = get_window_under_cursor();
