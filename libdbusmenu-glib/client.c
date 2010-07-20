@@ -1127,17 +1127,15 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			}
 		}
 
-		DbusmenuMenuitem * newchildmi = parse_layout_xml(client, children, childmi, item, proxy);
-
-		if (newchildmi != childmi) {
-			if (childmi != NULL) {
-				dbusmenu_menuitem_child_delete(item, childmi);
-			}
-			dbusmenu_menuitem_child_add_position(item, newchildmi, position);
-			g_object_unref(newchildmi);
+		if (childmi == NULL) {
+			childmi = parse_layout_new_child(id, client, parent);
+			dbusmenu_menuitem_child_add_position(item, childmi, position);
+			g_object_unref(childmi);
 		} else {
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
 		}
+
+		parse_layout_xml(client, children, childmi, item, proxy);
 	}
 
 	/* g_debug("Stopping old children: %d", g_list_length(oldchildren)); */
