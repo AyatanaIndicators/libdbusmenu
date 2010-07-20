@@ -38,10 +38,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error);
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
-static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GValueArray ** values, GError ** error);
+static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
+/* DBus Helpers */
+static void _gvalue_array_append_int(GValueArray *array, gint i);
+static void _gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict);
 
 #include "dbusmenu-server.h"
 
@@ -504,10 +507,10 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** prop
 /* Handles getting a bunch of properties from a variety of menu items
    to make one mega dbus message */
 static gboolean
-_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GValueArray ** values, GError ** error)
+_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error)
 {
 	/* Build an initial pointer array */
-	*values = g_value_array_new(ids->len);
+	*values = g_ptr_array_new();
 
 	/* Go through each ID to get that ID's properties */
 	int idcnt;
@@ -526,26 +529,17 @@ _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gc
 
 		GValueArray * valarray = g_value_array_new(2);
 
-		GValue idval = {0};
-		g_value_init(&idval, G_TYPE_INT);
-		g_value_set_int(&idval, id);
-		g_value_array_append(valarray, &idval);
+		_gvalue_array_append_int(valarray, id);
+		_gvalue_array_append_hashtable(valarray, idprops);
 
-		GValue propval = {0};
-		g_value_init(&propval, G_TYPE_HASH_TABLE);
-		g_value_set_boxed(&propval, idprops);
-		g_value_array_append(valarray, &propval);
-
-		GValue * valwrapper = g_new0(GValue, 1);
-		g_value_init(valwrapper, G_TYPE_VALUE_ARRAY);
-		g_value_set_boxed(valwrapper, valarray);
-
-		g_value_array_append(*values, valwrapper);
+		g_ptr_array_add(*values, valarray);
 	}
 
 	return TRUE;
 }
 
+/* Allocate a value on the stack for the int and append
+   it to the array. */
 static void
 _gvalue_array_append_int(GValueArray *array, gint i)
 {
@@ -557,6 +551,8 @@ _gvalue_array_append_int(GValueArray *array, gint i)
 	g_value_unset(&value);
 }
 
+/* Allocate a value on the stack for the hashtable and append
+   it to the array. */
 static void
 _gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict)
 {
@@ -577,7 +573,7 @@ serialize_menuitem(gpointer data, gpointer user_data)
 	gint id = dbusmenu_menuitem_get_id(mi);
 	GHashTable * dict = dbusmenu_menuitem_properties_copy(mi);
 
-	GValueArray * item = g_value_array_new(1);
+	GValueArray * item = g_value_array_new(2);
 	_gvalue_array_append_int(item, id);
 	_gvalue_array_append_hashtable(item, dict);
 
