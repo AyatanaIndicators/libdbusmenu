@@ -509,6 +509,14 @@ static void
 get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	if (find_listener(priv->delayed_property_listeners, 0, id) != NULL) {
+		g_warning("Asking for properties from same ID twice: %d", id);
+		GError * localerror = NULL;
+		g_set_error_literal(&localerror, 0, 0, "ID already queued");
+		callback(priv->menuproxy, NULL, localerror, user_data);
+		g_error_free(localerror);
+		return;
+	}
 
 	if (properties == NULL || properties[0] == NULL) {
 		/* get all case */
