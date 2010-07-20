@@ -58,10 +58,10 @@ G_BEGIN_DECLS
 	@id_prop_update: Slot for #DbusmenuServer::id-prop-update.
 	@id_update: Slot for #DbusmenuServer::id-update.
 	@layout_updated: Slot for #DbusmenuServer::layout-update.
+	@item_activation_requested: Slot for #DbusmenuServer::item-activation-requested.
 	@dbusmenu_server_reserved1: Reserved for future use.
 	@dbusmenu_server_reserved2: Reserved for future use.
 	@dbusmenu_server_reserved3: Reserved for future use.
-	@dbusmenu_server_reserved4: Reserved for future use.
 
 	The class implementing the virtual functions for #DbusmenuServer.
 */
@@ -73,12 +73,12 @@ struct _DbusmenuServerClass {
 	void (*id_prop_update)(gint id, gchar * property, gchar * value);
 	void (*id_update)(gint id);
 	void (*layout_updated)(gint revision);
+	void (*item_activation_requested)(gint id, guint timestamp);
 
 	/* Reserved */
 	void (*dbusmenu_server_reserved1)(void);
 	void (*dbusmenu_server_reserved2)(void);
 	void (*dbusmenu_server_reserved3)(void);
-	void (*dbusmenu_server_reserved4)(void);
 };
 
 /**
