@@ -41,18 +41,17 @@ guint ordering [NUMBER_TESTS][NUMBER_ENTRIES] = {
 };
 
 gchar * names [NUMBER_ENTRIES] = {
-	"0", "1", "2", "3", "4"
+	"One", "Two", "Three", "Four", "Five"
 };
 
 DbusmenuMenuitem * entries[NUMBER_ENTRIES] = {0};
 DbusmenuMenuitem * root = NULL;
-DbusmenuMenuitem * parent = NULL;
+
 gint test = 0;
 
 static DbusmenuServer * server = NULL;
 static GMainLoop * mainloop = NULL;
 
-#if 0
 static gboolean
 timer_func (gpointer data)
 {
@@ -66,14 +65,13 @@ timer_func (gpointer data)
 	int i;
 	for (i = 0; i < NUMBER_ENTRIES; i++) {
 		g_debug("Putting entry '%d' at position '%d'", i, ordering[test][i]);
-		dbusmenu_menuitem_child_reorder(parent, entries[i], ordering[test][i]);
+		dbusmenu_menuitem_child_reorder(root, entries[i], ordering[test][i]);
 		dbusmenu_menuitem_property_set(entries[i], "label", names[ordering[test][i]]);
 	}
 
 	test++;
 	return TRUE;
 }
-#endif
 
 int
 main (int argc, char ** argv)
@@ -103,18 +101,13 @@ main (int argc, char ** argv)
 	dbusmenu_server_set_root(server, root);
 
 	int i;
-    parent = dbusmenu_menuitem_new();
-    dbusmenu_menuitem_property_set(parent, "label", "Parent");
-    dbusmenu_menuitem_child_append(root, parent);
-
 	for (i = 0; i < NUMBER_ENTRIES; i++) {
 		entries[i] = dbusmenu_menuitem_new();
-        dbusmenu_menuitem_property_set(entries[i], "label", names[ordering[test][i]]);
-		dbusmenu_menuitem_child_append(parent, entries[i]);
+		dbusmenu_menuitem_child_append(root, entries[i]);
 	}
 
-	//timer_func(NULL);
-	//g_timeout_add_seconds(5, timer_func, NULL);
+	timer_func(NULL);
+	g_timeout_add_seconds(5, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
