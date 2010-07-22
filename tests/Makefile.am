@@ -14,7 +14,8 @@ TESTS = \
 	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-shortcut \
-	test-gtk-reorder
+	test-gtk-reorder \
+	test-gtk-submenu
 
 check_PROGRAMS = \
 	glib-server-nomenu \
@@ -36,7 +37,9 @@ check_PROGRAMS = \
 	test-glib-simple-items \
 	test-gtk-reorder-server \
 	test-json-client \
-	test-json-server
+	test-json-server \
+	test-gtk-submenu-server \
+	test-gtk-submenu-client
 
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
 
@@ -448,6 +451,46 @@ test_gtk_reorder_server_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_reorder_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+#########################
+# Test GTK Submenu
+#########################
+
+test-gtk-submenu: test-gtk-submenu-client test-gtk-submenu-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-submenu-client --task-name Client --task ./test-gtk-submenu-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test_gtk_submenu_server_SOURCES = \
+	test-gtk-submenu-server.c
+
+test_gtk_submenu_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_submenu_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+test_gtk_submenu_client_SOURCES = \
+	test-gtk-submenu-client.c
+
+test_gtk_submenu_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_submenu_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
 	$(DBUSMENUGTK_LIBS) \

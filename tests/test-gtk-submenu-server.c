@@ -29,51 +29,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 
-#define NUMBER_TESTS    5
-#define NUMBER_ENTRIES  5
-
-guint ordering [NUMBER_TESTS][NUMBER_ENTRIES] = {
-	{0, 1, 2, 3, 4},
-	{1, 2, 3, 4, 0},
-	{3, 1, 4, 2, 0},
-	{4, 3, 2, 1, 0},
-	{0, 1, 2, 3, 4}
-};
-
-gchar * names [NUMBER_ENTRIES] = {
-	"0", "1", "2", "3", "4"
-};
-
-DbusmenuMenuitem * entries[NUMBER_ENTRIES] = {0};
-DbusmenuMenuitem * root = NULL;
-DbusmenuMenuitem * parent = NULL;
-gint test = 0;
-
-static DbusmenuServer * server = NULL;
-static GMainLoop * mainloop = NULL;
-
-#if 0
-static gboolean
-timer_func (gpointer data)
+DbusmenuMenuitem *
+add_item(DbusmenuMenuitem * parent, const char * label)
 {
-	if (test == NUMBER_TESTS) {
-		g_main_quit(mainloop);
-		return FALSE;
-	}
-
-	g_debug("Testing pattern %d", test);
-
-	int i;
-	for (i = 0; i < NUMBER_ENTRIES; i++) {
-		g_debug("Putting entry '%d' at position '%d'", i, ordering[test][i]);
-		dbusmenu_menuitem_child_reorder(parent, entries[i], ordering[test][i]);
-		dbusmenu_menuitem_property_set(entries[i], "label", names[ordering[test][i]]);
-	}
-
-	test++;
-	return TRUE;
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(item, "label", label);
+	dbusmenu_menuitem_child_append(parent, item);
+	return item;
 }
-#endif
 
 int
 main (int argc, char ** argv)
@@ -98,25 +61,22 @@ main (int argc, char ** argv)
 		return 1;
 	}
 
-	server = dbusmenu_server_new("/org/test");
-	root = dbusmenu_menuitem_new();
+	DbusmenuServer * server = dbusmenu_server_new("/org/test");
+	DbusmenuMenuitem * root = dbusmenu_menuitem_new();
 	dbusmenu_server_set_root(server, root);
 
-	int i;
-    parent = dbusmenu_menuitem_new();
-    dbusmenu_menuitem_property_set(parent, "label", "Parent");
-    dbusmenu_menuitem_child_append(root, parent);
+	DbusmenuMenuitem * item;
+	item = add_item(root, "Folder 1");
+	add_item(item, "1.1");
+	add_item(item, "1.2");
+	add_item(item, "1.3");
 
-	for (i = 0; i < NUMBER_ENTRIES; i++) {
-		entries[i] = dbusmenu_menuitem_new();
-        dbusmenu_menuitem_property_set(entries[i], "label", names[ordering[test][i]]);
-		dbusmenu_menuitem_child_append(parent, entries[i]);
-	}
+	item = add_item(root, "Folder 2");
+	add_item(item, "2.1");
+	add_item(item, "2.2");
+	add_item(item, "2.3");
 
-	//timer_func(NULL);
-	//g_timeout_add_seconds(5, timer_func, NULL);
-
-	mainloop = g_main_loop_new(NULL, FALSE);
+	GMainLoop * mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
 
 	g_debug("Quiting");
