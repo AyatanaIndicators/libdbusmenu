@@ -29,6 +29,16 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 
+static GMainLoop *mainloop = NULL;
+
+static gboolean
+timer_func (gpointer data)
+{
+  g_main_loop_quit (mainloop);
+
+  return FALSE;
+}
+
 DbusmenuMenuitem *
 add_item(DbusmenuMenuitem * parent, const char * label)
 {
@@ -76,7 +86,9 @@ main (int argc, char ** argv)
 	add_item(item, "2.2");
 	add_item(item, "2.3");
 
-	GMainLoop * mainloop = g_main_loop_new(NULL, FALSE);
+        g_timeout_add_seconds(3, timer_func, NULL);
+
+	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
 
 	g_debug("Quiting");
