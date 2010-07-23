@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.3.6, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.3.7, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.3.6, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.3.7, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -56,6 +56,18 @@ PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
 
 AC_SUBST(DBUSMENUGTK_CFLAGS)
 AC_SUBST(DBUSMENUGTK_LIBS)
+
+###########################
+# Dependencies - dumper
+###########################
+
+X11_REQUIRED_VERSION=1.3
+
+PKG_CHECK_MODULES(DBUSMENUDUMPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                  x11 >= $X11_REQUIRED_VERSION)
+
+AC_SUBST(DBUSMENUDUMPER_CFLAGS)
+AC_SUBST(DBUSMENUDUMPER_LIBS)
 
 ###########################
 # Dependencies - Testing

@@ -9,10 +9,12 @@ menuitem
 
 </para>
 
+
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
+
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -39,5 +41,46 @@ menuitem
 @menuitem: 
 @property: 
 @Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_shortcut ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@key: 
+@modifier: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_shortcut_string ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@shortcut: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_shortcut_menuitem ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@gmi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_get_shortcut ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@key: 
+@modifiers: 
 
 
