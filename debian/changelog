@@ -1,3 +1,15 @@
+libdbusmenu (0.3.7-1) unstable; urgency=low
+
+  * Merge latest upstream from Ubuntu.
+
+ -- Evgeni Golov <evgeni@debian.org>  Thu, 29 Jul 2010 11:53:46 +0200
+
+libdbusmenu (0.3.7-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 22 Jul 2010 21:17:13 +0200
+
 libdbusmenu (0.3.6-1) unstable; urgency=low
 
   * Merge new upstream from Ubuntu.

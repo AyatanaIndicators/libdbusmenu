@@ -40,7 +40,12 @@ libexec_PROGRAMS = dbusmenu-dumper$(EXEEXT)
 subdir = tools
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -55,7 +60,8 @@ am_dbusmenu_dumper_OBJECTS =  \
 dbusmenu_dumper_OBJECTS = $(am_dbusmenu_dumper_OBJECTS)
 am__DEPENDENCIES_1 =
 dbusmenu_dumper_DEPENDENCIES =  \
-	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1)
+	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -173,6 +179,8 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
+DBUSMENUDUMPER_CFLAGS = @DBUSMENUDUMPER_CFLAGS@
+DBUSMENUDUMPER_LIBS = @DBUSMENUDUMPER_LIBS@
 DBUSMENUGLIB_CFLAGS = @DBUSMENUGLIB_CFLAGS@
 DBUSMENUGLIB_LIBS = @DBUSMENUGLIB_LIBS@
 DBUSMENUGTK_CFLAGS = @DBUSMENUGTK_CFLAGS@
@@ -253,6 +261,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
@@ -325,11 +335,14 @@ dbusmenu_dumper_SOURCES = \
 
 dbusmenu_dumper_CFLAGS = \
 	-I $(srcdir)/.. \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUDUMPER_CFLAGS) \
+	-Wall -Werror
 
 dbusmenu_dumper_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+	$(DBUSMENUGLIB_LIBS) \
+	$(DBUSMENUDUMPER_LIBS)
 
 doc_DATA = README.dbusmenu-bench
 EXTRA_DIST = \
