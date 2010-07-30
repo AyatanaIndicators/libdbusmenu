@@ -40,8 +40,8 @@
 <pre class="synopsis"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-image" title="dbusmenu_menuitem_property_set_image ()">dbusmenu_menuitem_property_set_image</a>
                                                         (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
                                                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/gdk-pixbuf/unstable/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="type">GdkPixbuf</span></a> *data</code></em>);
-<a href="http://library.gnome.org/devel/gdk-pixbuf/unstable/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="returnvalue">GdkPixbuf</span></a> *         <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-get-image" title="dbusmenu_menuitem_property_get_image ()">dbusmenu_menuitem_property_get_image</a>
+                                                         <em class="parameter"><code>const <span class="type">GdkPixbuf</span> *data</code></em>);
+<span class="returnvalue">GdkPixbuf</span> *         <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-get-image" title="dbusmenu_menuitem_property_get_image ()">dbusmenu_menuitem_property_get_image</a>
                                                         (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
                                                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut" title="dbusmenu_menuitem_property_set_shortcut ()">dbusmenu_menuitem_property_set_shortcut</a>
@@ -72,7 +72,7 @@
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_image
                                                         (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
                                                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/gdk-pixbuf/unstable/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="type">GdkPixbuf</span></a> *data</code></em>);</pre>
+                                                         <em class="parameter"><code>const <span class="type">GdkPixbuf</span> *data</code></em>);</pre>
 <p>
 This function takes the pixbuf that is stored in <em class="parameter"><code>data</code></em> and
 	turns it into a base64 encoded PNG so that it can be placed
@@ -108,13 +108,13 @@ This function takes the pixbuf that is stored in <em class="parameter"><code>dat
 <hr>
 <div class="refsect2" title="dbusmenu_menuitem_property_get_image ()">
 <a name="dbusmenu-menuitem-property-get-image"></a><h3>dbusmenu_menuitem_property_get_image ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gdk-pixbuf/unstable/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="returnvalue">GdkPixbuf</span></a> *         dbusmenu_menuitem_property_get_image
+<pre class="programlisting"><span class="returnvalue">GdkPixbuf</span> *         dbusmenu_menuitem_property_get_image
                                                         (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
                                                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);</pre>
 <p>
 This function looks on the menu item for a property by the
 	name of <em class="parameter"><code>property</code></em>.  If one exists it tries to turn it into
-	a <a href="http://library.gnome.org/devel/gdk-pixbuf/unstable/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="type">GdkPixbuf</span></a>.  It assumes that the property is a base64 encoded
+	a <span class="type">GdkPixbuf</span>.  It assumes that the property is a base64 encoded
 	PNG file like the one created by <span class="type">dbusmenu_menuite_property_set_image</span>.
 </p>
 <div class="variablelist"><table border="0">

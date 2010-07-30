@@ -22,6 +22,14 @@ extern void _dbusmenu_server_marshal_VOID__UINT_INT (GClosure     *closure,
                                                      gpointer      invocation_hint,
                                                      gpointer      marshal_data);
 
+/* VOID:INT,UINT (./server-marshal.list:3) */
+extern void _dbusmenu_server_marshal_VOID__INT_UINT (GClosure     *closure,
+                                                     GValue       *return_value,
+                                                     guint         n_param_values,
+                                                     const GValue *param_values,
+                                                     gpointer      invocation_hint,
+                                                     gpointer      marshal_data);
+
 G_END_DECLS
 
 #endif /* ___dbusmenu_server_marshal_MARSHAL_H__ */

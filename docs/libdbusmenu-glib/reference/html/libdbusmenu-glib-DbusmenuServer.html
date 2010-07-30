@@ -144,12 +144,12 @@ A server which represents a sharing of a set of
 	void (*id_prop_update)(gint id, gchar * property, gchar * value);
 	void (*id_update)(gint id);
 	void (*layout_updated)(gint revision);
+	void (*item_activation)(gint id, guint timestamp);
 
 	/* Reserved */
 	void (*dbusmenu_server_reserved1)(void);
 	void (*dbusmenu_server_reserved2)(void);
 	void (*dbusmenu_server_reserved3)(void);
-	void (*dbusmenu_server_reserved4)(void);
 } DbusmenuServerClass;
 </pre>
 <p>
@@ -180,6 +180,11 @@ The class implementing the virtual functions for <a class="link" href="libdbusme
 </td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuServerClass.item-activation"></a>item_activation</code></em> ()</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="structfield"><code><a name="DbusmenuServerClass.dbusmenu-server-reserved1"></a>dbusmenu_server_reserved1</code></em> ()</span></p></td>
 <td>Reserved for future use.
 </td>
@@ -191,11 +196,6 @@ The class implementing the virtual functions for <a class="link" href="libdbusme
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="DbusmenuServerClass.dbusmenu-server-reserved3"></a>dbusmenu_server_reserved3</code></em> ()</span></p></td>
-<td>Reserved for future use.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuServerClass.dbusmenu-server-reserved4"></a>dbusmenu_server_reserved4</code></em> ()</span></p></td>
 <td>Reserved for future use.
 </td>
 </tr>
