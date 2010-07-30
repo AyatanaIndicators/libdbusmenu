@@ -1,3 +1,10 @@
+libdbusmenu (0.3.8-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    - Added ItemActivationRequested signal.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 30 Jul 2010 13:44:34 -0400
+
 libdbusmenu (0.3.7-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
