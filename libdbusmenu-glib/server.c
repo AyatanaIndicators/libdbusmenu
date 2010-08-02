@@ -48,6 +48,8 @@ static void _gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict
 
 #include "dbusmenu-server.h"
 
+static void layout_update_signal (DbusmenuServer * server);
+
 #define DBUSMENU_VERSION_NUMBER  2
 
 /* Privates, I'll show you mine... */
@@ -58,6 +60,7 @@ struct _DbusmenuServerPrivate
 	DbusmenuMenuitem * root;
 	gchar * dbusobject;
 	gint layout_revision;
+	guint layout_idle;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) \
@@ -216,6 +219,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->root = NULL;
 	priv->dbusobject = NULL;
 	priv->layout_revision = 1;
+	priv->layout_idle = 0;
 
 	return;
 }
@@ -224,6 +228,10 @@ static void
 dbusmenu_server_dispose (GObject *object)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(object);
+
+	if (priv->layout_idle != 0) {
+		g_source_remove(priv->layout_idle);
+	}
 
 	if (priv->root != NULL) {
 		dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, object);
@@ -277,8 +285,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		} else {
 			g_debug("Setting root node to NULL");
 		}
-		priv->layout_revision++;
-		g_signal_emit(obj, signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+		layout_update_signal(DBUSMENU_SERVER(obj));
 		break;
 	default:
 		g_return_if_reached();
@@ -322,6 +329,35 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	return;
 }
 
+/* Handle actually signalling in the idle loop.  This way we collect all
+   the updates. */
+static gboolean
+layout_update_idle (gpointer user_data)
+{
+	DbusmenuServer * server = DBUSMENU_SERVER(user_data);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+
+	priv->layout_idle = 0;
+
+	return FALSE;
+}
+
+/* Signals that the layout has been updated */
+static void
+layout_update_signal (DbusmenuServer * server)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	priv->layout_revision++;
+
+	if (priv->layout_idle == 0) {
+		priv->layout_idle = g_idle_add(layout_update_idle, server);
+	}
+
+	return;
+}
+
 static void 
 menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, DbusmenuServer * server)
 {
@@ -352,10 +388,7 @@ menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 	menuitem_signals_create(child, server);
 	g_list_foreach(dbusmenu_menuitem_get_children(child), added_check_children, server);
 
-	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
-	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+	layout_update_signal(server);
 	return;
 }
 
@@ -363,19 +396,14 @@ static void
 menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
 {
 	menuitem_signals_remove(child, server);
-	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
-	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+	layout_update_signal(server);
 	return;
 }
 
 static void 
 menuitem_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos, DbusmenuServer * server)
 {
-	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+	layout_update_signal(server);
 	return;
 }
 
