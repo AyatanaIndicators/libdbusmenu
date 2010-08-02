@@ -37,13 +37,18 @@ License version 3 and version 2.1 along with this program.  If not, see
 /* DBus Prototypes */
 static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error);
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
-static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * properties, GHashTable ** dict, GError ** error);
-static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error);
+static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
+static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
+/* DBus Helpers */
+static void _gvalue_array_append_int(GValueArray *array, gint i);
+static void _gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict);
 
 #include "dbusmenu-server.h"
+
+static void layout_update_signal (DbusmenuServer * server);
 
 #define DBUSMENU_VERSION_NUMBER  2
 
@@ -55,6 +60,7 @@ struct _DbusmenuServerPrivate
 	DbusmenuMenuitem * root;
 	gchar * dbusobject;
 	gint layout_revision;
+	guint layout_idle;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) \
@@ -213,6 +219,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->root = NULL;
 	priv->dbusobject = NULL;
 	priv->layout_revision = 1;
+	priv->layout_idle = 0;
 
 	return;
 }
@@ -221,6 +228,10 @@ static void
 dbusmenu_server_dispose (GObject *object)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(object);
+
+	if (priv->layout_idle != 0) {
+		g_source_remove(priv->layout_idle);
+	}
 
 	if (priv->root != NULL) {
 		dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, object);
@@ -274,8 +285,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		} else {
 			g_debug("Setting root node to NULL");
 		}
-		priv->layout_revision++;
-		g_signal_emit(obj, signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+		layout_update_signal(DBUSMENU_SERVER(obj));
 		break;
 	default:
 		g_return_if_reached();
@@ -319,6 +329,35 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	return;
 }
 
+/* Handle actually signalling in the idle loop.  This way we collect all
+   the updates. */
+static gboolean
+layout_update_idle (gpointer user_data)
+{
+	DbusmenuServer * server = DBUSMENU_SERVER(user_data);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+
+	priv->layout_idle = 0;
+
+	return FALSE;
+}
+
+/* Signals that the layout has been updated */
+static void
+layout_update_signal (DbusmenuServer * server)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	priv->layout_revision++;
+
+	if (priv->layout_idle == 0) {
+		priv->layout_idle = g_idle_add(layout_update_idle, server);
+	}
+
+	return;
+}
+
 static void 
 menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, DbusmenuServer * server)
 {
@@ -349,10 +388,7 @@ menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 	menuitem_signals_create(child, server);
 	g_list_foreach(dbusmenu_menuitem_get_children(child), added_check_children, server);
 
-	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
-	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+	layout_update_signal(server);
 	return;
 }
 
@@ -360,19 +396,14 @@ static void
 menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
 {
 	menuitem_signals_remove(child, server);
-	/* TODO: We probably need to group the layout update signals to make the number more reasonble. */
-	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+	layout_update_signal(server);
 	return;
 }
 
 static void 
 menuitem_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos, DbusmenuServer * server)
 {
-	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	priv->layout_revision++;
-	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+	layout_update_signal(server);
 	return;
 }
 
@@ -507,7 +538,7 @@ _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * propert
 }
 
 static gboolean
-_dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * properties, GHashTable ** dict, GError ** error)
+_dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
@@ -528,18 +559,42 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, GPtrArray * p
 	return TRUE;
 }
 
+/* Handles getting a bunch of properties from a variety of menu items
+   to make one mega dbus message */
 static gboolean
-_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, GArray * properties, GHashTable ** values, GError ** error)
+_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error)
 {
-	if (error != NULL) {
-		g_set_error(error,
-					error_quark(),
-					NOT_IMPLEMENTED,
-					"The GetGroupProperties function is not implemented, sorry.");
+	/* Build an initial pointer array */
+	*values = g_ptr_array_new();
+
+	/* Go through each ID to get that ID's properties */
+	int idcnt;
+	for (idcnt = 0; idcnt < ids->len; idcnt++) {
+		GHashTable * idprops = NULL;
+		GError * error = NULL;
+		gint id = g_array_index(ids, int, idcnt);
+
+		/* Get the properties for this ID the old fashioned way. */
+		if (!_dbusmenu_server_get_properties(server, id, properties, &idprops, &error)) {
+			g_warning("Error getting the properties from ID %d: %s", id, error->message);
+			g_error_free(error);
+			error = NULL;
+			continue;
+		}
+
+		GValueArray * valarray = g_value_array_new(2);
+
+		_gvalue_array_append_int(valarray, id);
+		_gvalue_array_append_hashtable(valarray, idprops);
+
+		g_ptr_array_add(*values, valarray);
 	}
-	return FALSE;
+
+	return TRUE;
 }
 
+/* Allocate a value on the stack for the int and append
+   it to the array. */
 static void
 _gvalue_array_append_int(GValueArray *array, gint i)
 {
@@ -551,6 +606,8 @@ _gvalue_array_append_int(GValueArray *array, gint i)
 	g_value_unset(&value);
 }
 
+/* Allocate a value on the stack for the hashtable and append
+   it to the array. */
 static void
 _gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict)
 {
@@ -571,7 +628,7 @@ serialize_menuitem(gpointer data, gpointer user_data)
 	gint id = dbusmenu_menuitem_get_id(mi);
 	GHashTable * dict = dbusmenu_menuitem_properties_copy(mi);
 
-	GValueArray * item = g_value_array_new(1);
+	GValueArray * item = g_value_array_new(2);
 	_gvalue_array_append_int(item, id);
 	_gvalue_array_append_hashtable(item, dict);
 
