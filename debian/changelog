@@ -1,4 +1,4 @@
-libdbusmenu (0.3.8-0ubuntu2~ppa1~glob1) UNRELEASED; urgency=low
+libdbusmenu (0.3.8-0ubuntu2~ppa1~glob1) lucid; urgency=low
 
   * Updating to packaging branch
   * Upstream Merge
@@ -6,7 +6,7 @@ libdbusmenu (0.3.8-0ubuntu2~ppa1~glob1) UNRELEASED; urgency=low
     * Globbing layout signaling from the server
     * Globbing property requests into group requests
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 02 Aug 2010 14:37:28 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Aug 2010 14:41:36 -0500
 
 libdbusmenu (0.3.8-0ubuntu1) maverick; urgency=low
 
