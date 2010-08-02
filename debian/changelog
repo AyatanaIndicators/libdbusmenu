@@ -1,23 +1,33 @@
-libdbusmenu (0.3.6-0ubuntu2~ppa1~glob3) lucid; urgency=low
+libdbusmenu (0.3.8-0ubuntu2~ppa1~glob1) UNRELEASED; urgency=low
 
+  * Updating to packaging branch
   * Upstream Merge
     * Making it so that properties are requested bredth first
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 20 Jul 2010 15:24:08 -0500
-
-libdbusmenu (0.3.6-0ubuntu2~ppa1~glob2) lucid; urgency=low
-
-  * Upstream Merge
     * Globbing layout signaling from the server
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 20 Jul 2010 12:34:11 -0500
-
-libdbusmenu (0.3.6-0ubuntu2~ppa1~glob1) lucid; urgency=low
-
-  * Upstream Merge
     * Globbing property requests into group requests
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 20 Jul 2010 11:51:40 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Aug 2010 14:37:28 -0500
+
+libdbusmenu (0.3.8-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    - Added ItemActivationRequested signal.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 30 Jul 2010 13:44:34 -0400
+
+libdbusmenu (0.3.7-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 22 Jul 2010 21:17:13 +0200
+
+libdbusmenu (0.3.6-0ubuntu2~ppa1) lucid; urgency=low
+
+  * Upstream Merge
+    * Making dbusmenu-dumper have a click to dump feature.
+  * Autogen update
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 20 Jul 2010 16:40:29 -0500
 
 libdbusmenu (0.3.6-0ubuntu1) maverick; urgency=low
 

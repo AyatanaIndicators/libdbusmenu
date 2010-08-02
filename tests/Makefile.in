@@ -38,8 +38,8 @@ build_triplet = @build@
 host_triplet = @host@
 TESTS = test-glib-objects-test test-glib-layout test-glib-properties \
 	test-glib-proxy test-glib-simple-items$(EXEEXT) \
-	test-glib-submenu test-json test-gtk-objects-test \
-	test-gtk-label test-gtk-shortcut test-gtk-reorder
+	test-glib-submenu test-gtk-objects-test test-gtk-label \
+	test-gtk-shortcut test-gtk-reorder test-gtk-submenu
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-objects$(EXEEXT) test-glib-layout-client$(EXEEXT) \
 	test-glib-layout-server$(EXEEXT) \
@@ -54,13 +54,19 @@ check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-gtk-shortcut-server$(EXEEXT) \
 	test-glib-simple-items$(EXEEXT) \
 	test-gtk-reorder-server$(EXEEXT) test-json-client$(EXEEXT) \
-	test-json-server$(EXEEXT)
+	test-json-server$(EXEEXT) test-gtk-submenu-server$(EXEEXT) \
+	test-gtk-submenu-client$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(libdbusmenu_jsonloaderinclude_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/dbusmenu-jsonloader.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -289,6 +295,30 @@ test_gtk_shortcut_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_shortcut_server_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am_test_gtk_submenu_client_OBJECTS =  \
+	test_gtk_submenu_client-test-gtk-submenu-client.$(OBJEXT)
+test_gtk_submenu_client_OBJECTS =  \
+	$(am_test_gtk_submenu_client_OBJECTS)
+test_gtk_submenu_client_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+test_gtk_submenu_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_gtk_submenu_client_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_test_gtk_submenu_server_OBJECTS =  \
+	test_gtk_submenu_server-test-gtk-submenu-server.$(OBJEXT)
+test_gtk_submenu_server_OBJECTS =  \
+	$(am_test_gtk_submenu_server_OBJECTS)
+test_gtk_submenu_server_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+test_gtk_submenu_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_gtk_submenu_server_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_test_json_client_OBJECTS =  \
 	test_json_client-test-json-client.$(OBJEXT)
 test_json_client_OBJECTS = $(am_test_json_client_OBJECTS)
@@ -354,7 +384,9 @@ SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(test_gtk_reorder_server_SOURCES) \
 	$(test_gtk_shortcut_client_SOURCES) \
 	$(test_gtk_shortcut_server_SOURCES) \
-	$(test_json_client_SOURCES) $(test_json_server_SOURCES)
+	$(test_gtk_submenu_client_SOURCES) \
+	$(test_gtk_submenu_server_SOURCES) $(test_json_client_SOURCES) \
+	$(test_json_server_SOURCES)
 DIST_SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(glib_server_nomenu_SOURCES) \
 	$(test_glib_layout_client_SOURCES) \
@@ -373,7 +405,9 @@ DIST_SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(test_gtk_reorder_server_SOURCES) \
 	$(test_gtk_shortcut_client_SOURCES) \
 	$(test_gtk_shortcut_server_SOURCES) \
-	$(test_json_client_SOURCES) $(test_json_server_SOURCES)
+	$(test_gtk_submenu_client_SOURCES) \
+	$(test_gtk_submenu_server_SOURCES) $(test_json_client_SOURCES) \
+	$(test_json_server_SOURCES)
 DATA = $(examples_DATA) $(json_DATA) $(pkgconfig_DATA)
 HEADERS = $(libdbusmenu_jsonloaderinclude_HEADERS)
 ETAGS = etags
@@ -399,6 +433,8 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
+DBUSMENUDUMPER_CFLAGS = @DBUSMENUDUMPER_CFLAGS@
+DBUSMENUDUMPER_LIBS = @DBUSMENUDUMPER_LIBS@
 DBUSMENUGLIB_CFLAGS = @DBUSMENUGLIB_CFLAGS@
 DBUSMENUGLIB_LIBS = @DBUSMENUGLIB_LIBS@
 DBUSMENUGTK_CFLAGS = @DBUSMENUGTK_CFLAGS@
@@ -479,6 +515,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
@@ -861,6 +899,36 @@ test_gtk_reorder_server_LDADD = \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
+test_gtk_submenu_server_SOURCES = \
+	test-gtk-submenu-server.c
+
+test_gtk_submenu_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_submenu_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
+test_gtk_submenu_client_SOURCES = \
+	test-gtk-submenu-client.c
+
+test_gtk_submenu_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_submenu_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
 
 #########################
 # Other
@@ -1036,6 +1104,12 @@ test-gtk-shortcut-client$(EXEEXT): $(test_gtk_shortcut_client_OBJECTS) $(test_gt
 test-gtk-shortcut-server$(EXEEXT): $(test_gtk_shortcut_server_OBJECTS) $(test_gtk_shortcut_server_DEPENDENCIES) 
 	@rm -f test-gtk-shortcut-server$(EXEEXT)
 	$(AM_V_CCLD)$(test_gtk_shortcut_server_LINK) $(test_gtk_shortcut_server_OBJECTS) $(test_gtk_shortcut_server_LDADD) $(LIBS)
+test-gtk-submenu-client$(EXEEXT): $(test_gtk_submenu_client_OBJECTS) $(test_gtk_submenu_client_DEPENDENCIES) 
+	@rm -f test-gtk-submenu-client$(EXEEXT)
+	$(AM_V_CCLD)$(test_gtk_submenu_client_LINK) $(test_gtk_submenu_client_OBJECTS) $(test_gtk_submenu_client_LDADD) $(LIBS)
+test-gtk-submenu-server$(EXEEXT): $(test_gtk_submenu_server_OBJECTS) $(test_gtk_submenu_server_DEPENDENCIES) 
+	@rm -f test-gtk-submenu-server$(EXEEXT)
+	$(AM_V_CCLD)$(test_gtk_submenu_server_LINK) $(test_gtk_submenu_server_OBJECTS) $(test_gtk_submenu_server_LDADD) $(LIBS)
 test-json-client$(EXEEXT): $(test_json_client_OBJECTS) $(test_json_client_DEPENDENCIES) 
 	@rm -f test-json-client$(EXEEXT)
 	$(AM_V_CCLD)$(test_json_client_LINK) $(test_json_client_OBJECTS) $(test_json_client_LDADD) $(LIBS)
@@ -1068,6 +1142,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_reorder_server-test-gtk-reorder-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_shortcut_client-test-gtk-shortcut-client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_shortcut_server-test-gtk-shortcut-server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_submenu_client-test-gtk-submenu-client.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_submenu_server-test-gtk-submenu-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_json_client-test-json-client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_json_server-test-json-server.Po@am__quote@
 
@@ -1390,6 +1466,38 @@ test_gtk_shortcut_server-test-gtk-shortcut-server.obj: test-gtk-shortcut-server.
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-gtk-shortcut-server.c' object='test_gtk_shortcut_server-test-gtk-shortcut-server.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_shortcut_server_CFLAGS) $(CFLAGS) -c -o test_gtk_shortcut_server-test-gtk-shortcut-server.obj `if test -f 'test-gtk-shortcut-server.c'; then $(CYGPATH_W) 'test-gtk-shortcut-server.c'; else $(CYGPATH_W) '$(srcdir)/test-gtk-shortcut-server.c'; fi`
+
+test_gtk_submenu_client-test-gtk-submenu-client.o: test-gtk-submenu-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_submenu_client_CFLAGS) $(CFLAGS) -MT test_gtk_submenu_client-test-gtk-submenu-client.o -MD -MP -MF $(DEPDIR)/test_gtk_submenu_client-test-gtk-submenu-client.Tpo -c -o test_gtk_submenu_client-test-gtk-submenu-client.o `test -f 'test-gtk-submenu-client.c' || echo '$(srcdir)/'`test-gtk-submenu-client.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_gtk_submenu_client-test-gtk-submenu-client.Tpo $(DEPDIR)/test_gtk_submenu_client-test-gtk-submenu-client.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-gtk-submenu-client.c' object='test_gtk_submenu_client-test-gtk-submenu-client.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_submenu_client_CFLAGS) $(CFLAGS) -c -o test_gtk_submenu_client-test-gtk-submenu-client.o `test -f 'test-gtk-submenu-client.c' || echo '$(srcdir)/'`test-gtk-submenu-client.c
+
+test_gtk_submenu_client-test-gtk-submenu-client.obj: test-gtk-submenu-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_submenu_client_CFLAGS) $(CFLAGS) -MT test_gtk_submenu_client-test-gtk-submenu-client.obj -MD -MP -MF $(DEPDIR)/test_gtk_submenu_client-test-gtk-submenu-client.Tpo -c -o test_gtk_submenu_client-test-gtk-submenu-client.obj `if test -f 'test-gtk-submenu-client.c'; then $(CYGPATH_W) 'test-gtk-submenu-client.c'; else $(CYGPATH_W) '$(srcdir)/test-gtk-submenu-client.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_gtk_submenu_client-test-gtk-submenu-client.Tpo $(DEPDIR)/test_gtk_submenu_client-test-gtk-submenu-client.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-gtk-submenu-client.c' object='test_gtk_submenu_client-test-gtk-submenu-client.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_submenu_client_CFLAGS) $(CFLAGS) -c -o test_gtk_submenu_client-test-gtk-submenu-client.obj `if test -f 'test-gtk-submenu-client.c'; then $(CYGPATH_W) 'test-gtk-submenu-client.c'; else $(CYGPATH_W) '$(srcdir)/test-gtk-submenu-client.c'; fi`
+
+test_gtk_submenu_server-test-gtk-submenu-server.o: test-gtk-submenu-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_submenu_server_CFLAGS) $(CFLAGS) -MT test_gtk_submenu_server-test-gtk-submenu-server.o -MD -MP -MF $(DEPDIR)/test_gtk_submenu_server-test-gtk-submenu-server.Tpo -c -o test_gtk_submenu_server-test-gtk-submenu-server.o `test -f 'test-gtk-submenu-server.c' || echo '$(srcdir)/'`test-gtk-submenu-server.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_gtk_submenu_server-test-gtk-submenu-server.Tpo $(DEPDIR)/test_gtk_submenu_server-test-gtk-submenu-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-gtk-submenu-server.c' object='test_gtk_submenu_server-test-gtk-submenu-server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_submenu_server_CFLAGS) $(CFLAGS) -c -o test_gtk_submenu_server-test-gtk-submenu-server.o `test -f 'test-gtk-submenu-server.c' || echo '$(srcdir)/'`test-gtk-submenu-server.c
+
+test_gtk_submenu_server-test-gtk-submenu-server.obj: test-gtk-submenu-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_submenu_server_CFLAGS) $(CFLAGS) -MT test_gtk_submenu_server-test-gtk-submenu-server.obj -MD -MP -MF $(DEPDIR)/test_gtk_submenu_server-test-gtk-submenu-server.Tpo -c -o test_gtk_submenu_server-test-gtk-submenu-server.obj `if test -f 'test-gtk-submenu-server.c'; then $(CYGPATH_W) 'test-gtk-submenu-server.c'; else $(CYGPATH_W) '$(srcdir)/test-gtk-submenu-server.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_gtk_submenu_server-test-gtk-submenu-server.Tpo $(DEPDIR)/test_gtk_submenu_server-test-gtk-submenu-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-gtk-submenu-server.c' object='test_gtk_submenu_server-test-gtk-submenu-server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_submenu_server_CFLAGS) $(CFLAGS) -c -o test_gtk_submenu_server-test-gtk-submenu-server.obj `if test -f 'test-gtk-submenu-server.c'; then $(CYGPATH_W) 'test-gtk-submenu-server.c'; else $(CYGPATH_W) '$(srcdir)/test-gtk-submenu-server.c'; fi`
 
 test_json_client-test-json-client.o: test-json-client.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_json_client_CFLAGS) $(CFLAGS) -MT test_json_client-test-json-client.o -MD -MP -MF $(DEPDIR)/test_json_client-test-json-client.Tpo -c -o test_json_client-test-json-client.o `test -f 'test-json-client.c' || echo '$(srcdir)/'`test-json-client.c
@@ -1909,6 +2017,16 @@ test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+#########################
+# Test GTK Submenu
+#########################
+
+test-gtk-submenu: test-gtk-submenu-client test-gtk-submenu-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-submenu-client --task-name Client --task ./test-gtk-submenu-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 #########################

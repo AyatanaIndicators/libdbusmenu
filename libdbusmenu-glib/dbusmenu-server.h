@@ -27,6 +27,7 @@ G_BEGIN_DECLS
 #define g_marshal_value_peek_boxed(v)    g_value_get_boxed (v)
 #define g_marshal_value_peek_pointer(v)  g_value_get_pointer (v)
 #define g_marshal_value_peek_object(v)   g_value_get_object (v)
+#define g_marshal_value_peek_variant(v)  g_value_get_variant (v)
 #else /* !G_ENABLE_DEBUG */
 /* WARNING: This code accesses GValues directly, which is UNSUPPORTED API.
  *          Do not access GValues directly in your code. Instead, use the
@@ -50,6 +51,7 @@ G_BEGIN_DECLS
 #define g_marshal_value_peek_boxed(v)    (v)->data[0].v_pointer
 #define g_marshal_value_peek_pointer(v)  (v)->data[0].v_pointer
 #define g_marshal_value_peek_object(v)   (v)->data[0].v_pointer
+#define g_marshal_value_peek_variant(v)  (v)->data[0].v_pointer
 #endif /* !G_ENABLE_DEBUG */
 
 
@@ -379,7 +381,7 @@ const DBusGObjectInfo dbus_glib__dbusmenu_server_object_info = {
   dbus_glib__dbusmenu_server_methods,
   7,
 "org.ayatana.dbusmenu\0GetLayout\0S\0parentId\0I\0i\0revision\0O\0F\0N\0u\0layout\0O\0F\0N\0s\0\0org.ayatana.dbusmenu\0GetGroupProperties\0S\0ids\0I\0ai\0propertyNames\0I\0as\0properties\0O\0F\0N\0a(ia{sv})\0\0org.ayatana.dbusmenu\0GetChildren\0S\0id\0I\0i\0propertyNames\0I\0as\0properties\0O\0F\0N\0a(ia{sv})\0\0org.ayatana.dbusmenu\0GetProperty\0S\0id\0I\0i\0name\0I\0s\0value\0O\0F\0N\0v\0\0org.ayatana.dbusmenu\0GetProperties\0S\0id\0I\0i\0propertyNames\0I\0as\0properties\0O\0F\0N\0a{sv}\0\0org.ayatana.dbusmenu\0Event\0S\0id\0I\0i\0eventId\0I\0s\0data\0I\0v\0timestamp\0I\0u\0\0org.ayatana.dbusmenu\0AboutToShow\0S\0id\0I\0i\0needUpdate\0O\0F\0N\0b\0\0\0",
-"org.ayatana.dbusmenu\0ItemPropertyUpdated\0org.ayatana.dbusmenu\0ItemUpdated\0org.ayatana.dbusmenu\0LayoutUpdated\0\0",
+"org.ayatana.dbusmenu\0ItemPropertyUpdated\0org.ayatana.dbusmenu\0ItemUpdated\0org.ayatana.dbusmenu\0LayoutUpdated\0org.ayatana.dbusmenu\0ItemActivationRequested\0\0",
 "org.ayatana.dbusmenu\0version\0\0"
 };
 

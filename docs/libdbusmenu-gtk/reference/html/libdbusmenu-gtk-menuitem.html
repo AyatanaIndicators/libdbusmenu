@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API">
 <link rel="prev" href="Genericmenuitem.html" title="Genericmenuitem">
 <link rel="next" href="object-tree.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -40,10 +40,24 @@
 <pre class="synopsis"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-image" title="dbusmenu_menuitem_property_set_image ()">dbusmenu_menuitem_property_set_image</a>
                                                         (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
                                                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="type">GdkPixbuf</span></a> *data</code></em>);
-<a href="/usr/share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="returnvalue">GdkPixbuf</span></a> *         <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-get-image" title="dbusmenu_menuitem_property_get_image ()">dbusmenu_menuitem_property_get_image</a>
+                                                         <em class="parameter"><code>const <span class="type">GdkPixbuf</span> *data</code></em>);
+<span class="returnvalue">GdkPixbuf</span> *         <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-get-image" title="dbusmenu_menuitem_property_get_image ()">dbusmenu_menuitem_property_get_image</a>
                                                         (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
                                                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut" title="dbusmenu_menuitem_property_set_shortcut ()">dbusmenu_menuitem_property_set_shortcut</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> key</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gdk/unstable/gdk-Windows.html#GdkModifierType"><span class="type">GdkModifierType</span></a> modifier</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut-string" title="dbusmenu_menuitem_property_set_shortcut_string ()">dbusmenu_menuitem_property_set_shortcut_string</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *shortcut</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut-menuitem" title="dbusmenu_menuitem_property_set_shortcut_menuitem ()">dbusmenu_menuitem_property_set_shortcut_menuitem</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/gtk/unstable/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> *gmi</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-get-shortcut" title="dbusmenu_menuitem_property_get_shortcut ()">dbusmenu_menuitem_property_get_shortcut</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *key</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gdk/unstable/gdk-Windows.html#GdkModifierType"><span class="type">GdkModifierType</span></a> *modifiers</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -58,7 +72,7 @@
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_image
                                                         (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
                                                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="type">GdkPixbuf</span></a> *data</code></em>);</pre>
+                                                         <em class="parameter"><code>const <span class="type">GdkPixbuf</span> *data</code></em>);</pre>
 <p>
 This function takes the pixbuf that is stored in <em class="parameter"><code>data</code></em> and
 	turns it into a base64 encoded PNG so that it can be placed
@@ -94,13 +108,13 @@ This function takes the pixbuf that is stored in <em class="parameter"><code>dat
 <hr>
 <div class="refsect2" title="dbusmenu_menuitem_property_get_image ()">
 <a name="dbusmenu-menuitem-property-get-image"></a><h3>dbusmenu_menuitem_property_get_image ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="returnvalue">GdkPixbuf</span></a> *         dbusmenu_menuitem_property_get_image
+<pre class="programlisting"><span class="returnvalue">GdkPixbuf</span> *         dbusmenu_menuitem_property_get_image
                                                         (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
                                                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);</pre>
 <p>
 This function looks on the menu item for a property by the
 	name of <em class="parameter"><code>property</code></em>.  If one exists it tries to turn it into
-	a <a href="/usr/share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="type">GdkPixbuf</span></a>.  It assumes that the property is a base64 encoded
+	a <span class="type">GdkPixbuf</span>.  It assumes that the property is a base64 encoded
 	PNG file like the one created by <span class="type">dbusmenu_menuite_property_set_image</span>.
 </p>
 <div class="variablelist"><table border="0">
@@ -124,10 +138,143 @@ This function looks on the menu item for a property by the
 </tbody>
 </table></div>
 </div>
+<hr>
+<div class="refsect2" title="dbusmenu_menuitem_property_set_shortcut ()">
+<a name="dbusmenu-menuitem-property-set-shortcut"></a><h3>dbusmenu_menuitem_property_set_shortcut ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_shortcut
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> key</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gdk/unstable/gdk-Windows.html#GdkModifierType"><span class="type">GdkModifierType</span></a> modifier</code></em>);</pre>
+<p>
+Takes the modifer described by <em class="parameter"><code>key</code></em> and <em class="parameter"><code>modifier</code></em> and places that into
+	the format sending across Dbus for shortcuts.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>menuitem</code></em> :</span></p></td>
+<td>The <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set the shortcut on
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>The keycode of the key to send
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>modifier</code></em> :</span></p></td>
+<td>A bitmask of modifiers used to activate the item
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Whether it was successful at setting the property.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbusmenu_menuitem_property_set_shortcut_string ()">
+<a name="dbusmenu-menuitem-property-set-shortcut-string"></a><h3>dbusmenu_menuitem_property_set_shortcut_string ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_shortcut_string
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *shortcut</code></em>);</pre>
+<p>
+This function takes a GTK shortcut string as defined in
+	<a href="http://library.gnome.org/devel/gtk/unstable/gtk-Keyboard-Accelerators.html#gtk-accelerator-parse"><span class="type">gtk_accelerator_parse</span></a> and turns that into the information
+	required to send it over DBusmenu.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>menuitem</code></em> :</span></p></td>
+<td>The <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set the shortcut on
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>shortcut</code></em> :</span></p></td>
+<td>String describing the shortcut
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Whether it was successful at setting the property.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbusmenu_menuitem_property_set_shortcut_menuitem ()">
+<a name="dbusmenu-menuitem-property-set-shortcut-menuitem"></a><h3>dbusmenu_menuitem_property_set_shortcut_menuitem ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_shortcut_menuitem
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/gtk/unstable/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> *gmi</code></em>);</pre>
+<p>
+Takes the shortcut that is installed on a menu item and calls
+	<a class="link" href="libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut" title="dbusmenu_menuitem_property_set_shortcut ()"><span class="type">dbusmenu_menuitem_property_set_shortcut</span></a> with it.  It also sets
+	up listeners to watch it change.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>menuitem</code></em> :</span></p></td>
+<td>The <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set the shortcut on
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>gmi</code></em> :</span></p></td>
+<td>A menu item to steal the shortcut off of
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Whether it was successful at setting the property.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="dbusmenu_menuitem_property_get_shortcut ()">
+<a name="dbusmenu-menuitem-property-get-shortcut"></a><h3>dbusmenu_menuitem_property_get_shortcut ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbusmenu_menuitem_property_get_shortcut
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *menuitem</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *key</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gdk/unstable/gdk-Windows.html#GdkModifierType"><span class="type">GdkModifierType</span></a> *modifiers</code></em>);</pre>
+<p>
+This function gets a GTK shortcut as a key and a mask
+	for use to set the accelerators.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>menuitem</code></em> :</span></p></td>
+<td>The <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to get the shortcut off
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>Location to put the key value
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>modifiers</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.14</div>
+          Generated by GTK-Doc V1.15</div>
 </body>
 </html>
