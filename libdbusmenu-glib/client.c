@@ -78,6 +78,10 @@ struct _DbusmenuClientPrivate
 	DBusGProxy * dbusproxy;
 
 	GHashTable * type_handlers;
+
+	GArray * delayed_property_list;
+	GArray * delayed_property_listeners;
+	gint delayed_idle;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -86,6 +90,14 @@ struct _newItemPropData
 	DbusmenuClient * client;
 	DbusmenuMenuitem * item;
 	DbusmenuMenuitem * parent;
+};
+
+typedef struct _properties_listener_t properties_listener_t;
+struct _properties_listener_t {
+	gint id;
+	org_ayatana_dbusmenu_get_properties_reply callback;
+	gpointer user_data;
+	gboolean replied;
 };
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
@@ -109,6 +121,8 @@ static gint parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
 static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
+static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
+static GQuark error_domain (void);
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -211,6 +225,10 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
 	                                            g_free, NULL);
 
+	priv->delayed_idle = 0;
+	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
+	priv->delayed_property_listeners = g_array_new(FALSE, FALSE, sizeof(properties_listener_t));
+
 	return;
 }
 
@@ -218,6 +236,44 @@ static void
 dbusmenu_client_dispose (GObject *object)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(object);
+
+	if (priv->delayed_idle != 0) {
+		g_source_remove(priv->delayed_idle);
+		priv->delayed_idle = 0;
+	}
+
+	/* Only used for queueing up a new command, so we can
+	   just drop this array. */
+	if (priv->delayed_property_list == NULL) {
+		gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
+		if (dataregion != NULL) {
+			g_strfreev(dataregion);
+		}
+		priv->delayed_property_list = NULL;
+	}
+
+	if (priv->delayed_property_listeners == NULL) {
+		gint i;
+		GError * localerror = NULL;
+
+		/* Making sure all the callbacks get called so that if they had
+		   memory in their user_data that needs to be free'd that happens. */
+		for (i = 0; i < priv->delayed_property_listeners->len; i++) {
+			properties_listener_t * listener = &g_array_index(priv->delayed_property_listeners, properties_listener_t, i);
+			if (!listener->replied) {
+				if (localerror == NULL) {
+					g_set_error_literal(&localerror, error_domain(), 0, "DbusmenuClient Shutdown");
+				}
+				listener->callback(priv->menuproxy, NULL, localerror, listener->user_data);
+			}
+		}
+		if (localerror != NULL) {
+			g_error_free(localerror);
+		}
+
+		g_array_free(priv->delayed_property_listeners, TRUE);
+		priv->delayed_property_listeners = NULL;
+	}
 
 	if (priv->layoutcall != NULL) {
 		dbus_g_proxy_cancel_call(priv->menuproxy, priv->layoutcall);
@@ -310,6 +366,201 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Internal funcs */
 
+static GQuark
+error_domain (void)
+{
+	static GQuark error = 0;
+	if (error == 0) {
+		error = g_quark_from_static_string(G_LOG_DOMAIN "-CLIENT");
+	}
+	return error;
+}
+
+/* Quick little function to search through the listeners and find
+   one that matches an ID */
+static properties_listener_t *
+find_listener (GArray * listeners, guint index, gint id)
+{
+	if (index >= listeners->len) {
+		return NULL;
+	}
+
+	properties_listener_t * retval = &g_array_index(listeners, properties_listener_t, index);
+	if (retval->id == id) {
+		return retval;
+	}
+
+	return find_listener(listeners, index + 1, id);
+}
+
+/* Call back from getting the group properties, now we need
+   to unwind and call the various functions. */
+static void 
+get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *error, gpointer userdata)
+{
+	GArray * listeners = (GArray *)userdata;
+	int i;
+
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Get properties callback: %d", OUT_properties->len);
+	#endif
+
+	if (error != NULL) {
+		/* If we get an error, all our callbacks need to hear about it. */
+		g_warning("Group Properties error: %s", error->message);
+		for (i = 0; i < listeners->len; i++) {
+			properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
+			listener->callback(proxy, NULL, error, listener->user_data);
+		}
+		g_array_free(listeners, TRUE);
+		return;
+	}
+
+	/* Callback all the folks we can find */
+	for (i = 0; i < OUT_properties->len; i++) {
+		GValueArray * varray = (GValueArray *)g_ptr_array_index(OUT_properties, i);
+
+		if (varray->n_values != 2) {
+			g_warning("Value Array is %d entries long but we expected 2.", varray->n_values);
+			continue;
+		}
+
+		GValue * vid = g_value_array_get_nth(varray, 0);
+		GValue * vproperties = g_value_array_get_nth(varray, 1);
+
+		if (G_VALUE_TYPE(vid) != G_TYPE_INT) {
+			g_warning("ID Entry not holding an int: %s", G_VALUE_TYPE_NAME(vid));
+		}
+		if (G_VALUE_TYPE(vproperties) != dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
+			g_warning("Properties Entry not holding an a{sv}: %s", G_VALUE_TYPE_NAME(vproperties));
+		}
+
+		gint id = g_value_get_int(vid);
+		GHashTable * properties = g_value_get_boxed(vproperties);
+
+		properties_listener_t * listener = find_listener(listeners, 0, id);
+		if (listener == NULL) {
+			g_warning("Unable to find listener for ID %d", id);
+			continue;
+		}
+
+		if (!listener->replied) {
+			listener->callback(proxy, properties, NULL, listener->user_data);
+			listener->replied = TRUE;
+		} else {
+			g_warning("Odd, we've already replied to the listener on ID %d", id);
+		}
+	}
+
+	/* Provide errors for those who we can't */
+	GError * localerror = NULL;
+	for (i = 0; i < listeners->len; i++) {
+		properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
+		if (!listener->replied) {
+			if (localerror == NULL) {
+				g_set_error_literal(&localerror, error_domain(), 0, "Error getting properties for ID");
+			}
+			listener->callback(proxy, NULL, localerror, listener->user_data);
+		}
+	}
+	if (localerror != NULL) {
+		g_error_free(localerror);
+	}
+
+	/* Clean up */
+	g_array_free(listeners, TRUE);
+
+	return;
+}
+
+/* Idle handler to send out all of our property requests as one big
+   lovely property request. */
+static gboolean
+get_properties_idle (gpointer user_data)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
+	//org_ayatana_dbusmenu_get_properties_async(priv->menuproxy, id, properties, callback, user_data);
+
+	if (priv->delayed_property_listeners->len == 0) {
+		g_warning("Odd, idle func got no listeners.");
+		return FALSE;
+	}
+
+	/* Build up an ID list to pass */
+	GArray * idlist = g_array_new(FALSE, FALSE, sizeof(gint));
+	gint i;
+	for (i = 0; i < priv->delayed_property_listeners->len; i++) {
+		g_array_append_val(idlist, g_array_index(priv->delayed_property_listeners, properties_listener_t, i).id);
+	}
+
+	org_ayatana_dbusmenu_get_group_properties_async(priv->menuproxy, idlist, (const gchar **)priv->delayed_property_list->data, get_properties_callback, priv->delayed_property_listeners);
+
+	/* Free ID List */
+	g_array_free(idlist, TRUE);
+
+	/* Free properties */
+	gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
+	if (dataregion != NULL) {
+		g_strfreev(dataregion);
+	}
+	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
+
+	/* Rebuild the listeners */
+	priv->delayed_property_listeners = g_array_new(FALSE, FALSE, sizeof(properties_listener_t));
+
+	/* Make sure we set for a new idle */
+	priv->delayed_idle = 0;
+
+	return FALSE;
+}
+
+/* A function to group all the get_properties commands to make them
+   more efficient over dbus. */
+static void
+get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	if (find_listener(priv->delayed_property_listeners, 0, id) != NULL) {
+		g_warning("Asking for properties from same ID twice: %d", id);
+		GError * localerror = NULL;
+		g_set_error_literal(&localerror, error_domain(), 0, "ID already queued");
+		callback(priv->menuproxy, NULL, localerror, user_data);
+		g_error_free(localerror);
+		return;
+	}
+
+	if (properties == NULL || properties[0] == NULL) {
+		/* get all case */
+		if (priv->delayed_property_list->len != 0) {
+			/* If there are entries in the list, then we'll need to
+			   remove them all, and start over */
+			gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
+			if (dataregion != NULL) {
+				g_strfreev(dataregion);
+			}
+			priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
+		}
+	} else {
+		/* there could be a list we care about */
+		/* TODO: No one uses this today */
+		/* TODO: Copy them into the list */
+	}
+
+	properties_listener_t listener = {0};
+	listener.id = id;
+	listener.callback = callback;
+	listener.user_data = user_data;
+	listener.replied = FALSE;
+
+	g_array_append_val(priv->delayed_property_listeners, listener);
+
+	if (priv->delayed_idle == 0) {
+		priv->delayed_idle = g_idle_add(get_properties_idle, client);
+	}
+
+	return;
+}
+
 /* Annoying little wrapper to make the right function update */
 static void
 layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient * client)
@@ -367,10 +618,9 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 	g_return_if_fail(menuitem != NULL);
 
-	gchar * properties[1] = {NULL}; /* This gets them all */
 	g_debug("Getting properties");
 	g_object_ref(menuitem);
-	org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_cb, menuitem);
+	get_properties_globber(client, id, NULL, menuitem_get_properties_cb, menuitem);
 	return;
 }
 
@@ -655,16 +905,19 @@ menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties,
 static void
 menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
+	g_return_if_fail(data != NULL);
+	newItemPropData * propdata = (newItemPropData *)data;
+
 	if (error != NULL) {
 		g_warning("Error getting properties on a new menuitem: %s", error->message);
-		g_object_unref(data);
+		g_object_unref(propdata->item);
+		g_free(data);
 		return;
 	}
-	g_return_if_fail(data != NULL);
 
-	newItemPropData * propdata = (newItemPropData *)data;
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
 
+	/* Extra ref as get_properties will unref once itself */
 	g_object_ref(propdata->item);
 	menuitem_get_properties_cb (proxy, properties, error, propdata->item);
 
@@ -819,18 +1072,16 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			propdata->item    = item;
 			propdata->parent  = parent;
 
-			gchar * properties[1] = {NULL}; /* This gets them all */
 			g_object_ref(item);
-			org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_new_cb, propdata);
+			get_properties_globber(client, id, NULL, menuitem_get_properties_new_cb, propdata);
 		} else {
 			g_warning("Unable to allocate memory to get properties for menuitem.  This menuitem will never be realized.");
 		}
 	} else {
 		/* Refresh the properties */
 		/* XXX: We shouldn't need to get the properties everytime we reuse an entry */
-		gchar * properties[1] = {NULL}; /* This gets them all */
 		g_object_ref(item);
-		org_ayatana_dbusmenu_get_properties_async(proxy, id, (const gchar **)properties, menuitem_get_properties_replace_cb, item);
+		get_properties_globber(client, id, NULL, menuitem_get_properties_replace_cb, item);
 	}
 
 	xmlNodePtr children;
