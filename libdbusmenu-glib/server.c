@@ -65,6 +65,7 @@ enum {
 	ID_PROP_UPDATE,
 	ID_UPDATE,
 	LAYOUT_UPDATED,
+	ITEM_ACTIVATION,
 	LAST_SIGNAL
 };
 
@@ -165,6 +166,22 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                         NULL, NULL,
 	                                         _dbusmenu_server_marshal_VOID__UINT_INT,
 	                                         G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_INT);
+	/**
+		DbusmenuServer::item-activation-requested:
+		@arg0: The #DbusmenuServer emitting the signal.
+		@arg1: The ID of the parent for this update.
+		@arg2: The timestamp of when the event happened
+
+		This is signaled when a menuitem under this server
+		sends it's activate signal.
+	*/
+	signals[ITEM_ACTIVATION] =  g_signal_new(DBUSMENU_SERVER_SIGNAL_ITEM_ACTIVATION,
+	                                         G_TYPE_FROM_CLASS(class),
+	                                         G_SIGNAL_RUN_LAST,
+	                                         G_STRUCT_OFFSET(DbusmenuServerClass, item_activation),
+	                                         NULL, NULL,
+	                                         _dbusmenu_server_marshal_VOID__INT_UINT,
+	                                         G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
 
 
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
@@ -359,6 +376,15 @@ menuitem_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 	return;
 }
 
+/* Called when a menu item emits its activated signal so it
+   gets passed across the bus. */
+static void 
+menuitem_activated (DbusmenuMenuitem * mi, guint timestamp, DbusmenuServer * server)
+{
+	g_signal_emit(G_OBJECT(server), signals[ITEM_ACTIVATION], 0, dbusmenu_menuitem_get_id(mi), timestamp, TRUE);
+	return;
+}
+
 /* Connects all the signals that we're interested in
    coming from a menuitem */
 static void
@@ -368,6 +394,7 @@ menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data)
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(menuitem_child_removed), data);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED, G_CALLBACK(menuitem_child_moved), data);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menuitem_property_changed), data);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activated), data);
 	return;
 }
 
