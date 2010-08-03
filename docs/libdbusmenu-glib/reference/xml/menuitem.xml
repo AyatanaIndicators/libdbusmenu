@@ -339,7 +339,7 @@ menu should be shown.
 <listitem><simpara>Menu item that should be shown
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
-<listitem><simpara> Extra user data sent with the function. <emphasis role="annotation">[closure]</emphasis></simpara></listitem></varlistentry>
+<listitem><simpara> Extra user data sent with the function. closure</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-buildxml-slot-t" role="function">
 <title>dbusmenu_menuitem_buildxml_slot_t ()</title>
@@ -352,9 +352,9 @@ This is the function that is called to represent this menu item
 as an XML fragment.  Should call it's own children.
 </para><variablelist role="params">
 <varlistentry><term><parameter>mi</parameter>&#160;:</term>
-<listitem><simpara> Menu item that should be built from. <emphasis role="annotation">[<acronym>in</acronym>]</emphasis></simpara></listitem></varlistentry>
+<listitem><simpara> Menu item that should be built from. <acronym>in</acronym>. </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>stringarray</parameter>&#160;:</term>
-<listitem><simpara> An array of strings that can be combined into an XML file. <emphasis role="annotation">[<acronym>inout</acronym>][<acronym>transfer none</acronym>][<acronym>array</acronym>][<acronym>element-type</acronym> utf8]</emphasis></simpara></listitem></varlistentry>
+<listitem><simpara> An array of strings that can be combined into an XML file.. <acronym>inout</acronym>. <acronym>transfer none</acronym>. <acronym>array</acronym>. <acronym>element-type</acronym> utf8. </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="DbusmenuMenuitemClass" role="struct">
 <title>DbusmenuMenuitemClass</title>
@@ -963,7 +963,7 @@ This calls the function <parameter>func</parameter> on this menu item and all
 <listitem><simpara>The <link linkend="DbusmenItem"><type>DbusmenItem</type></link> to start from
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&#160;:</term>
-<listitem><simpara> User data to pass to the function. <emphasis role="annotation">[closure]</emphasis></simpara></listitem></varlistentry>
+<listitem><simpara> User data to pass to the function. closure</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-handle-event" role="function">
 <title>dbusmenu_menuitem_handle_event ()</title>
@@ -1020,7 +1020,7 @@ This function is used to send the even that the submenu
 <listitem><simpara>Callback to call when the call has returned.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cb_data</parameter>&#160;:</term>
-<listitem><simpara> Data to pass to the callback. <emphasis role="annotation">[closure]</emphasis></simpara></listitem></varlistentry>
+<listitem><simpara> Data to pass to the callback.. closure</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

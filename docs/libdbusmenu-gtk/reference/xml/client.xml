@@ -30,9 +30,6 @@
 <link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *           <link linkend="dbusmenu-gtkclient-menuitem-get-submenu">dbusmenu_gtkclient_menuitem_get_submenu</link>
                                                         (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>);
-<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-gtkclient-set-accel-group">dbusmenu_gtkclient_set_accel_group</link>  (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
-                                                         <parameter><link linkend="GtkAccelGroup"><type>GtkAccelGroup</type></link> *agroup</parameter>);
-<link linkend="GtkAccelGroup"><returnvalue>GtkAccelGroup</returnvalue></link> *     <link linkend="dbusmenu-gtkclient-get-accel-group">dbusmenu_gtkclient_get_accel_group</link>  (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-gtkclient-newitem-base">dbusmenu_gtkclient_newitem_base</link>     (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>,
                                                          <parameter><link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> *gmi</parameter>,
@@ -155,36 +152,6 @@ This grabs the submenu associated with the menuitem.
 <listitem><simpara><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to get associated <link linkend="GtkMenu"><type>GtkMenu</type></link> on.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The <link linkend="GtkMenu"><type>GtkMenu</type></link> if there is one.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2 id="dbusmenu-gtkclient-set-accel-group" role="function">
-<title>dbusmenu_gtkclient_set_accel_group ()</title>
-<indexterm zone="dbusmenu-gtkclient-set-accel-group"><primary>dbusmenu_gtkclient_set_accel_group</primary></indexterm>
-<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbusmenu_gtkclient_set_accel_group  (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
-                                                         <parameter><link linkend="GtkAccelGroup"><type>GtkAccelGroup</type></link> *agroup</parameter>);</programlisting>
-<para>
-Sets the acceleration group for the menu items with accelerators
-	on this client.
-</para><variablelist role="params">
-<varlistentry><term><parameter>client</parameter>&#160;:</term>
-<listitem><simpara>To set the group on
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>agroup</parameter>&#160;:</term>
-<listitem><simpara>The new acceleration group
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2 id="dbusmenu-gtkclient-get-accel-group" role="function">
-<title>dbusmenu_gtkclient_get_accel_group ()</title>
-<indexterm zone="dbusmenu-gtkclient-get-accel-group"><primary>dbusmenu_gtkclient_get_accel_group</primary></indexterm>
-<programlisting><link linkend="GtkAccelGroup"><returnvalue>GtkAccelGroup</returnvalue></link> *     dbusmenu_gtkclient_get_accel_group  (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>);</programlisting>
-<para>
-Gets the accel group for this client.
-</para><variablelist role="params">
-<varlistentry><term><parameter>client</parameter>&#160;:</term>
-<listitem><simpara>Client to query for an accelerator group
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> Either a valid group or <link linkend="NULL:CAPS"><type>NULL</type></link> on error or
-		none set.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-gtkclient-newitem-base" role="function">

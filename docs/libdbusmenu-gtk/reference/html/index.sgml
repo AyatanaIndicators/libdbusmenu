@@ -16,8 +16,6 @@
 <ANCHOR id="dbusmenu-gtkclient-new" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-new">
 <ANCHOR id="dbusmenu-gtkclient-menuitem-get" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-menuitem-get">
 <ANCHOR id="dbusmenu-gtkclient-menuitem-get-submenu" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-menuitem-get-submenu">
-<ANCHOR id="dbusmenu-gtkclient-set-accel-group" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-set-accel-group">
-<ANCHOR id="dbusmenu-gtkclient-get-accel-group" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-get-accel-group">
 <ANCHOR id="dbusmenu-gtkclient-newitem-base" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-newitem-base">
 <ANCHOR id="Genericmenuitem" href="libdbusmenu-gtk/Genericmenuitem.html">
 <ANCHOR id="Genericmenuitem.synopsis" href="libdbusmenu-gtk/Genericmenuitem.html#Genericmenuitem.synopsis">
@@ -47,7 +45,3 @@
 <ANCHOR id="libdbusmenu-gtk-menuitem.details" href="libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#libdbusmenu-gtk-menuitem.details">
 <ANCHOR id="dbusmenu-menuitem-property-set-image" href="libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-image">
 <ANCHOR id="dbusmenu-menuitem-property-get-image" href="libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-get-image">
-<ANCHOR id="dbusmenu-menuitem-property-set-shortcut" href="libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut">
-<ANCHOR id="dbusmenu-menuitem-property-set-shortcut-string" href="libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut-string">
-<ANCHOR id="dbusmenu-menuitem-property-set-shortcut-menuitem" href="libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut-menuitem">
-<ANCHOR id="dbusmenu-menuitem-property-get-shortcut" href="libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-get-shortcut">

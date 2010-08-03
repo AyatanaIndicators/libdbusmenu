@@ -85,10 +85,10 @@ DbusmenuServer
 @id_prop_update: 
 @id_update: 
 @layout_updated: 
-@item_activation: 
 @dbusmenu_server_reserved1: 
 @dbusmenu_server_reserved2: 
 @dbusmenu_server_reserved3: 
+@dbusmenu_server_reserved4: 
 
 <!-- ##### FUNCTION dbusmenu_server_new ##### -->
 <para>

@@ -7,8 +7,6 @@ DbusmenuGtkClientClass
 dbusmenu_gtkclient_new
 dbusmenu_gtkclient_menuitem_get
 dbusmenu_gtkclient_menuitem_get_submenu
-dbusmenu_gtkclient_set_accel_group
-dbusmenu_gtkclient_get_accel_group
 dbusmenu_gtkclient_newitem_base
 <SUBSECTION Standard>
 DBUSMENU_GTKCLIENT
@@ -36,6 +34,12 @@ DBUSMENU_GTKMENU_GET_CLASS
 </SECTION>
 
 <SECTION>
+<FILE>menuitem</FILE>
+dbusmenu_menuitem_property_set_image
+dbusmenu_menuitem_property_get_image
+</SECTION>
+
+<SECTION>
 <FILE>genericmenuitem</FILE>
 <TITLE>Genericmenuitem</TITLE>
 GENERICMENUITEM_TYPE
@@ -54,15 +58,5 @@ genericmenuitem_set_check_type
 genericmenuitem_set_state
 genericmenuitem_set_image
 genericmenuitem_get_image
-</SECTION>
-
-<SECTION>
-<FILE>menuitem</FILE>
-dbusmenu_menuitem_property_set_image
-dbusmenu_menuitem_property_get_image
-dbusmenu_menuitem_property_set_shortcut
-dbusmenu_menuitem_property_set_shortcut_string
-dbusmenu_menuitem_property_set_shortcut_menuitem
-dbusmenu_menuitem_property_get_shortcut
 </SECTION>
 
