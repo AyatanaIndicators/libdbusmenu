@@ -14,11 +14,24 @@ libdbusmenu (0.3.8-0ubuntu1) maverick; urgency=low
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 30 Jul 2010 13:44:34 -0400
 
+libdbusmenu (0.3.7-1) unstable; urgency=low
+
+  * Merge latest upstream from Ubuntu.
+  * Standards-Version: 3.9.1
+
+ -- Evgeni Golov <evgeni@debian.org>  Thu, 29 Jul 2010 12:00:04 +0200
+
 libdbusmenu (0.3.7-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 22 Jul 2010 21:17:13 +0200
+
+libdbusmenu (0.3.6-1) unstable; urgency=low
+
+  * Merge new upstream from Ubuntu.
+
+ -- Evgeni Golov <evgeni@debian.org>  Sat, 17 Jul 2010 10:47:35 +0200
 
 libdbusmenu (0.3.6-0ubuntu2~ppa1) lucid; urgency=low
 

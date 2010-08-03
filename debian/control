@@ -21,7 +21,7 @@ Build-Depends: debhelper (>= 5.0),
                gir1.0-gtk-2.0,
                libx11-dev (>= 1.3), 
                valac
-Standards-Version: 3.9.0
+Standards-Version: 3.9.1
 Homepage: https://launchpad.net/dbusmenu
 Vcs-Bzr: https://code.launchpad.net/~dbusmenu-team/dbusmenu/ubuntu
 Vcs-Browser: http://bazaar.launchpad.net/~dbusmenu-team/dbusmenu/ubuntu
@@ -160,8 +160,8 @@ Description: library for passing menus over DBus - Test lib
  create a menu simply without worrying about how it is displayed on the
  other side of the bus.
  .
- This package contains shared libraries to be by test suites in applications
- or libraries using dbusmenu.
+ This package contains shared libraries to be used by test suites in
+ applications or libraries using dbusmenu.
 
 Package: libdbusmenu-jsonloader-dev
 Section: libdevel
@@ -171,7 +171,7 @@ Depends: ${shlibs:Depends},
          libdbus-glib-1-dev (>= 0.76),
          libdbusmenu-glib-dev (= ${binary:Version}),
          libjson-glib-dev
-Description: library for passing menus over DBus - Test lib
+Description: library for passing menus over DBus - Test lib development files
  libdbusmenu passes a menu structure across DBus so that a program can
  create a menu simply without worrying about how it is displayed on the
  other side of the bus.
