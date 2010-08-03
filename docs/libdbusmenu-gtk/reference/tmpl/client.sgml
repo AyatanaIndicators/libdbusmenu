@@ -9,12 +9,10 @@ DbusmenuGtkClient
 
 </para>
 
-
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -75,24 +73,6 @@ DbusmenuGtkClient
 
 @client: 
 @item: 
-@Returns: 
-
-
-<!-- ##### FUNCTION dbusmenu_gtkclient_set_accel_group ##### -->
-<para>
-
-</para>
-
-@client: 
-@agroup: 
-
-
-<!-- ##### FUNCTION dbusmenu_gtkclient_get_accel_group ##### -->
-<para>
-
-</para>
-
-@client: 
 @Returns: 
 
 
