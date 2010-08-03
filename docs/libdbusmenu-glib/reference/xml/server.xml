@@ -117,12 +117,12 @@ A server which represents a sharing of a set of
 	void (*id_prop_update)(gint id, gchar * property, gchar * value);
 	void (*id_update)(gint id);
 	void (*layout_updated)(gint revision);
-	void (*item_activation)(gint id, guint timestamp);
 
 	/* Reserved */
 	void (*dbusmenu_server_reserved1)(void);
 	void (*dbusmenu_server_reserved2)(void);
 	void (*dbusmenu_server_reserved3)(void);
+	void (*dbusmenu_server_reserved4)(void);
 } DbusmenuServerClass;
 </programlisting>
 <para>
@@ -144,10 +144,6 @@ The class implementing the virtual functions for <link linkend="DbusmenuServer">
 <listitem><simpara>Slot for <link linkend="DbusmenuServer-layout-update"><type>"layout-update"</type></link>.
 </simpara></listitem>
 </varlistentry>
-<varlistentry><term><structfield id="DbusmenuServerClass.item-activation">item_activation</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
-</varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.dbusmenu-server-reserved1">dbusmenu_server_reserved1</structfield>&#160;()</term>
 <listitem><simpara>Reserved for future use.
 </simpara></listitem>
@@ -157,6 +153,10 @@ The class implementing the virtual functions for <link linkend="DbusmenuServer">
 </simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.dbusmenu-server-reserved3">dbusmenu_server_reserved3</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.dbusmenu-server-reserved4">dbusmenu_server_reserved4</structfield>&#160;()</term>
 <listitem><simpara>Reserved for future use.
 </simpara></listitem>
 </varlistentry>
