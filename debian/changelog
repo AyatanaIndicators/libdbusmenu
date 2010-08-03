@@ -3,7 +3,7 @@ libdbusmenu (0.3.9-0ubuntu1~ppa1) lucid; urgency=low
   * New upstream release.
     * Making it so that properties are requested bredth first
     * Globbing layout signaling from the server
-    * Globbing property requests into group requests
+    * Globbing property requests into group requests (LP: #604670)
 
  -- Ted Gould <ted@ubuntu.com>  Mon, 02 Aug 2010 20:28:58 -0500
 
