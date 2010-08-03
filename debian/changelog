@@ -1,11 +1,11 @@
-libdbusmenu (0.3.9-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.9-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Making it so that properties are requested bredth first
     * Globbing layout signaling from the server
     * Globbing property requests into group requests
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 02 Aug 2010 20:25:18 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Aug 2010 20:28:58 -0500
 
 libdbusmenu (0.3.8-0ubuntu1) maverick; urgency=low
 
