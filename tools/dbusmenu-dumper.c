@@ -445,12 +445,10 @@ main (int argc, char ** argv)
 			g_printerr("ERROR: could not get the id for the pointed window\n");
 			return 1;
 		}
-		g_debug("window: %u", (unsigned int)window);
 		if (!init_dbus_vars_from_window(window)) {
 			g_printerr("ERROR: could not find a menu for the pointed window\n");
 			return 1;
 		}
-		g_debug("dbusname: %s, dbusobject: %s", dbusname, dbusobject);
 	} else {
 		if (dbusname == NULL) {
 			g_printerr("ERROR: dbus-name not specified\n");
