@@ -1,3 +1,11 @@
+libdbusmenu (0.3.9-0ubuntu1~ppa2) UNRELEASED; urgency=low
+
+  * debian/rules: Enabling running check at build time
+  * debian/control: Adding build deps xvfb and dbus-test-runner for new
+    make check rules
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 09 Aug 2010 09:06:49 -0500
+
 libdbusmenu (0.3.9-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
