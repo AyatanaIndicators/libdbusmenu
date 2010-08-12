@@ -158,6 +158,7 @@ DbusmenuClient
 @client: 
 @id: 
 @gpointer user_data:
+@gpointer user_data:
 @gpointer user_data: 
 @cb_data: 
 
