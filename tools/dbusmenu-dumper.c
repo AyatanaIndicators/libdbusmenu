@@ -135,13 +135,20 @@ value2string (const GValue * value, int depth)
 	return str;
 }
 
+static gint
+list_str_cmp (gconstpointer a, gconstpointer b)
+{
+	return g_strcmp0((gchar *)a, (gchar *)b);
+}
+
 static void
 print_menuitem (DbusmenuMenuitem * item, int depth)
 {
 	gchar * space = g_strnfill(depth, ' ');
 	g_print("%s\"id\": %d", space, dbusmenu_menuitem_get_id(item));
 
-	GList * properties = dbusmenu_menuitem_properties_list(item);
+	GList * properties_raw = dbusmenu_menuitem_properties_list(item);
+	GList * properties = g_list_sort(properties_raw, list_str_cmp);
 	GList * property;
 	for (property = properties; property != NULL; property = g_list_next(property)) {
 		const GValue * value = dbusmenu_menuitem_property_get_value(item, (gchar *)property->data);
@@ -445,12 +452,10 @@ main (int argc, char ** argv)
 			g_printerr("ERROR: could not get the id for the pointed window\n");
 			return 1;
 		}
-		g_debug("window: %u", (unsigned int)window);
 		if (!init_dbus_vars_from_window(window)) {
 			g_printerr("ERROR: could not find a menu for the pointed window\n");
 			return 1;
 		}
-		g_debug("dbusname: %s, dbusobject: %s", dbusname, dbusobject);
 	} else {
 		if (dbusname == NULL) {
 			g_printerr("ERROR: dbus-name not specified\n");

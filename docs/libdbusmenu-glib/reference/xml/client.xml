@@ -343,6 +343,7 @@ This function connects into the type handling of the <link linkend="DbusmenuClie
 <listitem><simpara>
 <parameter>gpointer</parameter> user_data:
 <parameter>gpointer</parameter> user_data:
+<parameter>gpointer</parameter> user_data:
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cb_data</parameter>&#160;:</term>
 <listitem><simpara>

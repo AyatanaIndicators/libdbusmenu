@@ -1,10 +1,12 @@
-libdbusmenu (0.3.9-0ubuntu1~ppa2) lucid; urgency=low
+libdbusmenu (0.3.10-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
+  * New upstream release.
+    * Fixes to dbusmenu-dumper
   * debian/rules: Enabling running check at build time
   * debian/control: Adding build deps xvfb and dbus-test-runner for new
     make check rules
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 09 Aug 2010 09:18:17 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 11:21:48 -0500
 
 libdbusmenu (0.3.9-0ubuntu1~ppa1) lucid; urgency=low
 

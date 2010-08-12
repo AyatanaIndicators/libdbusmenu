@@ -10,6 +10,7 @@ TESTS = \
 	test-glib-proxy \
 	test-glib-simple-items \
 	test-glib-submenu \
+	test-json \
 	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-shortcut \

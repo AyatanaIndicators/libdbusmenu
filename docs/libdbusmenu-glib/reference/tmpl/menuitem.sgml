@@ -506,6 +506,7 @@ DbusmenuMenuitem
 
 @mi: 
 @DbusmenuMenuitem * mi, gpointer data:
+@DbusmenuMenuitem * mi, gpointer data:
 @DbusmenuMenuitem * mi, gpointer data: 
 @data: 
 
