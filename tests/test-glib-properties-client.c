@@ -121,7 +121,7 @@ static void
 layout_updated (DbusmenuClient * client, gpointer data)
 {
 	g_debug("Layout Updated");
-	g_timeout_add (250, layout_verify_timer, client);
+	g_timeout_add (500, layout_verify_timer, client);
 	return;
 }
 
