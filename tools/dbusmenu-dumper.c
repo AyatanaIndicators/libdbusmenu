@@ -135,13 +135,20 @@ value2string (const GValue * value, int depth)
 	return str;
 }
 
+static gint
+list_str_cmp (gconstpointer a, gconstpointer b)
+{
+	return g_strcmp0((gchar *)a, (gchar *)b);
+}
+
 static void
 print_menuitem (DbusmenuMenuitem * item, int depth)
 {
 	gchar * space = g_strnfill(depth, ' ');
 	g_print("%s\"id\": %d", space, dbusmenu_menuitem_get_id(item));
 
-	GList * properties = dbusmenu_menuitem_properties_list(item);
+	GList * properties_raw = dbusmenu_menuitem_properties_list(item);
+	GList * properties = g_list_sort(properties_raw, list_str_cmp);
 	GList * property;
 	for (property = properties; property != NULL; property = g_list_next(property)) {
 		const GValue * value = dbusmenu_menuitem_property_get_value(item, (gchar *)property->data);
