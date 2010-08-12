@@ -4,30 +4,30 @@
   "submenu": [
       {
         "id": 5,
+        "children-display": "submenu",
         "enabled": true,
         "label": "File",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
               "id": 6,
-              "shortcut": [["Control", "q"]],
               "enabled": true,
               "label": "Quit",
+              "shortcut": [["Control", "q"]],
               "visible": true
             },
             {
               "id": 7,
-              "shortcut": [["Control", "Shift", "w"]],
               "enabled": true,
               "label": "Close all",
+              "shortcut": [["Control", "Shift", "w"]],
               "visible": true
             },
             {
               "id": 8,
-              "shortcut": [["Control", "w"]],
               "enabled": true,
               "label": "Close",
+              "shortcut": [["Control", "w"]],
               "visible": true
             },
             {
@@ -42,9 +42,9 @@
             },
             {
               "id": 11,
-              "shortcut": [["Control", "p"]],
               "enabled": true,
               "label": "Print...",
+              "shortcut": [["Control", "p"]],
               "visible": true
             },
             {
@@ -77,16 +77,16 @@
             },
             {
               "id": 17,
-              "shortcut": [["Control", "Shift", "s"]],
               "enabled": true,
               "label": "Save As...",
+              "shortcut": [["Control", "Shift", "s"]],
               "visible": true
             },
             {
               "id": 18,
-              "shortcut": [["Control", "s"]],
               "enabled": true,
               "label": "Save",
+              "shortcut": [["Control", "s"]],
               "visible": true
             },
             {
@@ -95,9 +95,9 @@
             },
             {
               "id": 20,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Open Recent",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -112,16 +112,16 @@
                   },
                   {
                     "id": 23,
-                    "shortcut": [["Control", "2"]],
                     "enabled": true,
                     "label": "giggity.jpg",
+                    "shortcut": [["Control", "2"]],
                     "visible": true
                   },
                   {
                     "id": 24,
-                    "shortcut": [["Control", "1"]],
                     "enabled": true,
                     "label": "Icon Height.svg",
+                    "shortcut": [["Control", "1"]],
                     "visible": true
                   }
               ]
@@ -134,37 +134,37 @@
             },
             {
               "id": 26,
-              "shortcut": [["Control", "Alt", "o"]],
               "enabled": true,
               "label": "Open as Layers...",
+              "shortcut": [["Control", "Alt", "o"]],
               "visible": true
             },
             {
               "id": 27,
-              "shortcut": [["Control", "o"]],
               "enabled": true,
               "label": "Open...",
+              "shortcut": [["Control", "o"]],
               "visible": true
             },
             {
               "id": 28,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Create",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
                     "id": 29,
+                    "children-display": "submenu",
                     "enabled": true,
                     "label": "Web Page Themes",
-                    "children-display": "submenu",
                     "visible": true,
                     "submenu": [
                         {
                           "id": 30,
+                          "children-display": "submenu",
                           "enabled": true,
                           "label": "Classic.Gimp.Org",
-                          "children-display": "submenu",
                           "visible": true,
                           "submenu": [
                               {
@@ -207,9 +207,9 @@
                         },
                         {
                           "id": 37,
+                          "children-display": "submenu",
                           "enabled": true,
                           "label": "Beveled Pattern",
-                          "children-display": "submenu",
                           "visible": true,
                           "submenu": [
                               {
@@ -246,9 +246,9 @@
                         },
                         {
                           "id": 43,
+                          "children-display": "submenu",
                           "enabled": true,
                           "label": "Alien Glow",
-                          "children-display": "submenu",
                           "visible": true,
                           "submenu": [
                               {
@@ -281,9 +281,9 @@
                   },
                   {
                     "id": 48,
+                    "children-display": "submenu",
                     "enabled": true,
                     "label": "Patterns",
-                    "children-display": "submenu",
                     "visible": true,
                     "submenu": [
                         {
@@ -338,9 +338,9 @@
                   },
                   {
                     "id": 57,
+                    "children-display": "submenu",
                     "enabled": true,
                     "label": "Logos",
-                    "children-display": "submenu",
                     "visible": true,
                     "submenu": [
                         {
@@ -515,9 +515,9 @@
                   },
                   {
                     "id": 86,
+                    "children-display": "submenu",
                     "enabled": true,
                     "label": "Buttons",
-                    "children-display": "submenu",
                     "visible": true,
                     "submenu": [
                         {
@@ -540,9 +540,9 @@
                   },
                   {
                     "id": 90,
+                    "children-display": "submenu",
                     "enabled": true,
                     "label": "xscanimage",
-                    "children-display": "submenu",
                     "visible": true,
                     "submenu": [
                         {
@@ -561,27 +561,27 @@
                   },
                   {
                     "id": 93,
-                    "shortcut": [["Control", "Shift", "v"]],
                     "enabled": true,
                     "label": "From Clipboard",
+                    "shortcut": [["Control", "Shift", "v"]],
                     "visible": true
                   }
               ]
             },
             {
               "id": 94,
-              "shortcut": [["Control", "n"]],
               "enabled": true,
               "label": "New...",
+              "shortcut": [["Control", "n"]],
               "visible": true
             }
         ]
       },
       {
         "id": 95,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Edit",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
@@ -626,30 +626,30 @@
             },
             {
               "id": 103,
-              "shortcut": [["Control", "semicolon"]],
               "enabled": true,
               "label": "Fill with Pattern",
+              "shortcut": [["Control", "semicolon"]],
               "visible": true
             },
             {
               "id": 104,
-              "shortcut": [["Control", "period"]],
               "enabled": true,
               "label": "Fill with BG Color",
+              "shortcut": [["Control", "period"]],
               "visible": true
             },
             {
               "id": 105,
-              "shortcut": [["Control", "comma"]],
               "enabled": true,
               "label": "Fill with FG Color",
+              "shortcut": [["Control", "comma"]],
               "visible": true
             },
             {
               "id": 106,
-              "shortcut": [["Delete"]],
               "enabled": true,
               "label": "Clear",
+              "shortcut": [["Delete"]],
               "visible": true
             },
             {
@@ -658,9 +658,9 @@
             },
             {
               "id": 108,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Buffer",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -691,9 +691,9 @@
             },
             {
               "id": 113,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Paste as",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -716,9 +716,9 @@
                   },
                   {
                     "id": 117,
-                    "shortcut": [["Control", "Shift", "v"]],
                     "enabled": true,
                     "label": "New Image",
+                    "shortcut": [["Control", "Shift", "v"]],
                     "visible": true
                   }
               ]
@@ -731,30 +731,30 @@
             },
             {
               "id": 119,
-              "shortcut": [["Control", "v"]],
               "enabled": true,
               "label": "Paste",
+              "shortcut": [["Control", "v"]],
               "visible": true
             },
             {
               "id": 120,
-              "shortcut": [["Control", "Shift", "c"]],
               "enabled": true,
               "label": "Copy Visible",
+              "shortcut": [["Control", "Shift", "c"]],
               "visible": true
             },
             {
               "id": 121,
-              "shortcut": [["Control", "c"]],
               "enabled": true,
               "label": "Copy",
+              "shortcut": [["Control", "c"]],
               "visible": true
             },
             {
               "id": 122,
-              "shortcut": [["Control", "x"]],
               "enabled": true,
               "label": "Cut",
+              "shortcut": [["Control", "x"]],
               "visible": true
             },
             {
@@ -775,25 +775,25 @@
             },
             {
               "id": 2,
-              "shortcut": [["Control", "y"]],
               "enabled": false,
               "label": "_Redo",
+              "shortcut": [["Control", "y"]],
               "visible": true
             },
             {
               "id": 1,
-              "shortcut": [["Control", "z"]],
               "enabled": false,
               "label": "_Undo",
+              "shortcut": [["Control", "z"]],
               "visible": true
             }
         ]
       },
       {
         "id": 125,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Select",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
@@ -810,10 +810,10 @@
             },
             {
               "id": 128,
-              "shortcut": [["Shift", "q"]],
               "enabled": true,
-              "toggle-state": 0,
               "label": "Toggle Quick Mask",
+              "shortcut": [["Shift", "q"]],
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
@@ -869,93 +869,93 @@
             },
             {
               "id": 138,
-              "shortcut": [["Shift", "v"]],
               "enabled": false,
               "label": "From Path",
+              "shortcut": [["Shift", "v"]],
               "visible": true
             },
             {
               "id": 139,
-              "shortcut": [["Shift", "o"]],
               "enabled": true,
               "label": "By Color",
+              "shortcut": [["Shift", "o"]],
               "visible": true
             },
             {
               "id": 140,
-              "shortcut": [["Control", "Shift", "l"]],
               "enabled": false,
               "label": "Float",
+              "shortcut": [["Control", "Shift", "l"]],
               "visible": true
             },
             {
               "id": 141,
-              "shortcut": [["Control", "i"]],
               "enabled": true,
               "label": "Invert",
+              "shortcut": [["Control", "i"]],
               "visible": true
             },
             {
               "id": 142,
-              "shortcut": [["Control", "Shift", "a"]],
               "enabled": false,
               "label": "None",
+              "shortcut": [["Control", "Shift", "a"]],
               "visible": true
             },
             {
               "id": 143,
-              "shortcut": [["Control", "a"]],
               "enabled": true,
               "label": "All",
+              "shortcut": [["Control", "a"]],
               "visible": true
             }
         ]
       },
       {
         "id": 144,
+        "children-display": "submenu",
         "enabled": true,
         "label": "View",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
               "id": 145,
               "enabled": true,
-              "toggle-state": 1,
               "label": "Show Statusbar",
+              "toggle-state": 1,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 146,
               "enabled": true,
-              "toggle-state": 0,
               "label": "Show Scrollbars",
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 147,
-              "shortcut": [["Control", "Shift", "r"]],
               "enabled": true,
-              "toggle-state": 0,
               "label": "Show Rulers",
+              "shortcut": [["Control", "Shift", "r"]],
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 148,
               "enabled": true,
-              "toggle-state": 1,
               "label": "Show Menubar",
+              "toggle-state": 1,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 149,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Padding Color",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1001,32 +1001,32 @@
             {
               "id": 157,
               "enabled": true,
-              "toggle-state": 0,
               "label": "Snap to Active Path",
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 158,
               "enabled": true,
-              "toggle-state": 0,
               "label": "Snap to Canvas Edges",
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 159,
               "enabled": true,
-              "toggle-state": 0,
               "label": "Snap to Grid",
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 160,
               "enabled": true,
-              "toggle-state": 1,
               "label": "Snap to Guides",
+              "toggle-state": 1,
               "toggle-type": "checkmark",
               "visible": true
             },
@@ -1037,42 +1037,42 @@
             {
               "id": 162,
               "enabled": true,
-              "toggle-state": 0,
               "label": "Show Sample Points",
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 163,
               "enabled": true,
-              "toggle-state": 0,
               "label": "Show Grid",
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 164,
-              "shortcut": [["Control", "Shift", "t"]],
               "enabled": true,
-              "toggle-state": 0,
               "label": "Show Guides",
+              "shortcut": [["Control", "Shift", "t"]],
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 165,
               "enabled": true,
-              "toggle-state": 0,
               "label": "Show Layer Boundary",
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
             {
               "id": 166,
-              "shortcut": [["Control", "t"]],
               "enabled": true,
-              "toggle-state": 0,
               "label": "Show Selection",
+              "shortcut": [["Control", "t"]],
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
@@ -1098,12 +1098,12 @@
             },
             {
               "id": 171,
+              "children-display": "submenu",
               "enabled": true,
+              "label": "Fullscreen",
               "shortcut": [["F11"]],
               "toggle-state": 0,
-              "label": "Fullscreen",
               "toggle-type": "checkmark",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1116,9 +1116,9 @@
             },
             {
               "id": 173,
-              "shortcut": [["Control", "e"]],
               "enabled": true,
               "label": "Shrink Wrap",
+              "shortcut": [["Control", "e"]],
               "visible": true
             },
             {
@@ -1127,16 +1127,16 @@
             },
             {
               "id": 175,
+              "children-display": "submenu",
               "enabled": true,
               "label": "_Zoom (67%)",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
                     "id": 176,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "Othe_r (67%)...",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
@@ -1147,73 +1147,73 @@
                   {
                     "id": 178,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "1:16  (6.25%)",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 179,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "1:8  (12.5%)",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 180,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "1:4  (25%)",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 181,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "1:2  (50%)",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 182,
-                    "shortcut": [["1"]],
                     "enabled": true,
-                    "toggle-state": 1,
                     "label": "1:1  (100%)",
+                    "shortcut": [["1"]],
+                    "toggle-state": 1,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 183,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "2:1  (200%)",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 184,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "4:1  (400%)",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 185,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "8:1  (800%)",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 186,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "16:1  (1600%)",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
@@ -1229,30 +1229,30 @@
                   },
                   {
                     "id": 189,
-                    "shortcut": [["Control", "Shift", "e"]],
                     "enabled": true,
                     "label": "Fit Image in Window",
+                    "shortcut": [["Control", "Shift", "e"]],
                     "visible": true
                   },
                   {
                     "id": 190,
-                    "shortcut": [["plus"]],
                     "enabled": true,
                     "label": "Zoom In",
+                    "shortcut": [["plus"]],
                     "visible": true
                   },
                   {
                     "id": 191,
-                    "shortcut": [["minus"]],
                     "enabled": true,
                     "label": "Zoom Out",
+                    "shortcut": [["minus"]],
                     "visible": true
                   },
                   {
                     "id": 4,
-                    "shortcut": [["grave"]],
                     "enabled": true,
                     "label": "Re_vert Zoom (67%)",
+                    "shortcut": [["grave"]],
                     "visible": true
                   }
               ]
@@ -1260,8 +1260,8 @@
             {
               "id": 192,
               "enabled": true,
-              "toggle-state": 1,
               "label": "Dot for Dot",
+              "toggle-state": 1,
               "toggle-type": "checkmark",
               "visible": true
             },
@@ -1275,16 +1275,16 @@
       },
       {
         "id": 194,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Image",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
               "id": 195,
-              "shortcut": [["Alt", "Return"]],
               "enabled": true,
               "label": "Image Properties",
+              "shortcut": [["Alt", "Return"]],
               "visible": true
             },
             {
@@ -1295,9 +1295,9 @@
             },
             {
               "id": 197,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Guides",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1344,9 +1344,9 @@
             },
             {
               "id": 205,
-              "shortcut": [["Control", "m"]],
               "enabled": true,
               "label": "Merge Visible Layers...",
+              "shortcut": [["Control", "m"]],
               "visible": true
             },
             {
@@ -1411,9 +1411,9 @@
             },
             {
               "id": 217,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Transform",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1464,9 +1464,9 @@
             },
             {
               "id": 226,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Mode",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1488,24 +1488,24 @@
                   {
                     "id": 230,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "Indexed...",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 231,
                     "enabled": true,
-                    "toggle-state": 0,
                     "label": "Grayscale",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 232,
                     "enabled": true,
-                    "toggle-state": 1,
                     "label": "RGB",
+                    "toggle-state": 1,
                     "toggle-type": "checkmark",
                     "visible": true
                   }
@@ -1513,18 +1513,18 @@
             },
             {
               "id": 233,
-              "shortcut": [["Control", "d"]],
               "enabled": true,
               "label": "Duplicate",
+              "shortcut": [["Control", "d"]],
               "visible": true
             }
         ]
       },
       {
         "id": 234,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Layer",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
@@ -1563,16 +1563,16 @@
             },
             {
               "id": 241,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Transform",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
                     "id": 242,
-                    "shortcut": [["Control", "Shift", "o"]],
                     "enabled": true,
                     "label": "Offset...",
+                    "shortcut": [["Control", "Shift", "o"]],
                     "visible": true
                   },
                   {
@@ -1623,9 +1623,9 @@
             },
             {
               "id": 251,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Transparency",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1690,9 +1690,9 @@
             },
             {
               "id": 262,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Mask",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1726,24 +1726,24 @@
                   {
                     "id": 268,
                     "enabled": false,
-                    "toggle-state": 0,
                     "label": "Disable Layer Mask",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 269,
                     "enabled": false,
-                    "toggle-state": 0,
                     "label": "Edit Layer Mask",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
                   {
                     "id": 270,
                     "enabled": false,
-                    "toggle-state": 0,
                     "label": "Show Layer Mask",
+                    "toggle-state": 0,
                     "toggle-type": "checkmark",
                     "visible": true
                   },
@@ -1773,9 +1773,9 @@
             },
             {
               "id": 275,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Stack",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1818,38 +1818,38 @@
                   },
                   {
                     "id": 283,
-                    "shortcut": [["End"]],
                     "enabled": false,
                     "label": "Select Bottom Layer",
+                    "shortcut": [["End"]],
                     "visible": true
                   },
                   {
                     "id": 284,
-                    "shortcut": [["Home"]],
                     "enabled": false,
                     "label": "Select Top Layer",
+                    "shortcut": [["Home"]],
                     "visible": true
                   },
                   {
                     "id": 285,
-                    "shortcut": [["Page_Down"]],
                     "enabled": false,
                     "label": "Select Next Layer",
+                    "shortcut": [["Page_Down"]],
                     "visible": true
                   },
                   {
                     "id": 286,
-                    "shortcut": [["Page_Up"]],
                     "enabled": false,
                     "label": "Select Previous Layer",
+                    "shortcut": [["Page_Up"]],
                     "visible": true
                   }
               ]
             },
             {
               "id": 287,
-              "type": "separator",
               "children-display": "submenu",
+              "type": "separator",
               "submenu": [
                   {
                     "id": 288,
@@ -1873,16 +1873,16 @@
             },
             {
               "id": 291,
-              "shortcut": [["Control", "h"]],
               "enabled": false,
               "label": "Anchor Layer",
+              "shortcut": [["Control", "h"]],
               "visible": true
             },
             {
               "id": 292,
-              "shortcut": [["Control", "Shift", "d"]],
               "enabled": true,
               "label": "Duplicate Layer",
+              "shortcut": [["Control", "Shift", "d"]],
               "visible": true
             },
             {
@@ -1893,18 +1893,18 @@
             },
             {
               "id": 294,
-              "shortcut": [["Control", "Shift", "n"]],
               "enabled": true,
               "label": "New Layer...",
+              "shortcut": [["Control", "Shift", "n"]],
               "visible": true
             }
         ]
       },
       {
         "id": 295,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Colors",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
@@ -1949,9 +1949,9 @@
             },
             {
               "id": 303,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Info",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -1982,9 +1982,9 @@
             },
             {
               "id": 308,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Map",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2043,9 +2043,9 @@
             },
             {
               "id": 318,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Components",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2076,9 +2076,9 @@
             },
             {
               "id": 323,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Auto",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2126,8 +2126,8 @@
             {
               "id": 331,
               "enabled": true,
-              "toggle-state": 0,
               "label": "Use GEGL",
+              "toggle-state": 0,
               "toggle-type": "checkmark",
               "visible": true
             },
@@ -2209,30 +2209,30 @@
       },
       {
         "id": 345,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Tools",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
               "id": 346,
-              "shortcut": [["x"]],
               "enabled": true,
               "label": "Swap Colors",
+              "shortcut": [["x"]],
               "visible": true
             },
             {
               "id": 347,
-              "shortcut": [["d"]],
               "enabled": true,
               "label": "Default Colors",
+              "shortcut": [["d"]],
               "visible": true
             },
             {
               "id": 348,
-              "shortcut": [["Control", "b"]],
               "enabled": true,
               "label": "Toolbox",
+              "shortcut": [["Control", "b"]],
               "visible": true
             },
             {
@@ -2247,44 +2247,44 @@
             },
             {
               "id": 351,
-              "shortcut": [["t"]],
               "enabled": true,
               "label": "Text",
+              "shortcut": [["t"]],
               "visible": true
             },
             {
               "id": 352,
-              "shortcut": [["Shift", "m"]],
               "enabled": true,
               "label": "Measure",
+              "shortcut": [["Shift", "m"]],
               "visible": true
             },
             {
               "id": 353,
-              "shortcut": [["z"]],
               "enabled": true,
               "label": "Zoom",
+              "shortcut": [["z"]],
               "visible": true
             },
             {
               "id": 354,
-              "shortcut": [["o"]],
               "enabled": true,
               "label": "Color Picker",
+              "shortcut": [["o"]],
               "visible": true
             },
             {
               "id": 355,
-              "shortcut": [["b"]],
               "enabled": true,
               "label": "Paths",
+              "shortcut": [["b"]],
               "visible": true
             },
             {
               "id": 356,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Color Tools",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2345,95 +2345,95 @@
             },
             {
               "id": 366,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Transform Tools",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
                     "id": 367,
-                    "shortcut": [["Shift", "f"]],
                     "enabled": true,
                     "label": "Flip",
+                    "shortcut": [["Shift", "f"]],
                     "visible": true
                   },
                   {
                     "id": 368,
-                    "shortcut": [["Shift", "p"]],
                     "enabled": true,
                     "label": "Perspective",
+                    "shortcut": [["Shift", "p"]],
                     "visible": true
                   },
                   {
                     "id": 369,
-                    "shortcut": [["Shift", "s"]],
                     "enabled": true,
                     "label": "Shear",
+                    "shortcut": [["Shift", "s"]],
                     "visible": true
                   },
                   {
                     "id": 370,
-                    "shortcut": [["Shift", "t"]],
                     "enabled": true,
                     "label": "Scale",
+                    "shortcut": [["Shift", "t"]],
                     "visible": true
                   },
                   {
                     "id": 371,
-                    "shortcut": [["Shift", "r"]],
                     "enabled": true,
                     "label": "Rotate",
+                    "shortcut": [["Shift", "r"]],
                     "visible": true
                   },
                   {
                     "id": 372,
-                    "shortcut": [["Shift", "c"]],
                     "enabled": true,
                     "label": "Crop",
+                    "shortcut": [["Shift", "c"]],
                     "visible": true
                   },
                   {
                     "id": 373,
-                    "shortcut": [["m"]],
                     "enabled": true,
                     "label": "Move",
+                    "shortcut": [["m"]],
                     "visible": true
                   },
                   {
                     "id": 374,
-                    "shortcut": [["q"]],
                     "enabled": true,
                     "label": "Align",
+                    "shortcut": [["q"]],
                     "visible": true
                   }
               ]
             },
             {
               "id": 375,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Paint Tools",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
                     "id": 376,
-                    "shortcut": [["Shift", "d"]],
                     "enabled": true,
                     "label": "Dodge / Burn",
+                    "shortcut": [["Shift", "d"]],
                     "visible": true
                   },
                   {
                     "id": 377,
-                    "shortcut": [["s"]],
                     "enabled": true,
                     "label": "Smudge",
+                    "shortcut": [["s"]],
                     "visible": true
                   },
                   {
                     "id": 378,
-                    "shortcut": [["Shift", "u"]],
                     "enabled": true,
                     "label": "Blur / Sharpen",
+                    "shortcut": [["Shift", "u"]],
                     "visible": true
                   },
                   {
@@ -2444,95 +2444,95 @@
                   },
                   {
                     "id": 380,
-                    "shortcut": [["h"]],
                     "enabled": true,
                     "label": "Heal",
+                    "shortcut": [["h"]],
                     "visible": true
                   },
                   {
                     "id": 381,
-                    "shortcut": [["c"]],
                     "enabled": true,
                     "label": "Clone",
+                    "shortcut": [["c"]],
                     "visible": true
                   },
                   {
                     "id": 382,
-                    "shortcut": [["k"]],
                     "enabled": true,
                     "label": "Ink",
+                    "shortcut": [["k"]],
                     "visible": true
                   },
                   {
                     "id": 383,
-                    "shortcut": [["a"]],
                     "enabled": true,
                     "label": "Airbrush",
+                    "shortcut": [["a"]],
                     "visible": true
                   },
                   {
                     "id": 384,
-                    "shortcut": [["Shift", "e"]],
                     "enabled": true,
                     "label": "Eraser",
+                    "shortcut": [["Shift", "e"]],
                     "visible": true
                   },
                   {
                     "id": 385,
-                    "shortcut": [["p"]],
                     "enabled": true,
                     "label": "Paintbrush",
+                    "shortcut": [["p"]],
                     "visible": true
                   },
                   {
                     "id": 386,
-                    "shortcut": [["n"]],
                     "enabled": true,
                     "label": "Pencil",
+                    "shortcut": [["n"]],
                     "visible": true
                   },
                   {
                     "id": 387,
-                    "shortcut": [["l"]],
                     "enabled": true,
                     "label": "Blend",
+                    "shortcut": [["l"]],
                     "visible": true
                   },
                   {
                     "id": 388,
-                    "shortcut": [["Shift", "b"]],
                     "enabled": true,
                     "label": "Bucket Fill",
+                    "shortcut": [["Shift", "b"]],
                     "visible": true
                   }
               ]
             },
             {
               "id": 389,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Selection Tools",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
                     "id": 390,
-                    "shortcut": [["i"]],
                     "enabled": true,
                     "label": "Intelligent Scissors",
+                    "shortcut": [["i"]],
                     "visible": true
                   },
                   {
                     "id": 391,
-                    "shortcut": [["Shift", "o"]],
                     "enabled": true,
                     "label": "By Color Select",
+                    "shortcut": [["Shift", "o"]],
                     "visible": true
                   },
                   {
                     "id": 392,
-                    "shortcut": [["u"]],
                     "enabled": true,
                     "label": "Fuzzy Select",
+                    "shortcut": [["u"]],
                     "visible": true
                   },
                   {
@@ -2543,23 +2543,23 @@
                   },
                   {
                     "id": 394,
-                    "shortcut": [["f"]],
                     "enabled": true,
                     "label": "Free Select",
+                    "shortcut": [["f"]],
                     "visible": true
                   },
                   {
                     "id": 395,
-                    "shortcut": [["e"]],
                     "enabled": true,
                     "label": "Ellipse Select",
+                    "shortcut": [["e"]],
                     "visible": true
                   },
                   {
                     "id": 396,
-                    "shortcut": [["r"]],
                     "enabled": true,
                     "label": "Rectangle Select",
+                    "shortcut": [["r"]],
                     "visible": true
                   }
               ]
@@ -2568,16 +2568,16 @@
       },
       {
         "id": 397,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Filters",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
               "id": 398,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Script-Fu",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2602,9 +2602,9 @@
             },
             {
               "id": 402,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Python-Fu",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2621,9 +2621,9 @@
             },
             {
               "id": 405,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Alpha to Logo",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2748,9 +2748,9 @@
             },
             {
               "id": 426,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Animation",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2815,9 +2815,9 @@
             },
             {
               "id": 437,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Web",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2842,9 +2842,9 @@
             },
             {
               "id": 441,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Render",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -2895,9 +2895,9 @@
                   },
                   {
                     "id": 450,
+                    "children-display": "submenu",
                     "enabled": true,
                     "label": "Pattern",
-                    "children-display": "submenu",
                     "visible": true,
                     "submenu": [
                         {
@@ -2952,9 +2952,9 @@
                   },
                   {
                     "id": 459,
+                    "children-display": "submenu",
                     "enabled": true,
                     "label": "Nature",
-                    "children-display": "submenu",
                     "visible": true,
                     "submenu": [
                         {
@@ -2973,9 +2973,9 @@
                   },
                   {
                     "id": 462,
+                    "children-display": "submenu",
                     "enabled": true,
                     "label": "Clouds",
-                    "children-display": "submenu",
                     "visible": true,
                     "submenu": [
                         {
@@ -3008,9 +3008,9 @@
             },
             {
               "id": 467,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Map",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3077,9 +3077,9 @@
             },
             {
               "id": 478,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Decor",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3140,9 +3140,9 @@
             },
             {
               "id": 488,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Artistic",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3215,9 +3215,9 @@
             },
             {
               "id": 500,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Combine",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3236,9 +3236,9 @@
             },
             {
               "id": 503,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Generic",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3263,9 +3263,9 @@
             },
             {
               "id": 507,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Edge-Detect",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3302,9 +3302,9 @@
             },
             {
               "id": 513,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Noise",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3347,9 +3347,9 @@
             },
             {
               "id": 520,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Light and Shadow",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3424,9 +3424,9 @@
             },
             {
               "id": 533,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Distorts",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3541,9 +3541,9 @@
             },
             {
               "id": 552,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Enhance",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3598,9 +3598,9 @@
             },
             {
               "id": 561,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Blur",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3653,10 +3653,10 @@
             },
             {
               "id": 570,
-              "shortcut": [["Control", "Shift", "f"]],
+              "children-display": "submenu",
               "enabled": false,
               "label": "Re-Show Last",
-              "children-display": "submenu",
+              "shortcut": [["Control", "Shift", "f"]],
               "visible": true,
               "submenu": [
                   {
@@ -3669,25 +3669,25 @@
             },
             {
               "id": 572,
-              "shortcut": [["Control", "f"]],
               "enabled": false,
               "label": "Repeat Last",
+              "shortcut": [["Control", "f"]],
               "visible": true
             }
         ]
       },
       {
         "id": 573,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Windows",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
               "id": 574,
-              "shortcut": [["Control", "b"]],
               "enabled": true,
               "label": "Toolbox",
+              "shortcut": [["Control", "b"]],
               "visible": true
             },
             {
@@ -3696,9 +3696,9 @@
             },
             {
               "id": 576,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Dockable Dialogs",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3755,23 +3755,23 @@
                   },
                   {
                     "id": 586,
-                    "shortcut": [["Control", "g"]],
                     "enabled": true,
                     "label": "Gradients",
+                    "shortcut": [["Control", "g"]],
                     "visible": true
                   },
                   {
                     "id": 587,
-                    "shortcut": [["Control", "Shift", "p"]],
                     "enabled": true,
                     "label": "Patterns",
+                    "shortcut": [["Control", "Shift", "p"]],
                     "visible": true
                   },
                   {
                     "id": 588,
-                    "shortcut": [["Control", "Shift", "b"]],
                     "enabled": true,
                     "label": "Brushes",
+                    "shortcut": [["Control", "Shift", "b"]],
                     "visible": true
                   },
                   {
@@ -3840,9 +3840,9 @@
                   },
                   {
                     "id": 600,
-                    "shortcut": [["Control", "l"]],
                     "enabled": true,
                     "label": "Layers",
+                    "shortcut": [["Control", "l"]],
                     "visible": true
                   },
                   {
@@ -3865,9 +3865,9 @@
             },
             {
               "id": 604,
+              "children-display": "submenu",
               "enabled": true,
               "label": "Recently Closed Docks",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3882,16 +3882,16 @@
       },
       {
         "id": 606,
+        "children-display": "submenu",
         "enabled": true,
         "label": "Help",
-        "children-display": "submenu",
         "visible": true,
         "submenu": [
             {
               "id": 607,
+              "children-display": "submenu",
               "enabled": true,
               "label": "User Manual",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -3940,9 +3940,9 @@
             },
             {
               "id": 615,
+              "children-display": "submenu",
               "enabled": true,
               "label": "GIMP Online",
-              "children-display": "submenu",
               "visible": true,
               "submenu": [
                   {
@@ -4005,16 +4005,16 @@
             },
             {
               "id": 626,
-              "shortcut": [["Shift", "F1"]],
               "enabled": true,
               "label": "Context Help",
+              "shortcut": [["Shift", "F1"]],
               "visible": true
             },
             {
               "id": 627,
-              "shortcut": [["F1"]],
               "enabled": true,
               "label": "Help",
+              "shortcut": [["F1"]],
               "visible": true
             }
         ]

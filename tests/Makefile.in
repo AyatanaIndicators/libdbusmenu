@@ -38,8 +38,9 @@ build_triplet = @build@
 host_triplet = @host@
 TESTS = test-glib-objects-test test-glib-layout test-glib-properties \
 	test-glib-proxy test-glib-simple-items$(EXEEXT) \
-	test-glib-submenu test-gtk-objects-test test-gtk-label \
-	test-gtk-shortcut test-gtk-reorder test-gtk-submenu
+	test-glib-submenu test-json test-gtk-objects-test \
+	test-gtk-label test-gtk-shortcut test-gtk-reorder \
+	test-gtk-submenu
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-objects$(EXEEXT) test-glib-layout-client$(EXEEXT) \
 	test-glib-layout-server$(EXEEXT) \
@@ -510,6 +511,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
