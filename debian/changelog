@@ -8,7 +8,13 @@ libdbusmenu (0.3.10-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 11:21:48 -0500
 
-libdbusmenu (0.3.9-0ubuntu1~ppa1) lucid; urgency=low
+libdbusmenu (0.3.9-0ubuntu2) maverick; urgency=low
+
+  * Rebuild with the current gobject introspection version
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 10 Aug 2010 21:50:16 +0200
+
+libdbusmenu (0.3.9-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Making it so that properties are requested bredth first
