@@ -1146,13 +1146,17 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 
 		if (childmi == NULL) {
+			#ifdef MASSIVEDEBUGGING
 			g_debug("Building new menu item %d at position %d", childid, position);
+			#endif
 			/* If we can't recycle, then we build a new one */
 			childmi = parse_layout_new_child(childid, client, item);
 			dbusmenu_menuitem_child_add_position(item, childmi, position);
 			g_object_unref(childmi);
 		} else {
+			#ifdef MASSIVEDEBUGGING
 			g_debug("Recycling menu item %d at position %d", childid, position);
+			#endif
 			/* If we can recycle, make sure it's in the right place */
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
 			parse_layout_update(childmi, client);
@@ -1188,7 +1192,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			continue;
 		}
 
-		#if 1
+		#ifdef MASSIVEDEBUGGING
 		gint miid = dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(childmis->data));
 		g_debug("Recursing parse_layout_xml.  XML ID: %d  MI ID: %d", xmlid, miid);
 		#endif
