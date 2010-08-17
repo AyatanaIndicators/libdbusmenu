@@ -123,7 +123,7 @@ static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
 static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
 static GQuark error_domain (void);
-static void item_activated (DBusGProxy * proxy, gint id, gint timestamp, DbusmenuClient * client);
+static void item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -585,8 +585,21 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 
 /* Called when a server item wants to activate the menu */
 static void
-item_activated (DBusGProxy * proxy, gint id, gint timestamp, DbusmenuClient * client)
+item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client)
 {
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->root == NULL) {
+		g_warning("Asked to activate item %d when we don't have a menu structure.", id);
+		return;
+	}
+
+	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
+	if (menuitem == NULL) {
+		g_warning("Unable to find menu item %d to activate.", id);
+		return;
+	}
+
 
 	return;
 }
