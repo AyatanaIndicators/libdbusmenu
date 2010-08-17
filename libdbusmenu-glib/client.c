@@ -123,6 +123,7 @@ static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
 static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
 static GQuark error_domain (void);
+static void item_activated (DBusGProxy * proxy, gint id, gint timestamp, DbusmenuClient * client);
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -582,6 +583,14 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 	return;
 }
 
+/* Called when a server item wants to activate the menu */
+static void
+item_activated (DBusGProxy * proxy, gint id, gint timestamp, DbusmenuClient * client)
+{
+
+	return;
+}
+
 /* Annoying little wrapper to make the right function update */
 static void
 layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient * client)
@@ -820,6 +829,10 @@ build_proxies (DbusmenuClient * client)
 
 	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_INT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemUpdated", G_CALLBACK(id_update), client, NULL);
+
+	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__INT_UINT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->menuproxy, "ItemActivationRequested", G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemActivationRequested", G_CALLBACK(item_activated), client, NULL);
 
 	update_layout(client);
 
