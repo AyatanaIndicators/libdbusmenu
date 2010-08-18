@@ -618,6 +618,7 @@ item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * c
 		return;
 	}
 
+	g_signal_emit(G_OBJECT(client), signals[ITEM_ACTIVATE], 0, menuitem, timestamp, TRUE);
 
 	return;
 }
