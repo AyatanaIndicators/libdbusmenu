@@ -54,6 +54,7 @@ static void new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpoint
 static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, DbusmenuGtkClient * gtkclient);
 static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient);
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
+static void item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata);
 
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
@@ -91,7 +92,9 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
 
+	/* TODO: I think these can be handled in the class... */
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
+	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE, G_CALLBACK(item_activate), NULL);
 
 	return;
 }
@@ -427,6 +430,31 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 {
 	g_warning("Got new menuitem signal, which means they want something");
 	g_warning("  that I simply don't have.");
+
+	return;
+}
+
+/* Signaled when we should show a menuitem at request of the application
+   that it is in. */
+static void
+item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata)
+{
+	gpointer pmenu = g_object_get_data(G_OBJECT(mi), data_menu);
+	if (pmenu == NULL) {
+		g_warning("Activated menu item doesn't have a menu?  ID: %d", dbusmenu_menuitem_get_id(mi));
+		return;
+	}
+
+	GtkWidget * parent = gtk_widget_get_parent(GTK_WIDGET(pmenu));
+	if (parent == NULL) {
+		g_warning("Activated menu item's menu doesn't have a parent?  ID: %d", dbusmenu_menuitem_get_id(mi));
+		return;
+	}
+
+	if (!gtk_widget_mnemonic_activate(parent, FALSE)) {
+		g_warning("Unable to activate item: %d", dbusmenu_menuitem_get_id(mi));
+		return;
+	}
 
 	return;
 }
