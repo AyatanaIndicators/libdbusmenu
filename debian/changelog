@@ -1,9 +1,10 @@
-libdbusmenu (0.3.10-0ubuntu1~ppa2~activate1) UNRELEASED; urgency=low
+libdbusmenu (0.3.10-0ubuntu1~ppa2~activate1) maverick; urgency=low
 
   * Upstream Merge
     * Support activation of menus client side
+  * Autogen
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 18 Aug 2010 09:17:46 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 18 Aug 2010 09:39:09 -0500
 
 libdbusmenu (0.3.10-0ubuntu1~ppa1) maverick; urgency=low
 
