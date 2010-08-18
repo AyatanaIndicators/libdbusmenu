@@ -188,3 +188,6 @@ tests/libdbusmenu_jsonloader_la-json-loader.lo
 tests/test-json-server
 tests/test-json-client
 tests/test-json
+libdbusmenu-glib/client-marshal.c
+libdbusmenu-glib/client-marshal.h
+libdbusmenu-glib/libdbusmenu_glib_la-client-marshal.lo

@@ -41,6 +41,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "client-menuitem.h"
 #include "dbusmenu-client.h"
 #include "server-marshal.h"
+#include "client-marshal.h"
 
 /* Properties */
 enum {
@@ -54,6 +55,7 @@ enum {
 	LAYOUT_UPDATED,
 	ROOT_CHANGED,
 	NEW_MENUITEM,
+	ITEM_ACTIVATE,
 	LAST_SIGNAL
 };
 
@@ -188,6 +190,22 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        g_cclosure_marshal_VOID__OBJECT,
 	                                        G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	/**
+		DbusmenuClient::item-activate:
+		@arg0: The #DbusmenuClient object
+		@arg1: The #DbusmenuMenuitem activated
+		@arg2: A timestamp that the event happened at
+
+		Signaled when the server wants to activate an item in
+		order to display the menu.
+	*/
+	signals[ITEM_ACTIVATE]   = g_signal_new(DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, item_activate),
+	                                        NULL, NULL,
+	                                        _dbusmenu_client_marshal_VOID__OBJECT_UINT,
+	                                        G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
