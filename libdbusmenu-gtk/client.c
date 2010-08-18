@@ -439,6 +439,22 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 static void
 item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata)
 {
+	gpointer pmenu = g_object_get_data(G_OBJECT(mi), data_menu);
+	if (pmenu == NULL) {
+		g_warning("Activated menu item doesn't have a menu?  ID: %d", dbusmenu_menuitem_get_id(mi));
+		return;
+	}
+
+	GtkWidget * parent = gtk_widget_get_parent(GTK_WIDGET(pmenu));
+	if (parent == NULL) {
+		g_warning("Activated menu item's menu doesn't have a parent?  ID: %d", dbusmenu_menuitem_get_id(mi));
+		return;
+	}
+
+	if (!gtk_widget_mnemonic_activate(parent, FALSE)) {
+		g_warning("Unable to activate item: %d", dbusmenu_menuitem_get_id(mi));
+		return;
+	}
 
 	return;
 }
