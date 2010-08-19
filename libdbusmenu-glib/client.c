@@ -1126,6 +1126,9 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		/* g_debug("Looking at child: %d", position); */
 		gint childid = parse_node_get_id(children);
 		if (childid < 0) {
+			/* Don't increment the position when there isn't a valid
+			   node in the XML tree.  It's probably a comment. */
+			position--;
 			continue;
 		}
 		DbusmenuMenuitem * childmi = NULL;
@@ -1143,11 +1146,17 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		}
 
 		if (childmi == NULL) {
+			#ifdef MASSIVEDEBUGGING
+			g_debug("Building new menu item %d at position %d", childid, position);
+			#endif
 			/* If we can't recycle, then we build a new one */
 			childmi = parse_layout_new_child(childid, client, item);
 			dbusmenu_menuitem_child_add_position(item, childmi, position);
 			g_object_unref(childmi);
 		} else {
+			#ifdef MASSIVEDEBUGGING
+			g_debug("Recycling menu item %d at position %d", childid, position);
+			#endif
 			/* If we can recycle, make sure it's in the right place */
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
 			parse_layout_update(childmi, client);
@@ -1175,6 +1184,19 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	children = node->children;
 	GList * childmis = dbusmenu_menuitem_get_children(item);
 	while (children != NULL && childmis != NULL) {
+		gint xmlid = parse_node_get_id(children);
+		/* If this isn't a valid menu item we need to move on
+		   until we have one.  This avoids things like comments. */
+		if (xmlid < 0) {
+			children = children->next;
+			continue;
+		}
+
+		#ifdef MASSIVEDEBUGGING
+		gint miid = dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(childmis->data));
+		g_debug("Recursing parse_layout_xml.  XML ID: %d  MI ID: %d", xmlid, miid);
+		#endif
+		
 		parse_layout_xml(client, children, DBUSMENU_MENUITEM(childmis->data), item, proxy);
 
 		children = children->next;

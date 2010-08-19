@@ -1,3 +1,11 @@
+libdbusmenu (0.3.11-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Fix to handle whitespace in layout XML better
+    * Fixes to test scripts on ARM
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 19 Aug 2010 13:40:30 -0500
+
 libdbusmenu (0.3.10-0ubuntu1~ppa1) maverick; urgency=low
 
   * New upstream release.
