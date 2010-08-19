@@ -6,13 +6,10 @@ libdbusmenu (0.3.11-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 19 Aug 2010 13:40:30 -0500
 
-libdbusmenu (0.3.10-0ubuntu1~ppa1) maverick; urgency=low
+libdbusmenu (0.3.10-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Fixes to dbusmenu-dumper
-  * debian/rules: Enabling running check at build time
-  * debian/control: Adding build deps xvfb and dbus-test-runner for new
-    make check rules
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 11:28:37 -0500
 
