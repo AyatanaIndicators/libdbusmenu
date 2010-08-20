@@ -102,6 +102,12 @@ timer_func (gpointer data)
 	}
 
 	passed = TRUE;
+	return FALSE;
+}
+
+gboolean
+finished_func (gpointer user_data)
+{
 	g_main_loop_quit(mainloop);
 	return FALSE;
 }
@@ -127,7 +133,8 @@ main (int argc, char ** argv)
 	gtk_window_set_title(GTK_WINDOW(window), "libdbusmenu-gtk test");
 	gtk_widget_show(window);
 
-	g_timeout_add_seconds(1, timer_func, menuitem);
+	g_timeout_add_seconds(2, timer_func, menuitem);
+	g_timeout_add_seconds(6, finished_func, menuitem);
 
 	g_debug("Entering Mainloop");
 	mainloop = g_main_loop_new(NULL, FALSE);
