@@ -1225,7 +1225,8 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 	xmlDocPtr xmldoc;
 
-	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 16*1024), "dbusmenu.xml", NULL, 0);
+	/* No one should need more characters than this! */
+	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 1024*1024), "dbusmenu.xml", NULL, 0);
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
