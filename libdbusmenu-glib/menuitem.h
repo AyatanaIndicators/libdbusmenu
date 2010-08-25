@@ -49,6 +49,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED         "child-moved"
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID         (g_signal_lookup(DBUSMENU_MENUITEM_SIGNAL_REALIZED, DBUSMENU_TYPE_MENUITEM))
+#define DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER        "show-to-user"
 
 #define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
 #define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
@@ -124,10 +125,7 @@ typedef void (*dbusmenu_menuitem_buildxml_slot_t) (DbusmenuMenuitem * mi, GPtrAr
  * @buildxml: Virtual function that appends the strings required to represent this menu item in the menu XML file.
  * @handle_event: This function is to override how events are handled by subclasses.  Look at #dbusmenu_menuitem_handle_event for lots of good information.
  * @send_about_to_show: Virtual function that notifies server that the client is about to show a menu.
- * @reserved1: Reserved for future use.
- * @reserved2: Reserved for future use.
- * @reserved3: Reserved for future use.
- * @reserved4: Reserved for future use.
+ * @show_to_user: Slot for #DbusmenuMenuitem::show-to-user.
  */
 typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
 struct _DbusmenuMenuitemClass
@@ -147,7 +145,8 @@ struct _DbusmenuMenuitemClass
 	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 	void (*send_about_to_show) (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
-	void (*reserved1) (void);
+	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
+	/* void (*reserved1) (void); */
 	/* void (*reserved2) (void); */
 	/* void (*reserved3) (void); */
 	/* void (*reserved4) (void); -- realized, realloc when bumping lib version */
@@ -191,6 +190,8 @@ gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
 void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 void dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
+
+void dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp);
 
 /**
  * SECTION:menuitem

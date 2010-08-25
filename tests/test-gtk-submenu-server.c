@@ -39,6 +39,17 @@ timer_func (gpointer data)
   return FALSE;
 }
 
+static gboolean
+show_item (gpointer pmi)
+{
+	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(pmi);
+	g_debug("Showing item");
+
+	dbusmenu_menuitem_show_to_user(mi, 0);
+
+	return FALSE;
+}
+
 DbusmenuMenuitem *
 add_item(DbusmenuMenuitem * parent, const char * label)
 {
@@ -81,12 +92,16 @@ main (int argc, char ** argv)
 	add_item(item, "1.2");
 	add_item(item, "1.3");
 
+	g_timeout_add_seconds(2, show_item, item);
+
 	item = add_item(root, "Folder 2");
 	add_item(item, "2.1");
 	add_item(item, "2.2");
 	add_item(item, "2.3");
 
-        g_timeout_add_seconds(3, timer_func, NULL);
+	g_timeout_add_seconds(4, show_item, item);
+
+    g_timeout_add_seconds(6, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);

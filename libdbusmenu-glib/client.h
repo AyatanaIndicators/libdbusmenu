@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED  "layout-updated"
 #define DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED    "root-changed"
 #define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
+#define DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE   "item-activate"
 
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
@@ -59,10 +60,10 @@ G_BEGIN_DECLS
 	@parent_class: #GObjectClass
 	@layout_updated: Slot for #DbusmenuClient::layout-updated.
 	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
+	@item_activate: Slote for #DbusmenuClient::item-activate.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
-	@reserved4: Reserved for future use.
 
 	A simple class that takes all of the information from a
 	#DbusmenuServer over DBus and makes the same set of 
@@ -75,12 +76,13 @@ struct _DbusmenuClientClass {
 	void (*layout_updated)(void);
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
+	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
 
 	/* Reserved for future use */
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
-	void (*reserved4) (void);
+	/* void (*reserved4) (void); */
 };
 
 /**
