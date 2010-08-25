@@ -41,6 +41,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "client-menuitem.h"
 #include "dbusmenu-client.h"
 #include "server-marshal.h"
+#include "client-marshal.h"
 
 /* Properties */
 enum {
@@ -54,6 +55,7 @@ enum {
 	LAYOUT_UPDATED,
 	ROOT_CHANGED,
 	NEW_MENUITEM,
+	ITEM_ACTIVATE,
 	LAST_SIGNAL
 };
 
@@ -123,6 +125,7 @@ static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
 static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
 static GQuark error_domain (void);
+static void item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -187,6 +190,22 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        g_cclosure_marshal_VOID__OBJECT,
 	                                        G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	/**
+		DbusmenuClient::item-activate:
+		@arg0: The #DbusmenuClient object
+		@arg1: The #DbusmenuMenuitem activated
+		@arg2: A timestamp that the event happened at
+
+		Signaled when the server wants to activate an item in
+		order to display the menu.
+	*/
+	signals[ITEM_ACTIVATE]   = g_signal_new(DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, item_activate),
+	                                        NULL, NULL,
+	                                        _dbusmenu_client_marshal_VOID__OBJECT_UINT,
+	                                        G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
@@ -582,6 +601,30 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 	return;
 }
 
+/* Called when a server item wants to activate the menu */
+static void
+item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client)
+{
+	g_return_if_fail(DBUSMENU_IS_CLIENT(client));
+
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->root == NULL) {
+		g_warning("Asked to activate item %d when we don't have a menu structure.", id);
+		return;
+	}
+
+	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
+	if (menuitem == NULL) {
+		g_warning("Unable to find menu item %d to activate.", id);
+		return;
+	}
+
+	g_signal_emit(G_OBJECT(client), signals[ITEM_ACTIVATE], 0, menuitem, timestamp, TRUE);
+
+	return;
+}
+
 /* Annoying little wrapper to make the right function update */
 static void
 layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient * client)
@@ -820,6 +863,10 @@ build_proxies (DbusmenuClient * client)
 
 	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_INT, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemUpdated", G_CALLBACK(id_update), client, NULL);
+
+	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__INT_UINT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->menuproxy, "ItemActivationRequested", G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemActivationRequested", G_CALLBACK(item_activated), client, NULL);
 
 	update_layout(client);
 
