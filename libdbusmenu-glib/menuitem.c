@@ -70,6 +70,7 @@ enum {
 	CHILD_REMOVED,
 	CHILD_MOVED,
 	REALIZED,
+	SHOW_TO_USER,
 	LAST_SIGNAL
 };
 
@@ -211,6 +212,22 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           NULL, NULL,
 	                                           _dbusmenu_menuitem_marshal_VOID__VOID,
 	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
+	/**
+		DbusmenuMenuitem::show-to-user:
+		@arg0: The #DbusmenuMenuitem which should be shown.
+		@arg1: Timestamp the event happened at
+
+		Signaled when the application would like the visualization
+		of this menu item shown to the user.  This usually requires
+		going over the bus to get it done.
+	*/
+	signals[SHOW_TO_USER] =      g_signal_new(DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER,
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, show_to_user),
+	                                           NULL, NULL,
+	                                           g_cclosure_marshal_VOID__UINT,
+	                                           G_TYPE_NONE, 1, G_TYPE_UINT, G_TYPE_NONE);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
@@ -1346,6 +1363,25 @@ dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_a
 	} else if (cb != NULL) {
 		cb(mi, cb_data);
 	}
+
+	return;
+}
+
+/**
+	dbusmenu_menuitem_show_to_user:
+	@mi: #DbusmenuMenuitem to show
+	@timestamp: The time that the user requested it to be shown
+
+	Signals that this menu item should be shown to the user.  If this is
+	server side the server will then take it and send it over the
+	bus.
+*/
+void
+dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+
+	g_signal_emit(G_OBJECT(mi), signals[SHOW_TO_USER], 0, timestamp, TRUE);
 
 	return;
 }

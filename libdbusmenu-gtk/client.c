@@ -434,6 +434,33 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 	return;
 }
 
+/* Goes through the tree of items and ensure's that all the items
+   above us are also displayed. */
+static void
+activate_helper (GtkMenuShell * shell)
+{
+	if (shell == NULL) {
+		return;
+	}
+
+	if (GTK_IS_MENU(shell)) {
+		GtkWidget * attach = gtk_menu_get_attach_widget(GTK_MENU(shell));
+
+		if (attach != NULL) {
+			GtkWidget * parent = gtk_widget_get_parent(GTK_WIDGET(attach));
+
+			if (parent != NULL) {
+				if (GTK_IS_MENU(parent)) {
+					activate_helper(GTK_MENU_SHELL(parent));
+				}
+				gtk_menu_shell_select_item(GTK_MENU_SHELL(parent), attach);
+			}
+		}
+	}
+
+	return;
+}
+
 /* Signaled when we should show a menuitem at request of the application
    that it is in. */
 static void
@@ -445,16 +472,8 @@ item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, 
 		return;
 	}
 
-	GtkWidget * parent = gtk_widget_get_parent(GTK_WIDGET(pmenu));
-	if (parent == NULL) {
-		g_warning("Activated menu item's menu doesn't have a parent?  ID: %d", dbusmenu_menuitem_get_id(mi));
-		return;
-	}
-
-	if (!gtk_widget_mnemonic_activate(parent, FALSE)) {
-		g_warning("Unable to activate item: %d", dbusmenu_menuitem_get_id(mi));
-		return;
-	}
+	activate_helper(GTK_MENU_SHELL(pmenu));
+	gtk_menu_shell_select_first(GTK_MENU_SHELL(pmenu), FALSE);
 
 	return;
 }

@@ -410,7 +410,7 @@ menuitem_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 /* Called when a menu item emits its activated signal so it
    gets passed across the bus. */
 static void 
-menuitem_activated (DbusmenuMenuitem * mi, guint timestamp, DbusmenuServer * server)
+menuitem_shown (DbusmenuMenuitem * mi, guint timestamp, DbusmenuServer * server)
 {
 	g_signal_emit(G_OBJECT(server), signals[ITEM_ACTIVATION], 0, dbusmenu_menuitem_get_id(mi), timestamp, TRUE);
 	return;
@@ -425,7 +425,7 @@ menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data)
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(menuitem_child_removed), data);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED, G_CALLBACK(menuitem_child_moved), data);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menuitem_property_changed), data);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_activated), data);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER, G_CALLBACK(menuitem_shown), data);
 	return;
 }
 

@@ -605,6 +605,8 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 static void
 item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client)
 {
+	g_return_if_fail(DBUSMENU_IS_CLIENT(client));
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	if (priv->root == NULL) {
@@ -1270,7 +1272,8 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 	xmlDocPtr xmldoc;
 
-	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 16*1024), "dbusmenu.xml", NULL, 0);
+	/* No one should need more characters than this! */
+	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 1024*1024), "dbusmenu.xml", NULL, 0);
 
 	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
 
