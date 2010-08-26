@@ -56,6 +56,7 @@ enum {
 	ROOT_CHANGED,
 	NEW_MENUITEM,
 	ITEM_ACTIVATE,
+	EVENT_RESULT,
 	LAST_SIGNAL
 };
 
@@ -101,6 +102,16 @@ struct _properties_listener_t {
 	gpointer user_data;
 	gboolean replied;
 };
+
+typedef struct _event_data_t event_data_t;
+struct _event_data_t {
+	DbusmenuClient * client;
+	DbusmenuMenuitem * menuitem;
+	gchar * event;
+	GValue data;
+	guint timestamp;
+};
+
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate))
@@ -206,6 +217,25 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        _dbusmenu_client_marshal_VOID__OBJECT_UINT,
 	                                        G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_UINT);
+	/**
+		DbusmenuClient::event-error:
+		@arg0: The #DbusmenuClient object
+		@arg1: The #DbusmenuMenuitem sent an event
+		@arg2: The ID of the event sent
+		@arg3: The data sent along with the event
+		@arg4: A timestamp that the event happened at
+		@arg5: Possibly the error in sending the event (or NULL)
+
+		Signal sent to show that there was an error in sending the event
+		to the server.
+	*/
+	signals[EVENT_RESULT]    = g_signal_new(DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, event_result),
+	                                        NULL, NULL,
+	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_POINTER_UINT_POINTER,
+	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_POINTER);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
@@ -1025,9 +1055,18 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 static void
 menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 {
+	event_data_t * edata = (event_data_t *)userdata;
+
 	if (error != NULL) {
 		g_warning("Unable to call menu item %d: %s", GPOINTER_TO_INT(userdata), error->message);
 	}
+
+	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->data, edata->timestamp, error, TRUE);
+
+	g_value_unset(&edata->data);
+	g_free(edata->event);
+	g_object_unref(edata->menuitem);
+	g_free(edata);
 
 	return;
 }
@@ -1041,6 +1080,13 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	g_return_if_fail(id >= 0);
 	g_return_if_fail(name != NULL);
 
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	if (mi == NULL) {
+		g_warning("Asked to activate a menuitem %d that we don't know about", id);
+		return;
+	}
+
 	if (value == NULL) {
 		GValue internalval = {0};
 		g_value_init(&internalval, G_TYPE_INT);
@@ -1048,8 +1094,16 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 		value = &internalval;
 	}
 
-	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, GINT_TO_POINTER(id));
+	event_data_t * edata = g_new0(event_data_t, 1);
+	edata->client = client;
+	edata->menuitem = mi;
+	g_object_ref(edata->menuitem);
+	edata->event = g_strdup(name);
+	g_value_init(&edata->data, G_VALUE_TYPE(value));
+	g_value_copy(value, &edata->data);
+	edata->timestamp = timestamp;
+
+	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, edata);
 	return;
 }
 
