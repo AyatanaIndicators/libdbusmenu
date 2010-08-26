@@ -60,10 +60,10 @@ G_BEGIN_DECLS
 	@parent_class: #GObjectClass
 	@layout_updated: Slot for #DbusmenuClient::layout-updated.
 	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
-	@item_activate: Slote for #DbusmenuClient::item-activate.
+	@item_activate: Slot for #DbusmenuClient::item-activate.
+	@event_error: Slot for #DbusmenuClient::event-error.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
-	@reserved3: Reserved for future use.
 
 	A simple class that takes all of the information from a
 	#DbusmenuServer over DBus and makes the same set of 
@@ -77,11 +77,12 @@ struct _DbusmenuClientClass {
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
 	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
+	void (*event_error) (DbusmenuMenuitem * item, gchar * event, GValue * data, guint timestamp);
 
 	/* Reserved for future use */
 	void (*reserved1) (void);
 	void (*reserved2) (void);
-	void (*reserved3) (void);
+	/* void (*reserved3) (void); */
 	/* void (*reserved4) (void); */
 };
 
