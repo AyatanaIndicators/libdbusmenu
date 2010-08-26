@@ -188,12 +188,13 @@ The client for a <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#Dbus
 	void (*layout_updated)(void);
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
+	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
 
 	/* Reserved for future use */
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
-	void (*reserved4) (void);
+	/* void (*reserved4) (void); */
 } DbusmenuClientClass;
 </pre>
 <p>
@@ -226,6 +227,11 @@ A simple class that takes all of the information from a
 </td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuClientClass.item-activate"></a>item_activate</code></em> ()</span></p></td>
+<td>Slote for <span class="type">"item-activate"</span>.
+</td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="structfield"><code><a name="DbusmenuClientClass.reserved1"></a>reserved1</code></em> ()</span></p></td>
 <td>Reserved for future use.
 </td>
@@ -237,11 +243,6 @@ A simple class that takes all of the information from a
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="DbusmenuClientClass.reserved3"></a>reserved3</code></em> ()</span></p></td>
-<td>Reserved for future use.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuClientClass.reserved4"></a>reserved4</code></em> ()</span></p></td>
 <td>Reserved for future use.
 </td>
 </tr>
@@ -454,6 +455,7 @@ This function connects into the type handling of the <a class="link" href="libdb
 <tr>
 <td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
 <td>
+<em class="parameter"><code>gpointer</code></em> user_data:
 <em class="parameter"><code>gpointer</code></em> user_data:
 <em class="parameter"><code>gpointer</code></em> user_data:
 <em class="parameter"><code>gpointer</code></em> user_data:

@@ -92,10 +92,10 @@ DbusmenuClient
 @layout_updated: 
 @root_changed: 
 @new_menuitem: 
+@item_activate: 
 @reserved1: 
 @reserved2: 
 @reserved3: 
-@reserved4: 
 
 <!-- ##### USER_FUNCTION DbusmenuClientTypeHandler ##### -->
 <para>
@@ -157,6 +157,7 @@ DbusmenuClient
 
 @client: 
 @id: 
+@gpointer user_data:
 @gpointer user_data:
 @gpointer user_data:
 @gpointer user_data: 

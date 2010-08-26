@@ -83,6 +83,7 @@ am_libdbusmenu_glib_la_OBJECTS = libdbusmenu_glib_la-menuitem.lo \
 	libdbusmenu_glib_la-menuitem-proxy.lo \
 	libdbusmenu_glib_la-server.lo \
 	libdbusmenu_glib_la-server-marshal.lo \
+	libdbusmenu_glib_la-client-marshal.lo \
 	libdbusmenu_glib_la-client-menuitem.lo \
 	libdbusmenu_glib_la-client.lo
 libdbusmenu_glib_la_OBJECTS = $(am_libdbusmenu_glib_la_OBJECTS)
@@ -297,6 +298,7 @@ CLEANFILES = $(am__append_2)
 EXTRA_DIST = \
 	dbusmenu-glib.pc.in \
 	dbus-menu.xml \
+	client-marshal.list \
 	menuitem-marshal.list \
 	server-marshal.list
 
@@ -324,6 +326,8 @@ libdbusmenu_glib_la_SOURCES = \
 	server.c \
 	server-marshal.h \
 	server-marshal.c \
+	client-marshal.h \
+	client-marshal.c \
 	client-menuitem.h \
 	client-menuitem.c \
 	client.h \
@@ -345,6 +349,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = \
 	dbusmenu-client.h \
 	dbusmenu-server.h \
+	client-marshal.h \
+	client-marshal.c \
 	menuitem-marshal.h \
 	menuitem-marshal.c \
 	server-marshal.h \
@@ -452,6 +458,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-client-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-client-menuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-menuitem-marshal.Plo@am__quote@
@@ -523,6 +530,14 @@ libdbusmenu_glib_la-server-marshal.lo: server-marshal.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server-marshal.c' object='libdbusmenu_glib_la-server-marshal.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_glib_la-server-marshal.lo `test -f 'server-marshal.c' || echo '$(srcdir)/'`server-marshal.c
+
+libdbusmenu_glib_la-client-marshal.lo: client-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_glib_la-client-marshal.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_glib_la-client-marshal.Tpo -c -o libdbusmenu_glib_la-client-marshal.lo `test -f 'client-marshal.c' || echo '$(srcdir)/'`client-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_glib_la-client-marshal.Tpo $(DEPDIR)/libdbusmenu_glib_la-client-marshal.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client-marshal.c' object='libdbusmenu_glib_la-client-marshal.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_glib_la-client-marshal.lo `test -f 'client-marshal.c' || echo '$(srcdir)/'`client-marshal.c
 
 libdbusmenu_glib_la-client-menuitem.lo: client-menuitem.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_glib_la-client-menuitem.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_glib_la-client-menuitem.Tpo -c -o libdbusmenu_glib_la-client-menuitem.lo `test -f 'client-menuitem.c' || echo '$(srcdir)/'`client-menuitem.c
@@ -875,6 +890,16 @@ dbusmenu-client.h: dbus-menu.xml
 		--mode=glib-client \
 		--output=dbusmenu-client.h \
 		$(srcdir)/dbus-menu.xml
+
+client-marshal.h: $(srcdir)/client-marshal.list
+	glib-genmarshal --header \
+		--prefix=_dbusmenu_client_marshal $(srcdir)/client-marshal.list \
+		> client-marshal.h
+
+client-marshal.c: $(srcdir)/client-marshal.list
+	glib-genmarshal --body \
+		--prefix=_dbusmenu_client_marshal $(srcdir)/client-marshal.list \
+		> client-marshal.c
 
 server-marshal.h: $(srcdir)/server-marshal.list
 	glib-genmarshal --header \

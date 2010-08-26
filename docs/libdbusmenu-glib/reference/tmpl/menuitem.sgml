@@ -221,7 +221,7 @@ DbusmenuMenuitem
 @buildxml: 
 @handle_event: 
 @send_about_to_show: 
-@reserved1: 
+@show_to_user: 
 
 <!-- ##### FUNCTION dbusmenu_menuitem_new ##### -->
 <para>
@@ -505,6 +505,7 @@ DbusmenuMenuitem
 </para>
 
 @mi: 
+@DbusmenuMenuitem * mi, gpointer data:
 @DbusmenuMenuitem * mi, gpointer data:
 @DbusmenuMenuitem * mi, gpointer data:
 @DbusmenuMenuitem * mi, gpointer data: 

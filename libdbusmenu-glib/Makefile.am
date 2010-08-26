@@ -4,6 +4,7 @@ CLEANFILES =
 EXTRA_DIST = \
 	dbusmenu-glib.pc.in \
 	dbus-menu.xml \
+	client-marshal.list \
 	menuitem-marshal.list \
 	server-marshal.list
 
@@ -32,6 +33,8 @@ libdbusmenu_glib_la_SOURCES = \
 	server.c \
 	server-marshal.h \
 	server-marshal.c \
+	client-marshal.h \
+	client-marshal.c \
 	client-menuitem.h \
 	client-menuitem.c \
 	client.h \
@@ -54,6 +57,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = \
 	dbusmenu-client.h \
 	dbusmenu-server.h \
+	client-marshal.h \
+	client-marshal.c \
 	menuitem-marshal.h \
 	menuitem-marshal.c \
 	server-marshal.h \
@@ -72,6 +77,16 @@ dbusmenu-client.h: dbus-menu.xml
 		--mode=glib-client \
 		--output=dbusmenu-client.h \
 		$(srcdir)/dbus-menu.xml
+
+client-marshal.h: $(srcdir)/client-marshal.list
+	glib-genmarshal --header \
+		--prefix=_dbusmenu_client_marshal $(srcdir)/client-marshal.list \
+		> client-marshal.h
+
+client-marshal.c: $(srcdir)/client-marshal.list
+	glib-genmarshal --body \
+		--prefix=_dbusmenu_client_marshal $(srcdir)/client-marshal.list \
+		> client-marshal.c
 
 server-marshal.h: $(srcdir)/server-marshal.list
 	glib-genmarshal --header \
