@@ -375,7 +375,8 @@ as an XML fragment.  Should call it's own children.
 	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
 	void (*send_about_to_show) (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
-	void (*reserved1) (void);
+	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
+	/* void (*reserved1) (void); */
 	/* void (*reserved2) (void); */
 	/* void (*reserved3) (void); */
 	/* void (*reserved4) (void); -- realized, realloc when bumping lib version */
@@ -422,8 +423,8 @@ as an XML fragment.  Should call it's own children.
 <listitem><simpara>Virtual function that notifies server that the client is about to show a menu.
 </simpara></listitem>
 </varlistentry>
-<varlistentry><term><structfield id="DbusmenuMenuitemClass.reserved1">reserved1</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
+<varlistentry><term><structfield id="DbusmenuMenuitemClass.show-to-user">show_to_user</structfield>&#160;()</term>
+<listitem><simpara>Slot for <link linkend="DbusmenuMenuitem-show-to-user"><type>"show-to-user"</type></link>.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>

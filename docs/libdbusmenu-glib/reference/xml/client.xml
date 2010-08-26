@@ -160,12 +160,13 @@ The client for a <link linkend="DbusmenuServer"><type>DbusmenuServer</type></lin
 	void (*layout_updated)(void);
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
+	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
 
 	/* Reserved for future use */
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
-	void (*reserved4) (void);
+	/* void (*reserved4) (void); */
 } DbusmenuClientClass;
 </programlisting>
 <para>
@@ -189,6 +190,10 @@ A simple class that takes all of the information from a
 <listitem><simpara>Slot for <link linkend="DbusmenuClient-new-menuitem"><type>"new-menuitem"</type></link>.
 </simpara></listitem>
 </varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.item-activate">item_activate</structfield>&#160;()</term>
+<listitem><simpara>Slote for <link linkend="DbusmenuClient-item-activate"><type>"item-activate"</type></link>.
+</simpara></listitem>
+</varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.reserved1">reserved1</structfield>&#160;()</term>
 <listitem><simpara>Reserved for future use.
 </simpara></listitem>
@@ -198,10 +203,6 @@ A simple class that takes all of the information from a
 </simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.reserved3">reserved3</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
-</varlistentry>
-<varlistentry><term><structfield id="DbusmenuClientClass.reserved4">reserved4</structfield>&#160;()</term>
 <listitem><simpara>Reserved for future use.
 </simpara></listitem>
 </varlistentry>
@@ -341,6 +342,7 @@ This function connects into the type handling of the <link linkend="DbusmenuClie
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>id</parameter>&#160;:</term>
 <listitem><simpara>
+<parameter>gpointer</parameter> user_data:
 <parameter>gpointer</parameter> user_data:
 <parameter>gpointer</parameter> user_data:
 <parameter>gpointer</parameter> user_data:
