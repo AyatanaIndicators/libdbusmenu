@@ -56,7 +56,7 @@ enum {
 	ROOT_CHANGED,
 	NEW_MENUITEM,
 	ITEM_ACTIVATE,
-	EVENT_ERROR,
+	EVENT_RESULT,
 	LAST_SIGNAL
 };
 
@@ -224,17 +224,18 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 		@arg2: The ID of the event sent
 		@arg3: The data sent along with the event
 		@arg4: A timestamp that the event happened at
+		@arg5: Possibly the error in sending the event (or NULL)
 
 		Signal sent to show that there was an error in sending the event
 		to the server.
 	*/
-	signals[ITEM_ACTIVATE]   = g_signal_new(DBUSMENU_CLIENT_SIGNAL_EVENT_ERROR,
+	signals[EVENT_RESULT]    = g_signal_new(DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT,
 	                                        G_TYPE_FROM_CLASS (klass),
 	                                        G_SIGNAL_RUN_LAST,
-	                                        G_STRUCT_OFFSET (DbusmenuClientClass, event_error),
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, event_result),
 	                                        NULL, NULL,
-	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_POINTER_UINT,
-	                                        G_TYPE_NONE, 4, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_UINT);
+	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_POINTER_UINT_POINTER,
+	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_POINTER);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
@@ -1058,8 +1059,9 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 
 	if (error != NULL) {
 		g_warning("Unable to call menu item %d: %s", GPOINTER_TO_INT(userdata), error->message);
-		g_signal_emit(edata->client, signals[EVENT_ERROR], 0, edata->menuitem, edata->event, edata->data, edata->timestamp, TRUE);
 	}
+
+	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->data, edata->timestamp, error, TRUE);
 
 	g_value_unset(&edata->data);
 	g_free(edata->event);

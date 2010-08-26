@@ -47,7 +47,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED    "root-changed"
 #define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
 #define DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE   "item-activate"
-#define DBUSMENU_CLIENT_SIGNAL_EVENT_ERROR     "event-error"
+#define DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT    "event-result"
 
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
@@ -62,7 +62,7 @@ G_BEGIN_DECLS
 	@layout_updated: Slot for #DbusmenuClient::layout-updated.
 	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
 	@item_activate: Slot for #DbusmenuClient::item-activate.
-	@event_error: Slot for #DbusmenuClient::event-error.
+	@event_result: Slot for #DbusmenuClient::event-error.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 
@@ -78,7 +78,7 @@ struct _DbusmenuClientClass {
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
 	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
-	void (*event_error) (DbusmenuMenuitem * item, gchar * event, GValue * data, guint timestamp);
+	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GValue * data, guint timestamp, GError * error);
 
 	/* Reserved for future use */
 	void (*reserved1) (void);
