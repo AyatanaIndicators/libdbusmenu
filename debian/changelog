@@ -1,11 +1,11 @@
-libdbusmenu (0.3.12-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.12-0ubuntu1~ppa1) maverick; urgency=low
 
   * New upstream release.
     * Support activation of menus client side
-    * Increase layout XML size
+    * Increase layout XML size (LP: #621238)
     * Display an event for the status of the signal to the server
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 26 Aug 2010 15:27:19 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 26 Aug 2010 15:35:19 -0500
 
 libdbusmenu (0.3.11-0ubuntu1) maverick; urgency=low
 
