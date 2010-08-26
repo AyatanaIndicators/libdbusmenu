@@ -103,6 +103,16 @@ struct _properties_listener_t {
 	gboolean replied;
 };
 
+typedef struct _event_data_t event_data_t;
+struct _event_data_t {
+	DbusmenuClient * client;
+	DbusmenuMenuitem * menuitem;
+	gchar * event;
+	GValue data;
+	guint timestamp;
+};
+
+
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate))
 
@@ -1044,9 +1054,17 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 static void
 menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 {
+	event_data_t * edata = (event_data_t *)userdata;
+
 	if (error != NULL) {
 		g_warning("Unable to call menu item %d: %s", GPOINTER_TO_INT(userdata), error->message);
+		g_signal_emit(edata->client, signals[EVENT_ERROR], 0, edata->menuitem, edata->event, edata->data, edata->timestamp, TRUE);
 	}
+
+	g_value_unset(&edata->data);
+	g_free(edata->event);
+	g_object_unref(edata->menuitem);
+	g_free(edata);
 
 	return;
 }
@@ -1060,6 +1078,13 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	g_return_if_fail(id >= 0);
 	g_return_if_fail(name != NULL);
 
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	if (mi == NULL) {
+		g_warning("Asked to activate a menuitem %d that we don't know about", id);
+		return;
+	}
+
 	if (value == NULL) {
 		GValue internalval = {0};
 		g_value_init(&internalval, G_TYPE_INT);
@@ -1067,8 +1092,16 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 		value = &internalval;
 	}
 
-	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, GINT_TO_POINTER(id));
+	event_data_t * edata = g_new0(event_data_t, 1);
+	edata->client = client;
+	edata->menuitem = mi;
+	g_object_ref(edata->menuitem);
+	edata->event = g_strdup(name);
+	g_value_init(&edata->data, G_VALUE_TYPE(value));
+	g_value_copy(value, &edata->data);
+	edata->timestamp = timestamp;
+
+	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, edata);
 	return;
 }
 
