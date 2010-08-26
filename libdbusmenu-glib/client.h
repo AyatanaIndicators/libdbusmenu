@@ -47,6 +47,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED    "root-changed"
 #define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
 #define DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE   "item-activate"
+#define DBUSMENU_CLIENT_SIGNAL_EVENT_ERROR     "event-error"
 
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"

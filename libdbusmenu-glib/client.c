@@ -56,6 +56,7 @@ enum {
 	ROOT_CHANGED,
 	NEW_MENUITEM,
 	ITEM_ACTIVATE,
+	EVENT_ERROR,
 	LAST_SIGNAL
 };
 
@@ -206,6 +207,24 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        _dbusmenu_client_marshal_VOID__OBJECT_UINT,
 	                                        G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_UINT);
+	/**
+		DbusmenuClient::event-error:
+		@arg0: The #DbusmenuClient object
+		@arg1: The #DbusmenuMenuitem sent an event
+		@arg2: The ID of the event sent
+		@arg3: The data sent along with the event
+		@arg4: A timestamp that the event happened at
+
+		Signal sent to show that there was an error in sending the event
+		to the server.
+	*/
+	signals[ITEM_ACTIVATE]   = g_signal_new(DBUSMENU_CLIENT_SIGNAL_EVENT_ERROR,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, event_error),
+	                                        NULL, NULL,
+	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_POINTER_UINT,
+	                                        G_TYPE_NONE, 4, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
