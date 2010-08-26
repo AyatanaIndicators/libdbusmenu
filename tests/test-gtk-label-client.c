@@ -22,7 +22,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gtk/gtk.h>
 #include <libdbusmenu-gtk/menu.h>
 
-static guint layouton = 0;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
 static guint death_timer = 0;
