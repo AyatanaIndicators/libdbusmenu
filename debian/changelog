@@ -7,7 +7,7 @@ libdbusmenu (0.3.12-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 26 Aug 2010 15:27:19 -0500
 
-libdbusmenu (0.3.11-0ubuntu1~ppa1) maverick; urgency=low
+libdbusmenu (0.3.11-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Fix to handle whitespace in layout XML better
