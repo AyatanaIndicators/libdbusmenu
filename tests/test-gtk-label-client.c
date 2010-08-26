@@ -105,7 +105,6 @@ verify_root_to_layout(DbusmenuMenuitem * mi, proplayout_t * layout)
 static gboolean
 timer_func (gpointer data)
 {
-	g_debug("Death timer.  Oops.  Got to: %d", layouton);
 	passed = TRUE;
 	g_main_loop_quit(mainloop);
 	return FALSE;
