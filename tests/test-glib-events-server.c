@@ -29,47 +29,24 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 
-#include "test-glib-submenu.h"
-
-
-static DbusmenuMenuitem *
-layout2menuitem (layout_t * layout)
-{
-	if (layout == NULL || layout->id == 0) return NULL;
-
-	DbusmenuMenuitem * local = dbusmenu_menuitem_new_with_id(layout->id);
-	
-	if (layout->submenu != NULL) {
-		guint count;
-		for (count = 0; layout->submenu[count].id != -1; count++) {
-			DbusmenuMenuitem * child = layout2menuitem(&layout->submenu[count]);
-			if (child != NULL) {
-				dbusmenu_menuitem_child_append(local, child);
-			}
-		}
-	}
-
-	/* g_debug("Layout to menu return: 0x%X", (unsigned int)local); */
-	return local;
-}
-
-static guint layouton = 0;
 static DbusmenuServer * server = NULL;
 static GMainLoop * mainloop = NULL;
+static gboolean passed = TRUE;
+
+static void
+handle_event (void) {
+	g_debug("Handle event");
+	g_main_loop_quit(mainloop);
+	return;
+}
 
 static gboolean
 timer_func (gpointer data)
 {
-	if (layouts[layouton].id == -1) {
-		g_main_loop_quit(mainloop);
-		return FALSE;
-	}
-	g_debug("Updating to Layout %d", layouton);
-
-	dbusmenu_server_set_root(server, layout2menuitem(&layouts[layouton]));
-	layouton++;
-
-	return TRUE;
+	passed = FALSE;
+	g_debug("Never got a signal");
+	g_main_loop_quit(mainloop);
+	return FALSE;
 }
 
 int
@@ -96,14 +73,30 @@ main (int argc, char ** argv)
 	}
 
 	server = dbusmenu_server_new("/org/test");
+	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_new();
+	dbusmenu_server_set_root(server, menuitem);
 
-	timer_func(NULL);
-	g_timeout_add(2500, timer_func, NULL);
+	g_signal_connect(G_OBJECT(menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(handle_event), NULL);
+
+	g_timeout_add_seconds(3, timer_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
 
-	g_debug("Quiting");
+	if (passed) {
+		int i;
 
-	return 0;
+		for (i = 0; i < 10; i++) {
+			g_debug("Ignoring signals: %d", i);
+			g_usleep(100 * 1000);
+		}
+	}
+
+	if (passed) {
+		g_debug("Test Passed");
+		return 0;
+	} else {
+		g_debug("Test Failed");
+		return 1;
+	}
 }
