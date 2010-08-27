@@ -26,6 +26,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "test-glib-submenu.h"
 
+#define TIMESTAMP_VALUE  54
+#define DATA_VALUE       32
+#define USER_VALUE       76
+
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
 static gboolean first = TRUE;
@@ -34,6 +38,27 @@ static void
 event_status (DbusmenuClient * client, DbusmenuMenuitem * item, gchar * name, GValue * data, guint timestamp, GError * error, gpointer user_data)
 {
 	g_debug("Event status: %s", error == NULL ? "Sent" : "Error");
+
+	if (timestamp != TIMESTAMP_VALUE) {
+		g_debug("Timestamp value pass fail got: %d", timestamp);
+		passed = FALSE;
+		g_main_loop_quit(mainloop);
+		return;
+	}
+
+	if (g_value_get_int(data) != DATA_VALUE) {
+		g_debug("Data value pass fail got: %d", g_value_get_int(data));
+		passed = FALSE;
+		g_main_loop_quit(mainloop);
+		return;
+	}
+
+	if (GPOINTER_TO_INT(user_data) != USER_VALUE) {
+		g_debug("User value pass fail got: %d", GPOINTER_TO_INT(user_data));
+		passed = FALSE;
+		g_main_loop_quit(mainloop);
+		return;
+	}
 
 	if (first && error != NULL) {
 		passed = FALSE;
@@ -56,12 +81,12 @@ event_status (DbusmenuClient * client, DbusmenuMenuitem * item, gchar * name, GV
 	}
 
 	first = FALSE;
-	dbusmenu_menuitem_handle_event(item, "clicked", NULL, 0);
+	dbusmenu_menuitem_handle_event(item, "clicked", data, timestamp);
 	return;
 }
 
 static void
-layout_updated (DbusmenuClient * client, gpointer data)
+layout_updated (DbusmenuClient * client, gpointer user_data)
 {
 	g_debug("Layout Updated");
 
@@ -71,7 +96,11 @@ layout_updated (DbusmenuClient * client, gpointer data)
 		return;
 	}
 
-	dbusmenu_menuitem_handle_event(menuroot, "clicked", NULL, 0);
+	GValue data = {0};
+	g_value_init(&data, G_TYPE_INT);
+	g_value_set_int(&data, DATA_VALUE);
+
+	dbusmenu_menuitem_handle_event(menuroot, "clicked", &data, TIMESTAMP_VALUE);
 
 	return;
 }
@@ -92,7 +121,7 @@ main (int argc, char ** argv)
 
 	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
-	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT, G_CALLBACK(event_status), NULL);
+	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT, G_CALLBACK(event_status), GINT_TO_POINTER(USER_VALUE));
 
 	g_timeout_add_seconds(5, timer_func, client);
 
