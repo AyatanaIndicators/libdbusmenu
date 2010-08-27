@@ -876,6 +876,7 @@ build_proxies (DbusmenuClient * client)
 	}
 	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
 	g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
+	dbus_g_proxy_set_default_timeout(priv->menuproxy, 2000);
 
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != NULL) {
