@@ -876,6 +876,7 @@ build_proxies (DbusmenuClient * client)
 	}
 	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
 	g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
+	dbus_g_proxy_set_default_timeout(priv->menuproxy, 2000);
 
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != NULL) {
@@ -1058,10 +1059,10 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 	event_data_t * edata = (event_data_t *)userdata;
 
 	if (error != NULL) {
-		g_warning("Unable to call menu item %d: %s", GPOINTER_TO_INT(userdata), error->message);
+		g_warning("Unable to call event '%s' on menu item %d: %s", edata->event, dbusmenu_menuitem_get_id(edata->menuitem), error->message);
 	}
 
-	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->data, edata->timestamp, error, TRUE);
+	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, &edata->data, edata->timestamp, error, TRUE);
 
 	g_value_unset(&edata->data);
 	g_free(edata->event);
