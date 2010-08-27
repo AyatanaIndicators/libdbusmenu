@@ -1,9 +1,9 @@
-libdbusmenu (0.3.12-0ubuntu2~ppa1~signal2) UNRELEASED; urgency=low
+libdbusmenu (0.3.12-0ubuntu2~ppa1~signal2) maverick; urgency=low
 
   * Upstream Merge
     * Changing the timeouts
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 27 Aug 2010 17:01:22 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 27 Aug 2010 17:11:25 -0500
 
 libdbusmenu (0.3.12-0ubuntu2~ppa1~signal1) maverick; urgency=low
 
