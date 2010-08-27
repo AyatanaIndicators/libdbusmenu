@@ -86,9 +86,9 @@ main (int argc, char ** argv)
 	if (passed) {
 		int i;
 
-		for (i = 0; i < 10; i++) {
+		for (i = 0; i < 5; i++) {
 			g_debug("Ignoring signals: %d", i);
-			g_usleep(100 * 1000);
+			g_usleep(1000 * 1000);
 		}
 	}
 

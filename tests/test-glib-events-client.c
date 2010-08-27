@@ -28,6 +28,37 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
+static gboolean first = TRUE;
+
+static void
+event_status (DbusmenuClient * client, DbusmenuMenuitem * item, gchar * name, GValue * data, guint timestamp, GError * error, gpointer user_data)
+{
+	g_debug("Event status: %s", error == NULL ? "Sent" : "Error");
+
+	if (first && error != NULL) {
+		passed = FALSE;
+		g_debug("First signal back failed.");
+		g_main_loop_quit(mainloop);
+		return;
+	}
+
+	if (!first && error == NULL) {
+		passed = FALSE;
+		g_debug("Second signal didn't fail.");
+		g_main_loop_quit(mainloop);
+		return;
+	}
+
+	if (!first && error != NULL) {
+		g_debug("Second signal failed: pass.");
+		g_main_loop_quit(mainloop);
+		return;
+	}
+
+	first = FALSE;
+	dbusmenu_menuitem_handle_event(item, "clicked", NULL, 0);
+	return;
+}
 
 static void
 layout_updated (DbusmenuClient * client, gpointer data)
@@ -61,6 +92,7 @@ main (int argc, char ** argv)
 
 	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
+	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT, G_CALLBACK(event_status), NULL);
 
 	g_timeout_add_seconds(5, timer_func, client);
 
