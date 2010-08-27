@@ -1,11 +1,14 @@
-libdbusmenu (0.3.12-0ubuntu1~ppa1) maverick; urgency=low
+libdbusmenu (0.3.12-0ubuntu1) maverick; urgency=low
 
+  * debian/rules: update the shlibs
+
+  [ Ted Gould ]
   * New upstream release.
     * Support activation of menus client side
     * Increase layout XML size (LP: #621238)
     * Display an event for the status of the signal to the server
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 26 Aug 2010 15:35:19 -0500
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 26 Aug 2010 23:34:45 +0200
 
 libdbusmenu (0.3.11-0ubuntu1) maverick; urgency=low
 
