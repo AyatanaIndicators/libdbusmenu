@@ -876,7 +876,6 @@ build_proxies (DbusmenuClient * client)
 	}
 	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
 	g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
-	dbus_g_proxy_set_default_timeout(priv->menuproxy, 2000);
 
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != NULL) {
@@ -1104,7 +1103,12 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	g_value_copy(value, &edata->data);
 	edata->timestamp = timestamp;
 
-	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, edata);
+	DBusGAsyncData *stuff;
+	stuff = g_slice_new (DBusGAsyncData);
+	stuff->cb = G_CALLBACK (menuitem_call_cb);
+	stuff->userdata = edata;
+	dbus_g_proxy_begin_call_with_timeout (priv->menuproxy, "Event", org_ayatana_dbusmenu_event_async_callback, stuff, _dbus_glib_async_data_free, 1000, G_TYPE_INT, id, G_TYPE_STRING, name, G_TYPE_VALUE, value, G_TYPE_UINT, timestamp, G_TYPE_INVALID);
+
 	return;
 }
 
