@@ -191,3 +191,6 @@ tests/test-json
 libdbusmenu-glib/client-marshal.c
 libdbusmenu-glib/client-marshal.h
 libdbusmenu-glib/libdbusmenu_glib_la-client-marshal.lo
+tests/test-glib-events
+tests/test-glib-events-client
+tests/test-glib-events-server
