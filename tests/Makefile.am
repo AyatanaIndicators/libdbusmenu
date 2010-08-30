@@ -5,6 +5,7 @@ CLEANFILES=
 
 TESTS = \
 	test-glib-objects-test \
+	test-glib-events \
 	test-glib-layout \
 	test-glib-properties \
 	test-glib-proxy \
@@ -20,6 +21,8 @@ TESTS = \
 check_PROGRAMS = \
 	glib-server-nomenu \
 	test-glib-objects \
+	test-glib-events-client \
+	test-glib-events-server \
 	test-glib-layout-client \
 	test-glib-layout-server \
 	test-glib-properties-client \
@@ -125,6 +128,37 @@ test_glib_layout_client_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_layout_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+######################
+# Test Glib Events
+######################
+
+test-glib-events: test-glib-events-client test-glib-events-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-events-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test_glib_events_server_SOURCES = \
+	test-glib-events-server.c
+
+test_glib_events_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_events_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_events_client_SOURCES = \
+	test-glib-events-client.c
+
+test_glib_events_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_events_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
