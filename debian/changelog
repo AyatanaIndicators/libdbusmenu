@@ -1,11 +1,11 @@
-libdbusmenu (0.3.12-0ubuntu2~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.12-0ubuntu2~ppa1) maverick; urgency=low
 
   * Upstream Merge
     * Fixing the passing of the value to the results signal
     * Adding a test for checking event results signal
     * Changing the timeouts on event calls
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 30 Aug 2010 09:48:25 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 30 Aug 2010 10:24:14 -0500
 
 libdbusmenu (0.3.12-0ubuntu1) maverick; urgency=low
 
