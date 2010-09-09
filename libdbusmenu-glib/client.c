@@ -1058,10 +1058,10 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 	event_data_t * edata = (event_data_t *)userdata;
 
 	if (error != NULL) {
-		g_warning("Unable to call menu item %d: %s", GPOINTER_TO_INT(userdata), error->message);
+		g_warning("Unable to call event '%s' on menu item %d: %s", edata->event, dbusmenu_menuitem_get_id(edata->menuitem), error->message);
 	}
 
-	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->data, edata->timestamp, error, TRUE);
+	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, &edata->data, edata->timestamp, error, TRUE);
 
 	g_value_unset(&edata->data);
 	g_free(edata->event);
@@ -1103,7 +1103,12 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	g_value_copy(value, &edata->data);
 	edata->timestamp = timestamp;
 
-	org_ayatana_dbusmenu_event_async (priv->menuproxy, id, name, value, timestamp, menuitem_call_cb, edata);
+	DBusGAsyncData *stuff;
+	stuff = g_slice_new (DBusGAsyncData);
+	stuff->cb = G_CALLBACK (menuitem_call_cb);
+	stuff->userdata = edata;
+	dbus_g_proxy_begin_call_with_timeout (priv->menuproxy, "Event", org_ayatana_dbusmenu_event_async_callback, stuff, _dbus_glib_async_data_free, 1000, G_TYPE_INT, id, G_TYPE_STRING, name, G_TYPE_VALUE, value, G_TYPE_UINT, timestamp, G_TYPE_INVALID);
+
 	return;
 }
 
