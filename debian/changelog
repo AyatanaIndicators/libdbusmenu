@@ -1,4 +1,4 @@
-libdbusmenu (0.3.13-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.13-0ubuntu1~ppa1) maverick; urgency=low
 
   * New upstream release.
     * Handling window grabs on activated signals (LP: #633275)
@@ -7,7 +7,7 @@ libdbusmenu (0.3.13-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Changing the timeouts on event calls for better detection
       of failing applications
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 09 Sep 2010 09:41:34 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 09 Sep 2010 09:50:15 -0500
 
 libdbusmenu (0.3.12-0ubuntu1) maverick; urgency=low
 
