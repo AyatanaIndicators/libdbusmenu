@@ -36,13 +36,15 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-TESTS = test-glib-objects-test test-glib-layout test-glib-properties \
-	test-glib-proxy test-glib-simple-items$(EXEEXT) \
-	test-glib-submenu test-json test-gtk-objects-test \
-	test-gtk-label test-gtk-shortcut test-gtk-reorder \
-	test-gtk-submenu
+TESTS = test-glib-objects-test test-glib-events test-glib-layout \
+	test-glib-properties test-glib-proxy \
+	test-glib-simple-items$(EXEEXT) test-glib-submenu test-json \
+	test-gtk-objects-test test-gtk-label test-gtk-shortcut \
+	test-gtk-reorder test-gtk-submenu
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
-	test-glib-objects$(EXEEXT) test-glib-layout-client$(EXEEXT) \
+	test-glib-objects$(EXEEXT) test-glib-events-client$(EXEEXT) \
+	test-glib-events-server$(EXEEXT) \
+	test-glib-layout-client$(EXEEXT) \
 	test-glib-layout-server$(EXEEXT) \
 	test-glib-properties-client$(EXEEXT) \
 	test-glib-properties-server$(EXEEXT) \
@@ -117,6 +119,26 @@ glib_server_nomenu_DEPENDENCIES =  \
 glib_server_nomenu_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(glib_server_nomenu_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_test_glib_events_client_OBJECTS =  \
+	test_glib_events_client-test-glib-events-client.$(OBJEXT)
+test_glib_events_client_OBJECTS =  \
+	$(am_test_glib_events_client_OBJECTS)
+test_glib_events_client_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1)
+test_glib_events_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_glib_events_client_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_test_glib_events_server_OBJECTS =  \
+	test_glib_events_server-test-glib-events-server.$(OBJEXT)
+test_glib_events_server_OBJECTS =  \
+	$(am_test_glib_events_server_OBJECTS)
+test_glib_events_server_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1)
+test_glib_events_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_glib_events_server_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am_test_glib_layout_client_OBJECTS =  \
 	test_glib_layout_client-test-glib-layout-client.$(OBJEXT)
@@ -364,6 +386,8 @@ am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(glib_server_nomenu_SOURCES) \
+	$(test_glib_events_client_SOURCES) \
+	$(test_glib_events_server_SOURCES) \
 	$(test_glib_layout_client_SOURCES) \
 	$(test_glib_layout_server_SOURCES) \
 	$(test_glib_objects_SOURCES) \
@@ -385,6 +409,8 @@ SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(test_json_server_SOURCES)
 DIST_SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(glib_server_nomenu_SOURCES) \
+	$(test_glib_events_client_SOURCES) \
+	$(test_glib_events_server_SOURCES) \
 	$(test_glib_layout_client_SOURCES) \
 	$(test_glib_layout_server_SOURCES) \
 	$(test_glib_objects_SOURCES) \
@@ -652,6 +678,28 @@ test_glib_layout_client_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_layout_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_events_server_SOURCES = \
+	test-glib-events-server.c
+
+test_glib_events_server_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_events_server_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
+test_glib_events_client_SOURCES = \
+	test-glib-events-client.c
+
+test_glib_events_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_events_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
@@ -1049,6 +1097,12 @@ clean-checkPROGRAMS:
 glib-server-nomenu$(EXEEXT): $(glib_server_nomenu_OBJECTS) $(glib_server_nomenu_DEPENDENCIES) 
 	@rm -f glib-server-nomenu$(EXEEXT)
 	$(AM_V_CCLD)$(glib_server_nomenu_LINK) $(glib_server_nomenu_OBJECTS) $(glib_server_nomenu_LDADD) $(LIBS)
+test-glib-events-client$(EXEEXT): $(test_glib_events_client_OBJECTS) $(test_glib_events_client_DEPENDENCIES) 
+	@rm -f test-glib-events-client$(EXEEXT)
+	$(AM_V_CCLD)$(test_glib_events_client_LINK) $(test_glib_events_client_OBJECTS) $(test_glib_events_client_LDADD) $(LIBS)
+test-glib-events-server$(EXEEXT): $(test_glib_events_server_OBJECTS) $(test_glib_events_server_DEPENDENCIES) 
+	@rm -f test-glib-events-server$(EXEEXT)
+	$(AM_V_CCLD)$(test_glib_events_server_LINK) $(test_glib_events_server_OBJECTS) $(test_glib_events_server_LDADD) $(LIBS)
 test-glib-layout-client$(EXEEXT): $(test_glib_layout_client_OBJECTS) $(test_glib_layout_client_DEPENDENCIES) 
 	@rm -f test-glib-layout-client$(EXEEXT)
 	$(AM_V_CCLD)$(test_glib_layout_client_LINK) $(test_glib_layout_client_OBJECTS) $(test_glib_layout_client_LDADD) $(LIBS)
@@ -1121,6 +1175,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glib_server_nomenu-glib-server-nomenu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_jsonloader_la-json-loader.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_events_client-test-glib-events-client.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_events_server-test-glib-events-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_layout_client-test-glib-layout-client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_layout_server-test-glib-layout-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_objects-test-glib-objects.Po@am__quote@
@@ -1190,6 +1246,38 @@ glib_server_nomenu-glib-server-nomenu.obj: glib-server-nomenu.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='glib-server-nomenu.c' object='glib_server_nomenu-glib-server-nomenu.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(glib_server_nomenu_CFLAGS) $(CFLAGS) -c -o glib_server_nomenu-glib-server-nomenu.obj `if test -f 'glib-server-nomenu.c'; then $(CYGPATH_W) 'glib-server-nomenu.c'; else $(CYGPATH_W) '$(srcdir)/glib-server-nomenu.c'; fi`
+
+test_glib_events_client-test-glib-events-client.o: test-glib-events-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_client_CFLAGS) $(CFLAGS) -MT test_glib_events_client-test-glib-events-client.o -MD -MP -MF $(DEPDIR)/test_glib_events_client-test-glib-events-client.Tpo -c -o test_glib_events_client-test-glib-events-client.o `test -f 'test-glib-events-client.c' || echo '$(srcdir)/'`test-glib-events-client.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_events_client-test-glib-events-client.Tpo $(DEPDIR)/test_glib_events_client-test-glib-events-client.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-events-client.c' object='test_glib_events_client-test-glib-events-client.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_client_CFLAGS) $(CFLAGS) -c -o test_glib_events_client-test-glib-events-client.o `test -f 'test-glib-events-client.c' || echo '$(srcdir)/'`test-glib-events-client.c
+
+test_glib_events_client-test-glib-events-client.obj: test-glib-events-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_client_CFLAGS) $(CFLAGS) -MT test_glib_events_client-test-glib-events-client.obj -MD -MP -MF $(DEPDIR)/test_glib_events_client-test-glib-events-client.Tpo -c -o test_glib_events_client-test-glib-events-client.obj `if test -f 'test-glib-events-client.c'; then $(CYGPATH_W) 'test-glib-events-client.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-events-client.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_events_client-test-glib-events-client.Tpo $(DEPDIR)/test_glib_events_client-test-glib-events-client.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-events-client.c' object='test_glib_events_client-test-glib-events-client.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_client_CFLAGS) $(CFLAGS) -c -o test_glib_events_client-test-glib-events-client.obj `if test -f 'test-glib-events-client.c'; then $(CYGPATH_W) 'test-glib-events-client.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-events-client.c'; fi`
+
+test_glib_events_server-test-glib-events-server.o: test-glib-events-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_server_CFLAGS) $(CFLAGS) -MT test_glib_events_server-test-glib-events-server.o -MD -MP -MF $(DEPDIR)/test_glib_events_server-test-glib-events-server.Tpo -c -o test_glib_events_server-test-glib-events-server.o `test -f 'test-glib-events-server.c' || echo '$(srcdir)/'`test-glib-events-server.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_events_server-test-glib-events-server.Tpo $(DEPDIR)/test_glib_events_server-test-glib-events-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-events-server.c' object='test_glib_events_server-test-glib-events-server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_server_CFLAGS) $(CFLAGS) -c -o test_glib_events_server-test-glib-events-server.o `test -f 'test-glib-events-server.c' || echo '$(srcdir)/'`test-glib-events-server.c
+
+test_glib_events_server-test-glib-events-server.obj: test-glib-events-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_server_CFLAGS) $(CFLAGS) -MT test_glib_events_server-test-glib-events-server.obj -MD -MP -MF $(DEPDIR)/test_glib_events_server-test-glib-events-server.Tpo -c -o test_glib_events_server-test-glib-events-server.obj `if test -f 'test-glib-events-server.c'; then $(CYGPATH_W) 'test-glib-events-server.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-events-server.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_events_server-test-glib-events-server.Tpo $(DEPDIR)/test_glib_events_server-test-glib-events-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-glib-events-server.c' object='test_glib_events_server-test-glib-events-server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_server_CFLAGS) $(CFLAGS) -c -o test_glib_events_server-test-glib-events-server.obj `if test -f 'test-glib-events-server.c'; then $(CYGPATH_W) 'test-glib-events-server.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-events-server.c'; fi`
 
 test_glib_layout_client-test-glib-layout-client.o: test-glib-layout-client.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_layout_client_CFLAGS) $(CFLAGS) -MT test_glib_layout_client-test-glib-layout-client.o -MD -MP -MF $(DEPDIR)/test_glib_layout_client-test-glib-layout-client.Tpo -c -o test_glib_layout_client-test-glib-layout-client.o `test -f 'test-glib-layout-client.c' || echo '$(srcdir)/'`test-glib-layout-client.c
@@ -1929,6 +2017,15 @@ uninstall-am: uninstall-examplesDATA uninstall-jsonDATA \
 test-glib-layout: test-glib-layout-client test-glib-layout-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+######################
+# Test Glib Events
+######################
+
+test-glib-events: test-glib-events-client test-glib-events-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-events-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 ######################

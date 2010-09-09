@@ -1,3 +1,14 @@
+libdbusmenu (0.3.13-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Handling window grabs on activated signals (LP: #633275)
+    * Fixing the passing of the value to the results signal
+    * Adding a test for checking event results signal
+    * Changing the timeouts on event calls for better detection
+      of failing applications
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 09 Sep 2010 09:50:15 -0500
+
 libdbusmenu (0.3.12-0ubuntu1) maverick; urgency=low
 
   * debian/rules: update the shlibs

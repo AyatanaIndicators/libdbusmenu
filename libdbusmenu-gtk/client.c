@@ -453,6 +453,13 @@ activate_helper (GtkMenuShell * shell)
 				if (GTK_IS_MENU(parent)) {
 					activate_helper(GTK_MENU_SHELL(parent));
 				}
+
+				if (!GTK_MENU_SHELL (parent)->active) {
+					gtk_grab_add (parent);
+					GTK_MENU_SHELL (parent)->have_grab = TRUE;
+					GTK_MENU_SHELL (parent)->active = TRUE;
+				}
+
 				gtk_menu_shell_select_item(GTK_MENU_SHELL(parent), attach);
 			}
 		}
