@@ -703,7 +703,7 @@ _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValu
 		return FALSE;
 	}
 
-	idle_event_t * event_data = g_new0(idle_event_t, 0);
+	idle_event_t * event_data = g_new0(idle_event_t, 1);
 	event_data->mi = mi;
 	g_object_ref(event_data->mi);
 	event_data->eventid = g_strdup(eventid);
