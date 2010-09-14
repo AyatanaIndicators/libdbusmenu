@@ -659,6 +659,33 @@ _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * pro
 	return TRUE;
 }
 
+/* Structure for holding the event data for the idle function
+   to pick it up. */
+typedef struct _idle_event_t idle_event_t;
+struct _idle_event_t {
+	DbusmenuMenuitem * mi;
+	gchar * eventid;
+	GValue data;
+	guint timestamp;
+};
+
+/* A handler for else where in the main loop so that the dbusmenu
+   event response doesn't get blocked */
+static gboolean
+event_local_handler (gpointer user_data)
+{
+	idle_event_t * data = (idle_event_t *)user_data;
+
+	dbusmenu_menuitem_handle_event(data->mi, data->eventid, &data->data, data->timestamp);
+
+	g_object_unref(data->mi);
+	g_free(data->eventid);
+	g_value_unset(&data->data);
+	g_free(data);
+	return FALSE;
+}
+
+/* Handles the even coming off of DBus */
 static gboolean
 _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error)
 {
@@ -676,7 +703,15 @@ _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValu
 		return FALSE;
 	}
 
-	dbusmenu_menuitem_handle_event(mi, eventid, data, timestamp);
+	idle_event_t * event_data = g_new0(idle_event_t, 0);
+	event_data->mi = mi;
+	g_object_ref(event_data->mi);
+	event_data->eventid = g_strdup(eventid);
+	event_data->timestamp = timestamp;
+	g_value_init(&(event_data->data), G_VALUE_TYPE(data));
+	g_value_copy(data, &(event_data->data));
+
+	g_timeout_add(0, event_local_handler, event_data);
 	return TRUE;
 }
 
