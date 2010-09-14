@@ -1,4 +1,4 @@
-libdbusmenu (0.3.13-0ubuntu1~ppa1) maverick; urgency=low
+libdbusmenu (0.3.13-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Handling window grabs on activated signals (LP: #633275)
@@ -6,6 +6,11 @@ libdbusmenu (0.3.13-0ubuntu1~ppa1) maverick; urgency=low
     * Adding a test for checking event results signal
     * Changing the timeouts on event calls for better detection
       of failing applications
+
+  [Ken VanDine]
+  * debian/control
+    - Dropped build depends for dbus-test-runner, it isn't in the archive
+      yet, we should add that next cycle
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 09 Sep 2010 09:50:15 -0500
 
