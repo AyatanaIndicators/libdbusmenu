@@ -1,10 +1,11 @@
-libdbusmenu (0.3.13-0ubuntu2~ppa1) maverick; urgency=low
+libdbusmenu (0.3.14-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
+    * Fixing a memory leak by unref'ing a hashtable
     * Making a callback for the event dbus function happen off
       of the mainloop so it returns a response. (LP: #636756)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 14 Sep 2010 16:32:18 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 15 Sep 2010 11:29:32 -0500
 
 libdbusmenu (0.3.13-0ubuntu1) maverick; urgency=low
 
