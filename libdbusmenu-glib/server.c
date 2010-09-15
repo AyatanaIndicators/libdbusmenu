@@ -633,6 +633,10 @@ serialize_menuitem(gpointer data, gpointer user_data)
 	_gvalue_array_append_hashtable(item, dict);
 
 	g_ptr_array_add(output, item);
+
+	g_hash_table_unref(dict);
+
+	return;
 }
 
 static gboolean
