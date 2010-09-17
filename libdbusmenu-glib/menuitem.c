@@ -97,6 +97,7 @@ static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * 
 static void g_value_transform_STRING_BOOLEAN (const GValue * in, GValue * out);
 static void g_value_transform_STRING_INT (const GValue * in, GValue * out);
 static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+static void send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
 /* GObject stuff */
 G_DEFINE_TYPE (DbusmenuMenuitem, dbusmenu_menuitem, G_TYPE_OBJECT);
@@ -114,6 +115,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	object_class->get_property = get_property;
 
 	klass->handle_event = handle_event;
+	klass->send_about_to_show = send_about_to_show;
 
 	/**
 		DbusmenuMenuitem::property-changed:
@@ -382,6 +384,28 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 {
 	if (g_strcmp0(name, "clicked") == 0) {
 		g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
+	}
+
+	return;
+}
+
+/* Handles our about to show signal on items that submenus
+   exist.  This is sending just activate now, but we should
+   probably consider a special signal in the future if GTK
+   gets more sophisticated about this. */
+static void
+send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+
+	if (dbusmenu_menuitem_get_children(mi) == NULL) {
+		g_warning("About to Show called on an item wihtout submenus.  We're ignoring it.");
+	} else {
+		g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, 0 /* timestamp */, TRUE);
+	}
+
+	if (cb != NULL) {
+		cb(mi, cb_data);
 	}
 
 	return;
