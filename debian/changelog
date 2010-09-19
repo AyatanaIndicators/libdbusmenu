@@ -1,9 +1,9 @@
-libdbusmenu (0.3.14-0ubuntu1~ppa2~ats1) UNRELEASED; urgency=low
+libdbusmenu (0.3.14-0ubuntu1~ppa2~ats1) maverick; urgency=low
 
   * Upstream Merge
     * Passing up About-to-show as an activate signal
 
- -- Ted Gould <ted@ubuntu.com>  Sun, 19 Sep 2010 14:27:38 -0500
+ -- Ted Gould <ted@ubuntu.com>  Sun, 19 Sep 2010 14:38:52 -0500
 
 libdbusmenu (0.3.14-0ubuntu1~ppa1) maverick; urgency=low
 
