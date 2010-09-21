@@ -1,4 +1,4 @@
-libdbusmenu (0.3.14-0ubuntu1~ppa1) maverick; urgency=low
+libdbusmenu (0.3.14-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Fixing a memory leak by unref'ing a hashtable

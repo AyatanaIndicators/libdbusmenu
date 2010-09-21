@@ -42,7 +42,7 @@ Description: library for passing menus over DBus
  create a menu simply without worrying about how it is displayed on the
  other side of the bus.
  .
- This package contains shared libraries to be used by applications.
+ This package contains shared libraries to be used by applications. 
 
 Package: libdbusmenu-glib-dev
 Section: libdevel
