@@ -1,10 +1,10 @@
-libdbusmenu (0.3.16-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.16-0ubuntu1~ppa1) maverick; urgency=low
 
   * New upstream release:
     * Don't use a typedef in the signal handler in the class to
       avoid confusing vapigen.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 22 Sep 2010 10:22:01 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 22 Sep 2010 10:28:01 -0500
 
 libdbusmenu (0.3.15-0ubuntu1) UNRELEASED; urgency=low
 
