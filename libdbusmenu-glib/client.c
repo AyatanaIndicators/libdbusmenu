@@ -1283,8 +1283,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 	/* We've got everything built up at this node and reconcilled */
 
-	/* Flush the properties requests */
-	get_properties_flush(client);
+	/* Flush the properties requests if this is the first level */
+	if (dbusmenu_menuitem_get_id(parent) == 0) {
+		get_properties_flush(client);
+	}
 
 	/* now it's time to recurse down the tree. */
 	children = node->children;
