@@ -328,6 +328,16 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 		</signal>
 
+		<signal name="ItemsPropertiesUpdates">
+			<dox:d>
+			Triggered when there are lots of property updates across many items
+			so they all get grouped into a single dbus message.  The format is
+			the ID of the item with a hashtable of names and values for those
+			properties.
+			</dox:d>
+			<arg type="a(ia(sv))" name="props" direction="out" />
+		</signal>
+
 		<signal name="LayoutUpdated">
 			<dox:d>
 			Triggered by the application to notify display of a layout update, up to
