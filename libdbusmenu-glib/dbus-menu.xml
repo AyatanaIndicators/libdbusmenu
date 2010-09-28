@@ -328,7 +328,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 		</signal>
 
-		<signal name="ItemsPropertiesUpdates">
+		<signal name="ItemsPropertiesUpdated">
 			<dox:d>
 			Triggered when there are lots of property updates across many items
 			so they all get grouped into a single dbus message.  The format is
