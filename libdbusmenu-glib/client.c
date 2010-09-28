@@ -43,6 +43,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "server-marshal.h"
 #include "client-marshal.h"
 
+/* How many property requests should we queue before
+   sending the message on dbus */
+#define MAX_PROPERTIES_TO_QUEUE  100
+
 /* Properties */
 enum {
 	PROP_0,
@@ -626,6 +630,13 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 
 	if (priv->delayed_idle == 0) {
 		priv->delayed_idle = g_idle_add(get_properties_idle, client);
+	}
+
+	/* Look at how many proprites we have queued up and
+	   make it so that we don't leave too many in one
+	   request. */
+	if (priv->delayed_property_listeners->len == MAX_PROPERTIES_TO_QUEUE) {
+		get_properties_flush(client);
 	}
 
 	return;
