@@ -48,23 +48,33 @@ AC_SUBST(DBUSMENUGLIB_LIBS)
 ###########################
 
 GTK_REQUIRED_VERSION=2.16
-GTK3_REQUIRED_VERSION=2.90
+GTK3_REQUIRED_VERSION=2.91
 
-PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
-                                libxml-2.0 >= $XML_REQUIRED_VERSION)
-
-AC_SUBST(DBUSMENUGTK_CFLAGS)
-AC_SUBST(DBUSMENUGTK_LIBS)
-
-PKG_CHECK_MODULES(DBUSMENUGTK3, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                                glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
-                                libxml-2.0 >= $XML_REQUIRED_VERSION)
-
-AC_SUBST(DBUSMENUGTK3_CFLAGS)
-AC_SUBST(DBUSMENUGTK3_LIBS)
+AC_ARG_WITH([gtk],
+  [AS_HELP_STRING([--with-gtk],
+    [Which version of gtk to use @<:@default=2@:>@])],
+  [],
+  [with_gtk=2])
+AS_IF([test "x$with_gtk" = x3],
+        [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                         libxml-2.0 >= $XML_REQUIRED_VERSION)
+         AC_SUBST(DBUSMENUGTK_CFLAGS)
+         AC_SUBST(DBUSMENUGTK_LIBS)
+         AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
+        ],
+      [test "x$with_gtk" = x2],
+        [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                         libxml-2.0 >= $XML_REQUIRED_VERSION)
+         AC_SUBST(DBUSMENUGTK_CFLAGS)
+         AC_SUBST(DBUSMENUGTK_LIBS)
+        ],
+      [AC_MSG_FAILURE([Value for --with-gtk was neither 2 nor 3])]
+)
+AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
 
 ###########################
 # Dependencies - Testing
@@ -155,5 +165,6 @@ libdbusmenu Configuration:
 
 	Prefix:                 $prefix
 	Massive Debugging:      $with_massivedebugging
+	GTK+ Version:           $with_gtk
 ])
 
