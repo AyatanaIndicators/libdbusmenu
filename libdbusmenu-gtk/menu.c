@@ -44,7 +44,6 @@ enum {
 };
 
 /* Private */
-typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
 struct _DbusmenuGtkMenuPrivate {
 	DbusmenuGtkClient * client;
 

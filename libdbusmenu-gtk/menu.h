@@ -42,6 +42,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_GTKMENU_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_GTKMENU_TYPE))
 #define DBUSMENU_GTKMENU_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuClass))
 
+typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
+
 /**
 	DbusmenuGtkMenuClass:
 	@parent_class: #GtkMenuClass
@@ -72,6 +74,9 @@ struct _DbusmenuGtkMenuClass {
 typedef struct _DbusmenuGtkMenu      DbusmenuGtkMenu;
 struct _DbusmenuGtkMenu {
 	GtkMenu parent;
+
+	/*< Private >*/
+	DbusmenuGtkMenuPrivate * priv;
 };
 
 GType dbusmenu_gtkmenu_get_type (void);

@@ -43,6 +43,8 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED  DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED
 
+typedef struct _DbusmenuGtkClientPrivate DbusmenuGtkClientPrivate;
+
 /**
 	DbusmenuGtkClientClass:
 	@parent_class: #GtkMenuClass
@@ -76,6 +78,9 @@ struct _DbusmenuGtkClientClass {
 typedef struct _DbusmenuGtkClient      DbusmenuGtkClient;
 struct _DbusmenuGtkClient {
 	DbusmenuClient parent;
+
+	/*< Private >*/
+	DbusmenuGtkClientPrivate * priv;
 };
 
 GType dbusmenu_gtkclient_get_type (void);
