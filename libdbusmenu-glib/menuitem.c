@@ -83,8 +83,7 @@ enum {
 
 #define PROP_ID_S  "id"
 
-#define DBUSMENU_MENUITEM_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemPrivate))
+#define DBUSMENU_MENUITEM_GET_PRIVATE(o)  (DBUSMENU_MENUITEM(o)->priv)
 
 /* Prototypes */
 static void dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass);
@@ -289,6 +288,8 @@ _g_value_free (gpointer data)
 static void
 dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemPrivate);
+
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(self);
 
 	priv->id = -1; 
