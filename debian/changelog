@@ -1,4 +1,4 @@
-libdbusmenu (0.3.16-0ubuntu1~ppa1) maverick; urgency=low
+libdbusmenu (0.3.16-0ubuntu1) maverick; urgency=low
 
   * New upstream release:
     * Don't use a typedef in the signal handler in the class to
@@ -12,13 +12,6 @@ libdbusmenu (0.3.15-0ubuntu1) UNRELEASED; urgency=low
     - fix Action for top-level dropdown menu item not activated (LP: #637692)
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 22 Sep 2010 14:55:44 +0200
-
-libdbusmenu (0.3.14-0ubuntu2~ppa1) maverick; urgency=low
-
-  * Upstream Merge
-    * Passing up About-to-show as an activate signal (LP: #637692)
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 21 Sep 2010 16:52:17 -0500
 
 libdbusmenu (0.3.14-0ubuntu1) maverick; urgency=low
 
