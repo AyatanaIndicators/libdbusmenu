@@ -126,6 +126,13 @@ typedef void (*dbusmenu_menuitem_buildxml_slot_t) (DbusmenuMenuitem * mi, GPtrAr
  * @handle_event: This function is to override how events are handled by subclasses.  Look at #dbusmenu_menuitem_handle_event for lots of good information.
  * @send_about_to_show: Virtual function that notifies server that the client is about to show a menu.
  * @show_to_user: Slot for #DbusmenuMenuitem::show-to-user.
+ *
+ * @reserved1: Reserved for future use.
+ * @reserved2: Reserved for future use.
+ * @reserved3: Reserved for future use.
+ * @reserved4: Reserved for future use.
+ * @reserved5: Reserved for future use.
+ * @reserved6: Reserved for future use.
  */
 typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
 struct _DbusmenuMenuitemClass
@@ -146,10 +153,14 @@ struct _DbusmenuMenuitemClass
 	void (*send_about_to_show) (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
-	/* void (*reserved1) (void); */
-	/* void (*reserved2) (void); */
-	/* void (*reserved3) (void); */
-	/* void (*reserved4) (void); -- realized, realloc when bumping lib version */
+
+	/*< Private >*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 GType dbusmenu_menuitem_get_type (void);

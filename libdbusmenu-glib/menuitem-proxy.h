@@ -48,11 +48,21 @@ typedef struct _DbusmenuMenuitemProxyClass DbusmenuMenuitemProxyClass;
 /**
 	DbusmenuMenuitemProxyClass:
 	@parent_class: The Class of #DbusmeneMenuitem
+	@reserved1: Reserved for future use.
+	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
 
 	Functions and signal slots for #DbusmenuMenuitemProxy.
 */
 struct _DbusmenuMenuitemProxyClass {
 	DbusmenuMenuitemClass parent_class;
+
+	/*< Private >*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
 };
 
 /**

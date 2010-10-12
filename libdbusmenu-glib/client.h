@@ -65,6 +65,10 @@ G_BEGIN_DECLS
 	@event_result: Slot for #DbusmenuClient::event-error.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
+	@reserved5: Reserved for future use.
+	@reserved6: Reserved for future use.
 
 	A simple class that takes all of the information from a
 	#DbusmenuServer over DBus and makes the same set of 
@@ -80,11 +84,13 @@ struct _DbusmenuClientClass {
 	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
 	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GValue * data, guint timestamp, GError * error);
 
-	/* Reserved for future use */
+	/*< Private >*/
 	void (*reserved1) (void);
 	void (*reserved2) (void);
-	/* void (*reserved3) (void); */
-	/* void (*reserved4) (void); */
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 /**
