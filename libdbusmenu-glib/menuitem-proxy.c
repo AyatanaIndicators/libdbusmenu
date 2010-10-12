@@ -48,8 +48,7 @@ enum {
 
 #define PROP_MENU_ITEM_S   "menu-item"
 
-#define DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_MENUITEM_PROXY, DbusmenuMenuitemProxyPrivate))
+#define DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(o) (DBUSMENU_MENUITEM_PROXY(o)->priv)
 
 static void dbusmenu_menuitem_proxy_class_init (DbusmenuMenuitemProxyClass *klass);
 static void dbusmenu_menuitem_proxy_init       (DbusmenuMenuitemProxy *self);
@@ -91,6 +90,8 @@ dbusmenu_menuitem_proxy_class_init (DbusmenuMenuitemProxyClass *klass)
 static void
 dbusmenu_menuitem_proxy_init (DbusmenuMenuitemProxy *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_TYPE_MENUITEM_PROXY, DbusmenuMenuitemProxyPrivate);
+
 	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(self);
 
 	priv->mi = NULL;

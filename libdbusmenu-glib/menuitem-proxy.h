@@ -76,7 +76,7 @@ struct _DbusmenuMenuitemProxy {
 	DbusmenuMenuitem parent;
 
 	/*< Private >*/
-	DbusmenuMenuitemPrivate * priv;
+	DbusmenuMenuitemProxyPrivate * priv;
 };
 
 GType dbusmenu_menuitem_proxy_get_type (void);
