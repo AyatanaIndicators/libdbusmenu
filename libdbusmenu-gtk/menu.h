@@ -49,16 +49,20 @@ G_BEGIN_DECLS
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
 	@reserved4: Reserved for future use.
+	@reserved5: Reserved for future use.
+	@reserved6: Reserved for future use.
 */
 typedef struct _DbusmenuGtkMenuClass DbusmenuGtkMenuClass;
 struct _DbusmenuGtkMenuClass {
 	GtkMenuClass parent_class;
 
-	/* Reserved */
+	/*< Private >*/
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
 	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 /**
