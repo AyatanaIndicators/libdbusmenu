@@ -53,6 +53,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
 #define DBUSMENU_SERVER_PROP_VERSION           "version"
 
+typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
+
 /**
 	DbusmenuServerClass:
 	@parent_class: #GObjectClass
@@ -99,6 +101,9 @@ struct _DbusmenuServerClass {
 typedef struct _DbusmenuServer      DbusmenuServer;
 struct _DbusmenuServer {
 	GObject parent;
+
+	/*< Private >*/
+	DbusmenuServerPrivate * priv;
 };
 
 GType               dbusmenu_server_get_type   (void);

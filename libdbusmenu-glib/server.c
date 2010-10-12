@@ -53,8 +53,6 @@ static void layout_update_signal (DbusmenuServer * server);
 #define DBUSMENU_VERSION_NUMBER  2
 
 /* Privates, I'll show you mine... */
-typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
-
 struct _DbusmenuServerPrivate
 {
 	DbusmenuMenuitem * root;

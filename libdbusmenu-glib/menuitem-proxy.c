@@ -32,7 +32,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "menuitem-proxy.h"
 
-typedef struct _DbusmenuMenuitemProxyPrivate DbusmenuMenuitemProxyPrivate;
 struct _DbusmenuMenuitemProxyPrivate {
 	DbusmenuMenuitem * mi;
 	gulong sig_property_changed;

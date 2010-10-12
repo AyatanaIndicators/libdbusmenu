@@ -56,6 +56,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
 #define DBUSMENU_CLIENT_TYPES_IMAGE        "standard"
 
+typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
+
 /**
 	DbusmenuClientClass:
 	@parent_class: #GObjectClass
@@ -103,6 +105,9 @@ struct _DbusmenuClientClass {
 typedef struct _DbusmenuClient      DbusmenuClient;
 struct _DbusmenuClient {
 	GObject parent;
+
+	/*< Private >*/
+	DbusmenuClientPrivate * priv;
 };
 
 typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);

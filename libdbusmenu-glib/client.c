@@ -62,7 +62,6 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 struct _DbusmenuClientPrivate
 {
 	DbusmenuMenuitem * root;

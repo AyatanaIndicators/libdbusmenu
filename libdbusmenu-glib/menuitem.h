@@ -78,6 +78,8 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
 
+typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
+
 /**
  * DbusmenuMenuitem:
  * 
@@ -92,6 +94,9 @@ typedef struct _DbusmenuMenuitem      DbusmenuMenuitem;
 struct _DbusmenuMenuitem
 {
 	GObject parent;
+
+	/*< Private >*/
+	DbusmenuMenuitemPrivate * priv;
 };
 
 /**

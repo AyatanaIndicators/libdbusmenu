@@ -42,8 +42,9 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_MENUITEM_PROXY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_MENUITEM_PROXY))
 #define DBUSMENU_MENUITEM_PROXY_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_MENUITEM_PROXY, DbusmenuMenuitemProxyClass))
 
-typedef struct _DbusmenuMenuitemProxy      DbusmenuMenuitemProxy;
-typedef struct _DbusmenuMenuitemProxyClass DbusmenuMenuitemProxyClass;
+typedef struct _DbusmenuMenuitemProxy        DbusmenuMenuitemProxy;
+typedef struct _DbusmenuMenuitemProxyClass   DbusmenuMenuitemProxyClass;
+typedef struct _DbusmenuMenuitemProxyPrivate DbusmenuMenuitemProxyPrivate;
 
 /**
 	DbusmenuMenuitemProxyClass:
@@ -73,6 +74,9 @@ struct _DbusmenuMenuitemProxyClass {
 */
 struct _DbusmenuMenuitemProxy {
 	DbusmenuMenuitem parent;
+
+	/*< Private >*/
+	DbusmenuMenuitemPrivate * priv;
 };
 
 GType dbusmenu_menuitem_proxy_get_type (void);

@@ -52,7 +52,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 	out of data that we have.  They can still be gotten using
 	accessor functions, but are protected appropriately.
 */
-typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
 struct _DbusmenuMenuitemPrivate
 {
 	gint id;
