@@ -20,6 +20,8 @@ libdbusmenu_glibinclude_HEADERS = \
 	client.h
 
 libdbusmenu_glib_la_SOURCES = \
+	dbus-menu.xml.h \
+	dbus-menu.xml.c \
 	menuitem.h \
 	menuitem.c \
 	menuitem-marshal.h \
@@ -52,13 +54,26 @@ libdbusmenu_glib_la_LIBADD = \
 pkgconfig_DATA = dbusmenu-glib.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
+%.xml.h: %.xml
+	echo "extern const char * $(subst -,_,$(subst .,_,$(basename $@)));" > $@
+
+%.xml.c: %.xml
+	echo "const char * $(subst -,_,$(subst .,_,$(basename $@))) = " > $@
+	sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
+	echo ";" >> $@
+
+
 BUILT_SOURCES = \
+	dbus-menu.xml.c \
+	dbus-menu.xml.h \
 	client-marshal.h \
 	client-marshal.c \
 	menuitem-marshal.h \
 	menuitem-marshal.c \
 	server-marshal.h \
 	server-marshal.c
+
+CLEANFILES += $(BUILT_SOURCES)
 
 client-marshal.h: $(srcdir)/client-marshal.list
 	glib-genmarshal --header \
