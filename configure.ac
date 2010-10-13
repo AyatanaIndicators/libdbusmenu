@@ -33,11 +33,9 @@ GNOME_DOC_INIT
 ###########################
 
 GLIB_REQUIRED_VERSION=2.18
-DBUS_REQUIRED_VERSION=0.76
 XML_REQUIRED_VERSION=2.6
 
 PKG_CHECK_MODULES(DBUSMENUGLIB, glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION)
 
 AC_SUBST(DBUSMENUGLIB_CFLAGS)
@@ -51,7 +49,6 @@ GTK_REQUIRED_VERSION=2.16
 
 PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                 glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION)
 
 AC_SUBST(DBUSMENUGTK_CFLAGS)
