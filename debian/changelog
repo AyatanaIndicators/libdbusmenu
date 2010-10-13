@@ -1,3 +1,10 @@
+libdbusmenu (0.4.0~dev-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Breaking ABI and getting reserved back
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 13 Oct 2010 12:41:39 -0500
+
 libdbusmenu (0.3.16-0ubuntu1) maverick; urgency=low
 
   * New upstream release:

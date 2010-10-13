@@ -62,7 +62,6 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 struct _DbusmenuClientPrivate
 {
 	DbusmenuMenuitem * root;
@@ -113,8 +112,7 @@ struct _event_data_t {
 };
 
 
-#define DBUSMENU_CLIENT_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate))
+#define DBUSMENU_CLIENT_GET_PRIVATE(o) (DBUSMENU_CLIENT(o)->priv)
 
 /* GObject Stuff */
 static void dbusmenu_client_class_init (DbusmenuClientClass *klass);
@@ -254,6 +252,8 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 static void
 dbusmenu_client_init (DbusmenuClient *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate);
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(self);
 
 	priv->root = NULL;
