@@ -53,8 +53,6 @@ static void layout_update_signal (DbusmenuServer * server);
 #define DBUSMENU_VERSION_NUMBER  2
 
 /* Privates, I'll show you mine... */
-typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
-
 struct _DbusmenuServerPrivate
 {
 	DbusmenuMenuitem * root;
@@ -63,8 +61,7 @@ struct _DbusmenuServerPrivate
 	guint layout_idle;
 };
 
-#define DBUSMENU_SERVER_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_SERVER, DbusmenuServerPrivate))
+#define DBUSMENU_SERVER_GET_PRIVATE(o) (DBUSMENU_SERVER(o)->priv)
 
 /* Signals */
 enum {
@@ -214,6 +211,8 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 static void
 dbusmenu_server_init (DbusmenuServer *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_TYPE_SERVER, DbusmenuServerPrivate);
+
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(self);
 
 	priv->root = NULL;

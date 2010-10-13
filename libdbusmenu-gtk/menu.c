@@ -44,7 +44,6 @@ enum {
 };
 
 /* Private */
-typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
 struct _DbusmenuGtkMenuPrivate {
 	DbusmenuGtkClient * client;
 
@@ -52,8 +51,7 @@ struct _DbusmenuGtkMenuPrivate {
 	gchar * dbus_name;
 };
 
-#define DBUSMENU_GTKMENU_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuPrivate))
+#define DBUSMENU_GTKMENU_GET_PRIVATE(o)  (DBUSMENU_GTKMENU(o)->priv)
 
 /* Prototypes */
 static void dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass);
@@ -110,6 +108,8 @@ menu_focus_cb(DbusmenuGtkMenu * menu, gpointer userdata)
 static void
 dbusmenu_gtkmenu_init (DbusmenuGtkMenu *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuPrivate);
+
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(self);
 
 	priv->client = NULL;
