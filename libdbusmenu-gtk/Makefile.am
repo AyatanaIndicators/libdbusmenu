@@ -14,7 +14,8 @@ lib_LTLIBRARIES = libdbusmenu-gtk.la
 endif
 
 EXTRA_DIST = \
-	dbusmenu-gtk$(VER).pc.in
+	dbusmenu-gtk.pc.in \
+	dbusmenu-gtk3.pc.in
 
 libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-gtk$(VER)/
 
