@@ -1,4 +1,4 @@
-libdbusmenu (0.4.0~dev-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.4.0~dev-0ubuntu1~ppa1) maverick; urgency=low
 
   * Upstream Merge
     * Breaking ABI and getting reserved back
@@ -7,7 +7,7 @@ libdbusmenu (0.4.0~dev-0ubuntu1~ppa1) UNRELEASED; urgency=low
     match .so bump.
   * Autogen
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 13 Oct 2010 12:48:17 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 13 Oct 2010 12:53:40 -0500
 
 libdbusmenu (0.3.16-0ubuntu1) maverick; urgency=low
 
