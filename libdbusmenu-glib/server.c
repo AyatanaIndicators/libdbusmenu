@@ -98,14 +98,22 @@ enum {
 };
 
 /* Prototype */
-static void dbusmenu_server_class_init (DbusmenuServerClass *class);
-static void dbusmenu_server_init       (DbusmenuServer *self);
-static void dbusmenu_server_dispose    (GObject *object);
-static void dbusmenu_server_finalize   (GObject *object);
-static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
-static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
-static void register_object (DbusmenuServer * server);
-static void bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data);
+static void       dbusmenu_server_class_init  (DbusmenuServerClass *class);
+static void       dbusmenu_server_init        (DbusmenuServer *self);
+static void       dbusmenu_server_dispose     (GObject *object);
+static void       dbusmenu_server_finalize    (GObject *object);
+static void       set_property                (GObject * obj,
+                                               guint id,
+                                               const GValue * value,
+                                               GParamSpec * pspec);
+static void       get_property                (GObject * obj,
+                                               guint id,
+                                               GValue * value,
+                                               GParamSpec * pspec);
+static void       register_object             (DbusmenuServer * server);
+static void       bus_got_cb                  (GObject * obj,
+                                               GAsyncResult * result,
+                                               gpointer user_data);
 static void       bus_method_call             (GDBusConnection * connection,
                                                const gchar * sender,
                                                const gchar * path,
@@ -121,12 +129,22 @@ static GVariant * bus_get_prop                (GDBusConnection * connection,
                                                const gchar * property,
                                                GError ** error,
                                                gpointer user_data);
-static void menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, DbusmenuServer * server);
-static void menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint pos, DbusmenuServer * server);
-static void menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server);
-static void menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data);
-static void menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data);
-static GQuark error_quark (void);
+static void       menuitem_property_changed   (DbusmenuMenuitem * mi,
+                                               gchar * property,
+                                               GValue * value,
+                                               DbusmenuServer * server);
+static void       menuitem_child_added        (DbusmenuMenuitem * parent,
+                                               DbusmenuMenuitem * child,
+                                               guint pos,
+                                               DbusmenuServer * server);
+static void       menuitem_child_removed      (DbusmenuMenuitem * parent,
+                                               DbusmenuMenuitem * child,
+                                               DbusmenuServer * server);
+static void       menuitem_signals_create     (DbusmenuMenuitem * mi,
+                                               gpointer data);
+static void       menuitem_signals_remove     (DbusmenuMenuitem * mi,
+                                               gpointer data);
+static GQuark     error_quark                 (void);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
