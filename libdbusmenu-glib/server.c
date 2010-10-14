@@ -42,11 +42,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
-static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
-/* DBus Helpers */
-static void _gvalue_array_append_int(GValueArray *array, gint i);
-static void _gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict);
 
 static void layout_update_signal (DbusmenuServer * server);
 
@@ -108,6 +104,7 @@ struct _method_table_t {
 enum {
 	METHOD_GET_LAYOUT = 0,
 	METHOD_GET_GROUP_PROPERTIES,
+	METHOD_GET_CHILDREN,
 	/* Counter, do not remove! */
 	METHOD_COUNT
 };
@@ -164,6 +161,9 @@ static void       bus_get_layout              (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 static void       bus_get_group_properties    (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
+static void       bus_get_children            (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 
@@ -299,6 +299,9 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 
 	dbusmenu_method_table[METHOD_GET_GROUP_PROPERTIES].interned_name = g_intern_static_string("GetGroupProperties");
 	dbusmenu_method_table[METHOD_GET_GROUP_PROPERTIES].func          = bus_get_group_properties;
+
+	dbusmenu_method_table[METHOD_GET_CHILDREN].interned_name = g_intern_static_string("GetChildren");
+	dbusmenu_method_table[METHOD_GET_CHILDREN].func          = bus_get_children;
 
 	return;
 }
@@ -820,74 +823,50 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 	return;
 }
 
-/* Allocate a value on the stack for the int and append
-   it to the array. */
-static void
-_gvalue_array_append_int(GValueArray *array, gint i)
-{
-	GValue value = {0};
-
-	g_value_init(&value, G_TYPE_INT);
-	g_value_set_int(&value, i);
-	g_value_array_append(array, &value);
-	g_value_unset(&value);
-}
-
-/* Allocate a value on the stack for the hashtable and append
-   it to the array. */
-static void
-_gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict)
-{
-	GValue value = {0};
-
-	g_value_init(&value, dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE));
-	g_value_set_boxed(&value, dict);
-	g_value_array_append(array, &value);
-	g_value_unset(&value);
-}
-
+/* Turn a menuitem into an variant and attach it to the
+   VariantBuilder we passed in */
 static void
 serialize_menuitem(gpointer data, gpointer user_data)
 {
 	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
-	GPtrArray * output = (GPtrArray *)(user_data);
+	GVariantBuilder * builder = (GVariantBuilder *)(user_data);
 
 	gint id = dbusmenu_menuitem_get_id(mi);
-	GHashTable * dict = dbusmenu_menuitem_properties_copy(mi);
+	GVariant * props = dbusmenu_menuitem_properties_variant(mi);
 
-	GValueArray * item = g_value_array_new(2);
-	_gvalue_array_append_int(item, id);
-	_gvalue_array_append_hashtable(item, dict);
-
-	g_ptr_array_add(output, item);
-
-	g_hash_table_unref(dict);
+	g_variant_builder_add(builder, "ia{sv}", id, props);
 
 	return;
 }
 
-static gboolean
-_dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error)
+/* Gets the children and their properties of the ID that is
+   passed into the function */
+static void
+bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
-		if (error != NULL) {
-			g_set_error(error,
-			            error_quark(),
-			            INVALID_MENUITEM_ID,
-			            "The ID supplied %d does not refer to a menu item we have",
-			            id);
-		}
-		return FALSE;
+		g_dbus_method_invocation_return_error(invocation,
+			                                  error_quark(),
+			                                  INVALID_MENUITEM_ID,
+			                                  "The ID supplied %d does not refer to a menu item we have",
+			                                  id);
+		return;
 	}
 
-	*output = g_ptr_array_new();
-	GList * children = dbusmenu_menuitem_get_children(mi);
-	g_list_foreach(children, serialize_menuitem, *output);
+	GVariantBuilder * builder = g_variant_builder_new(G_VARIANT_TYPE("a(ia{sv})"));
 
-	return TRUE;
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	g_list_foreach(children, serialize_menuitem, builder);
+
+	GVariant * ret = g_variant_builder_end(builder);
+	g_variant_builder_unref(builder);
+
+	g_dbus_method_invocation_return_value(invocation, ret);
+	return;
 }
 
 /* Structure for holding the event data for the idle function
