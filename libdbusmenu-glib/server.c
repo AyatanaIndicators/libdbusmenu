@@ -30,9 +30,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include <gio/gio.h>
+
 #include "menuitem-private.h"
 #include "server.h"
 #include "server-marshal.h"
+
+#include "dbus-menu.xml.h"
 
 /* DBus Prototypes */
 static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error);
@@ -45,8 +49,6 @@ static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id
 /* DBus Helpers */
 static void _gvalue_array_append_int(GValueArray *array, gint i);
 static void _gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict);
-
-#include "dbusmenu-server.h"
 
 static void layout_update_signal (DbusmenuServer * server);
 
@@ -90,6 +92,10 @@ enum {
 	NOT_IMPLEMENTED,
 	LAST_ERROR
 };
+
+/* Globals */
+static GDBusNodeInfo *        dbusmenu_node_info = NULL;
+static GDBusInterfaceInfo *   dbusmenu_interface_info = NULL;
 
 /* Prototype */
 static void dbusmenu_server_class_init (DbusmenuServerClass *class);
@@ -203,7 +209,23 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                              DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER,
 	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
-	dbus_g_object_type_install_info(DBUSMENU_TYPE_SERVER, &dbus_glib__dbusmenu_server_object_info);
+	if (dbusmenu_node_info == NULL) {
+		GError * error = NULL;
+
+		dbusmenu_node_info = g_dbus_node_info_new_for_xml(dbus_menu_xml, &error);
+		if (error != NULL) {
+			g_error("Unable to parse DBusmenu Interface description: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (dbusmenu_interface_info == NULL) {
+		dbusmenu_interface_info = g_dbus_node_info_lookup_interface(dbusmenu_node_info, "org.ayatana.dbusmenu");
+
+		if (dbusmenu_interface_info == NULL) {
+			g_error("Unable to find interface 'org.ayatana.dbusmenu'");
+		}
+	}
 
 	return;
 }
