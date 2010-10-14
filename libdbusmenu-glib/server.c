@@ -41,7 +41,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 /* DBus Prototypes */
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
-static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_get_children (DbusmenuServer * server, gint id, GPtrArray * properties, GPtrArray ** output, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
@@ -108,6 +107,7 @@ struct _method_table_t {
 
 enum {
 	METHOD_GET_LAYOUT = 0,
+	METHOD_GET_GROUP_PROPERTIES,
 	/* Counter, do not remove! */
 	METHOD_COUNT
 };
@@ -161,6 +161,9 @@ static void       menuitem_signals_remove     (DbusmenuMenuitem * mi,
                                                gpointer data);
 static GQuark     error_quark                 (void);
 static void       bus_get_layout              (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
+static void       bus_get_group_properties    (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 
@@ -293,6 +296,9 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	/* Building our Method table :( */
 	dbusmenu_method_table[METHOD_GET_LAYOUT].interned_name = g_intern_static_string("GetLayout");
 	dbusmenu_method_table[METHOD_GET_LAYOUT].func          = bus_get_layout;
+
+	dbusmenu_method_table[METHOD_GET_GROUP_PROPERTIES].interned_name = g_intern_static_string("GetGroupProperties");
+	dbusmenu_method_table[METHOD_GET_GROUP_PROPERTIES].func          = bus_get_group_properties;
 
 	return;
 }
@@ -789,36 +795,29 @@ _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** prop
 
 /* Handles getting a bunch of properties from a variety of menu items
    to make one mega dbus message */
-static gboolean
-_dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error)
+static void
+bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
-	/* Build an initial pointer array */
-	*values = g_ptr_array_new();
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	GVariantIter * ids = NULL;
+	g_variant_get_child(params, 0, "ai", &ids);
 
-	/* Go through each ID to get that ID's properties */
-	int idcnt;
-	for (idcnt = 0; idcnt < ids->len; idcnt++) {
-		GHashTable * idprops = NULL;
-		GError * error = NULL;
-		gint id = g_array_index(ids, int, idcnt);
+	GVariantBuilder * builder = g_variant_builder_new(G_VARIANT_TYPE("a(ia{sv})"));
 
-		/* Get the properties for this ID the old fashioned way. */
-		if (!_dbusmenu_server_get_properties(server, id, properties, &idprops, &error)) {
-			g_warning("Error getting the properties from ID %d: %s", id, error->message);
-			g_error_free(error);
-			error = NULL;
-			continue;
-		}
+	GVariant * id;
+	while ((id = g_variant_iter_next_value(ids)) != NULL) {
+		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, g_variant_get_int32(id));
+		if (mi == NULL) continue;
 
-		GValueArray * valarray = g_value_array_new(2);
-
-		_gvalue_array_append_int(valarray, id);
-		_gvalue_array_append_hashtable(valarray, idprops);
-
-		g_ptr_array_add(*values, valarray);
+		g_variant_builder_add(builder, "ia{sv}", g_variant_get_int32(id), dbusmenu_menuitem_properties_variant(mi));
 	}
 
-	return TRUE;
+	GVariant * ret = g_variant_builder_end(builder);
+	g_variant_builder_unref(builder);
+
+	g_dbus_method_invocation_return_value(invocation, ret);
+
+	return;
 }
 
 /* Allocate a value on the stack for the int and append
