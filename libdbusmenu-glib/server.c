@@ -39,7 +39,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "dbus-menu.xml.h"
 
 /* DBus Prototypes */
-static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
@@ -105,6 +104,7 @@ enum {
 	METHOD_GET_LAYOUT = 0,
 	METHOD_GET_GROUP_PROPERTIES,
 	METHOD_GET_CHILDREN,
+	METHOD_GET_PROPERTY,
 	/* Counter, do not remove! */
 	METHOD_COUNT
 };
@@ -164,6 +164,9 @@ static void       bus_get_group_properties    (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 static void       bus_get_children            (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
+static void       bus_get_property            (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 
@@ -302,6 +305,9 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 
 	dbusmenu_method_table[METHOD_GET_CHILDREN].interned_name = g_intern_static_string("GetChildren");
 	dbusmenu_method_table[METHOD_GET_CHILDREN].func          = bus_get_children;
+
+	dbusmenu_method_table[METHOD_GET_PROPERTY].interned_name = g_intern_static_string("GetProperty");
+	dbusmenu_method_table[METHOD_GET_PROPERTY].func          = bus_get_property;
 
 	return;
 }
@@ -729,49 +735,48 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	return;
 }
 
-static gboolean 
-_dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error)
+/* Get a single property off of a single menuitem */
+static void
+bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	
+	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
+	const gchar * property = g_variant_get_string(g_variant_get_child_value(params, 1), NULL);
+
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
-		if (error != NULL) {
-			g_set_error(error,
+		g_dbus_method_invocation_return_error(invocation,
 			            error_quark(),
 			            INVALID_MENUITEM_ID,
 			            "The ID supplied %d does not refer to a menu item we have",
 			            id);
-		}
-		return FALSE;
+		return;
 	}
 
-	const gchar * prop = dbusmenu_menuitem_property_get(mi, property);
+	const GValue * prop = dbusmenu_menuitem_property_get_value(mi, property);
 	if (prop == NULL) {
-		if (error != NULL) {
-			g_set_error(error,
+		g_dbus_method_invocation_return_error(invocation,
 			            error_quark(),
 			            INVALID_PROPERTY_NAME,
 			            "The property '%s' does not exist on menuitem with ID of %d",
 			            property,
 			            id);
-		}
-		return FALSE;
+		return;
 	}
 
-	if (value == NULL) {
-		if (error != NULL) {
-			g_set_error(error,
-			            error_quark(),
-			            UNKNOWN_DBUS_ERROR,
-			            "Uhm, yeah.  We didn't get anywhere to put the value, that's really weird.  Seems impossible really.");
-		}
-		return FALSE;
+	GValue vval = {0};
+	g_value_init(&vval, G_TYPE_VARIANT);
+	
+	if (!g_value_transform(prop, &vval)) {
+		g_warning("Unable to convert property '%s' value from type '%s' to variant", property, G_VALUE_TYPE_NAME(prop));
 	}
 
-	*value = g_strdup(prop);
+	g_dbus_method_invocation_return_value(invocation, g_value_get_variant(&vval));
+	g_value_unset(&vval);
 
-	return TRUE;
+	return;
 }
 
 static gboolean
