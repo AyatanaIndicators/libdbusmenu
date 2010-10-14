@@ -98,8 +98,9 @@ enum {
 };
 
 /* Globals */
-static GDBusNodeInfo *        dbusmenu_node_info = NULL;
-static GDBusInterfaceInfo *   dbusmenu_interface_info = NULL;
+static GDBusNodeInfo *            dbusmenu_node_info = NULL;
+static GDBusInterfaceInfo *       dbusmenu_interface_info = NULL;
+static const GDBusInterfaceVTable dbusmenu_interface_table = {0};
 
 /* Prototype */
 static void dbusmenu_server_class_init (DbusmenuServerClass *class);
@@ -108,6 +109,8 @@ static void dbusmenu_server_dispose    (GObject *object);
 static void dbusmenu_server_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
+static void register_object (DbusmenuServer * server);
+static void bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data);
 static void menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, DbusmenuServer * server);
 static void menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint pos, DbusmenuServer * server);
 static void menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server);
@@ -302,21 +305,21 @@ static void
 set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(obj);
-	GError * error = NULL;
 
 	switch (id) {
 	case PROP_DBUS_OBJECT:
 		g_return_if_fail(priv->dbusobject == NULL);
 		priv->dbusobject = g_value_dup_string(value);
-		DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 
-		if (connection == NULL || error != NULL) {
-			g_warning("Unable to get session bus: %s", error == NULL ? "No message" : error->message);
-			if (error != NULL) { g_error_free(error); }
+		if (priv->bus == NULL) {
+			if (priv->bus_lookup == NULL) {
+				priv->bus_lookup = g_cancellable_new();
+				g_return_if_fail(priv->bus_lookup != NULL);
+			}
+
+			g_bus_get(G_BUS_TYPE_SESSION, priv->bus_lookup, bus_got_cb, obj);
 		} else {
-			dbus_g_connection_register_g_object(connection,
-			                                    priv->dbusobject,
-			                                    obj);
+			register_object(DBUSMENU_SERVER(obj));
 		}
 		break;
 	case PROP_ROOT_NODE:
@@ -374,6 +377,70 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		g_return_if_reached();
 		break;
 	}
+
+	return;
+}
+
+/* Register the object on the dbus bus */
+static void
+register_object (DbusmenuServer * server)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	/* Object info */
+	g_return_if_fail(priv->bus != NULL);
+	g_return_if_fail(priv->dbusobject != NULL);
+
+	/* Class info */
+	g_return_if_fail(dbusmenu_node_info != NULL);
+	g_return_if_fail(dbusmenu_interface_info != NULL);
+
+	/* We might block on this in the future, but it'd be nice if
+	   we could change the object path.  Thinking about it... */
+	if (priv->dbus_registration != 0) {
+		g_dbus_connection_unregister_object(priv->bus, priv->dbus_registration);
+		priv->dbus_registration = 0;
+	}
+
+	GError * error = NULL;
+	priv->dbus_registration = g_dbus_connection_register_object(priv->bus,
+	                                                            priv->dbusobject,
+	                                                            dbusmenu_interface_info,
+	                                                            &dbusmenu_interface_table,
+	                                                            server,
+	                                                            NULL,
+	                                                            &error);
+
+	if (error != NULL) {
+		g_warning("Unable to register object on bus: %s", error->message);
+		g_error_free(error);
+	}
+
+	return;
+}
+
+/* Callback from asking GIO to get us the session bus */
+static void
+bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data)
+{
+	GError * error = NULL;
+
+	GDBusConnection * bus = g_bus_get_finish(result, &error);
+
+	if (error != NULL) {
+		g_warning("Unable to get session bus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* Note: We're not using the user_data before we check for
+	   the error so that in the cancelled case at destruction of
+	   the object we don't end up with an invalid object. */
+
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(user_data);
+	priv->bus = bus;
+
+	register_object(DBUSMENU_SERVER(user_data));
 
 	return;
 }
