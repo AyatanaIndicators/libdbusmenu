@@ -106,6 +106,21 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 static void register_object (DbusmenuServer * server);
 static void bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data);
+static void       bus_method_call             (GDBusConnection * connection,
+                                               const gchar * sender,
+                                               const gchar * path,
+                                               const gchar * interface,
+                                               const gchar * method,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation,
+                                               gpointer user_data);
+static GVariant * bus_get_prop                (GDBusConnection * connection,
+                                               const gchar * sender,
+                                               const gchar * path,
+                                               const gchar * interface,
+                                               const gchar * property,
+                                               GError ** error,
+                                               gpointer user_data);
 static void menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, DbusmenuServer * server);
 static void menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint pos, DbusmenuServer * server);
 static void menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server);
@@ -116,7 +131,11 @@ static GQuark error_quark (void);
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
 static GDBusInterfaceInfo *       dbusmenu_interface_info = NULL;
-static const GDBusInterfaceVTable dbusmenu_interface_table = {0};
+static const GDBusInterfaceVTable dbusmenu_interface_table = {
+	method_call:    bus_method_call,
+	get_property:   bus_get_prop,
+	set_property:   NULL /* No properties that can be set */
+};
 
 G_DEFINE_TYPE (DbusmenuServer, dbusmenu_server, G_TYPE_OBJECT);
 
@@ -443,6 +462,24 @@ bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data)
 	register_object(DBUSMENU_SERVER(user_data));
 
 	return;
+}
+
+/* Function for the GDBus vtable to handle all method calls and dish
+   them out the appropriate functions */
+static void
+bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * method, GVariant * params, GDBusMethodInvocation * invocation, gpointer user_data)
+{
+
+	return;
+}
+
+/* For the GDBus vtable but we only have one property so it's pretty
+   simple. */
+static GVariant *
+bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data)
+{
+
+	return NULL;
 }
 
 /* Handle actually signalling in the idle loop.  This way we collect all
