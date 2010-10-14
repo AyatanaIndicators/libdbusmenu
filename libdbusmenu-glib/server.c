@@ -39,7 +39,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "dbus-menu.xml.h"
 
 /* DBus Prototypes */
-static gboolean _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error);
 static gboolean _dbusmenu_server_get_property (DbusmenuServer * server, gint id, gchar * property, gchar ** value, GError ** error);
 static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
 static gboolean _dbusmenu_server_get_group_properties (DbusmenuServer * server, GArray * ids, gchar ** properties, GPtrArray ** values, GError ** error);
@@ -161,6 +160,9 @@ static void       menuitem_signals_create     (DbusmenuMenuitem * mi,
 static void       menuitem_signals_remove     (DbusmenuMenuitem * mi,
                                                gpointer data);
 static GQuark     error_quark                 (void);
+static void       bus_get_layout              (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
@@ -290,7 +292,7 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 
 	/* Building our Method table :( */
 	dbusmenu_method_table[METHOD_GET_LAYOUT].interned_name = g_intern_static_string("GetLayout");
-	dbusmenu_method_table[METHOD_GET_LAYOUT].func          = NULL;
+	dbusmenu_method_table[METHOD_GET_LAYOUT].func          = bus_get_layout;
 
 	return;
 }
@@ -670,12 +672,15 @@ error_quark (void)
 }
 
 /* DBus interface */
-static gboolean
-_dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revision, gchar ** layout, GError ** error)
+static void
+bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
-	*revision = priv->layout_revision;
+	gint parent = 0;
+	g_variant_get(params, "(i)", &parent);
+
+	guint revision = priv->layout_revision;
 	GPtrArray * xmlarray = g_ptr_array_new();
 
 	if (parent == 0) {
@@ -688,26 +693,31 @@ _dbusmenu_server_get_layout (DbusmenuServer * server, gint parent, guint * revis
 	} else {
 		DbusmenuMenuitem * item = dbusmenu_menuitem_find_id(priv->root, parent);
 		if (item == NULL) {
-			if (error != NULL) {
-				g_set_error(error,
-				            error_quark(),
-				            INVALID_MENUITEM_ID,
-				            "The ID supplied %d does not refer to a menu item we have",
-				            parent);
-			}
-			return FALSE;
+			g_dbus_method_invocation_return_error(invocation,
+				                                  error_quark(),
+				                                  INVALID_MENUITEM_ID,
+				                                  "The ID supplied %d does not refer to a menu item we have",
+				                                  parent);
+			return;
 		}
 		dbusmenu_menuitem_buildxml(item, xmlarray);
 	}
 	g_ptr_array_add(xmlarray, NULL);
 
 	/* build string */
-	*layout = g_strjoinv("", (gchar **)xmlarray->pdata);
+	gchar * layout = g_strjoinv("", (gchar **)xmlarray->pdata);
 
 	g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
 	g_ptr_array_free(xmlarray, TRUE);
 
-	return TRUE;
+	g_dbus_method_invocation_return_value(invocation,
+	                                      g_variant_new("(us)",
+	                                                    revision,
+	                                                    layout));
+
+	g_free(layout);
+
+	return;
 }
 
 static gboolean 
