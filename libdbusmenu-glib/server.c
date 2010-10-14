@@ -97,11 +97,6 @@ enum {
 	LAST_ERROR
 };
 
-/* Globals */
-static GDBusNodeInfo *            dbusmenu_node_info = NULL;
-static GDBusInterfaceInfo *       dbusmenu_interface_info = NULL;
-static const GDBusInterfaceVTable dbusmenu_interface_table = {0};
-
 /* Prototype */
 static void dbusmenu_server_class_init (DbusmenuServerClass *class);
 static void dbusmenu_server_init       (DbusmenuServer *self);
@@ -117,6 +112,11 @@ static void menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem 
 static void menuitem_signals_create (DbusmenuMenuitem * mi, gpointer data);
 static void menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data);
 static GQuark error_quark (void);
+
+/* Globals */
+static GDBusNodeInfo *            dbusmenu_node_info = NULL;
+static GDBusInterfaceInfo *       dbusmenu_interface_info = NULL;
+static const GDBusInterfaceVTable dbusmenu_interface_table = {0};
 
 G_DEFINE_TYPE (DbusmenuServer, dbusmenu_server, G_TYPE_OBJECT);
 
