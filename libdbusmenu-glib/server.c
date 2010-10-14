@@ -497,8 +497,14 @@ bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar
 static GVariant *
 bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(user_data);
 
-	return NULL;
+	/* None of these should happen */
+	g_return_val_if_fail(g_strcmp0(interface, DBUSMENU_INTERFACE) == 0, NULL);
+	g_return_val_if_fail(g_strcmp0(path, priv->dbusobject) == 0, NULL);
+	g_return_val_if_fail(g_strcmp0(property, "version") == 0, NULL);
+
+	return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
 }
 
 /* Handle actually signalling in the idle loop.  This way we collect all
