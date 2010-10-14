@@ -194,3 +194,6 @@ libdbusmenu-glib/libdbusmenu_glib_la-client-marshal.lo
 tests/test-glib-events
 tests/test-glib-events-client
 tests/test-glib-events-server
+libdbusmenu-glib/dbus-menu.xml.c
+libdbusmenu-glib/dbus-menu.xml.h
+libdbusmenu-glib/libdbusmenu_glib_la-dbus-menu.xml.lo
