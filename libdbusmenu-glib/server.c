@@ -61,6 +61,10 @@ struct _DbusmenuServerPrivate
 	gchar * dbusobject;
 	gint layout_revision;
 	guint layout_idle;
+
+	GDBusConnection * bus;
+	GCancellable * bus_lookup;
+	guint dbus_registration;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) (DBUSMENU_SERVER(o)->priv)
@@ -241,6 +245,9 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->dbusobject = NULL;
 	priv->layout_revision = 1;
 	priv->layout_idle = 0;
+	priv->bus = NULL;
+	priv->bus_lookup = NULL;
+	priv->dbus_registration = 0;
 
 	return;
 }
@@ -257,6 +264,27 @@ dbusmenu_server_dispose (GObject *object)
 	if (priv->root != NULL) {
 		dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, object);
 		g_object_unref(priv->root);
+	}
+
+	if (priv->dbus_registration != 0) {
+		g_dbus_connection_unregister_object(priv->bus, priv->dbus_registration);
+		priv->dbus_registration = 0;
+	}
+
+	if (priv->bus != NULL) {
+		g_object_unref(priv->bus);
+		priv->bus = NULL;
+	}
+
+	if (priv->bus_lookup != NULL) {
+		if (!g_cancellable_is_cancelled(priv->bus_lookup)) {
+			/* Note, this may case the async function to run at
+			   some point in the future.  That's okay, it'll get an
+			   error, but just FYI */
+			g_cancellable_cancel(priv->bus_lookup);
+		}
+		g_object_unref(priv->bus_lookup);
+		priv->bus_lookup = NULL;
 	}
 
 	G_OBJECT_CLASS (dbusmenu_server_parent_class)->dispose (object);
