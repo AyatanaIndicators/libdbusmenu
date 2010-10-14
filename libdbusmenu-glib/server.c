@@ -508,7 +508,27 @@ bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data)
 static void
 bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * method, GVariant * params, GDBusMethodInvocation * invocation, gpointer user_data)
 {
+	int i;
+	const gchar * interned_method = g_intern_string(method);
 
+	for (i = 0; i < METHOD_COUNT; i++) {
+		if (dbusmenu_method_table[i].interned_name == interned_method) {
+			if (dbusmenu_method_table[i].func != NULL) {
+				return dbusmenu_method_table[i].func(DBUSMENU_SERVER(user_data), params, invocation);
+			} else {
+				/* If we have a null function we're responding but nothing else. */
+				g_dbus_method_invocation_return_value(invocation, NULL);
+				return;
+			}
+		}
+	}
+
+	/* We're here because there's an error */
+	g_dbus_method_invocation_return_error(invocation,
+	                                      error_quark(),
+	                                      NOT_IMPLEMENTED,
+	                                      "Unable to find method '%s'",
+	                                      method);
 	return;
 }
 
