@@ -52,7 +52,8 @@ static void _gvalue_array_append_hashtable(GValueArray *array, GHashTable * dict
 
 static void layout_update_signal (DbusmenuServer * server);
 
-#define DBUSMENU_VERSION_NUMBER  2
+#define DBUSMENU_VERSION_NUMBER    2
+#define DBUSMENU_INTERFACE         "org.ayatana.dbusmenu"
 
 /* Privates, I'll show you mine... */
 struct _DbusmenuServerPrivate
@@ -264,10 +265,10 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	}
 
 	if (dbusmenu_interface_info == NULL) {
-		dbusmenu_interface_info = g_dbus_node_info_lookup_interface(dbusmenu_node_info, "org.ayatana.dbusmenu");
+		dbusmenu_interface_info = g_dbus_node_info_lookup_interface(dbusmenu_node_info, DBUSMENU_INTERFACE);
 
 		if (dbusmenu_interface_info == NULL) {
-			g_error("Unable to find interface 'org.ayatana.dbusmenu'");
+			g_error("Unable to find interface '" DBUSMENU_INTERFACE "'");
 		}
 	}
 
