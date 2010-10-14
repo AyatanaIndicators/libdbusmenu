@@ -1220,6 +1220,50 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 	return ret;
 }
 
+/* Looks at each value in the hashtable and tries to convert it
+   into a variant and add it to our variant builder */
+static void
+variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
+{
+	GValue vval = {0};
+	g_value_init(&vval, G_TYPE_VARIANT);
+
+	if (!g_value_transform((GValue *)in_value, &vval)) {
+		g_warning("Unable to convert property '%s' of type '%s'", (gchar *)in_key, G_VALUE_TYPE_NAME(in_value));
+		return;
+	}
+
+	g_variant_builder_add((GVariantBuilder *)user_data, "{sv}", in_key, g_value_get_variant(&vval));
+	g_value_unset(&vval);
+
+	return;
+}
+
+/**
+	dbusmenu_menuitem_properties_variant:
+	@mi: #DbusmenuMenuitem to get properties from
+
+	Grabs the properties of the menuitem as a GVariant with the
+	type "a{sv}".
+
+	Return Value: A GVariant of type "a{sv}" or NULL on error.
+*/
+GVariant *
+dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	GVariantBuilder * builder = g_variant_builder_new(G_VARIANT_TYPE("a{sv}"));
+
+	g_hash_table_foreach(priv->properties, variant_helper, builder);
+
+	GVariant * final_variant = g_variant_builder_end(builder);
+	g_variant_builder_unref(builder);
+	return final_variant;
+}
+
 /**
 	dbusmenu_menuitem_set_root:
 	@mi: #DbusmenuMenuitem to set whether it's root

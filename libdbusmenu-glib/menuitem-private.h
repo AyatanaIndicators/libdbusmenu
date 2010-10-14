@@ -36,6 +36,7 @@ G_BEGIN_DECLS
 void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
 gboolean dbusmenu_menuitem_realized (DbusmenuMenuitem * mi);
 void dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi);
+GVariant * dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi);
 
 G_END_DECLS
 
