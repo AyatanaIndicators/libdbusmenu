@@ -98,6 +98,21 @@ enum {
 	LAST_ERROR
 };
 
+/* Method Table */
+typedef void (*MethodTableFunc) (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation);
+
+typedef struct _method_table_t method_table_t;
+struct _method_table_t {
+	const gchar * interned_name;
+	MethodTableFunc func;
+};
+
+enum {
+	METHOD_GET_LAYOUT = 0,
+	/* Counter, do not remove! */
+	METHOD_COUNT
+};
+
 /* Prototype */
 static void       dbusmenu_server_class_init  (DbusmenuServerClass *class);
 static void       dbusmenu_server_init        (DbusmenuServer *self);
@@ -155,6 +170,7 @@ static const GDBusInterfaceVTable dbusmenu_interface_table = {
 	get_property:   bus_get_prop,
 	set_property:   NULL /* No properties that can be set */
 };
+static method_table_t             dbusmenu_method_table[METHOD_COUNT];
 
 G_DEFINE_TYPE (DbusmenuServer, dbusmenu_server, G_TYPE_OBJECT);
 
@@ -271,6 +287,10 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 			g_error("Unable to find interface '" DBUSMENU_INTERFACE "'");
 		}
 	}
+
+	/* Building our Method table :( */
+	dbusmenu_method_table[METHOD_GET_LAYOUT].interned_name = g_intern_static_string("GetLayout");
+	dbusmenu_method_table[METHOD_GET_LAYOUT].func          = NULL;
 
 	return;
 }
