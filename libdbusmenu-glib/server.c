@@ -39,7 +39,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "dbus-menu.xml.h"
 
 /* DBus Prototypes */
-static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
 
 static void layout_update_signal (DbusmenuServer * server);
@@ -105,6 +104,7 @@ enum {
 	METHOD_GET_CHILDREN,
 	METHOD_GET_PROPERTY,
 	METHOD_GET_PROPERTIES,
+	METHOD_EVENT,
 	/* Counter, do not remove! */
 	METHOD_COUNT
 };
@@ -170,6 +170,9 @@ static void       bus_get_property            (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 static void       bus_get_properties          (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
+static void       bus_event                   (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 
@@ -314,6 +317,9 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 
 	dbusmenu_method_table[METHOD_GET_PROPERTIES].interned_name = g_intern_static_string("GetProperties");
 	dbusmenu_method_table[METHOD_GET_PROPERTIES].func          = bus_get_properties;
+
+	dbusmenu_method_table[METHOD_EVENT].interned_name = g_intern_static_string("Event");
+	dbusmenu_method_table[METHOD_EVENT].func          = bus_event;
 
 	return;
 }
@@ -910,34 +916,37 @@ event_local_handler (gpointer user_data)
 	return FALSE;
 }
 
-/* Handles the even coming off of DBus */
-static gboolean
-_dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error)
+/* Handles the events coming off of DBus */
+static void
+bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
-		if (error != NULL) {
-			g_set_error(error,
-			            error_quark(),
-			            INVALID_MENUITEM_ID,
-			            "The ID supplied %d does not refer to a menu item we have",
-			            id);
-		}
-		return FALSE;
+		g_dbus_method_invocation_return_error(invocation,
+			                                  error_quark(),
+			                                  INVALID_MENUITEM_ID,
+			                                  "The ID supplied %d does not refer to a menu item we have",
+			                                  id);
+		return;
 	}
 
 	idle_event_t * event_data = g_new0(idle_event_t, 1);
 	event_data->mi = mi;
 	g_object_ref(event_data->mi);
-	event_data->eventid = g_strdup(eventid);
-	event_data->timestamp = timestamp;
-	g_value_init(&(event_data->data), G_VALUE_TYPE(data));
-	g_value_copy(data, &(event_data->data));
+	event_data->eventid = g_strdup(g_variant_get_string(g_variant_get_child_value(params, 1), NULL));
+	event_data->timestamp = g_variant_get_uint32(g_variant_get_child_value(params, 3));
+
+	/* TODO: Need to figure out converting a variant to a value */
+	g_value_init(&(event_data->data), G_TYPE_INT);
+	g_value_set_int(&(event_data->data), 0);
 
 	g_timeout_add(0, event_local_handler, event_data);
-	return TRUE;
+
+	g_dbus_method_invocation_return_value(invocation, NULL);
+	return;
 }
 
 /* Recieve the About To Show function.  Pass it to our menu item. */
