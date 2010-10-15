@@ -39,7 +39,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "dbus-menu.xml.h"
 
 /* DBus Prototypes */
-static gboolean _dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error);
 static gboolean _dbusmenu_server_event (DbusmenuServer * server, gint id, gchar * eventid, GValue * data, guint timestamp, GError ** error);
 static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
 
@@ -105,6 +104,7 @@ enum {
 	METHOD_GET_GROUP_PROPERTIES,
 	METHOD_GET_CHILDREN,
 	METHOD_GET_PROPERTY,
+	METHOD_GET_PROPERTIES,
 	/* Counter, do not remove! */
 	METHOD_COUNT
 };
@@ -167,6 +167,9 @@ static void       bus_get_children            (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 static void       bus_get_property            (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
+static void       bus_get_properties          (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 
@@ -308,6 +311,9 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 
 	dbusmenu_method_table[METHOD_GET_PROPERTY].interned_name = g_intern_static_string("GetProperty");
 	dbusmenu_method_table[METHOD_GET_PROPERTY].func          = bus_get_property;
+
+	dbusmenu_method_table[METHOD_GET_PROPERTIES].interned_name = g_intern_static_string("GetProperties");
+	dbusmenu_method_table[METHOD_GET_PROPERTIES].func          = bus_get_properties;
 
 	return;
 }
@@ -779,26 +785,30 @@ bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 	return;
 }
 
-static gboolean
-_dbusmenu_server_get_properties (DbusmenuServer * server, gint id, gchar ** properties, GHashTable ** dict, GError ** error)
+/* Get some properties off of a single menuitem */
+static void
+bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	
+	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
+
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
-		if (error != NULL) {
-			g_set_error(error,
+		g_dbus_method_invocation_return_error(invocation,
 			            error_quark(),
 			            INVALID_MENUITEM_ID,
 			            "The ID supplied %d does not refer to a menu item we have",
 			            id);
-		}
-		return FALSE;
+		return;
 	}
 
-	*dict = dbusmenu_menuitem_properties_copy(mi);
+	GVariant * dict = dbusmenu_menuitem_properties_variant(mi);
 
-	return TRUE;
+	g_dbus_method_invocation_return_value(invocation, dict);
+
+	return;
 }
 
 /* Handles getting a bunch of properties from a variety of menu items
