@@ -589,6 +589,15 @@ layout_update_idle (gpointer user_data)
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
 	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+	if (priv->dbusobject != NULL && priv->bus != NULL) {
+		g_dbus_connection_emit_signal(priv->bus,
+		                              NULL,
+		                              priv->dbusobject,
+		                              DBUSMENU_INTERFACE,
+		                              "LayoutUpdated",
+		                              g_variant_new("(ui)", priv->layout_revision, 0),
+		                              NULL);
+	}
 
 	priv->layout_idle = 0;
 
@@ -612,7 +621,29 @@ layout_update_signal (DbusmenuServer * server)
 static void 
 menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, DbusmenuServer * server)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
 	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, value, TRUE);
+
+	if (priv->dbusobject != NULL && priv->bus != NULL) {
+		GValue variantval = {0};
+		g_value_init(&variantval, G_TYPE_VARIANT);
+
+		if (!g_value_transform(value, &variantval)) {
+			g_warning("Unable to convert property '%s' of type %s to a variant", property, G_VALUE_TYPE_NAME(value));
+		}
+		GVariant * variant = g_value_get_variant(&variantval);
+
+		g_dbus_connection_emit_signal(priv->bus,
+		                              NULL,
+		                              priv->dbusobject,
+		                              DBUSMENU_INTERFACE,
+		                              "ItemPropertyUpdated",
+		                              g_variant_new("(isv)", dbusmenu_menuitem_get_id(mi), property, variant),
+		                              NULL);
+
+		g_value_unset(&variantval);
+	}
 	return;
 }
 
@@ -663,7 +694,20 @@ menuitem_child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint
 static void 
 menuitem_shown (DbusmenuMenuitem * mi, guint timestamp, DbusmenuServer * server)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
 	g_signal_emit(G_OBJECT(server), signals[ITEM_ACTIVATION], 0, dbusmenu_menuitem_get_id(mi), timestamp, TRUE);
+
+	if (priv->dbusobject != NULL && priv->bus != NULL) {
+		g_dbus_connection_emit_signal(priv->bus,
+		                              NULL,
+		                              priv->dbusobject,
+		                              DBUSMENU_INTERFACE,
+		                              "ItemPropertyUpdated",
+		                              g_variant_new("(iu)", dbusmenu_menuitem_get_id(mi), timestamp),
+		                              NULL);
+	}
+
 	return;
 }
 
