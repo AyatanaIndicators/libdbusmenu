@@ -38,9 +38,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "dbus-menu.xml.h"
 
-/* DBus Prototypes */
-static gboolean _dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error);
-
 static void layout_update_signal (DbusmenuServer * server);
 
 #define DBUSMENU_VERSION_NUMBER    2
@@ -105,6 +102,7 @@ enum {
 	METHOD_GET_PROPERTY,
 	METHOD_GET_PROPERTIES,
 	METHOD_EVENT,
+	METHOD_ABOUT_TO_SHOW,
 	/* Counter, do not remove! */
 	METHOD_COUNT
 };
@@ -173,6 +171,9 @@ static void       bus_get_properties          (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 static void       bus_event                   (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
+static void       bus_about_to_show           (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 
@@ -320,6 +321,9 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 
 	dbusmenu_method_table[METHOD_EVENT].interned_name = g_intern_static_string("Event");
 	dbusmenu_method_table[METHOD_EVENT].func          = bus_event;
+
+	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW].interned_name = g_intern_static_string("AboutToShow");
+	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW].func          = bus_about_to_show;
 
 	return;
 }
@@ -950,26 +954,26 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 }
 
 /* Recieve the About To Show function.  Pass it to our menu item. */
-static gboolean
-_dbusmenu_server_about_to_show (DbusmenuServer * server, gint id, gboolean * need_update, GError ** error)
+static void
+bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
-		if (error != NULL) {
-			g_set_error(error,
-			            error_quark(),
-			            INVALID_MENUITEM_ID,
-			            "The ID supplied %d does not refer to a menu item we have",
-			            id);
-		}
-		return FALSE;
+		g_dbus_method_invocation_return_error(invocation,
+			                                  error_quark(),
+			                                  INVALID_MENUITEM_ID,
+			                                  "The ID supplied %d does not refer to a menu item we have",
+			                                  id);
+		return;
 	}
 
 	/* GTK+ does not support about-to-show concept for now */
-	*need_update = FALSE;
-	return TRUE;
+	g_dbus_method_invocation_return_value(invocation,
+	                                      g_variant_new_boolean(FALSE));
+	return;
 }
 
 /* Public Interface */
