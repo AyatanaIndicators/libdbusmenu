@@ -182,16 +182,16 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 			  The format is recursive, where the second 'v' is in the same format
 			  as the original 'a(ia(sv)a(v))'.  If the @recursive flag is set to
-			  false than the second array will have zero entries.
+			  less than one then the second array will have zero entries.
 			</dox:d>
 			<arg type="i" name="parentId" direction="in">
 				<dox:d>The ID of the parent node for the layout.  For
 				grabbing the layout from the root node use zero.</dox:d>
 			</arg>
-			<arg type="b" name="recurse" direction="in">
+			<arg type="i" name="recurse" direction="in">
 				<dox:d>
-				  Recurse to all children of the parent and include them in the
-				  structure that is returned.
+				  The amount of levels of recursion to use.  -1, as value would
+				  deliver all the items under the @parentId.
 				</dox:d>
 			</arg>
 			<arg type="as" name="propertyNames" direction="in" >
