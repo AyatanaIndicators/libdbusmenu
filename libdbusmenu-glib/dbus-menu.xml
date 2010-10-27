@@ -309,25 +309,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 		</method>
 
 <!-- Signals -->
-		<signal name="ItemPropertyUpdated">
-			<dox:d>
-			Triggered by the application to notify the applet that the property @a property
-			from item @a id has changed to @a value.
-			</dox:d>
-			<arg type="i" name="id" direction="out" />
-			<arg type="s" name="prop" direction="out" />
-			<arg type="v" name="value" direction="out" />
-		</signal>
-
-		<signal name="ItemUpdated">
-			<dox:d>
-				Triggered by the application to notify the applet that all properties of item
-			</dox:d>
-			<arg type="i" name="id" direction="out" >
-				<dox:d>id which should be considered outdated</dox:d>
-			</arg>
-		</signal>
-
 		<signal name="ItemsPropertiesUpdated">
 			<dox:d>
 			Triggered when there are lots of property updates across many items
@@ -337,7 +318,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</dox:d>
 			<arg type="a(ia(sv))" name="props" direction="out" />
 		</signal>
-
 		<signal name="LayoutUpdated">
 			<dox:d>
 			Triggered by the application to notify display of a layout update, up to
