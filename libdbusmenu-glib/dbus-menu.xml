@@ -194,16 +194,16 @@ License version 3 and version 2.1 along with this program.  If not, see
 				  structure that is returned.
 				</dox:d>
 			</arg>
-			<arg type="u" name="revision" direction="out">
-				<dox:d>The revision number of the layout.  For matching
-				with layoutUpdated signals.</dox:d>
-			</arg>
 			<arg type="as" name="propertyNames" direction="in" >
 				<dox:d>
 					The list of item properties we are
 					interested in.  If there are no entries in the list all of
 					the properties will be sent.
 				</dox:d>
+			</arg>
+			<arg type="u" name="revision" direction="out">
+				<dox:d>The revision number of the layout.  For matching
+				with layoutUpdated signals.</dox:d>
 			</arg>
 			<arg type="a(ia(sv)a(v))" name="layout" direction="out">
 				<dox:d>The layout as an XML string of IDs.</dox:d>
