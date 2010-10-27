@@ -240,33 +240,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 		</method>
 
-		<method name="GetChildren">
-			<annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="DBusMenuItemList"/>
-			<arg type="i" name="id" direction="in" />
-			<arg type="as" name="propertyNames" direction="in" />
-			<arg type="a(ia{sv})" name="properties" direction="out" />
-		</method>
-
 		<method name="GetProperty">
 			<arg type="i" name="id" direction="in" />
 			<arg type="s" name="name" direction="in" />
 			<arg type="v" name="value" direction="out" />
-		</method>
-
-		<method name="GetProperties">
-			<dox:d>
-			Returns multiple properties in one call. This is more efficient than
-			GetProperty.
-
-			</dox:d>
-			<annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
-			<arg type="i" name="id" direction="in" >
-				<dox:d>The item whose properties we want to retrieve.</dox:d>
-			</arg>
-			<arg type="as" name="propertyNames" direction="in" >
-				<dox:d>List of string name of the properties we want.  If the list contains no entries, all properties are sent.</dox:d>
-			</arg>
-			<arg type="a{sv}" name="properties" direction="out" />
 		</method>
 
 		<method name="Event">
