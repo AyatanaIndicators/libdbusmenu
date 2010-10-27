@@ -241,9 +241,20 @@ License version 3 and version 2.1 along with this program.  If not, see
 		</method>
 
 		<method name="GetProperty">
-			<arg type="i" name="id" direction="in" />
-			<arg type="s" name="name" direction="in" />
-			<arg type="v" name="value" direction="out" />
+			<dox:d>
+			  Get a signal property on a single item.  This is not useful if you're
+			  going to implement this interface, it should only be used if you're
+			  debugging via a commandline tool.
+			</dox:d>
+			<arg type="i" name="id" direction="in">
+				<dox:d>the id of the item which received the event</dox:d>
+			</arg>
+			<arg type="s" name="name" direction="in">
+				<dox:d>the name of the property to get</dox:d>
+			</arg>
+			<arg type="v" name="value" direction="out">
+				<dox:d>the value of the property</dox:d>
+			</arg>
 		</method>
 
 		<method name="Event">
