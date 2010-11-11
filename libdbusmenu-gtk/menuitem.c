@@ -250,7 +250,7 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 	g_return_val_if_fail(GTK_IS_MENU_ITEM(gmi), FALSE);
 
 	GClosure * closure = NULL;
-        GtkWidget *label = GTK_BIN (gmi)->child;
+        GtkWidget *label = gtk_bin_get_child(GTK_BIN (gmi));
 
         if (GTK_IS_ACCEL_LABEL (label))
           {

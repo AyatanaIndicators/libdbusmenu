@@ -1,0 +1,3 @@
+dbusmenu_gtkclient_get_type
+dbusmenu_gtkmenu_get_type
+genericmenuitem_get_type

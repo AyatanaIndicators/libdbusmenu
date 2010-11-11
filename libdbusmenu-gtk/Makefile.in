@@ -36,24 +36,22 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@HAVE_INTROSPECTION_TRUE@am__append_1 = DbusmenuGtk-0.2.gir
+@HAVE_INTROSPECTION_TRUE@am__append_1 = DbusmenuGtk$(VER)-0.2.gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
-@HAVE_INTROSPECTION_TRUE@	$(vapi_DATA) DbusmenuGtk-0.2.tmp.gir
+@HAVE_INTROSPECTION_TRUE@	$(vapi_DATA) \
+@HAVE_INTROSPECTION_TRUE@	DbusmenuGtk$(VER)-0.2.tmp.gir
 subdir = libdbusmenu-gtk
-DIST_COMMON = $(libdbusmenu_gtkinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-gtk.pc.in
+DIST_COMMON = $(libdbusmenu_gtk3include_HEADERS) \
+	$(libdbusmenu_gtkinclude_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-gtk.pc.in \
+	$(srcdir)/dbusmenu-gtk3.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
-	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
-	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = dbusmenu-gtk.pc
+CONFIG_CLEAN_FILES = dbusmenu-gtk.pc dbusmenu-gtk3.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -79,6 +77,7 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(girdir)" \
 	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" \
 	"$(DESTDIR)$(vapidir)" \
+	"$(DESTDIR)$(libdbusmenu_gtk3includedir)" \
 	"$(DESTDIR)$(libdbusmenu_gtkincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
@@ -95,6 +94,20 @@ libdbusmenu_gtk_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) \
 	$(libdbusmenu_gtk_la_LDFLAGS) $(LDFLAGS) -o $@
+@USE_GTK3_FALSE@am_libdbusmenu_gtk_la_rpath = -rpath $(libdir)
+am__DEPENDENCIES_2 = ../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(am__DEPENDENCIES_1)
+libdbusmenu_gtk3_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
+am__objects_1 = libdbusmenu_gtk3_la-client.lo \
+	libdbusmenu_gtk3_la-genericmenuitem.lo \
+	libdbusmenu_gtk3_la-menu.lo libdbusmenu_gtk3_la-menuitem.lo
+am_libdbusmenu_gtk3_la_OBJECTS = $(am__objects_1)
+libdbusmenu_gtk3_la_OBJECTS = $(am_libdbusmenu_gtk3_la_OBJECTS)
+libdbusmenu_gtk3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) \
+	$(libdbusmenu_gtk3_la_LDFLAGS) $(LDFLAGS) -o $@
+@USE_GTK3_TRUE@am_libdbusmenu_gtk3_la_rpath = -rpath $(libdir)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -121,10 +134,12 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(libdbusmenu_gtk_la_SOURCES)
-DIST_SOURCES = $(libdbusmenu_gtk_la_SOURCES)
+SOURCES = $(libdbusmenu_gtk_la_SOURCES) $(libdbusmenu_gtk3_la_SOURCES)
+DIST_SOURCES = $(libdbusmenu_gtk_la_SOURCES) \
+	$(libdbusmenu_gtk3_la_SOURCES)
 DATA = $(gir_DATA) $(pkgconfig_DATA) $(typelib_DATA) $(vapi_DATA)
-HEADERS = $(libdbusmenu_gtkinclude_HEADERS)
+HEADERS = $(libdbusmenu_gtk3include_HEADERS) \
+	$(libdbusmenu_gtkinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -296,13 +311,19 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 CLEANFILES = $(am__append_2)
+@USE_GTK3_FALSE@VER = 
+@USE_GTK3_TRUE@VER = 3
+@USE_GTK3_FALSE@GTKGIR = Gtk-2.0
+@USE_GTK3_TRUE@GTKGIR = Gtk-3.0
+@USE_GTK3_FALSE@GTKVALA = gtk+-2.0
+@USE_GTK3_TRUE@GTKVALA = gtk+-3.0
+@USE_GTK3_FALSE@lib_LTLIBRARIES = libdbusmenu-gtk.la
+@USE_GTK3_TRUE@lib_LTLIBRARIES = libdbusmenu-gtk3.la
 EXTRA_DIST = \
-	dbusmenu-gtk.pc.in
+	dbusmenu-gtk.pc.in \
+	dbusmenu-gtk3.pc.in
 
-lib_LTLIBRARIES = \
-	libdbusmenu-gtk.la
-
-libdbusmenu_gtkincludedir = $(includedir)/libdbusmenu-0.1/libdbusmenu-gtk/
+libdbusmenu_gtkincludedir = $(includedir)/libdbusmenu-0.1/libdbusmenu-gtk$(VER)/
 libdbusmenu_gtkinclude_HEADERS = \
 	client.h \
 	menu.h \
@@ -330,7 +351,18 @@ libdbusmenu_gtk_la_LIBADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGTK_LIBS)
 
-pkgconfig_DATA = dbusmenu-gtk.pc
+
+# We duplicate these here because Automake won't let us use $(VER) on the left hand side.
+# Since we carefully use $(VER) in the right hand side above, we can assign the same values.
+# Only one version of the library is every compiled at the same time, so it is safe to reuse
+# the right hand sides like this.
+libdbusmenu_gtk3includedir = $(libdbusmenu_gtkincludedir)
+libdbusmenu_gtk3include_HEADERS = $(libdbusmenu_gtkinclude_HEADERS)
+libdbusmenu_gtk3_la_SOURCES = $(libdbusmenu_gtk_la_SOURCES)
+libdbusmenu_gtk3_la_LDFLAGS = $(libdbusmenu_gtk_la_LDFLAGS)
+libdbusmenu_gtk3_la_CFLAGS = $(libdbusmenu_gtk_la_CFLAGS)
+libdbusmenu_gtk3_la_LIBADD = $(libdbusmenu_gtk_la_LIBADD)
+pkgconfig_DATA = dbusmenu-gtk$(VER).pc
 pkgconfigdir = $(libdir)/pkgconfig
 INTROSPECTION_GIRS = $(am__append_1)
 INTROSPECTION_SCANNER_ARGS = \
@@ -342,12 +374,18 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 @HAVE_INTROSPECTION_TRUE@introspection_sources = $(libdbusmenu_gtkinclude_HEADERS)
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0 \
-@HAVE_INTROSPECTION_TRUE@	Gtk-2.0 \
+@HAVE_INTROSPECTION_TRUE@	$(GTKGIR) \
 @HAVE_INTROSPECTION_TRUE@	Dbusmenu-Glib-0.2
 
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_LIBS = libdbusmenu-gtk.la
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_LIBS = libdbusmenu-gtk$(VER).la
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+
+# We duplicate these for the same reason as libdbusmenu_gtk3includedir above
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_2_gir_INCLUDES = $(DbusmenuGtk_0_2_gir_INCLUDES)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_2_gir_CFLAGS = $(DbusmenuGtk_0_2_gir_CFLAGS)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_2_gir_LIBS = $(DbusmenuGtk_0_2_gir_LIBS)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_2_gir_FILES = $(DbusmenuGtk_0_2_gir_FILES)
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
 @HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
@@ -357,7 +395,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 # VAPI Files
 #########################
 @HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@vapi_DATA = DbusmenuGtk-0.2.vapi
+@HAVE_INTROSPECTION_TRUE@vapi_DATA = DbusmenuGtk$(VER)-0.2.vapi
 all: all-am
 
 .SUFFIXES:
@@ -394,6 +432,8 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 $(am__aclocal_m4_deps):
 dbusmenu-gtk.pc: $(top_builddir)/config.status $(srcdir)/dbusmenu-gtk.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+dbusmenu-gtk3.pc: $(top_builddir)/config.status $(srcdir)/dbusmenu-gtk3.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
@@ -426,7 +466,9 @@ clean-libLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libdbusmenu-gtk.la: $(libdbusmenu_gtk_la_OBJECTS) $(libdbusmenu_gtk_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libdbusmenu_gtk_la_LINK) -rpath $(libdir) $(libdbusmenu_gtk_la_OBJECTS) $(libdbusmenu_gtk_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libdbusmenu_gtk_la_LINK) $(am_libdbusmenu_gtk_la_rpath) $(libdbusmenu_gtk_la_OBJECTS) $(libdbusmenu_gtk_la_LIBADD) $(LIBS)
+libdbusmenu-gtk3.la: $(libdbusmenu_gtk3_la_OBJECTS) $(libdbusmenu_gtk3_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libdbusmenu_gtk3_la_LINK) $(am_libdbusmenu_gtk3_la_rpath) $(libdbusmenu_gtk3_la_OBJECTS) $(libdbusmenu_gtk3_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -434,6 +476,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-client.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-menu.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-menuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-genericmenuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-menu.Plo@am__quote@
@@ -494,6 +540,38 @@ libdbusmenu_gtk_la-menuitem.lo: menuitem.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='menuitem.c' object='libdbusmenu_gtk_la-menuitem.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk_la-menuitem.lo `test -f 'menuitem.c' || echo '$(srcdir)/'`menuitem.c
+
+libdbusmenu_gtk3_la-client.lo: client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk3_la-client.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk3_la-client.Tpo -c -o libdbusmenu_gtk3_la-client.lo `test -f 'client.c' || echo '$(srcdir)/'`client.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk3_la-client.Tpo $(DEPDIR)/libdbusmenu_gtk3_la-client.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client.c' object='libdbusmenu_gtk3_la-client.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk3_la-client.lo `test -f 'client.c' || echo '$(srcdir)/'`client.c
+
+libdbusmenu_gtk3_la-genericmenuitem.lo: genericmenuitem.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk3_la-genericmenuitem.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem.Tpo -c -o libdbusmenu_gtk3_la-genericmenuitem.lo `test -f 'genericmenuitem.c' || echo '$(srcdir)/'`genericmenuitem.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem.Tpo $(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='genericmenuitem.c' object='libdbusmenu_gtk3_la-genericmenuitem.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk3_la-genericmenuitem.lo `test -f 'genericmenuitem.c' || echo '$(srcdir)/'`genericmenuitem.c
+
+libdbusmenu_gtk3_la-menu.lo: menu.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk3_la-menu.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk3_la-menu.Tpo -c -o libdbusmenu_gtk3_la-menu.lo `test -f 'menu.c' || echo '$(srcdir)/'`menu.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk3_la-menu.Tpo $(DEPDIR)/libdbusmenu_gtk3_la-menu.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='menu.c' object='libdbusmenu_gtk3_la-menu.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk3_la-menu.lo `test -f 'menu.c' || echo '$(srcdir)/'`menu.c
+
+libdbusmenu_gtk3_la-menuitem.lo: menuitem.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk3_la-menuitem.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk3_la-menuitem.Tpo -c -o libdbusmenu_gtk3_la-menuitem.lo `test -f 'menuitem.c' || echo '$(srcdir)/'`menuitem.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk3_la-menuitem.Tpo $(DEPDIR)/libdbusmenu_gtk3_la-menuitem.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='menuitem.c' object='libdbusmenu_gtk3_la-menuitem.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk3_la-menuitem.lo `test -f 'menuitem.c' || echo '$(srcdir)/'`menuitem.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -580,6 +658,26 @@ uninstall-vapiDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(vapidir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(vapidir)" && rm -f $$files
+install-libdbusmenu_gtk3includeHEADERS: $(libdbusmenu_gtk3include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(libdbusmenu_gtk3includedir)" || $(MKDIR_P) "$(DESTDIR)$(libdbusmenu_gtk3includedir)"
+	@list='$(libdbusmenu_gtk3include_HEADERS)'; test -n "$(libdbusmenu_gtk3includedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libdbusmenu_gtk3includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libdbusmenu_gtk3includedir)" || exit $$?; \
+	done
+
+uninstall-libdbusmenu_gtk3includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(libdbusmenu_gtk3include_HEADERS)'; test -n "$(libdbusmenu_gtk3includedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(libdbusmenu_gtk3includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libdbusmenu_gtk3includedir)" && rm -f $$files
 install-libdbusmenu_gtkincludeHEADERS: $(libdbusmenu_gtkinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdbusmenu_gtkincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libdbusmenu_gtkincludedir)"
@@ -687,7 +785,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(libdbusmenu_gtkincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(libdbusmenu_gtk3includedir)" "$(DESTDIR)$(libdbusmenu_gtkincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -739,8 +837,10 @@ info: info-am
 
 info-am:
 
-install-data-am: install-girDATA install-libdbusmenu_gtkincludeHEADERS \
-	install-pkgconfigDATA install-typelibDATA install-vapiDATA
+install-data-am: install-girDATA \
+	install-libdbusmenu_gtk3includeHEADERS \
+	install-libdbusmenu_gtkincludeHEADERS install-pkgconfigDATA \
+	install-typelibDATA install-vapiDATA
 
 install-dvi: install-dvi-am
 
@@ -787,6 +887,7 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
+	uninstall-libdbusmenu_gtk3includeHEADERS \
 	uninstall-libdbusmenu_gtkincludeHEADERS \
 	uninstall-pkgconfigDATA uninstall-typelibDATA \
 	uninstall-vapiDATA
@@ -800,14 +901,16 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-girDATA \
 	install-html install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-libdbusmenu_gtkincludeHEADERS \
-	install-man install-pdf install-pdf-am install-pkgconfigDATA \
-	install-ps install-ps-am install-strip install-typelibDATA \
-	install-vapiDATA installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-girDATA uninstall-libLTLIBRARIES \
+	install-libLTLIBRARIES install-libdbusmenu_gtk3includeHEADERS \
+	install-libdbusmenu_gtkincludeHEADERS install-man install-pdf \
+	install-pdf-am install-pkgconfigDATA install-ps install-ps-am \
+	install-strip install-typelibDATA install-vapiDATA \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-girDATA \
+	uninstall-libLTLIBRARIES \
+	uninstall-libdbusmenu_gtk3includeHEADERS \
 	uninstall-libdbusmenu_gtkincludeHEADERS \
 	uninstall-pkgconfigDATA uninstall-typelibDATA \
 	uninstall-vapiDATA
@@ -819,18 +922,18 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 
 -include $(INTROSPECTION_MAKEFILE)
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk-0.2.gir: libdbusmenu-gtk.la
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.2.gir: libdbusmenu-gtk$(VER).la
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk-0.2.vapi: DbusmenuGtk-0.2.tmp.gir Makefile.am
-@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=DbusmenuGtk-0.2 \
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.2.vapi: DbusmenuGtk$(VER)-0.2.tmp.gir Makefile.am
+@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=DbusmenuGtk$(VER)-0.2 \
 @HAVE_INTROSPECTION_TRUE@		--pkg gdk-pixbuf-2.0 \
-@HAVE_INTROSPECTION_TRUE@		--pkg gtk+-2.0 \
+@HAVE_INTROSPECTION_TRUE@		--pkg $(GTKVALA) \
 @HAVE_INTROSPECTION_TRUE@		--pkg atk \
 @HAVE_INTROSPECTION_TRUE@		--pkg Dbusmenu-Glib-0.2 \
 @HAVE_INTROSPECTION_TRUE@		--vapidir=$(top_builddir)/libdbusmenu-glib \
 @HAVE_INTROSPECTION_TRUE@		$<
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk-0.2.tmp.gir: DbusmenuGtk-0.2.gir
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.2.tmp.gir: DbusmenuGtk$(VER)-0.2.gir
 @HAVE_INTROSPECTION_TRUE@	$(SED) \
 @HAVE_INTROSPECTION_TRUE@		-e "s|GdkPixbuf.Pixbuf|Gdk.Pixbuf|g" \
 @HAVE_INTROSPECTION_TRUE@		-e "s|Atk.ImplementorIface|Atk.Implementor|g" \
