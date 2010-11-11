@@ -1,4 +1,4 @@
-libdbusmenu (0.4.0~dev-0ubuntu1~ppa1) maverick; urgency=low
+libdbusmenu (0.3.16-0ubuntu1~ppa1) maverick; urgency=low
 
   * Upstream Merge
     * Breaking ABI and getting reserved back
