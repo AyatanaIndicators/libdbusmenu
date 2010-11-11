@@ -1,4 +1,4 @@
-libdbusmenu (0.3.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.90-0ubuntu1~ppa1) maverick; urgency=low
 
   * New upstream release.
     * Breaking ABI and getting reserved back
@@ -9,7 +9,7 @@ libdbusmenu (0.3.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
     debian/libdbusmenu-gtk2.install: Switching package names to
     match .so bump.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 11 Nov 2010 11:28:07 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 11 Nov 2010 11:34:00 -0600
 
 libdbusmenu (0.3.16-0ubuntu1) maverick; urgency=low
 
