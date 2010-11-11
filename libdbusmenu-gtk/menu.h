@@ -42,6 +42,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_GTKMENU_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_GTKMENU_TYPE))
 #define DBUSMENU_GTKMENU_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuClass))
 
+typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
+
 /**
 	DbusmenuGtkMenuClass:
 	@parent_class: #GtkMenuClass
@@ -49,16 +51,20 @@ G_BEGIN_DECLS
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
 	@reserved4: Reserved for future use.
+	@reserved5: Reserved for future use.
+	@reserved6: Reserved for future use.
 */
 typedef struct _DbusmenuGtkMenuClass DbusmenuGtkMenuClass;
 struct _DbusmenuGtkMenuClass {
 	GtkMenuClass parent_class;
 
-	/* Reserved */
+	/*< Private >*/
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
 	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 /**
@@ -68,6 +74,9 @@ struct _DbusmenuGtkMenuClass {
 typedef struct _DbusmenuGtkMenu      DbusmenuGtkMenu;
 struct _DbusmenuGtkMenu {
 	GtkMenu parent;
+
+	/*< Private >*/
+	DbusmenuGtkMenuPrivate * priv;
 };
 
 GType dbusmenu_gtkmenu_get_type (void);

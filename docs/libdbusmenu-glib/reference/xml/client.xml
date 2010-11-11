@@ -1,0 +1,380 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="libdbusmenu-glib-DbusmenuClient">
+<refmeta>
+<refentrytitle role="top_of_page" id="libdbusmenu-glib-DbusmenuClient.top_of_page">DbusmenuClient</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GLIB Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>DbusmenuClient</refname>
+<refpurpose>The catcher of all the server traffic</refpurpose>
+</refnamediv>
+<refsect1 id="libdbusmenu-glib-DbusmenuClient.stability-level">
+<title>Stability Level</title>
+Unstable, unless otherwise indicated
+</refsect1>
+
+<refsynopsisdiv id="libdbusmenu-glib-DbusmenuClient.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+#include &lt;libdbusmenu-glib/client.h&gt;
+
+#define             <link linkend="DBUSMENU-CLIENT-SIGNAL-LAYOUT-UPDATED:CAPS">DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED</link>
+#define             <link linkend="DBUSMENU-CLIENT-SIGNAL-ROOT-CHANGED:CAPS">DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED</link>
+#define             <link linkend="DBUSMENU-CLIENT-SIGNAL-NEW-MENUITEM:CAPS">DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM</link>
+#define             <link linkend="DBUSMENU-CLIENT-PROP-DBUS-NAME:CAPS">DBUSMENU_CLIENT_PROP_DBUS_NAME</link>
+#define             <link linkend="DBUSMENU-CLIENT-PROP-DBUS-OBJECT:CAPS">DBUSMENU_CLIENT_PROP_DBUS_OBJECT</link>
+#define             <link linkend="DBUSMENU-CLIENT-TYPES-DEFAULT:CAPS">DBUSMENU_CLIENT_TYPES_DEFAULT</link>
+#define             <link linkend="DBUSMENU-CLIENT-TYPES-SEPARATOR:CAPS">DBUSMENU_CLIENT_TYPES_SEPARATOR</link>
+#define             <link linkend="DBUSMENU-CLIENT-TYPES-IMAGE:CAPS">DBUSMENU_CLIENT_TYPES_IMAGE</link>
+                    <link linkend="DbusmenuClient">DbusmenuClient</link>;
+                    <link linkend="DbusmenuClientClass">DbusmenuClientClass</link>;
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            (<link linkend="DbusmenuClientTypeHandler">*DbusmenuClientTypeHandler</link>)        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *newitem</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *parent</parameter>,
+                                                         <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
+<link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *    <link linkend="dbusmenu-client-new">dbusmenu_client_new</link>                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
+<link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  <link linkend="dbusmenu-client-get-root">dbusmenu_client_get_root</link>            (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-client-add-type-handler">dbusmenu_client_add_type_handler</link>    (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *type</parameter>,
+                                                         <parameter><link linkend="DbusmenuClientTypeHandler"><type>DbusmenuClientTypeHandler</type></link> newfunc</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-client-send-event">dbusmenu_client_send_event</link>          (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="gint"><type>gint</type></link> id</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> timestamp</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-client-send-about-to-show">dbusmenu_client_send_about_to_show</link>  (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="gint"><type>gint</type></link> id</parameter>,
+                                                         <parameter><link linkend="void"><type>void</type></link> (cbgpointer user_data) ()</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> cb_data</parameter>);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="libdbusmenu-glib-DbusmenuClient.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+The client exists as a mirror to the server.  For most folks
+	all they will do with a client is set it up to connect to
+	a server and then watch as the menu items on their side
+	of the bus change.  This is all they should need to know about
+	the client, that it magically makes their menuitems dance.
+</para>
+<para>
+	It does this by setting up signal watchers and adjusting
+	the menuitems appropriately.  Most users should watch the
+	menu items and the signal <link linkend="DbusmenuClient-layout-changed"><type>"layout-changed"</type></link> for
+	larger events so that they can be optimized.  It is possible
+	with that signal that even the root node would change.  If
+	that doesn't happen the normal signals on the individual
+	nodes should be enough for most users.
+</para>
+</refsect1>
+<refsect1 id="libdbusmenu-glib-DbusmenuClient.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="DBUSMENU-CLIENT-SIGNAL-LAYOUT-UPDATED:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED</title>
+<indexterm zone="DBUSMENU-CLIENT-SIGNAL-LAYOUT-UPDATED:CAPS"><primary>DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED  "layout-updated"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-CLIENT-SIGNAL-ROOT-CHANGED:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED</title>
+<indexterm zone="DBUSMENU-CLIENT-SIGNAL-ROOT-CHANGED:CAPS"><primary>DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED    "root-changed"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-CLIENT-SIGNAL-NEW-MENUITEM:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM</title>
+<indexterm zone="DBUSMENU-CLIENT-SIGNAL-NEW-MENUITEM:CAPS"><primary>DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-CLIENT-PROP-DBUS-NAME:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_PROP_DBUS_NAME</title>
+<indexterm zone="DBUSMENU-CLIENT-PROP-DBUS-NAME:CAPS"><primary>DBUSMENU_CLIENT_PROP_DBUS_NAME</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-CLIENT-PROP-DBUS-OBJECT:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_PROP_DBUS_OBJECT</title>
+<indexterm zone="DBUSMENU-CLIENT-PROP-DBUS-OBJECT:CAPS"><primary>DBUSMENU_CLIENT_PROP_DBUS_OBJECT</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-CLIENT-TYPES-DEFAULT:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_TYPES_DEFAULT</title>
+<indexterm zone="DBUSMENU-CLIENT-TYPES-DEFAULT:CAPS"><primary>DBUSMENU_CLIENT_TYPES_DEFAULT</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_TYPES_DEFAULT      "standard"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-CLIENT-TYPES-SEPARATOR:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_TYPES_SEPARATOR</title>
+<indexterm zone="DBUSMENU-CLIENT-TYPES-SEPARATOR:CAPS"><primary>DBUSMENU_CLIENT_TYPES_SEPARATOR</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-CLIENT-TYPES-IMAGE:CAPS" role="macro">
+<title>DBUSMENU_CLIENT_TYPES_IMAGE</title>
+<indexterm zone="DBUSMENU-CLIENT-TYPES-IMAGE:CAPS"><primary>DBUSMENU_CLIENT_TYPES_IMAGE</primary></indexterm>
+<programlisting>#define DBUSMENU_CLIENT_TYPES_IMAGE        "standard"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DbusmenuClient" role="struct">
+<title>DbusmenuClient</title>
+<indexterm zone="DbusmenuClient"><primary>DbusmenuClient</primary></indexterm>
+<programlisting>typedef struct {
+	GObject parent;
+
+	/*&lt; Private &gt;*/
+	DbusmenuClientPrivate * priv;
+} DbusmenuClient;
+</programlisting>
+<para>
+The client for a <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> creating a shared
+	object set of <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects.
+</para><variablelist role="struct">
+<varlistentry><term><link linkend="GObject"><type>GObject</type></link>&#160;<structfield id="DbusmenuClient.parent">parent</structfield>;</term>
+<listitem><simpara><link linkend="GObject"><type>GObject</type></link>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><link linkend="DbusmenuClientPrivate"><type>DbusmenuClientPrivate</type></link>&#160;*<structfield id="DbusmenuClient.priv">priv</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="DbusmenuClientClass" role="struct">
+<title>DbusmenuClientClass</title>
+<indexterm zone="DbusmenuClientClass"><primary>DbusmenuClientClass</primary></indexterm>
+<programlisting>typedef struct {
+	GObjectClass parent_class;
+
+	void (*layout_updated)(void);
+	void (*root_changed) (DbusmenuMenuitem * newroot);
+	void (*new_menuitem) (DbusmenuMenuitem * newitem);
+	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
+	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GValue * data, guint timestamp, GError * error);
+
+	/*&lt; Private &gt;*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
+} DbusmenuClientClass;
+</programlisting>
+<para>
+A simple class that takes all of the information from a
+	<link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> over DBus and makes the same set of 
+	<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects appear on the other side.
+</para><variablelist role="struct">
+<varlistentry><term><link linkend="GObjectClass"><type>GObjectClass</type></link>&#160;<structfield id="DbusmenuClientClass.parent-class">parent_class</structfield>;</term>
+<listitem><simpara><link linkend="GObjectClass"><type>GObjectClass</type></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.layout-updated">layout_updated</structfield>&#160;()</term>
+<listitem><simpara>Slot for <link linkend="DbusmenuClient-layout-updated"><type>"layout-updated"</type></link>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.root-changed">root_changed</structfield>&#160;()</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.new-menuitem">new_menuitem</structfield>&#160;()</term>
+<listitem><simpara>Slot for <link linkend="DbusmenuClient-new-menuitem"><type>"new-menuitem"</type></link>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.item-activate">item_activate</structfield>&#160;()</term>
+<listitem><simpara>Slot for <link linkend="DbusmenuClient-item-activate"><type>"item-activate"</type></link>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.event-result">event_result</structfield>&#160;()</term>
+<listitem><simpara>Slot for <link linkend="DbusmenuClient-event-error"><type>"event-error"</type></link>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.reserved1">reserved1</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.reserved2">reserved2</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.reserved3">reserved3</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.reserved4">reserved4</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.reserved5">reserved5</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuClientClass.reserved6">reserved6</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="DbusmenuClientTypeHandler" role="function">
+<title>DbusmenuClientTypeHandler ()</title>
+<indexterm zone="DbusmenuClientTypeHandler"><primary>DbusmenuClientTypeHandler</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            (*DbusmenuClientTypeHandler)        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *newitem</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *parent</parameter>,
+                                                         <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>newitem</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-client-new" role="function">
+<title>dbusmenu_client_new ()</title>
+<indexterm zone="dbusmenu-client-new"><primary>dbusmenu_client_new</primary></indexterm>
+<programlisting><link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *    dbusmenu_client_new                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);</programlisting>
+<para>
+This function creates a new client that connects to a specific
+	server on DBus.  That server is at a specific location sharing
+	a known object.  The interface is assumed by the code to be 
+	the DBus menu interface.  The newly created client will start
+	sending out events as it syncs up with the server.
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>The DBus name for the server to connect to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>object</parameter>&#160;:</term>
+<listitem><simpara>The object on the server to monitor
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A brand new <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-client-get-root" role="function">
+<title>dbusmenu_client_get_root ()</title>
+<indexterm zone="dbusmenu-client-get-root"><primary>dbusmenu_client_get_root</primary></indexterm>
+<programlisting><link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  dbusmenu_client_get_root            (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
+<para>
+Grabs the root node for the specified client <parameter>client</parameter>.  This
+	function may block.  It will block if there is currently a
+	call to update the layout, it will block on that layout 
+	updated and then return the newly updated layout.  Chances
+	are that this update is in the queue for the mainloop as
+	it would have been requested some time ago, but in theory
+	it could block longer.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> to get the root node from
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> representing the root of
+		menu on the server.  If there is no server or there is
+		an error receiving its layout it'll return <link linkend="NULL:CAPS"><type>NULL</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-client-add-type-handler" role="function">
+<title>dbusmenu_client_add_type_handler ()</title>
+<indexterm zone="dbusmenu-client-add-type-handler"><primary>dbusmenu_client_add_type_handler</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            dbusmenu_client_add_type_handler    (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *type</parameter>,
+                                                         <parameter><link linkend="DbusmenuClientTypeHandler"><type>DbusmenuClientTypeHandler</type></link> newfunc</parameter>);</programlisting>
+<para>
+This function connects into the type handling of the <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link>.
+	Every new menuitem that comes in immediately gets asked for it's
+	properties.  When we get those properties we check the 'type'
+	property and look to see if it matches a handler that is known
+	by the client.  If so, the <parameter>newfunc</parameter> function is executed on that
+	<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link>.  If not, then the DbusmenuClient::new-menuitem
+	signal is sent.
+</para>
+<para>
+	In the future the known types will be sent to the server so that it
+	can make choices about the menu item types availble.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>Client where we're getting types coming in
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&#160;:</term>
+<listitem><simpara>A text string that will be matched with the 'type'
+	    property on incoming menu items
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>newfunc</parameter>&#160;:</term>
+<listitem><simpara>The function that will be executed with those new
+	    items when they come in.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> If registering the new type was successful.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-client-send-event" role="function">
+<title>dbusmenu_client_send_event ()</title>
+<indexterm zone="dbusmenu-client-send-event"><primary>dbusmenu_client_send_event</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbusmenu_client_send_event          (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="gint"><type>gint</type></link> id</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
+                                                         <parameter>const <link linkend="GValue"><type>GValue</type></link> *value</parameter>,
+                                                         <parameter><link linkend="guint"><type>guint</type></link> timestamp</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>timestamp</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-client-send-about-to-show" role="function">
+<title>dbusmenu_client_send_about_to_show ()</title>
+<indexterm zone="dbusmenu-client-send-about-to-show"><primary>dbusmenu_client_send_about_to_show</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbusmenu_client_send_about_to_show  (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="gint"><type>gint</type></link> id</parameter>,
+                                                         <parameter><link linkend="void"><type>void</type></link> (cbgpointer user_data) ()</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> cb_data</parameter>);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&#160;:</term>
+<listitem><simpara>
+<parameter>gpointer</parameter> user_data:
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>

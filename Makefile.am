@@ -13,6 +13,11 @@ SUBDIRS = \
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc
 
+## Can't disable deprecations yet, working on that, but
+## we want to get there.
+#
+# DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc --disable-deprecations
+
 dist-hook:
 	@if test -d "$(top_srcdir)/.bzr"; \
 		then \
