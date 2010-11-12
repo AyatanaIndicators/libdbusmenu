@@ -138,6 +138,7 @@ static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * propert
 static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
 static GQuark error_domain (void);
 static void item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
+static void menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
@@ -952,17 +953,33 @@ build_proxies (DbusmenuClient * client)
 		return;
 	}
 
-	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
-	                                                  priv->dbus_name,
-	                                                  priv->dbus_object,
-	                                                  "org.ayatana.dbusmenu",
-	                                                  &error);
-	if (error != NULL) {
-		g_warning("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
-		g_error_free(error);
-		build_dbus_proxy(client);
-		return;
+	/* Build us a menu proxy */
+	if (priv->menuproxy == NULL) {
+
+		/* Check to see if we're already building one */
+		if (priv->menuproxy_cancel == NULL) {
+			priv->menuproxy_cancel = g_cancellable_new();
+
+			g_dbus_proxy_new(priv->session_bus,
+			                 G_DBUS_PROXY_FLAGS_NONE,
+			                 dbusmenu_interface_info,
+			                 priv->dbus_name,
+			                 priv->dbus_object,
+			                 DBUSMENU_INTERFACE,
+			                 priv->menuproxy_cancel,
+			                 menuproxy_build_cb,
+			                 client);
+		}
 	}
+
+	return;
+}
+
+/* Callback when we know if the menu proxy can be created or
+   not and do something with it! */
+static void
+menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
+{
 	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
 	g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
 
