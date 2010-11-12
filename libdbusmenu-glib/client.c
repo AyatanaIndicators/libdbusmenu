@@ -41,6 +41,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "client-menuitem.h"
 #include "server-marshal.h"
 #include "client-marshal.h"
+#include "dbus-menu.xml.h"
 
 /* Properties */
 enum {
@@ -135,6 +136,10 @@ static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * propert
 static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
 static GQuark error_domain (void);
 static void item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
+
+/* Globals */
+static GDBusNodeInfo *            dbusmenu_node_info = NULL;
+static GDBusInterfaceInfo *       dbusmenu_interface_info = NULL;
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -245,6 +250,24 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                              "Name of the DBus client we're connecting to.",
 	                                              NULL,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+	if (dbusmenu_node_info == NULL) {
+		GError * error = NULL;
+
+		dbusmenu_node_info = g_dbus_node_info_new_for_xml(dbus_menu_xml, &error);
+		if (error != NULL) {
+			g_error("Unable to parse DBusmenu Interface description: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (dbusmenu_interface_info == NULL) {
+		dbusmenu_interface_info = g_dbus_node_info_lookup_interface(dbusmenu_node_info, DBUSMENU_INTERFACE);
+
+		if (dbusmenu_interface_info == NULL) {
+			g_error("Unable to find interface '" DBUSMENU_INTERFACE "'");
+		}
+	}
 
 	return;
 }
