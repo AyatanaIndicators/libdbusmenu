@@ -73,6 +73,8 @@ struct _DbusmenuClientPrivate
 	GCancellable * session_bus_cancel;
 
 	GDBusProxy * menuproxy;
+	GCancellable * menuproxy_cancel;
+
 	GCancellable * layoutcall;
 
 	gint current_revision;
@@ -288,6 +290,8 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->session_bus_cancel = NULL;
 
 	priv->menuproxy = NULL;
+	priv->menuproxy_cancel = NULL;
+
 	priv->layoutcall = NULL;
 
 	priv->current_revision = 0;
@@ -352,15 +356,26 @@ dbusmenu_client_dispose (GObject *object)
 		dbus_g_proxy_cancel_call(priv->menuproxy, priv->layoutcall);
 		priv->layoutcall = NULL;
 	}
+
+	/* Bring down the menu proxy, ensure we're not
+	   looking for one at the same time. */
+	if (priv->menuproxy_cancel != NULL) {
+		g_cancellable_cancel(priv->menuproxy_cancel);
+		g_object_unref(priv->menuproxy_cancel);
+		priv->menuproxy_cancel = NULL;
+	}
 	if (priv->menuproxy != NULL) {
 		g_object_unref(G_OBJECT(priv->menuproxy));
 		priv->menuproxy = NULL;
 	}
+
 	if (priv->dbusproxy != NULL) {
 		g_object_unref(G_OBJECT(priv->dbusproxy));
 		priv->dbusproxy = NULL;
 	}
 
+	/* Bring down the session bus, ensure we're not
+	   looking for one at the same time. */
 	if (priv->session_bus_cancel != NULL) {
 		g_cancellable_cancel(priv->session_bus_cancel);
 		g_object_unref(priv->session_bus_cancel);
