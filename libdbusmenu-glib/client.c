@@ -69,10 +69,9 @@ struct _DbusmenuClientPrivate
 	gchar * dbus_name;
 
 	GDBusConnection * session_bus;
-	GCancelable * session_bus_cancel;
+	GCancellable * session_bus_cancel;
 
 	GDBusProxy * menuproxy;
-	GDBusProxy * propproxy;
 	GCancellable * layoutcall;
 
 	gint current_revision;
@@ -266,7 +265,6 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->session_bus_cancel = NULL;
 
 	priv->menuproxy = NULL;
-	priv->propproxy = NULL;
 	priv->layoutcall = NULL;
 
 	priv->current_revision = 0;
@@ -334,10 +332,6 @@ dbusmenu_client_dispose (GObject *object)
 	if (priv->menuproxy != NULL) {
 		g_object_unref(G_OBJECT(priv->menuproxy));
 		priv->menuproxy = NULL;
-	}
-	if (priv->propproxy != NULL) {
-		g_object_unref(G_OBJECT(priv->propproxy));
-		priv->propproxy = NULL;
 	}
 	if (priv->dbusproxy != NULL) {
 		g_object_unref(G_OBJECT(priv->dbusproxy));
@@ -919,20 +913,6 @@ build_proxies (DbusmenuClient * client)
 		   the session bus so this condition will be ignored */
 		return;
 	}
-
-	priv->propproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
-	                                                  priv->dbus_name,
-	                                                  priv->dbus_object,
-	                                                  DBUS_INTERFACE_PROPERTIES,
-	                                                  &error);
-	if (error != NULL) {
-		g_warning("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
-		g_error_free(error);
-		build_dbus_proxy(client);
-		return;
-	}
-	g_object_add_weak_pointer(G_OBJECT(priv->propproxy), (gpointer *)&priv->propproxy);
-	g_signal_connect(G_OBJECT(priv->propproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
 
 	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
 	                                                  priv->dbus_name,
@@ -1550,10 +1530,6 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), NULL);
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-
-	if (priv->propproxy == NULL) {
-		return NULL;
-	}
 
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client get root: %X", (guint)priv->root);
