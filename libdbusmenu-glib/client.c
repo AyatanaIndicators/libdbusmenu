@@ -30,7 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
-#include <dbus/dbus-glib-bindings.h>
+#include <gio/gio.h>
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -39,7 +39,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "menuitem-private.h"
 #include "client-menuitem.h"
-#include "dbusmenu-client.h"
 #include "server-marshal.h"
 #include "client-marshal.h"
 
@@ -69,15 +68,15 @@ struct _DbusmenuClientPrivate
 	gchar * dbus_object;
 	gchar * dbus_name;
 
-	DBusGConnection * session_bus;
-	DBusGProxy * menuproxy;
-	DBusGProxy * propproxy;
-	DBusGProxyCall * layoutcall;
+	GDBusConnection * session_bus;
+	GDBusProxy * menuproxy;
+	GDBusProxy * propproxy;
+	GCancellable * layoutcall;
 
 	gint current_revision;
 	gint my_revision;
 
-	DBusGProxy * dbusproxy;
+	GDBusProxy * dbusproxy;
 
 	GHashTable * type_handlers;
 
