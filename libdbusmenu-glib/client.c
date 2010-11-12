@@ -69,6 +69,8 @@ struct _DbusmenuClientPrivate
 	gchar * dbus_name;
 
 	GDBusConnection * session_bus;
+	GCancelable * session_bus_cancel;
+
 	GDBusProxy * menuproxy;
 	GDBusProxy * propproxy;
 	GCancellable * layoutcall;
@@ -261,6 +263,8 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->dbus_name = NULL;
 
 	priv->session_bus = NULL;
+	priv->session_bus_cancel = NULL;
+
 	priv->menuproxy = NULL;
 	priv->propproxy = NULL;
 	priv->layoutcall = NULL;
@@ -339,7 +343,16 @@ dbusmenu_client_dispose (GObject *object)
 		g_object_unref(G_OBJECT(priv->dbusproxy));
 		priv->dbusproxy = NULL;
 	}
-	priv->session_bus = NULL;
+
+	if (priv->session_bus_cancel != NULL) {
+		g_cancellable_cancel(priv->session_bus_cancel);
+		g_object_unref(priv->session_bus_cancel);
+		priv->session_bus_cancel = NULL;
+	}
+	if (priv->session_bus != NULL) {
+		g_object_unref(priv->session_bus);
+		priv->session_bus = NULL;
+	}
 
 	if (priv->root != NULL) {
 		g_object_unref(G_OBJECT(priv->root));
@@ -848,6 +861,37 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	return;
 }
 
+/* Respond to us getting the session bus (hopefully) or handle
+   the error if not */
+void
+session_bus_cb (GObject * object, GAsyncResult * res, gpointer user_data)
+{
+	GError * error = NULL;
+
+	/* NOTE: We're not using any other variables before checking
+	   the result because they could be destroyed and thus invalid */
+	GDBusConnection * bus = g_bus_get_finish(res, &error);
+	if (error != NULL) {
+		g_warning("Unable to get session bus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* If this wasn't cancelled, we should be good */
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	priv->session_bus = bus;
+
+	if (priv->session_bus_cancel != NULL) {
+		g_object_unref(priv->session_bus_cancel);
+		priv->session_bus_cancel = NULL;
+	}
+
+	/* Retry to build the proxies now that we have a bus */
+	build_proxies(DBUSMENU_CLIENT(user_data));
+
+	return;
+}
+
 /* When we have a name and an object, build the two proxies and get the
    first version of the layout */
 static void
@@ -859,11 +903,20 @@ build_proxies (DbusmenuClient * client)
 	g_return_if_fail(priv->dbus_object != NULL);
 	g_return_if_fail(priv->dbus_name != NULL);
 
-	priv->session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	if (error != NULL) {
-		g_error("Unable to get session bus: %s", error->message);
-		g_error_free(error);
-		build_dbus_proxy(client);
+	if (priv->session_bus == NULL) {
+		/* We don't have the session bus yet, that's okay, but
+		   we need to handle that. */
+
+		/* If we're already running we don't need to look again. */
+		if (priv->session_bus_cancel == NULL) {
+			priv->session_bus_cancel = g_cancellable_new();
+
+			/* Async get the session bus */
+			g_bus_get(G_BUS_SESSION, priv->session_bus_cancel, session_bus_cb, client);
+		}
+
+		/* This function exists, it'll be called again when we get
+		   the session bus so this condition will be ignored */
 		return;
 	}
 
