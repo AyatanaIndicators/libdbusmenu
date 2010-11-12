@@ -139,6 +139,8 @@ static void get_properties_globber (DbusmenuClient * client, gint id, const gcha
 static GQuark error_domain (void);
 static void item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
 static void menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data);
+static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data);
+static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
@@ -980,8 +982,25 @@ build_proxies (DbusmenuClient * client)
 static void
 menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 {
-	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
-	g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
+	GError * error = NULL;
+
+	/* NOTE: We're not using any other variables before checking
+	   the result because they could be destroyed and thus invalid */
+	GDBusProxy * proxy = g_dbus_proxy_new_finish(res, &error);
+	if (error != NULL) {
+		g_warning("Unable to get menu proxy: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* If this wasn't cancelled, we should be good */
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
+	priv->menuproxy = proxy;
+
+	if (priv->menuproxy_cancel != NULL) {
+		g_object_unref(priv->menuproxy_cancel);
+		priv->menuproxy_cancel = NULL;
+	}
 
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != NULL) {
@@ -989,22 +1008,58 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		priv->dbusproxy = NULL;
 	}
 
-	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__UINT_INT, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdated", G_TYPE_UINT, G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "LayoutUpdated", G_CALLBACK(layout_update), client, NULL);
-
-	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__INT_STRING_POINTER, G_TYPE_NONE, G_TYPE_INT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "ItemPropertyUpdated", G_TYPE_INT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemPropertyUpdated", G_CALLBACK(id_prop_update), client, NULL);
-
-	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemUpdated", G_CALLBACK(id_update), client, NULL);
-
-	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__INT_UINT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "ItemActivationRequested", G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemActivationRequested", G_CALLBACK(item_activated), client, NULL);
+	g_signal_connect(priv->menuproxy, "g-signal",             G_CALLBACK(menuproxy_signal_cb),       client);
+	g_signal_connect(priv->menuproxy, "notify::g-name-owner", G_CALLBACK(menuproxy_name_changed_cb), client);
 
 	update_layout(client);
+
+	return;
+}
+
+/* Handle the case where we change owners */
+static void
+menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data)
+{
+	GDBusProxy * proxy = G_DBUS_PROXY(object);
+
+	gchar * owner = g_dbus_proxy_get_name_owner(proxy);
+
+	if (owner == NULL) {
+		/* Oh, no!  We lost our owner! */
+		proxy_destroyed(G_OBJECT(proxy), user_data);
+	} else {
+		g_free(owner);
+	}
+
+	return;
+}
+
+/* Handle the signals out of the proxy */
+static void
+menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data)
+{
+	g_return_if_fail(DBUSMENU_IS_CLIENT(user_data));
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+
+	if (g_strcmp0(signal, "LayoutUpdated") == 0) {
+		guint revision; gint parent;
+		g_variant_get(params, "(ui)", &revision, &parent);
+		layout_update(proxy, revision, parent, client);
+	} else if (g_strcmp0(signal, "ItemPropertyUpdated") == 0) {
+		gint id; gchar * property; GVariant * value;
+		g_variant_get(params, "(isv)", &id, &property, &value);
+		id_prop_update(proxy, id, property, value, client);
+	} else if (g_strcmp0(signal, "ItemUpdated") == 0) {
+		gint id;
+		g_variant_get(params, "(i)", &id);
+		id_update(proxy, id, client);
+	} else if (g_strcmp0(signal, "ItemActivationRequested") == 0) {
+		gint id; guint timestamp;
+		g_variant_get(params, "(iu)", &id, &timestamp);
+		item_activated(proxy, id, timestamp, client);
+	} else {
+		g_warning("Received signal '%s' from menu proxy that is unknown", signal);
+	}
 
 	return;
 }
