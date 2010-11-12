@@ -562,6 +562,21 @@ get_properties_idle (gpointer user_data)
 	return FALSE;
 }
 
+/* Report and error if we're unable to flush the connection, likely
+   to be a cause of some other issues. */
+static void
+connection_flush_cb (GObject * object, GAsyncResult * result, gpointer user_data)
+{
+	GError * error = NULL;
+
+	if (!g_dbus_connection_flush_finish(G_DBUS_CONNECTION(object), result, &error)) {
+		g_warning("Unable to flush DBus connection: %s", error->message);
+		g_error_free(error);
+	}
+
+	return;
+}
+
 /* Forces a call out to start getting properties with the menu items
    that we have queued up already. */
 static void
@@ -578,7 +593,11 @@ get_properties_flush (DbusmenuClient * client)
 
 	get_properties_idle(client);
 
-	dbus_g_connection_flush(priv->session_bus);
+	/* I'm not sure this flush is necissary with GDBus running the
+	   DBus connection in another thread.  But, I don't think that
+	   it'll hurt anything either, so I'm leaving it in. */
+	g_return_if_fail(priv->session_bus != NULL);
+	g_dbus_connection_flush(priv->session_bus, NULL, connection_flush_cb, NULL);
 
 	return;
 }
