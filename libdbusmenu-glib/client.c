@@ -60,6 +60,8 @@ enum {
 	LAST_SIGNAL
 };
 
+typedef void (*properties_func) (DbusmenuClient * client, GVariant * properties);
+
 static guint signals[LAST_SIGNAL] = { 0 };
 
 struct _DbusmenuClientPrivate
@@ -100,7 +102,7 @@ struct _newItemPropData
 typedef struct _properties_listener_t properties_listener_t;
 struct _properties_listener_t {
 	gint id;
-	org_ayatana_dbusmenu_get_properties_reply callback;
+	properties_func callback;
 	gpointer user_data;
 	gboolean replied;
 };
@@ -135,7 +137,7 @@ static gint parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
 static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
-static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
+static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, properties_func callback, gpointer user_data);
 static GQuark error_domain (void);
 static void item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
 static void menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data);
@@ -653,7 +655,7 @@ get_properties_flush (DbusmenuClient * client)
 /* A function to group all the get_properties commands to make them
    more efficient over dbus. */
 static void
-get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data)
+get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, properties_func callback, gpointer user_data)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	if (find_listener(priv->delayed_property_listeners, 0, id) != NULL) {
