@@ -1055,15 +1055,6 @@ parse_node_get_id (xmlNodePtr node)
 	return -1;
 }
 
-/* A small helper that calls _property_set on each hash table
-   entry in the properties hash. */
-static void
-get_properties_helper (gpointer key, gpointer value, gpointer data)
-{
-	dbusmenu_menuitem_property_set_value((DbusmenuMenuitem *)data, (gchar *)key, (GValue *)value);
-	return;
-}
-
 /* This is the callback for the properties on a menu item.  There
    should be all of them in the Hash, and they we use foreach to
    copy them into the menuitem.
