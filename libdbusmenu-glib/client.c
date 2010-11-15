@@ -1237,9 +1237,13 @@ menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer 
 /* Respond to the call function to make sure that the other side
    got it, or print a warning. */
 static void
-menuitem_call_cb (GDBusProxy * proxy, GError * error, gpointer userdata)
+menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 {
+	GError * error = NULL;
 	event_data_t * edata = (event_data_t *)userdata;
+	GVariant * params;
+
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
 
 	if (error != NULL) {
 		g_warning("Unable to call event '%s' on menu item %d: %s", edata->event, dbusmenu_menuitem_get_id(edata->menuitem), error->message);
@@ -1251,6 +1255,11 @@ menuitem_call_cb (GDBusProxy * proxy, GError * error, gpointer userdata)
 	g_free(edata->event);
 	g_object_unref(edata->menuitem);
 	g_free(edata);
+
+	if (error != NULL) {
+		g_error_free(error);
+	}
+	g_variant_unref(params);
 
 	return;
 }
@@ -1287,11 +1296,14 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	g_value_copy(value, &edata->data);
 	edata->timestamp = timestamp;
 
-	DBusGAsyncData *stuff;
-	stuff = g_slice_new (DBusGAsyncData);
-	stuff->cb = G_CALLBACK (menuitem_call_cb);
-	stuff->userdata = edata;
-	dbus_g_proxy_begin_call_with_timeout (priv->menuproxy, "Event", org_ayatana_dbusmenu_event_async_callback, stuff, _dbus_glib_async_data_free, 1000, G_TYPE_INT, id, G_TYPE_STRING, name, G_TYPE_VALUE, value, G_TYPE_UINT, timestamp, G_TYPE_INVALID);
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "Event",
+	                  g_variant_new("isvu", id, name, value, timestamp),
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  1000,   /* timeout */
+	                  NULL, /* cancellable */
+	                  menuitem_call_cb,
+	                  edata);
 
 	return;
 }
