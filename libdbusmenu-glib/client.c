@@ -1150,7 +1150,7 @@ menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data
    is getting recycled with the update, but we think might have prop
    changes. */
 static void
-menuitem_get_properties_replace_cb (GDBusProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
 	gboolean have_error = FALSE;
@@ -1181,7 +1181,7 @@ menuitem_get_properties_replace_cb (GDBusProxy * proxy, GHashTable * properties,
 /* This is a different get properites call back that also sends
    new signals.  It basically is a small wrapper around the original. */
 static void
-menuitem_get_properties_new_cb (GDBusProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(data != NULL);
 	newItemPropData * propdata = (newItemPropData *)data;
