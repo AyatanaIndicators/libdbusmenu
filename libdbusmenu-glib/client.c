@@ -82,7 +82,7 @@ struct _DbusmenuClientPrivate
 	gint current_revision;
 	gint my_revision;
 
-	GDBusProxy * dbusproxy;
+	guint dbusproxy;
 
 	GHashTable * type_handlers;
 
@@ -303,7 +303,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->current_revision = 0;
 	priv->my_revision = 0;
 
-	priv->dbusproxy = NULL;
+	priv->dbusproxy = 0;
 
 	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
 	                                            g_free, NULL);
@@ -376,9 +376,9 @@ dbusmenu_client_dispose (GObject *object)
 		priv->menuproxy = NULL;
 	}
 
-	if (priv->dbusproxy != NULL) {
-		g_object_unref(G_OBJECT(priv->dbusproxy));
-		priv->dbusproxy = NULL;
+	if (priv->dbusproxy != 0) {
+		g_bus_unwatch_name(priv->dbusproxy);
+		priv->dbusproxy = 0;
 	}
 
 	/* Bring down the session bus, ensure we're not
@@ -790,23 +790,11 @@ id_update (GDBusProxy * proxy, gint id, DbusmenuClient * client)
 
 /* Watches to see if our DBus savior comes onto the bus */
 static void
-dbus_owner_change (GDBusProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, DbusmenuClient * client)
+dbus_owner_change (GDBusConnection * connection, const gchar * name, const gchar * owner, gpointer user_data)
 {
-	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	/* g_debug("Owner change: %s %s %s", name, prev, new); */
+	g_return_if_fail(DBUSMENU_IS_CLIENT(user_data));
 
-	if (!(new[0] != '\0' && prev[0] == '\0')) {
-		/* If it's not someone new getting on the bus, sorry we
-		   simply just don't care.  It's not that your service isn't
-		   important to someone, just not us.  You'll find the right
-		   process someday, there's lots of processes out there. */
-		return;
-	}
-
-	if (g_strcmp0(name, priv->dbus_name)) {
-		/* Again, someone else's service. */
-		return;
-	}
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
 
 	/* Woot!  A service for us to love and to hold for ever
 	   and ever and ever! */
@@ -840,26 +828,17 @@ build_dbus_proxy (DbusmenuClient * client)
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	GError * error = NULL;
 
-	if (priv->dbusproxy != NULL) {
+	if (priv->dbusproxy != 0) {
 		return;
 	}
 
-	priv->dbusproxy = dbus_g_proxy_new_for_name_owner (priv->session_bus,
-	                                                   DBUS_SERVICE_DBUS,
-	                                                   DBUS_PATH_DBUS,
-	                                                   DBUS_INTERFACE_DBUS,
-	                                                   &error);
-	if (error != NULL) {
-		g_debug("Oh, that's bad.  That's really bad.  We can't get a proxy to DBus itself?  Seriously?  Here's all I know: %s", error->message);
-		g_error_free(error);
-		return;
-	}
-
-	dbus_g_proxy_add_signal(priv->dbusproxy, "NameOwnerChanged",
-	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-	                        G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->dbusproxy, "NameOwnerChanged",
-	                            G_CALLBACK(dbus_owner_change), client, NULL);
+	priv->dbusproxy = g_bus_watch_name_on_connection(priv->session_bus,
+	                                                 priv->dbus_name,
+	                                                 G_BUS_NAME_WATCHER_FLAGS_NONE,
+	                                                 dbus_owner_change,
+	                                                 NULL,
+	                                                 client,
+	                                                 NULL);
 
 	/* Now let's check to make sure we're not in some race
 	   condition case. */
@@ -1011,9 +990,9 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	}
 
 	/* If we get here, we don't need the DBus proxy */
-	if (priv->dbusproxy != NULL) {
-		g_object_unref(G_OBJECT(priv->dbusproxy));
-		priv->dbusproxy = NULL;
+	if (priv->dbusproxy != 0) {
+		g_bus_unwatch(priv->dbusproxy);
+		priv->dbusproxy = 0;
 	}
 
 	g_signal_connect(priv->menuproxy, "g-signal",             G_CALLBACK(menuproxy_signal_cb),       client);
