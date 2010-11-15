@@ -129,7 +129,7 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
 static void layout_update (GDBusProxy * proxy, guint revision, gint parent, DbusmenuClient * client);
-static void id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client);
+static void id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GVariant * value, DbusmenuClient * client);
 static void id_update (GDBusProxy * proxy, gint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static gint parse_node_get_id (xmlNodePtr node);
@@ -740,16 +740,8 @@ layout_update (GDBusProxy * proxy, guint revision, gint parent, DbusmenuClient *
 /* Signal from the server that a property has changed
    on one of our menuitems */
 static void
-id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client)
+id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GVariant * value, DbusmenuClient * client)
 {
-	#ifdef MASSIVEDEBUGGING
-	GValue valstr = {0};
-	g_value_init(&valstr, G_TYPE_STRING);
-	g_value_transform(value, &valstr);
-	g_debug("Property change sent to client for item %d property %s value %s", id, property, g_utf8_strlen(g_value_get_string(&valstr), 50) < 25 ? g_value_get_string(&valstr) : "<too long>");
-	g_value_unset(&valstr);
-	#endif
-
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	g_return_if_fail(priv->root != NULL);
@@ -762,7 +754,7 @@ id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GValue * value, D
 		return;
 	}
 
-	dbusmenu_menuitem_property_set_value(menuitem, property, value);
+	dbusmenu_menuitem_property_set_variant(menuitem, property, value);
 
 	return;
 }
