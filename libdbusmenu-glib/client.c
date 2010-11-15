@@ -1116,11 +1116,11 @@ menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpoin
 	GList * current_props = NULL;
 
 	for (current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
-			current_props != NULL ; current_props = g_list_next(current_props)) {
-		if (have_error || g_hash_table_lookup(properties, current_props->data) == NULL) {
-			dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)current_props->data);
-		}
+			current_props != NULL && have_error == FALSE;
+			current_props = g_list_next(current_props)) {
+		dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)current_props->data);
 	}
+	g_list_free(current_props);
 
 	if (!have_error) {
 		menuitem_get_properties_cb(properties, error, data);
