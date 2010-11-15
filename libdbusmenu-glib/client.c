@@ -318,7 +318,6 @@ dbusmenu_client_init (DbusmenuClient *self)
 static void
 dbusmenu_client_dispose (GObject *object)
 {
-	DbusmenuClient * client = DBUSMENU_CLIENT(object);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(object);
 
 	if (priv->delayed_idle != 0) {
@@ -665,7 +664,7 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 		g_warning("Asking for properties from same ID twice: %d", id);
 		GError * localerror = NULL;
 		g_set_error_literal(&localerror, error_domain(), 0, "ID already queued");
-		callback(priv->menuproxy, NULL, localerror, user_data);
+		callback(NULL, localerror, user_data);
 		g_error_free(localerror);
 		return;
 	}
