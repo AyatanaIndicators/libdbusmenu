@@ -127,19 +127,19 @@ static void dbusmenu_client_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
-static void layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient * client);
-static void id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client);
-static void id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client);
+static void layout_update (GDBusProxy * proxy, guint revision, gint parent, DbusmenuClient * client);
+static void id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client);
+static void id_update (GDBusProxy * proxy, gint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static gint parse_node_get_id (xmlNodePtr node);
-static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
+static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, GDBusProxy * proxy);
 static gint parse_layout (DbusmenuClient * client, const gchar * layout);
-static void update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
+static void update_layout_cb (GDBusProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
 static void update_layout (DbusmenuClient * client);
-static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
+static void menuitem_get_properties_cb (GDBusProxy * proxy, GHashTable * properties, GError * error, gpointer data);
 static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, properties_func callback, gpointer user_data);
 static GQuark error_domain (void);
-static void item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
+static void item_activated (GDBusProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
 static void menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data);
 static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data);
 static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
@@ -494,7 +494,7 @@ find_listener (GArray * listeners, guint index, gint id)
 /* Call back from getting the group properties, now we need
    to unwind and call the various functions. */
 static void 
-get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *error, gpointer userdata)
+get_properties_callback (GDBusProxy *proxy, GPtrArray *OUT_properties, GError *error, gpointer userdata)
 {
 	GArray * listeners = (GArray *)userdata;
 	int i;
@@ -701,7 +701,7 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 
 /* Called when a server item wants to activate the menu */
 static void
-item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client)
+item_activated (GDBusProxy * proxy, gint id, guint timestamp, DbusmenuClient * client)
 {
 	g_return_if_fail(DBUSMENU_IS_CLIENT(client));
 
@@ -725,7 +725,7 @@ item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * c
 
 /* Annoying little wrapper to make the right function update */
 static void
-layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient * client)
+layout_update (GDBusProxy * proxy, guint revision, gint parent, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	priv->current_revision = revision;
@@ -738,7 +738,7 @@ layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient *
 /* Signal from the server that a property has changed
    on one of our menuitems */
 static void
-id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client)
+id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
 	GValue valstr = {0};
@@ -768,7 +768,7 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 /* Oh, lots of updates now.  That silly server, they want
    to change all kinds of stuff! */
 static void
-id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
+id_update (GDBusProxy * proxy, gint id, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client side ID update: %d", id);
@@ -788,7 +788,7 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 
 /* Watches to see if our DBus savior comes onto the bus */
 static void
-dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, DbusmenuClient * client)
+dbus_owner_change (GDBusProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	/* g_debug("Owner change: %s %s %s", name, prev, new); */
@@ -815,7 +815,7 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
    it does, then we should build the proxies here.  Race condition
    check. */
 static void
-name_owner_check (DBusGProxy *proxy, gboolean has_owner, GError *error, gpointer userdata)
+name_owner_check (GDBusProxy *proxy, gboolean has_owner, GError *error, gpointer userdata)
 {
 	if (error != NULL) {
 		return;
@@ -1115,7 +1115,7 @@ get_properties_helper (gpointer key, gpointer value, gpointer data)
    This isn't the most efficient way.  We can optimize this by
    somehow removing the foreach.  But that is for later.  */
 static void
-menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_cb (GDBusProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
 	if (error != NULL) {
@@ -1133,7 +1133,7 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
    is getting recycled with the update, but we think might have prop
    changes. */
 static void
-menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_replace_cb (GDBusProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
 	gboolean have_error = FALSE;
@@ -1164,7 +1164,7 @@ menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties,
 /* This is a different get properites call back that also sends
    new signals.  It basically is a small wrapper around the original. */
 static void
-menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_new_cb (GDBusProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(data != NULL);
 	newItemPropData * propdata = (newItemPropData *)data;
@@ -1216,7 +1216,7 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 /* Respond to the call function to make sure that the other side
    got it, or print a warning. */
 static void
-menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
+menuitem_call_cb (GDBusProxy * proxy, GError * error, gpointer userdata)
 {
 	event_data_t * edata = (event_data_t *)userdata;
 
@@ -1285,7 +1285,7 @@ struct _about_to_show_t {
 /* Reports errors and responds to update request that were a result
    of sending the about to show signal. */
 static void
-about_to_show_cb (DBusGProxy * proxy, gboolean need_update, GError * error, gpointer userdata)
+about_to_show_cb (GDBusProxy * proxy, gboolean need_update, GError * error, gpointer userdata)
 {
 	about_to_show_t * data = (about_to_show_t *)userdata;
 
@@ -1369,7 +1369,7 @@ parse_layout_update (DbusmenuMenuitem * item, DbusmenuClient * client)
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
-parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
+parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, GDBusProxy * proxy)
 {
 	/* First verify and figure out what we've got */
 	gint id = parse_node_get_id(node);
@@ -1540,7 +1540,7 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 /* When the layout property returns, here's where we take care of that. */
 static void
-update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, void * data)
+update_layout_cb (GDBusProxy * proxy, guint rev, gchar * xml, GError * error, void * data)
 {
 	DbusmenuClient * client = DBUSMENU_CLIENT(data);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
