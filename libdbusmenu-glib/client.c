@@ -360,7 +360,8 @@ dbusmenu_client_dispose (GObject *object)
 	}
 
 	if (priv->layoutcall != NULL) {
-		dbus_g_proxy_cancel_call(priv->menuproxy, priv->layoutcall);
+		g_cancellable_cancel(priv->layoutcall);
+		g_object_unref(priv->layoutcall);
 		priv->layoutcall = NULL;
 	}
 
@@ -890,7 +891,11 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	}
 
 	if ((gpointer)priv->menuproxy == (gpointer)gobj_proxy) {
-		priv->layoutcall = NULL;
+		if (priv->layoutcall != NULL) {
+			g_cancellable_cancel(priv->layoutcall);
+			g_object_unref(priv->layoutcall);
+			priv->layoutcall = NULL;
+		}
 	}
 
 	priv->current_revision = 0;
@@ -1574,7 +1579,10 @@ update_layout_cb (GDBusProxy * proxy, guint rev, gchar * xml, GError * error, vo
 
 	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
-	priv->layoutcall = NULL;
+	if (priv->layoutcall != NULL) {
+		g_object_unref(priv->layoutcall);
+		priv->layoutcall = NULL;
+	}
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client signaling layout has changed.");
 	#endif 
@@ -1604,7 +1612,9 @@ update_layout (DbusmenuClient * client)
 		return;
 	}
 
-	priv->layoutcall = org_ayatana_dbusmenu_get_layout_async(priv->menuproxy,
+	priv->layoutcall = g_cancellable_new();
+
+	org_ayatana_dbusmenu_get_layout_async(priv->menuproxy,
 	                                                         0, /* Parent is the root */
 	                                                         update_layout_cb,
 	                                                         client);
