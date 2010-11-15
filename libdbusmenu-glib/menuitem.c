@@ -1021,6 +1021,13 @@ dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * prope
 	return TRUE;
 }
 
+gboolean
+dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * property, const GVariant * value)
+{
+
+	return FALSE;
+}
+
 /**
 	dbusmenu_menuitem_property_get:
 	@mi: The #DbusmenuMenuitem to look for the property on.
@@ -1063,6 +1070,13 @@ dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * prope
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
 	return (const GValue *)g_hash_table_lookup(priv->properties, property);
+}
+
+const GVariant *
+dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property)
+{
+
+	return NULL;
 }
 
 /**
