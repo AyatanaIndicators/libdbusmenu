@@ -118,6 +118,7 @@ struct _event_data_t {
 
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) (DBUSMENU_CLIENT(o)->priv)
+#define DBUSMENU_INTERFACE  "org.ayatana.dbusmenu"
 
 /* GObject Stuff */
 static void dbusmenu_client_class_init (DbusmenuClientClass *klass);
