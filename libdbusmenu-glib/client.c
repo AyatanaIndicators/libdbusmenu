@@ -60,7 +60,7 @@ enum {
 	LAST_SIGNAL
 };
 
-typedef void (*properties_func) (DbusmenuClient * client, GVariant * properties, GError * error);
+typedef void (*properties_func) (GVariant * properties, GError * error, gpointer user_data);
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
@@ -348,7 +348,7 @@ dbusmenu_client_dispose (GObject *object)
 				if (localerror == NULL) {
 					g_set_error_literal(&localerror, error_domain(), 0, "DbusmenuClient Shutdown");
 				}
-				listener->callback(client, NULL, localerror);
+				listener->callback(NULL, localerror, listener->user_data);
 			}
 		}
 		if (localerror != NULL) {
@@ -496,47 +496,37 @@ find_listener (GArray * listeners, guint index, gint id)
 /* Call back from getting the group properties, now we need
    to unwind and call the various functions. */
 static void 
-get_properties_callback (GDBusProxy *proxy, GPtrArray *OUT_properties, GError *error, gpointer userdata)
+get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 {
-	GArray * listeners = (GArray *)userdata;
+	GArray * listeners = (GArray *)user_data;
 	int i;
+	GError * error = NULL;
+	GVariant * params = NULL;
 
-	#ifdef MASSIVEDEBUGGING
-	g_debug("Get properties callback: %d", OUT_properties->len);
-	#endif
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(obj), res, &error);
 
 	if (error != NULL) {
 		/* If we get an error, all our callbacks need to hear about it. */
 		g_warning("Group Properties error: %s", error->message);
 		for (i = 0; i < listeners->len; i++) {
 			properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
-			listener->callback(proxy, NULL, error, listener->user_data);
+			listener->callback(NULL, error, listener->user_data);
 		}
 		g_array_free(listeners, TRUE);
 		return;
 	}
 
 	/* Callback all the folks we can find */
-	for (i = 0; i < OUT_properties->len; i++) {
-		GValueArray * varray = (GValueArray *)g_ptr_array_index(OUT_properties, i);
-
-		if (varray->n_values != 2) {
-			g_warning("Value Array is %d entries long but we expected 2.", varray->n_values);
+	GVariantIter * iter = g_variant_iter_new(params);
+	GVariant * child;
+	while ((child = g_variant_iter_next_value(iter)) != NULL) {
+		if (g_strcmp0(g_variant_get_type_string(child), "ia(sv)") != 0) {
+			g_warning("Properties return signature is not 'ia(sv)' it is '%s'", g_variant_get_type_string(child));
 			continue;
 		}
 
-		GValue * vid = g_value_array_get_nth(varray, 0);
-		GValue * vproperties = g_value_array_get_nth(varray, 1);
-
-		if (G_VALUE_TYPE(vid) != G_TYPE_INT) {
-			g_warning("ID Entry not holding an int: %s", G_VALUE_TYPE_NAME(vid));
-		}
-		if (G_VALUE_TYPE(vproperties) != dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
-			g_warning("Properties Entry not holding an a{sv}: %s", G_VALUE_TYPE_NAME(vproperties));
-		}
-
-		gint id = g_value_get_int(vid);
-		GHashTable * properties = g_value_get_boxed(vproperties);
+		gint id = g_variant_get_int32(g_variant_get_child_value(child, 0));
+		GVariant * properties = g_variant_get_child_value(child, 1);
 
 		properties_listener_t * listener = find_listener(listeners, 0, id);
 		if (listener == NULL) {
@@ -545,12 +535,13 @@ get_properties_callback (GDBusProxy *proxy, GPtrArray *OUT_properties, GError *e
 		}
 
 		if (!listener->replied) {
-			listener->callback(proxy, properties, NULL, listener->user_data);
+			listener->callback(properties, NULL, listener->user_data);
 			listener->replied = TRUE;
 		} else {
 			g_warning("Odd, we've already replied to the listener on ID %d", id);
 		}
 	}
+	g_variant_iter_free(iter);
 
 	/* Provide errors for those who we can't */
 	GError * localerror = NULL;
@@ -560,7 +551,7 @@ get_properties_callback (GDBusProxy *proxy, GPtrArray *OUT_properties, GError *e
 			if (localerror == NULL) {
 				g_set_error_literal(&localerror, error_domain(), 0, "Error getting properties for ID");
 			}
-			listener->callback(proxy, NULL, localerror, listener->user_data);
+			listener->callback(NULL, localerror, listener->user_data);
 		}
 	}
 	if (localerror != NULL) {
@@ -579,7 +570,7 @@ static gboolean
 get_properties_idle (gpointer user_data)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
-	//org_ayatana_dbusmenu_get_properties_async(priv->menuproxy, id, properties, callback, user_data);
+	g_return_val_if_fail(priv->menuproxy != NULL, TRUE);
 
 	if (priv->delayed_property_listeners->len == 0) {
 		g_warning("Odd, idle func got no listeners.");
@@ -593,7 +584,15 @@ get_properties_idle (gpointer user_data)
 		g_array_append_val(idlist, g_array_index(priv->delayed_property_listeners, properties_listener_t, i).id);
 	}
 
-	org_ayatana_dbusmenu_get_group_properties_async(priv->menuproxy, idlist, (const gchar **)priv->delayed_property_list->data, get_properties_callback, priv->delayed_property_listeners);
+	GVariant * variant_params = g_variant_new("a(s)", (const gchar **)priv->delayed_property_list->data);
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "GetGroupProperties",
+	                  variant_params,
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  -1,   /* timeout */
+	                  NULL, /* cancellable */
+	                  get_properties_callback,
+	                  priv->delayed_property_listeners);
 
 	/* Free ID List */
 	g_array_free(idlist, TRUE);
