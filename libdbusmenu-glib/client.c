@@ -1306,14 +1306,22 @@ struct _about_to_show_t {
 /* Reports errors and responds to update request that were a result
    of sending the about to show signal. */
 static void
-about_to_show_cb (GDBusProxy * proxy, gboolean need_update, GError * error, gpointer userdata)
+about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 {
+	gboolean need_update = FALSE;
+	GError * error = NULL;
 	about_to_show_t * data = (about_to_show_t *)userdata;
+	GVariant * params = NULL;
+
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
 
 	if (error != NULL) {
 		g_warning("Unable to send about_to_show: %s", error->message);
 		/* Note: we're just ensuring only the callback gets called */
 		need_update = FALSE;
+	} else {
+		g_variant_get(params, "b", &need_update);
+		g_variant_unref(params);
 	}
 
 	/* If we need to update, do that first. */
@@ -1344,7 +1352,14 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 	data->cb_data = cb_data;
 	g_object_ref(client);
 
-	org_ayatana_dbusmenu_about_to_show_async (priv->menuproxy, id, about_to_show_cb, data);
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "AboutToShow",
+	                  g_variant_new("i", id),
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  -1,   /* timeout */
+	                  NULL, /* cancellable */
+	                  about_to_show_cb,
+	                  data);
 	return;
 }
 
