@@ -197,3 +197,7 @@ tests/test-glib-events-server
 libdbusmenu-glib/dbus-menu.xml.c
 libdbusmenu-glib/dbus-menu.xml.h
 libdbusmenu-glib/libdbusmenu_glib_la-dbus-menu.xml.lo
+libdbusmenu-glib/dbus-menu-clean.xml
+libdbusmenu-glib/dbus-menu-clean.xml.c
+libdbusmenu-glib/dbus-menu-clean.xml.h
+libdbusmenu-glib/libdbusmenu_glib_la-dbus-menu-clean.xml.lo
