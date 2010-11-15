@@ -60,7 +60,7 @@ enum {
 	LAST_SIGNAL
 };
 
-typedef void (*properties_func) (DbusmenuClient * client, GVariant * properties);
+typedef void (*properties_func) (DbusmenuClient * client, GVariant * properties, GError * error);
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
@@ -318,6 +318,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 static void
 dbusmenu_client_dispose (GObject *object)
 {
+	DbusmenuClient * client = DBUSMENU_CLIENT(object);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(object);
 
 	if (priv->delayed_idle != 0) {
@@ -347,7 +348,7 @@ dbusmenu_client_dispose (GObject *object)
 				if (localerror == NULL) {
 					g_set_error_literal(&localerror, error_domain(), 0, "DbusmenuClient Shutdown");
 				}
-				listener->callback(priv->menuproxy, NULL, localerror, listener->user_data);
+				listener->callback(client, NULL, localerror);
 			}
 		}
 		if (localerror != NULL) {
