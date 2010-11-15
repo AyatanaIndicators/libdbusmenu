@@ -801,25 +801,6 @@ dbus_owner_change (GDBusConnection * connection, const gchar * name, const gchar
 	return build_proxies(client);
 }
 
-/* This is the response to see if the name has an owner.  If
-   it does, then we should build the proxies here.  Race condition
-   check. */
-static void
-name_owner_check (GDBusProxy *proxy, gboolean has_owner, GError *error, gpointer userdata)
-{
-	if (error != NULL) {
-		return;
-	}
-
-	if (!has_owner) {
-		return;
-	}
-
-	DbusmenuClient * client = DBUSMENU_CLIENT(userdata);
-	build_proxies(client);
-	return;
-}
-
 /* This function builds the DBus proxy which will look out for
    the service coming up. */
 static void
@@ -842,10 +823,7 @@ build_dbus_proxy (DbusmenuClient * client)
 
 	/* Now let's check to make sure we're not in some race
 	   condition case. */
-	org_freedesktop_DBus_name_has_owner_async(priv->dbusproxy,
-	                                          priv->dbus_name,
-	                                          name_owner_check,
-	                                          client);
+	/* TODO: Not sure how to check for names in GDBus */
 
 	return;
 }
