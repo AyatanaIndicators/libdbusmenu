@@ -41,7 +41,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "client-menuitem.h"
 #include "server-marshal.h"
 #include "client-marshal.h"
-#include "dbus-menu.xml.h"
+#include "dbus-menu-clean.xml.h"
 
 /* Properties */
 enum {
@@ -262,7 +262,7 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	if (dbusmenu_node_info == NULL) {
 		GError * error = NULL;
 
-		dbusmenu_node_info = g_dbus_node_info_new_for_xml(dbus_menu_xml, &error);
+		dbusmenu_node_info = g_dbus_node_info_new_for_xml(dbus_menu_clean_xml, &error);
 		if (error != NULL) {
 			g_error("Unable to parse DBusmenu Interface description: %s", error->message);
 			g_error_free(error);

@@ -2,6 +2,7 @@
 CLEANFILES = 
 
 EXTRA_DIST = \
+	clean-namespaces.xslt \
 	dbusmenu-glib.pc.in \
 	dbus-menu.xml \
 	client-marshal.list \
@@ -20,8 +21,8 @@ libdbusmenu_glibinclude_HEADERS = \
 	client.h
 
 libdbusmenu_glib_la_SOURCES = \
-	dbus-menu.xml.h \
-	dbus-menu.xml.c \
+	dbus-menu-clean.xml.h \
+	dbus-menu-clean.xml.c \
 	menuitem.h \
 	menuitem.c \
 	menuitem-marshal.h \
@@ -62,10 +63,14 @@ pkgconfigdir = $(libdir)/pkgconfig
 	sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
 	echo ";" >> $@
 
+dbus-menu-clean.xml: dbus-menu.xml
+	xsltproc $(srcdir)/clean-namespaces.xslt $< > $@
+
+CLEANFILES += dbus-menu-clean.xml
 
 BUILT_SOURCES = \
-	dbus-menu.xml.c \
-	dbus-menu.xml.h \
+	dbus-menu-clean.xml.c \
+	dbus-menu-clean.xml.h \
 	client-marshal.h \
 	client-marshal.c \
 	menuitem-marshal.h \
