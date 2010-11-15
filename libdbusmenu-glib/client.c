@@ -807,7 +807,6 @@ static void
 build_dbus_proxy (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	GError * error = NULL;
 
 	if (priv->dbusproxy != 0) {
 		return;
@@ -878,6 +877,7 @@ session_bus_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	}
 
 	/* If this wasn't cancelled, we should be good */
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	priv->session_bus = bus;
 
@@ -898,7 +898,6 @@ static void
 build_proxies (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	GError * error = NULL;
 
 	g_return_if_fail(priv->dbus_object != NULL);
 	g_return_if_fail(priv->dbus_name != NULL);
@@ -912,7 +911,7 @@ build_proxies (DbusmenuClient * client)
 			priv->session_bus_cancel = g_cancellable_new();
 
 			/* Async get the session bus */
-			g_bus_get(G_BUS_SESSION, priv->session_bus_cancel, session_bus_cb, client);
+			g_bus_get(G_BUS_TYPE_SESSION, priv->session_bus_cancel, session_bus_cb, client);
 		}
 
 		/* This function exists, it'll be called again when we get
@@ -959,7 +958,8 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	}
 
 	/* If this wasn't cancelled, we should be good */
-	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	priv->menuproxy = proxy;
 
 	if (priv->menuproxy_cancel != NULL) {
@@ -969,7 +969,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != 0) {
-		g_bus_unwatch(priv->dbusproxy);
+		g_bus_unwatch_name(priv->dbusproxy);
 		priv->dbusproxy = 0;
 	}
 
