@@ -137,7 +137,7 @@ static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr n
 static gint parse_layout (DbusmenuClient * client, const gchar * layout);
 static void update_layout_cb (GDBusProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
 static void update_layout (DbusmenuClient * client);
-static void menuitem_get_properties_cb (GDBusProxy * proxy, GHashTable * properties, GError * error, gpointer data);
+static void menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data);
 static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, properties_func callback, gpointer user_data);
 static GQuark error_domain (void);
 static void item_activated (GDBusProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
@@ -542,6 +542,7 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 		}
 	}
 	g_variant_iter_free(iter);
+	g_variant_unref(params);
 
 	/* Provide errors for those who we can't */
 	GError * localerror = NULL;
@@ -1116,17 +1117,32 @@ get_properties_helper (gpointer key, gpointer value, gpointer data)
    This isn't the most efficient way.  We can optimize this by
    somehow removing the foreach.  But that is for later.  */
 static void
-menuitem_get_properties_cb (GDBusProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
+	DbusmenuMenuitem * item = DBUSMENU_MENUITEM(data);
+
 	if (error != NULL) {
 		g_warning("Error getting properties on a menuitem: %s", error->message);
 		g_object_unref(data);
 		return;
 	}
-	g_hash_table_foreach(properties, get_properties_helper, data);
-	g_hash_table_destroy(properties);
+
+	GVariantIter * iter = g_variant_iter_new(properties);
+	gchar * key;
+	GVariant * value;
+
+	while (g_variant_iter_next(iter, "{sv}", &key, &value)) {
+		dbusmenu_menuitem_property_set_variant(item, key, value);
+
+		g_variant_unref(value);
+		g_free(key);
+	}
+
+	g_variant_iter_free(iter);
+
 	g_object_unref(data);
+
 	return;
 }
 
@@ -1154,7 +1170,7 @@ menuitem_get_properties_replace_cb (GDBusProxy * proxy, GHashTable * properties,
 	}
 
 	if (!have_error) {
-		menuitem_get_properties_cb(proxy, properties, error, data);
+		menuitem_get_properties_cb(properties, error, data);
 	} else {
 		g_object_unref(data);
 	}
@@ -1181,7 +1197,7 @@ menuitem_get_properties_new_cb (GDBusProxy * proxy, GHashTable * properties, GEr
 
 	/* Extra ref as get_properties will unref once itself */
 	g_object_ref(propdata->item);
-	menuitem_get_properties_cb (proxy, properties, error, propdata->item);
+	menuitem_get_properties_cb (properties, error, propdata->item);
 
 	gboolean handled = FALSE;
 
