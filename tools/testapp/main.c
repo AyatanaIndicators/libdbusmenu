@@ -26,9 +26,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 */
 #include <glib.h>
-
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
+#include <gio/gio.h>
 
 #include <json-glib/json-glib.h>
 
@@ -117,6 +115,24 @@ void init_menu(DbusmenuMenuitem *root, const char *filename)
 	}
 }
 
+static void
+on_bus (GDBusConnection * connection, const gchar * name, gpointer user_data)
+{
+	DbusmenuServer *server = dbusmenu_server_new("/MenuBar");
+	DbusmenuMenuitem *root = dbusmenu_menuitem_new_with_id(0);
+	init_menu(root, (gchar *)user_data);
+	dbusmenu_server_set_root(server, root);
+
+	return;
+}
+
+static void
+name_lost (GDBusConnection * connection, const gchar * name, gpointer user_data)
+{
+	g_error("Unable to get name '%s' on DBus", name);
+	return;
+}
+
 int main (int argc, char ** argv)
 {
 	g_type_init();
@@ -127,25 +143,14 @@ int main (int argc, char ** argv)
 	}
 	const char *filename = argv[1];
 
-	GError * error = NULL;
-	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
-	guint nameret = 0;
-
-	if (!org_freedesktop_DBus_request_name(bus_proxy, "org.dbusmenu.test", 0, &nameret, &error)) {
-		g_error("Unable to call to request name");
-		return 1;
-	}
-
-	if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-		g_error("Unable to get name");
-		return 1;
-	}
-
-	DbusmenuServer *server = dbusmenu_server_new("/MenuBar");
-	DbusmenuMenuitem *root = dbusmenu_menuitem_new_with_id(0);
-	init_menu(root, filename);
-	dbusmenu_server_set_root(server, root);
+	g_bus_own_name(G_BUS_TYPE_SESSION,
+	               "org.dbusmenu.test",
+	               G_BUS_NAME_OWNER_FLAGS_NONE,
+	               on_bus,
+	               NULL,
+	               name_lost,
+	               (gpointer)filename,
+	               NULL);
 
 	g_main_loop_run(g_main_loop_new(NULL, FALSE));
 
