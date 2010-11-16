@@ -1072,7 +1072,7 @@ dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * prope
 	return (const GValue *)g_hash_table_lookup(priv->properties, property);
 }
 
-const GVariant *
+GVariant *
 dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property)
 {
 

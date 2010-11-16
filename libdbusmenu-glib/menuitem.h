@@ -194,7 +194,7 @@ gboolean dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar
 gboolean dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value);
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
 const GValue * dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * property);
-const GVariant * dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property);
+GVariant * dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property);
 gint dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
