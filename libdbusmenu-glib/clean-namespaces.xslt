@@ -5,5 +5,10 @@
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="@dox:*|dox:*"/>
+	<xsl:template match="*">
+		<xsl:element name="{local-name()}">
+			<xsl:apply-templates select="@* | node()"/>
+		</xsl:element>
+	</xsl:template>
 </xsl:stylesheet>
 
