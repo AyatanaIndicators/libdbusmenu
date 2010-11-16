@@ -20,7 +20,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "json-loader.h"
-#include <dbus/dbus-gtype-specialized.h>
 
 static GValue *
 node2value (JsonNode * node)
@@ -74,58 +73,12 @@ node2value (JsonNode * node)
 			}
 
 		} else {
-			GValue * subvalue = node2value(first);
-			GType type = dbus_g_type_get_collection("GPtrArray", G_VALUE_TYPE(subvalue));
-			gpointer * wrapper = dbus_g_type_specialized_construct(type);
-
-			g_value_init(value, type);
-			g_value_take_boxed(value, wrapper);
-
-			DBusGTypeSpecializedAppendContext ctx;
-			dbus_g_type_specialized_init_append(value, &ctx);
-
-			dbus_g_type_specialized_collection_append(&ctx, subvalue);
-			int i;
-			for (i = 1; i < json_array_get_length(array); i++) {
-				GValue * subvalue = node2value(node);
-				dbus_g_type_specialized_collection_append(&ctx, subvalue);
-			}
-
-			dbus_g_type_specialized_collection_end_append(&ctx);
+			g_warning("Complex array not supported");
 		}
 	}
 
 	if (JSON_NODE_TYPE(node) == JSON_NODE_OBJECT) {
-		JsonObject * obj = json_node_get_object(node);
-
-		GType type = dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE);
-		GHashTable * hash = (GHashTable *)dbus_g_type_specialized_construct(type);
-
-		g_value_init(value, type);
-		g_value_take_boxed(value, hash);
-
-		DBusGTypeSpecializedAppendContext ctx;
-		dbus_g_type_specialized_init_append(value, &ctx);
-		
-		GList * members = NULL;
-		for (members = json_object_get_members(obj); members != NULL; members = g_list_next(members)) {
-			const gchar * member = members->data;
-
-			JsonNode * lnode = json_object_get_member(obj, member);
-			GValue * value = node2value(lnode);
-
-			if (value != NULL) {
-				GValue name = {0};
-				g_value_init(&name, G_TYPE_STRING);
-				g_value_set_static_string(&name, member);
-
-				dbus_g_type_specialized_map_append(&ctx, &name, value);
-			
-				g_value_unset(&name);
-				g_value_unset(value);
-				g_free(value);
-			}
-		}
+		g_warning("Object nodes are a problem");
 	}
 
 	return value;
