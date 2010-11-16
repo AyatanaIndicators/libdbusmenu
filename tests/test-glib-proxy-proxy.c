@@ -1,9 +1,5 @@
 #include <glib.h>
-
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-#include <dbus/dbus-glib-bindings.h>
+#include <gio/gio.h>
 
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/menuitem-proxy.h>
@@ -32,6 +28,25 @@ root_changed (DbusmenuClient * client, DbusmenuMenuitem * newroot, gpointer user
 	return;
 }
 
+static void
+on_bus (GDBusConnection * connection, const gchar * name, gpointer user_data)
+{
+	server = dbusmenu_server_new("/org/test");
+	client = dbusmenu_client_new((gchar *)user_data, "/org/test");
+
+	g_signal_connect(client, DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(root_changed), server);
+
+	return;
+}
+
+static void
+name_lost (GDBusConnection * connection, const gchar * name, gpointer user_data)
+{
+	g_error("Unable to get name '%s' on DBus", name);
+	g_main_loop_quit(mainloop);
+	return;
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -47,28 +62,14 @@ main (int argc, char ** argv)
 
 	g_debug("I am '%s' and I'm proxying '%s'", whoami, myproxy);
 
-	GError * error = NULL;
-	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-
-	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(connection)));
-
-	DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
-	guint nameret = 0;
-
-	if (!org_freedesktop_DBus_request_name(bus_proxy, whoami, 0, &nameret, &error)) {
-		g_error("Unable to call to request name");
-		return 1;
-	}
-
-	if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-		g_error("Unable to get name");
-		return 1;
-	}
-
-	server = dbusmenu_server_new("/org/test");
-	client = dbusmenu_client_new(myproxy, "/org/test");
-
-	g_signal_connect(client, DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(root_changed), server);
+	g_bus_own_name(G_BUS_TYPE_SESSION,
+	               "org.dbusmenu.test",
+	               G_BUS_NAME_OWNER_FLAGS_NONE,
+	               on_bus,
+	               NULL,
+	               name_lost,
+	               myproxy,
+	               NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
