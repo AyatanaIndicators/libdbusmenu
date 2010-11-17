@@ -1,0 +1,86 @@
+<!-- ##### SECTION Title ##### -->
+menuitem
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_image ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@property: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_get_image ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@property: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_shortcut ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@key: 
+@modifier: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_shortcut_string ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@shortcut: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_shortcut_menuitem ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@gmi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_get_shortcut ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@key: 
+@modifiers: 
+
+

@@ -53,6 +53,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
 #define DBUSMENU_SERVER_PROP_VERSION           "version"
 
+typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
+
 /**
 	DbusmenuServerClass:
 	@parent_class: #GObjectClass
@@ -60,9 +62,13 @@ G_BEGIN_DECLS
 	@id_update: Slot for #DbusmenuServer::id-update.
 	@layout_updated: Slot for #DbusmenuServer::layout-update.
 	@item_activation_requested: Slot for #DbusmenuServer::item-activation-requested.
-	@dbusmenu_server_reserved1: Reserved for future use.
-	@dbusmenu_server_reserved2: Reserved for future use.
-	@dbusmenu_server_reserved3: Reserved for future use.
+
+	@reserved1: Reserved for future use.
+	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
+	@reserved5: Reserved for future use.
+	@reserved6: Reserved for future use.
 
 	The class implementing the virtual functions for #DbusmenuServer.
 */
@@ -76,10 +82,13 @@ struct _DbusmenuServerClass {
 	void (*layout_updated)(gint revision);
 	void (*item_activation)(gint id, guint timestamp);
 
-	/* Reserved */
-	void (*dbusmenu_server_reserved1)(void);
-	void (*dbusmenu_server_reserved2)(void);
-	void (*dbusmenu_server_reserved3)(void);
+	/*< Private >*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 /**
@@ -92,6 +101,9 @@ struct _DbusmenuServerClass {
 typedef struct _DbusmenuServer      DbusmenuServer;
 struct _DbusmenuServer {
 	GObject parent;
+
+	/*< Private >*/
+	DbusmenuServerPrivate * priv;
 };
 
 GType               dbusmenu_server_get_type   (void);

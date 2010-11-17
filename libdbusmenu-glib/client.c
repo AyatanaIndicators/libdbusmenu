@@ -43,6 +43,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "server-marshal.h"
 #include "client-marshal.h"
 
+/* How many property requests should we queue before
+   sending the message on dbus */
+#define MAX_PROPERTIES_TO_QUEUE  100
+
 /* Properties */
 enum {
 	PROP_0,
@@ -62,7 +66,6 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 struct _DbusmenuClientPrivate
 {
 	DbusmenuMenuitem * root;
@@ -113,8 +116,7 @@ struct _event_data_t {
 };
 
 
-#define DBUSMENU_CLIENT_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate))
+#define DBUSMENU_CLIENT_GET_PRIVATE(o) (DBUSMENU_CLIENT(o)->priv)
 
 /* GObject Stuff */
 static void dbusmenu_client_class_init (DbusmenuClientClass *klass);
@@ -254,6 +256,8 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 static void
 dbusmenu_client_init (DbusmenuClient *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate);
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(self);
 
 	priv->root = NULL;
@@ -626,6 +630,13 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 
 	if (priv->delayed_idle == 0) {
 		priv->delayed_idle = g_idle_add(get_properties_idle, client);
+	}
+
+	/* Look at how many proprites we have queued up and
+	   make it so that we don't leave too many in one
+	   request. */
+	if (priv->delayed_property_listeners->len == MAX_PROPERTIES_TO_QUEUE) {
+		get_properties_flush(client);
 	}
 
 	return;
@@ -1283,8 +1294,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 	/* We've got everything built up at this node and reconcilled */
 
-	/* Flush the properties requests */
-	get_properties_flush(client);
+	/* Flush the properties requests if this is the first level */
+	if (dbusmenu_menuitem_get_id(parent) == 0) {
+		get_properties_flush(client);
+	}
 
 	/* now it's time to recurse down the tree. */
 	children = node->children;

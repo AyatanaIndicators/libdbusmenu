@@ -786,6 +786,9 @@ uninstall-am:
 	ps ps-am tags tags-recursive uninstall uninstall-am
 
 
+#
+# DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc --disable-deprecations
+
 dist-hook:
 	@if test -d "$(top_srcdir)/.bzr"; \
 		then \

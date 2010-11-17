@@ -44,7 +44,6 @@ enum {
 };
 
 /* Private */
-typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
 struct _DbusmenuGtkMenuPrivate {
 	DbusmenuGtkClient * client;
 
@@ -52,8 +51,7 @@ struct _DbusmenuGtkMenuPrivate {
 	gchar * dbus_name;
 };
 
-#define DBUSMENU_GTKMENU_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuPrivate))
+#define DBUSMENU_GTKMENU_GET_PRIVATE(o)  (DBUSMENU_GTKMENU(o)->priv)
 
 /* Prototypes */
 static void dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass);
@@ -110,6 +108,8 @@ menu_focus_cb(DbusmenuGtkMenu * menu, gpointer userdata)
 static void
 dbusmenu_gtkmenu_init (DbusmenuGtkMenu *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuPrivate);
+
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(self);
 
 	priv->client = NULL;
@@ -237,7 +237,7 @@ root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint posit
 	GtkMenuItem * mi = dbusmenu_gtkclient_menuitem_get(priv->client, child);
 	if (mi != NULL) {
 		GtkWidget * item = GTK_WIDGET(mi);
-		gtk_menu_insert(GTK_MENU(menu), item, dbusmenu_menuitem_get_position_realized(child, root));
+		gtk_menu_shell_insert(GTK_MENU_SHELL(menu), item, dbusmenu_menuitem_get_position_realized(child, root));
 		#ifdef MASSIVEDEBUGGING
 		menu_pos_t menu_pos;
 		menu_pos.mi = mi;
@@ -299,7 +299,7 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 	GtkWidget * child_widget = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
 
 	if (child_widget != NULL) {
-		gtk_menu_append(menu, child_widget);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), child_widget);
 		gtk_menu_reorder_child(GTK_MENU(menu), child_widget, dbusmenu_menuitem_get_position_realized(child, dbusmenu_client_get_root(DBUSMENU_CLIENT(priv->client))));
 	} else {
 		g_warning("Child is realized, but doesn't have a GTK Widget!");

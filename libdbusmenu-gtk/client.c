@@ -37,13 +37,11 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "genericmenuitem.h"
 
 /* Private */
-typedef struct _DbusmenuGtkClientPrivate DbusmenuGtkClientPrivate;
 struct _DbusmenuGtkClientPrivate {
 	GtkAccelGroup * agroup;
 };
 
-#define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientPrivate))
+#define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) (DBUSMENU_GTKCLIENT(o)->priv)
 
 /* Prototypes */
 static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
@@ -85,6 +83,8 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientPrivate);
+
 	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(self);
 
 	priv->agroup = NULL;
@@ -454,11 +454,17 @@ activate_helper (GtkMenuShell * shell)
 					activate_helper(GTK_MENU_SHELL(parent));
 				}
 
+				/* This code is being commented out for GTK 3 because it
+				   doesn't expose the right variables.  We need to figure
+				   this out as menus won't get grabs properly.
+				   TODO FIXME HELP ARGHHHHHHHH */
+#if (HAVE_GTK3 == 0)
 				if (!GTK_MENU_SHELL (parent)->active) {
 					gtk_grab_add (parent);
 					GTK_MENU_SHELL (parent)->have_grab = TRUE;
 					GTK_MENU_SHELL (parent)->active = TRUE;
 				}
+#endif
 
 				gtk_menu_shell_select_item(GTK_MENU_SHELL(parent), attach);
 			}
