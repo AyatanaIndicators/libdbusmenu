@@ -913,11 +913,8 @@ dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 gboolean
 dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value)
 {
-	GValue val = {0};
-	g_value_init(&val, G_TYPE_STRING);
-	g_value_set_static_string(&val, value);
-	/* TODO: Switch to use variant */
-	return dbusmenu_menuitem_property_set_value(mi, property, &val);
+	GVariant * variant = g_variant_new("s", value);
+	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
 }
 
 /**
@@ -938,11 +935,8 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 gboolean
 dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value)
 {
-	GValue val = {0};
-	g_value_init(&val, G_TYPE_BOOLEAN);
-	g_value_set_boolean(&val, value);
-	/* TODO: Switch to use variant */
-	return dbusmenu_menuitem_property_set_value(mi, property, &val);
+	GVariant * variant = g_variant_new("b", value);
+	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
 }
 
 /**
@@ -963,11 +957,8 @@ dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * proper
 gboolean
 dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value)
 {
-	GValue val = {0};
-	g_value_init(&val, G_TYPE_INT);
-	g_value_set_int(&val, value);
-	/* TODO: Switch to use variant */
-	return dbusmenu_menuitem_property_set_value(mi, property, &val);
+	GVariant * variant = g_variant_new("i", value);
+	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
 }
 
 /**
@@ -1082,11 +1073,10 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 const gchar *
 dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
 {
-	/* TODO: Switch to use variant */
-	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
-	if (value == NULL) return NULL;
-	if (G_VALUE_TYPE(value) != G_TYPE_STRING) return NULL;
-	return g_value_get_string(value);
+	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
+	if (variant == NULL) return NULL;
+	if (!g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) return NULL;
+	return g_variant_get_string(variant, NULL);
 }
 
 /**
@@ -1147,20 +1137,25 @@ dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * pro
 gboolean
 dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property)
 {
-	/* TODO: Switch to use variant */
-	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
-	if (value == NULL) return FALSE;
-	if (G_VALUE_TYPE(value) != G_TYPE_BOOLEAN) {
-		if (g_value_type_transformable(G_VALUE_TYPE(value), G_TYPE_BOOLEAN)) {
-			GValue boolval = {0};
-			g_value_init(&boolval, G_TYPE_BOOLEAN);
-			g_value_transform(value, &boolval);
-			return g_value_get_boolean(&boolval);
+	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
+	if (variant == NULL) return FALSE;
+
+	if (g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_BOOLEAN)) {
+		return g_variant_get_boolean(variant);
+	}
+
+	if (!g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) {
+		const gchar * string = g_variant_get_string(variant, NULL);
+
+		if (!g_strcmp0(string, "TRUE") || !g_strcmp0(string, "true") || !g_strcmp0(string, "True")) {
+			return TRUE;
 		} else {
 			return FALSE;
 		}
 	}
-	return g_value_get_boolean(value);
+
+	g_warning("Property '%s' has been requested as an boolean but is not one.", property);
+	return FALSE;
 }
 
 /**
@@ -1176,20 +1171,20 @@ dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * proper
 gint
 dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property)
 {
-	/* TODO: Switch to use variant */
-	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
-	if (value == NULL) return 0;
-	if (G_VALUE_TYPE(value) != G_TYPE_INT) {
-		if (g_value_type_transformable(G_VALUE_TYPE(value), G_TYPE_INT)) {
-			GValue intval = {0};
-			g_value_init(&intval, G_TYPE_INT);
-			g_value_transform(value, &intval);
-			return g_value_get_int(&intval);
-		} else {
-			return 0;
-		}
+	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
+	if (variant == NULL) return 0;
+
+	if (g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_INT32)) {
+		return g_variant_get_int32(variant);
 	}
-	return g_value_get_int(value);
+
+	if (!g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) {
+		const gchar * string = g_variant_get_string(variant, NULL);
+		return atoi(string);
+	}
+
+	g_warning("Property '%s' has been requested as an int but is not one.", property);
+	return 0;
 }
 
 
