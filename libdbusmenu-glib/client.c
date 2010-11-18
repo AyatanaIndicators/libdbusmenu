@@ -1231,7 +1231,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	}
 
 	if (variant == NULL) {
-		variant = g_variant_new("(i)", 0);
+		variant = g_variant_new_int32(0);
 	}
 
 	event_data_t * edata = g_new0(event_data_t, 1);
