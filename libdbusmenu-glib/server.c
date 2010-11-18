@@ -852,21 +852,21 @@ static void
 bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	GVariantIter * ids = NULL;
-	g_variant_get_child(params, 0, "ai", &ids);
+	GVariantIter ids;
+	g_variant_iter_init(&ids, params);
 
-	GVariantBuilder * builder = g_variant_builder_new(G_VARIANT_TYPE("a(ia{sv})"));
+	GVariantBuilder builder;
+	g_variant_builder_init(&builder, G_VARIANT_TYPE("a(ia{sv})"));
 
-	GVariant * id;
-	while ((id = g_variant_iter_next_value(ids)) != NULL) {
-		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, g_variant_get_int32(id));
+	guint id;
+	while (g_variant_iter_next(&ids, "i", &id)) {
+		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 		if (mi == NULL) continue;
 
-		g_variant_builder_add(builder, "ia{sv}", g_variant_get_int32(id), dbusmenu_menuitem_properties_variant(mi));
+		g_variant_builder_add(&builder, "ia{sv}", id, dbusmenu_menuitem_properties_variant(mi));
 	}
 
-	GVariant * ret = g_variant_builder_end(builder);
-	g_variant_builder_unref(builder);
+	GVariant * ret = g_variant_builder_end(&builder);
 
 	g_dbus_method_invocation_return_value(invocation, ret);
 
