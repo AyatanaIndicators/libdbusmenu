@@ -1221,7 +1221,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	}
 
 	if (variant == NULL) {
-		variant = g_variant_new("i", 0);
+		variant = g_variant_new("(i)", 0);
 	}
 
 	event_data_t * edata = g_new0(event_data_t, 1);
@@ -1235,7 +1235,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "Event",
-	                  g_variant_new("isvu", id, name, variant, timestamp),
+	                  g_variant_new("(isvu)", id, name, variant, timestamp),
 	                  G_DBUS_CALL_FLAGS_NONE,
 	                  1000,   /* timeout */
 	                  NULL, /* cancellable */
@@ -1303,7 +1303,7 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "AboutToShow",
-	                  g_variant_new("i", id),
+	                  g_variant_new("(i)", id),
 	                  G_DBUS_CALL_FLAGS_NONE,
 	                  -1,   /* timeout */
 	                  NULL, /* cancellable */
@@ -1540,7 +1540,7 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 	guint rev;
 	gchar * xml;
 
-	g_variant_get(params, "us", &rev, &xml);
+	g_variant_get(params, "(us)", &rev, &xml);
 	g_variant_unref(params);
 
 	DbusmenuClient * client = DBUSMENU_CLIENT(data);
@@ -1593,7 +1593,7 @@ update_layout (DbusmenuClient * client)
 
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "GetLayout",
-	                  g_variant_new("i", 0), /* root */
+	                  g_variant_new("(i)", 0), /* root */
 	                  G_DBUS_CALL_FLAGS_NONE,
 	                  -1,   /* timeout */
 	                  priv->layoutcall, /* cancellable */
