@@ -1216,18 +1216,7 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 static void
 variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
 {
-	/* TODO: Switch to being a variant */
-	GValue vval = {0};
-	g_value_init(&vval, G_TYPE_VARIANT);
-
-	if (!g_value_transform((GValue *)in_value, &vval)) {
-		g_warning("Unable to convert property '%s' of type '%s'", (gchar *)in_key, G_VALUE_TYPE_NAME(in_value));
-		return;
-	}
-
-	g_variant_builder_add((GVariantBuilder *)user_data, "{sv}", in_key, g_value_get_variant(&vval));
-	g_value_unset(&vval);
-
+	g_variant_builder_add((GVariantBuilder *)user_data, "sv", in_key, in_value);
 	return;
 }
 
@@ -1247,12 +1236,17 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
-	GVariantBuilder * builder = g_variant_builder_new(G_VARIANT_TYPE("a{sv}"));
+	GVariant * final_variant = NULL;
 
-	g_hash_table_foreach(priv->properties, variant_helper, builder);
+	if (g_hash_table_size(priv->properties) > 0) {
+		GVariantBuilder builder;
+		g_variant_builder_init(&builder, g_variant_type_new("a{sv}"));
 
-	GVariant * final_variant = g_variant_builder_end(builder);
-	g_variant_builder_unref(builder);
+		g_hash_table_foreach(priv->properties, variant_helper, &builder);
+
+		final_variant = g_variant_builder_end(&builder);
+	}
+
 	return final_variant;
 }
 
