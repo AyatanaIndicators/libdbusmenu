@@ -962,59 +962,6 @@ dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * propert
 }
 
 /**
-	dbusmenu_menuitem_property_set_value:
-	@mi: The #DbusmenuMenuitem to set the property on.
-	@property: Name of the property to set.
-	@value: The value of the property.
-
-	Takes the pair of @property and @value and places them as a
-	property on @mi.  If a property already exists by that name,
-	then the value is set to the new value.  If not, the property
-	is added.  If the value is changed or the property was previously
-	unset then the signal #DbusmenuMenuitem::prop-changed will be
-	emitted by this function.
-
-	Return value:  A boolean representing if the property value was set.
-	Deprecated: Use dbusmenu_menuitem_property_set_variant() instead
-*/
-gboolean
-dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * property, const GValue * value)
-{
-	/* TODO: Switch to use variant */
-	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
-	g_return_val_if_fail(property != NULL, FALSE);
-	g_return_val_if_fail(G_IS_VALUE(value), FALSE);
-
-	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
-	/* g_debug("Setting a property.  ID: %d  Prop: %s  Value: %s", priv->id, property, value); */
-
-	#if 0
-	gpointer lookup = g_hash_table_lookup(priv->properties, property);
-	if (g_strcmp0((gchar *)lookup, value) == 0) {
-		/* The value is the same as the value currently in the
-		   table so we don't really care.  Just say everything's okay */
-		return TRUE;
-	}
-	#endif
-
-	gchar * lprop = g_strdup(property);
-	GValue * lval = g_new0(GValue, 1);
-	g_value_init(lval, G_VALUE_TYPE(value));
-	g_value_copy(value, lval);
-
-	g_hash_table_replace(priv->properties, lprop, lval);
-	#ifdef MASSIVEDEBUGGING
-	gchar * valstr = g_strdup_value_contents(lval);
-	g_debug("Menuitem %d (%s) signalling property '%s' changed to '%s'", ID(mi), LABEL(mi), property, g_utf8_strlen(valstr, 50) < 25 ? valstr : "<too long>");
-	g_free(valstr);
-	#endif
-
-	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, lprop, lval, TRUE);
-
-	return TRUE;
-}
-
-/**
 	dbusmenu_menuitem_property_set_variant:
 	@mi: The #DbusmenuMenuitem to set the property on.
 	@property: Name of the property to set.
@@ -1078,30 +1025,6 @@ dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
 	if (variant == NULL) return NULL;
 	if (!g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) return NULL;
 	return g_variant_get_string(variant, NULL);
-}
-
-/**
-	dbusmenu_menuitem_property_get_value:
-	@mi: The #DbusmenuMenuitem to look for the property on.
-	@property: The property to grab.
-
-	Look up a property on @mi and return the value of it if
-	it exits.  #NULL will be returned if the property doesn't
-	exist.
-
-	Return value: A GValue for the property.
-	Deprecated: Use dbusmenu_menuitem_property_get_variant() instead
-*/
-const GValue *
-dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * property)
-{
-	/* TODO: Switch to use variant */
-	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
-	g_return_val_if_fail(property != NULL, NULL);
-
-	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
-
-	return (const GValue *)g_hash_table_lookup(priv->properties, property);
 }
 
 /**
