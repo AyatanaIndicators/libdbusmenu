@@ -177,7 +177,7 @@ test_object_menuitem_props_swap (void)
 
 /* A helper to put a value into a pointer for eval. */
 static void
-test_object_menuitem_props_signals_helper (DbusmenuMenuitem * mi, gchar * property, GValue * value, GValue ** out)
+test_object_menuitem_props_signals_helper (DbusmenuMenuitem * mi, gchar * property, GVariant * value, GVariant ** out)
 {
 	if (!g_strcmp0(property, "swapper")) {
 		*out = value;
@@ -194,7 +194,7 @@ test_object_menuitem_props_signals (void)
 {
 	/* Build a menu item */
 	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
-	GValue * out = NULL;
+	GVariant * out = NULL;
 
 	/* Test to make sure it's a happy object */
 	g_assert(item != NULL);
@@ -205,25 +205,25 @@ test_object_menuitem_props_signals (void)
 	/* Setting a boolean */
 	dbusmenu_menuitem_property_set_bool(item, "swapper", TRUE);
 	g_assert(out != NULL);
-	g_assert(g_value_get_boolean(out));
+	g_assert(g_variant_get_boolean(out));
 	out = NULL;
 
 	/* Setting a int */
 	dbusmenu_menuitem_property_set_int(item, "swapper", 5432);
 	g_assert(out != NULL);
-	g_assert(g_value_get_int(out) == 5432);
+	g_assert(g_variant_get_int32(out) == 5432);
 	out = NULL;
 
 	/* Setting a string */
 	dbusmenu_menuitem_property_set(item, "swapper", "mystring");
 	g_assert(out != NULL);
-	g_assert(!g_strcmp0(g_value_get_string(out), "mystring"));
+	g_assert(!g_strcmp0(g_variant_get_string(out, NULL), "mystring"));
 	out = NULL;
 
 	/* Setting a boolean */
 	dbusmenu_menuitem_property_set_bool(item, "swapper", FALSE);
 	g_assert(out != NULL);
-	g_assert(!g_value_get_boolean(out));
+	g_assert(!g_variant_get_boolean(out));
 	out = NULL;
 
 	g_object_unref(item);
