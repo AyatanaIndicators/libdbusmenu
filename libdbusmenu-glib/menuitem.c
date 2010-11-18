@@ -1069,7 +1069,7 @@ dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * proper
 		return g_variant_get_boolean(variant);
 	}
 
-	if (!g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) {
+	if (g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) {
 		const gchar * string = g_variant_get_string(variant, NULL);
 
 		if (!g_strcmp0(string, "TRUE") || !g_strcmp0(string, "true") || !g_strcmp0(string, "True")) {
@@ -1103,7 +1103,7 @@ dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * propert
 		return g_variant_get_int32(variant);
 	}
 
-	if (!g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) {
+	if (g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) {
 		const gchar * string = g_variant_get_string(variant, NULL);
 		return atoi(string);
 	}
