@@ -47,7 +47,7 @@ event_status (DbusmenuClient * client, DbusmenuMenuitem * item, gchar * name, GV
 	}
 
 	if (g_variant_get_int32(data) != DATA_VALUE) {
-		g_debug("Data value pass fail got: %d", g_variant_get_int32(data));
+		g_debug("Data value pass fail got: %d", g_variant_get_int32(g_variant_get_child_value(data, 0)));
 		passed = FALSE;
 		g_main_loop_quit(mainloop);
 		return;
@@ -96,9 +96,8 @@ layout_updated (DbusmenuClient * client, gpointer user_data)
 		return;
 	}
 
-	GVariant * data = g_variant_new("i", DATA_VALUE);
+	GVariant * data = g_variant_new_int32(DATA_VALUE);
 	dbusmenu_menuitem_handle_event(menuroot, "clicked", data, TIMESTAMP_VALUE);
-	g_variant_unref(data);
 
 	return;
 }
@@ -126,6 +125,7 @@ main (int argc, char ** argv)
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
 
+	g_debug("Main loop complete");
 	g_object_unref(G_OBJECT(client));
 
 	if (passed) {
