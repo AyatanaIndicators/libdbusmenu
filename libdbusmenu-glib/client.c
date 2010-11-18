@@ -517,7 +517,7 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 	}
 
 	/* Callback all the folks we can find */
-	GVariantIter * iter = g_variant_iter_new(params);
+	GVariantIter * iter = g_variant_iter_new(g_variant_get_child_value(params, 0));
 	GVariant * child;
 	while ((child = g_variant_iter_next_value(iter)) != NULL) {
 		if (g_strcmp0(g_variant_get_type_string(child), "ia(sv)") != 0) {
