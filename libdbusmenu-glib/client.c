@@ -929,7 +929,7 @@ build_proxies (DbusmenuClient * client)
 			priv->menuproxy_cancel = g_cancellable_new();
 
 			g_dbus_proxy_new(priv->session_bus,
-			                 G_DBUS_PROXY_FLAGS_NONE,
+			                 G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
 			                 dbusmenu_interface_info,
 			                 priv->dbus_name,
 			                 priv->dbus_object,
