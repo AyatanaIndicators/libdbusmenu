@@ -998,7 +998,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	   becuse it has been unref'd when replaced in the hash
 	   table.  But the fact that there was a value is
 	   the imporant part. */
-	if (currentval != NULL && replaced) {
+	if (currentval == NULL || replaced) {
 		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, lprop, value, TRUE);
 	}
 
