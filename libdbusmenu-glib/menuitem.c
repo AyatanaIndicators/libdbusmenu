@@ -1216,7 +1216,7 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 static void
 variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
 {
-	g_variant_builder_add((GVariantBuilder *)user_data, "sv", in_key, in_value);
+	g_variant_builder_add((GVariantBuilder *)user_data, "{sv}", in_key, in_value);
 	return;
 }
 
