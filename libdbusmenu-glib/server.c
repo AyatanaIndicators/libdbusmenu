@@ -851,25 +851,43 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 static void
 bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
+	g_debug("Begin group prop: %s", g_variant_print(params, TRUE));
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	GVariantIter ids;
-	g_variant_iter_init(&ids, params);
+	g_variant_iter_init(&ids, g_variant_get_child_value(params, 0));
 
 	GVariantBuilder builder;
-	g_variant_builder_init(&builder, G_VARIANT_TYPE("a(ia{sv})"));
+	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
-	guint id;
+	gint id;
 	while (g_variant_iter_next(&ids, "i", &id)) {
 		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 		if (mi == NULL) continue;
 
-		g_variant_builder_add(&builder, "ia{sv}", id, dbusmenu_menuitem_properties_variant(mi));
+		GVariantBuilder wbuilder;
+		g_variant_builder_init(&wbuilder, G_VARIANT_TYPE_TUPLE);
+		g_variant_builder_add(&wbuilder, "i", id);
+		GVariant * props = dbusmenu_menuitem_properties_variant(mi);
+
+		if (props == NULL) {
+			props = g_variant_parse(g_variant_type_new("a{sv}"), "{}", NULL, NULL, NULL);
+		}
+
+		g_variant_builder_add_value(&wbuilder, props);
+		GVariant * mi_data = g_variant_builder_end(&wbuilder);
+
+		g_variant_builder_add_value(&builder, mi_data);
 	}
 
 	GVariant * ret = g_variant_builder_end(&builder);
 
-	g_dbus_method_invocation_return_value(invocation, ret);
+	g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
+	g_variant_builder_add_value(&builder, ret);
+	GVariant * final = g_variant_builder_end(&builder);
 
+	g_dbus_method_invocation_return_value(invocation, final);
+
+	g_debug("End group prop");
 	return;
 }
 
@@ -907,13 +925,17 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 		return;
 	}
 
-	GVariantBuilder * builder = g_variant_builder_new(G_VARIANT_TYPE("a(ia{sv})"));
-
 	GList * children = dbusmenu_menuitem_get_children(mi);
-	g_list_foreach(children, serialize_menuitem, builder);
+	GVariant * ret = NULL;
 
-	GVariant * ret = g_variant_builder_end(builder);
-	g_variant_builder_unref(builder);
+	if (children != NULL) {
+		GVariantBuilder builder;
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY); 
+
+		g_list_foreach(children, serialize_menuitem, &builder);
+
+		ret = g_variant_builder_end(&builder);
+	}
 
 	g_dbus_method_invocation_return_value(invocation, ret);
 	return;
