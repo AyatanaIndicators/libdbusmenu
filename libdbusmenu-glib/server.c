@@ -935,7 +935,7 @@ typedef struct _idle_event_t idle_event_t;
 struct _idle_event_t {
 	DbusmenuMenuitem * mi;
 	gchar * eventid;
-	GValue data;
+	GVariant * variant;
 	guint timestamp;
 };
 
@@ -946,11 +946,11 @@ event_local_handler (gpointer user_data)
 {
 	idle_event_t * data = (idle_event_t *)user_data;
 
-	dbusmenu_menuitem_handle_event(data->mi, data->eventid, &data->data, data->timestamp);
+	dbusmenu_menuitem_handle_event(data->mi, data->eventid, data->variant, data->timestamp);
 
 	g_object_unref(data->mi);
 	g_free(data->eventid);
-	g_value_unset(&data->data);
+	g_variant_unref(data->variant);
 	g_free(data);
 	return FALSE;
 }
@@ -977,10 +977,7 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 	g_object_ref(event_data->mi);
 	event_data->eventid = g_strdup(g_variant_get_string(g_variant_get_child_value(params, 1), NULL));
 	event_data->timestamp = g_variant_get_uint32(g_variant_get_child_value(params, 3));
-
-	/* TODO: Need to figure out converting a variant to a value */
-	g_value_init(&(event_data->data), G_TYPE_INT);
-	g_value_set_int(&(event_data->data), 0);
+	event_data->variant = g_variant_get_child_value(params, 2);
 
 	g_timeout_add(0, event_local_handler, event_data);
 

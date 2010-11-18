@@ -56,7 +56,7 @@ static void dbusmenu_menuitem_proxy_dispose    (GObject *object);
 static void dbusmenu_menuitem_proxy_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
-static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
 static void add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi);
 static void remove_menuitem (DbusmenuMenuitemProxy * pmi);
 
@@ -162,12 +162,12 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 /* Takes the event and passes it along to the item that we're
    playing proxy for. */
 static void
-handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM_PROXY(mi));
 	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(mi);
 	g_return_if_fail(priv->mi != NULL);
-	return dbusmenu_menuitem_handle_event(priv->mi, name, value, timestamp);
+	return dbusmenu_menuitem_handle_event(priv->mi, name, variant, timestamp);
 }
 
 /* Watches a property change and makes sure to put that value

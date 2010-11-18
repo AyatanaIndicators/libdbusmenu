@@ -94,7 +94,7 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 static void g_value_transform_STRING_BOOLEAN (const GValue * in, GValue * out);
 static void g_value_transform_STRING_INT (const GValue * in, GValue * out);
-static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp);
 static void send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 /* GObject stuff */
@@ -377,7 +377,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Handles the activate event if it is sent. */
 static void
-handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp)
 {
 	if (g_strcmp0(name, "clicked") == 0) {
 		g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
@@ -1445,7 +1445,7 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 	dbusmenu_menuitem_handle_event:
 	@mi: The #DbusmenuMenuitem to send the signal on.
 	@name: The name of the signal
-	@value: A value that could be set for the event
+	@variant: A value that could be set for the event
 	@timestamp: The timestamp of when the event happened
 
 	This function is called to create an event.  It is likely
@@ -1461,7 +1461,7 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 	reason not to.
 */
 void
-dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	#ifdef MASSIVEDEBUGGING
@@ -1470,7 +1470,7 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
 	if (class->handle_event != NULL) {
-		return class->handle_event(mi, name, value, timestamp);
+		return class->handle_event(mi, name, variant, timestamp);
 	}
 	return;
 }

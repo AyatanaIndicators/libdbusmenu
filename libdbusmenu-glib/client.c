@@ -112,7 +112,7 @@ struct _event_data_t {
 	DbusmenuClient * client;
 	DbusmenuMenuitem * menuitem;
 	gchar * event;
-	GValue data;
+	GVariant * variant;
 	guint timestamp;
 };
 
@@ -1189,9 +1189,9 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		g_warning("Unable to call event '%s' on menu item %d: %s", edata->event, dbusmenu_menuitem_get_id(edata->menuitem), error->message);
 	}
 
-	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, &edata->data, edata->timestamp, error, TRUE);
+	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->variant, edata->timestamp, error, TRUE);
 
-	g_value_unset(&edata->data);
+	g_variant_unref(edata->variant);
 	g_free(edata->event);
 	g_object_unref(edata->menuitem);
 	g_free(edata);
@@ -1207,7 +1207,7 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 /* Sends the event over DBus to the server on the other side
    of the bus. */
 void
-dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, const GValue * value, guint timestamp)
+dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, GVariant * variant, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_CLIENT(client));
 	g_return_if_fail(id >= 0);
@@ -1220,11 +1220,8 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 		return;
 	}
 
-	if (value == NULL) {
-		GValue internalval = {0};
-		g_value_init(&internalval, G_TYPE_INT);
-		g_value_set_int(&internalval, 0);
-		value = &internalval;
+	if (variant == NULL) {
+		variant = g_variant_new("i", 0);
 	}
 
 	event_data_t * edata = g_new0(event_data_t, 1);
@@ -1232,13 +1229,13 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	edata->menuitem = mi;
 	g_object_ref(edata->menuitem);
 	edata->event = g_strdup(name);
-	g_value_init(&edata->data, G_VALUE_TYPE(value));
-	g_value_copy(value, &edata->data);
 	edata->timestamp = timestamp;
+	edata->variant = variant;
+	g_variant_ref(variant);
 
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "Event",
-	                  g_variant_new("isvu", id, name, value, timestamp),
+	                  g_variant_new("isvu", id, name, variant, timestamp),
 	                  G_DBUS_CALL_FLAGS_NONE,
 	                  1000,   /* timeout */
 	                  NULL, /* cancellable */

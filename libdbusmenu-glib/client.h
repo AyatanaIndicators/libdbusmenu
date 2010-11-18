@@ -122,7 +122,7 @@ gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
 void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         gint id,
                                                         const gchar * name,
-                                                        const GValue * value,
+                                                        GVariant * variant,
                                                         guint timestamp);
 void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
                                                         gint id,
