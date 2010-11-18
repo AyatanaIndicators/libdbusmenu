@@ -63,7 +63,7 @@ main (int argc, char ** argv)
 	g_debug("I am '%s' and I'm proxying '%s'", whoami, myproxy);
 
 	g_bus_own_name(G_BUS_TYPE_SESSION,
-	               "org.dbusmenu.test",
+	               whoami,
 	               G_BUS_NAME_OWNER_FLAGS_NONE,
 	               on_bus,
 	               NULL,
