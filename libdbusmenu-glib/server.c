@@ -83,6 +83,7 @@ enum {
 	INVALID_PROPERTY_NAME,
 	UNKNOWN_DBUS_ERROR,
 	NOT_IMPLEMENTED,
+	NO_VALID_LAYOUT,
 	LAST_ERROR
 };
 
@@ -756,7 +757,11 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
 		}
 	} else {
-		DbusmenuMenuitem * item = dbusmenu_menuitem_find_id(priv->root, parent);
+		DbusmenuMenuitem * item = NULL;
+		if (priv->root != NULL) {
+			item = dbusmenu_menuitem_find_id(priv->root, parent);
+		}
+
 		if (item == NULL) {
 			g_dbus_method_invocation_return_error(invocation,
 				                                  error_quark(),
@@ -790,6 +795,14 @@ static void
 bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	if (priv->root == NULL) {
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
 	
 	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
 	const gchar * property = g_variant_get_string(g_variant_get_child_value(params, 1), NULL);
@@ -826,6 +839,14 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	
+	if (priv->root == NULL) {
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
+
 	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
 
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
@@ -852,6 +873,22 @@ static void
 bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	if (priv->root == NULL) {
+		GVariant * idlist = g_variant_get_child_value(params, 0);
+		if (g_variant_n_children(idlist) == 1 && g_variant_get_int32(g_variant_get_child_value(idlist, 0)) == 0) {
+			GVariant * final = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, NULL);
+			g_dbus_method_invocation_return_value(invocation, final);
+			return;
+		}
+
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
+
 	GVariantIter ids;
 	g_variant_iter_init(&ids, g_variant_get_child_value(params, 0));
 
@@ -912,6 +949,15 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
+
+	if (priv->root == NULL) {
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
+
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
@@ -970,6 +1016,15 @@ static void
 bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	if (priv->root == NULL) {
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
+
 	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
@@ -1000,6 +1055,15 @@ static void
 bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	if (priv->root == NULL) {
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
+
 	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
