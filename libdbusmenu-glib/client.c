@@ -579,13 +579,26 @@ get_properties_idle (gpointer user_data)
 	}
 
 	/* Build up an ID list to pass */
-	GArray * idlist = g_array_new(FALSE, FALSE, sizeof(gint));
+	GVariantBuilder builder;
+	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+
 	gint i;
 	for (i = 0; i < priv->delayed_property_listeners->len; i++) {
-		g_array_append_val(idlist, g_array_index(priv->delayed_property_listeners, properties_listener_t, i).id);
+		g_variant_builder_add(&builder, "i", g_array_index(priv->delayed_property_listeners, properties_listener_t, i).id);
 	}
 
-	GVariant * variant_params = g_variant_new("a(s)", (const gchar **)priv->delayed_property_list->data);
+	GVariant * variant_ids = g_variant_builder_end(&builder);
+
+	/* Build up a prop list to pass */
+	g_variant_builder_init(&builder, g_variant_type_new("as"));
+	GVariant * variant_props = g_variant_builder_end(&builder);
+
+	/* Combine them into a value for the parameter */
+	g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
+	g_variant_builder_add_value(&builder, variant_ids);
+	g_variant_builder_add_value(&builder, variant_props);
+	GVariant * variant_params = g_variant_builder_end(&builder);
+
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "GetGroupProperties",
 	                  variant_params,
@@ -594,9 +607,6 @@ get_properties_idle (gpointer user_data)
 	                  NULL, /* cancellable */
 	                  get_properties_callback,
 	                  priv->delayed_property_listeners);
-
-	/* Free ID List */
-	g_array_free(idlist, TRUE);
 
 	/* Free properties */
 	gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
