@@ -245,8 +245,8 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        G_SIGNAL_RUN_LAST,
 	                                        G_STRUCT_OFFSET (DbusmenuClientClass, event_result),
 	                                        NULL, NULL,
-	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_POINTER_UINT_POINTER,
-	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_POINTER);
+	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_VARIANT_UINT_POINTER,
+	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT, G_TYPE_POINTER);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
