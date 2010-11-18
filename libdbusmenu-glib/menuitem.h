@@ -188,12 +188,16 @@ DbusmenuMenuitem * dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, gint id)
 DbusmenuMenuitem * dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id);
 
 gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value);
+#ifndef DBUSMENU_DISABLE_DEPRECATED
 gboolean dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * property, const GValue * value);
+#endif
 gboolean dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * property, GVariant * value);
 gboolean dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value);
 gboolean dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value);
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
+#ifndef DBUSMENU_DISABLE_DEPRECATED
 const GValue * dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * property);
+#endif
 GVariant * dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property);
 gint dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property);
