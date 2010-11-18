@@ -57,9 +57,9 @@ static void item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
-static void process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value);
-static void process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value);
-static void image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata);
+static void process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value);
+static void process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value);
+static void image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant * invalue, gpointer userdata);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
@@ -283,10 +283,8 @@ static gboolean
 menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 {
 	if (gtk_menu_item_get_submenu(gmi) == NULL) {
-		GValue value = {0};
-		g_value_init(&value, G_TYPE_INT);
-		g_value_set_int(&value, 0);
-		dbusmenu_menuitem_handle_event(mi, "clicked", &value, gtk_get_current_event_time());
+		GVariant * variant = g_variant_new("i", 0);
+		dbusmenu_menuitem_handle_event(mi, "clicked", variant, gtk_get_current_event_time());
 	} else {
 		/* TODO: We need to stop the display of the submenu
 		         until this callback returns. */
@@ -297,7 +295,7 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 
 /* Process the visible property */
 static void
-process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value)
 {
 	gboolean val = TRUE;
 	if (value != NULL) {
@@ -314,7 +312,7 @@ process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 
 /* Process the sensitive property */
 static void
-process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value)
 {
 	gboolean val = TRUE;
 	if (value != NULL) {
@@ -326,26 +324,21 @@ process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * valu
 
 /* Process the sensitive property */
 static void
-process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
-	if (value == NULL) return;
+	if (variant == NULL) return;
 
 	GenericmenuitemCheckType type = GENERICMENUITEM_CHECK_TYPE_NONE;
 
-	GValue strvalue = {0};
-	g_value_init(&strvalue, G_TYPE_STRING);
-
-	if (value != NULL && g_value_transform(value, &strvalue)) {
-		const gchar * strval = g_value_get_string(&strvalue);
+	if (variant != NULL) {
+		const gchar * strval = g_variant_get_string(variant, NULL);
 
 		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_CHECK)) {
 			type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
 		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_RADIO)) {
 			type = GENERICMENUITEM_CHECK_TYPE_RADIO;
 		}
-
-		g_value_unset(&strvalue);
 	}
 
 	genericmenuitem_set_check_type(GENERICMENUITEM(gmi), type);
@@ -355,17 +348,14 @@ process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * va
 
 /* Process the sensitive property */
 static void
-process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
 
 	GenericmenuitemState state = GENERICMENUITEM_STATE_UNCHECKED;
 
-	GValue intvalue = {0};
-	g_value_init(&intvalue, G_TYPE_INT);
-
-	if (value != NULL && g_value_transform(value, &intvalue)) {
-		int val = g_value_get_int(&intvalue);
+	if (variant != NULL) {
+		int val = g_variant_get_int32(variant);
 
 		if (val == DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED) {
 			state = GENERICMENUITEM_STATE_CHECKED;
@@ -381,18 +371,18 @@ process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * v
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
-menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMenuItem * gmi)
+menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, GtkMenuItem * gmi)
 {
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
-		gtk_menu_item_set_label(gmi, g_value_get_string(value));
+		gtk_menu_item_set_label(gmi, g_variant_get_string(variant, NULL));
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
-		process_visible(mi, gmi, value);
+		process_visible(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ENABLED)) {
-		process_sensitive(mi, gmi, value);
+		process_sensitive(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE)) {
-		process_toggle_type(mi, gmi, value);
+		process_toggle_type(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE)) {
-		process_toggle_state(mi, gmi, value);
+		process_toggle_state(mi, gmi, variant);
 	}
 
 	return;
@@ -401,7 +391,7 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMen
 /* Special handler for the shortcut changing as we need to have the
    client for that one to get the accel group. */
 static void
-menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, DbusmenuGtkClient * client)
+menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * value, DbusmenuGtkClient * client)
 {
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
 		refresh_shortcut(client, mi);
@@ -537,10 +527,10 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
 	/* Check our set of props to see if any are set already */
-	process_visible(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
-	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_ENABLED));
-	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
-	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
+	process_visible(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
+	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_ENABLED));
+	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
+	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
 	refresh_shortcut(client, item);
 
 	/* Oh, we're a child, let's deal with that */
@@ -705,11 +695,11 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 
 	image_property_handle(newitem,
 	                      DBUSMENU_MENUITEM_PROP_ICON_NAME,
-	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_NAME),
+	                      dbusmenu_menuitem_property_get_variant(newitem, DBUSMENU_MENUITEM_PROP_ICON_NAME),
 	                      client);
 	image_property_handle(newitem,
 	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
-	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
+	                      dbusmenu_menuitem_property_get_variant(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
 	                      client);
 	g_signal_connect(G_OBJECT(newitem),
 	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
@@ -743,7 +733,7 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 /* This handler looks at property changes for items that are
    image menu items. */
 static void
-image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata)
+image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer userdata)
 {
 	/* We're only looking at these two properties here */
 	if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_NAME) != 0 &&
@@ -752,11 +742,8 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 	}
 
 	const gchar * value = NULL;
+	value = g_variant_get_string(variant, NULL);
 	
-	if (invalue != NULL && G_VALUE_TYPE(invalue) == G_TYPE_STRING) {
-		value = g_value_get_string(invalue);
-	}
-
 	if (value == NULL || value[0] == '\0') {
 		/* This means that we're unsetting a value. */
 		/* Try to use the other one */
