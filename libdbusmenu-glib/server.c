@@ -851,7 +851,6 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 static void
 bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
-	g_debug("Begin group prop: %s", g_variant_print(params, TRUE));
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 	GVariantIter ids;
 	g_variant_iter_init(&ids, g_variant_get_child_value(params, 0));
@@ -887,7 +886,6 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 
 	g_dbus_method_invocation_return_value(invocation, final);
 
-	g_debug("End group prop");
 	return;
 }
 
