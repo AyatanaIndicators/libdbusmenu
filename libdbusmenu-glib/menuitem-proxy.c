@@ -173,10 +173,10 @@ handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, g
 /* Watches a property change and makes sure to put that value
    into our property list. */
 static void
-proxy_item_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, gpointer user_data)
+proxy_item_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * variant, gpointer user_data)
 {
 	DbusmenuMenuitemProxy * pmi = DBUSMENU_MENUITEM_PROXY(user_data);
-	dbusmenu_menuitem_property_set_value(DBUSMENU_MENUITEM(pmi), property, value);
+	dbusmenu_menuitem_property_set_variant(DBUSMENU_MENUITEM(pmi), property, variant);
 	return;
 }
 
@@ -273,7 +273,7 @@ add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
 	GList * prop;
 	for (prop = props; prop != NULL; prop = g_list_next(prop)) {
 		gchar * prop_name = (gchar *)prop->data;
-		dbusmenu_menuitem_property_set_value(DBUSMENU_MENUITEM(pmi), prop_name, dbusmenu_menuitem_property_get_value(priv->mi, prop_name));
+		dbusmenu_menuitem_property_set_variant(DBUSMENU_MENUITEM(pmi), prop_name, dbusmenu_menuitem_property_get_variant(priv->mi, prop_name));
 	}
 	g_list_free(props);
 

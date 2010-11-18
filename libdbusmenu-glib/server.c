@@ -815,8 +815,8 @@ bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 		return;
 	}
 
-	const GValue * prop = dbusmenu_menuitem_property_get_value(mi, property);
-	if (prop == NULL) {
+	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
+	if (variant == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
 			            error_quark(),
 			            INVALID_PROPERTY_NAME,
@@ -826,16 +826,7 @@ bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 		return;
 	}
 
-	GValue vval = {0};
-	g_value_init(&vval, G_TYPE_VARIANT);
-	
-	if (!g_value_transform(prop, &vval)) {
-		g_warning("Unable to convert property '%s' value from type '%s' to variant", property, G_VALUE_TYPE_NAME(prop));
-	}
-
-	g_dbus_method_invocation_return_value(invocation, g_value_get_variant(&vval));
-	g_value_unset(&vval);
-
+	g_dbus_method_invocation_return_value(invocation, variant);
 	return;
 }
 
