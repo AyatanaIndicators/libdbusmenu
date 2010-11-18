@@ -975,6 +975,7 @@ dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * propert
 	emitted by this function.
 
 	Return value:  A boolean representing if the property value was set.
+	Deprecated: Use dbusmenu_menuitem_property_set_variant() instead
 */
 gboolean
 dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * property, const GValue * value)
@@ -1089,6 +1090,7 @@ dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
 	exist.
 
 	Return value: A GValue for the property.
+	Deprecated: Use dbusmenu_menuitem_property_get_variant() instead
 */
 const GValue *
 dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * property)
