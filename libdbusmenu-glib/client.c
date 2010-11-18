@@ -1206,10 +1206,12 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	g_object_unref(edata->menuitem);
 	g_free(edata);
 
-	if (error != NULL) {
+	if (G_UNLIKELY(error != NULL)) {
 		g_error_free(error);
 	}
-	g_variant_unref(params);
+	if (G_LIKELY(params != NULL)) {
+		g_variant_unref(params);
+	}
 
 	return;
 }
