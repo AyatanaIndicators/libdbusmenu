@@ -84,7 +84,7 @@ struct _DbusmenuClientClass {
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
 	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
-	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GValue * data, guint timestamp, GError * error);
+	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GVariant * data, guint timestamp, GError * error);
 
 	/*< Private >*/
 	void (*reserved1) (void);

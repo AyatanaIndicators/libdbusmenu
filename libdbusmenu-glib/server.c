@@ -141,7 +141,7 @@ static GVariant * bus_get_prop                (GDBusConnection * connection,
                                                gpointer user_data);
 static void       menuitem_property_changed   (DbusmenuMenuitem * mi,
                                                gchar * property,
-                                               GValue * value,
+                                               GVariant * variant,
                                                DbusmenuServer * server);
 static void       menuitem_child_added        (DbusmenuMenuitem * parent,
                                                DbusmenuMenuitem * child,
@@ -619,21 +619,13 @@ layout_update_signal (DbusmenuServer * server)
 }
 
 static void 
-menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, DbusmenuServer * server)
+menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * variant, DbusmenuServer * server)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
-	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, value, TRUE);
+	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, variant, TRUE);
 
 	if (priv->dbusobject != NULL && priv->bus != NULL) {
-		GValue variantval = {0};
-		g_value_init(&variantval, G_TYPE_VARIANT);
-
-		if (!g_value_transform(value, &variantval)) {
-			g_warning("Unable to convert property '%s' of type %s to a variant", property, G_VALUE_TYPE_NAME(value));
-		}
-		GVariant * variant = g_value_get_variant(&variantval);
-
 		g_dbus_connection_emit_signal(priv->bus,
 		                              NULL,
 		                              priv->dbusobject,
@@ -641,8 +633,6 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * val
 		                              "ItemPropertyUpdated",
 		                              g_variant_new("(isv)", dbusmenu_menuitem_get_id(mi), property, variant),
 		                              NULL);
-
-		g_value_unset(&variantval);
 	}
 	return;
 }
