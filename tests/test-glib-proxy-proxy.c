@@ -31,7 +31,6 @@ root_changed (DbusmenuClient * client, DbusmenuMenuitem * newroot, gpointer user
 static void
 on_bus (GDBusConnection * connection, const gchar * name, gpointer user_data)
 {
-	server = dbusmenu_server_new("/org/test");
 	client = dbusmenu_client_new((gchar *)user_data, "/org/test");
 
 	g_signal_connect(client, DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(root_changed), server);
@@ -61,6 +60,8 @@ main (int argc, char ** argv)
 	gchar * myproxy = argv[2];
 
 	g_debug("I am '%s' and I'm proxying '%s'", whoami, myproxy);
+
+	server = dbusmenu_server_new("/org/test");
 
 	g_bus_own_name(G_BUS_TYPE_SESSION,
 	               whoami,
