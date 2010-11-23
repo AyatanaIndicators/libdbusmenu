@@ -1002,7 +1002,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, lprop, value, TRUE);
 	}
 
-	return FALSE;
+	return TRUE;
 }
 
 /**
