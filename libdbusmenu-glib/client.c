@@ -591,6 +591,7 @@ get_properties_idle (gpointer user_data)
 
 	/* Build up a prop list to pass */
 	g_variant_builder_init(&builder, g_variant_type_new("as"));
+	/* TODO: need to use delayed property list here */
 	GVariant * variant_props = g_variant_builder_end(&builder);
 
 	/* Combine them into a value for the parameter */
