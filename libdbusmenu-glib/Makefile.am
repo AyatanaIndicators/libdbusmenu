@@ -118,8 +118,7 @@ INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
         --add-include-path=$(srcdir) \
         $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources)) \
         --symbol-prefix=dbusmenu \
-        --identifier-prefix=Dbusmenu \
-        --pkg-export=dbusmenu-glib
+        --identifier-prefix=Dbusmenu
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
