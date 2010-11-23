@@ -978,7 +978,11 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	g_signal_connect(priv->menuproxy, "g-signal",             G_CALLBACK(menuproxy_signal_cb),       client);
 	g_signal_connect(priv->menuproxy, "notify::g-name-owner", G_CALLBACK(menuproxy_name_changed_cb), client);
 
-	update_layout(client);
+	gchar * name_owner = g_dbus_proxy_get_name_owner(priv->menuproxy);
+	if (name_owner != NULL) {
+		update_layout(client);
+		g_free(name_owner);
+	}
 
 	return;
 }
@@ -996,6 +1000,7 @@ menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_d
 		proxy_destroyed(G_OBJECT(proxy), user_data);
 	} else {
 		g_free(owner);
+		update_layout(DBUSMENU_CLIENT(user_data));
 	}
 
 	return;
@@ -1596,6 +1601,12 @@ update_layout (DbusmenuClient * client)
 	if (priv->menuproxy == NULL) {
 		return;
 	}
+
+	gchar * name_owner = g_dbus_proxy_get_name_owner(priv->menuproxy);
+	if (name_owner == NULL) {
+		return;
+	}
+	g_free(name_owner);
 
 	if (priv->layoutcall != NULL) {
 		return;
