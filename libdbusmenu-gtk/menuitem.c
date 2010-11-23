@@ -200,9 +200,9 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	const gchar * keyname = gdk_keyval_name(key);
 	g_array_append_val(array, keyname);
 
-	GVariant * inside = g_variant_new("as", array->data);
+	GVariant * inside = g_variant_new_strv((const gchar * const *)array->data, -1);
 	GVariantBuilder builder;
-	g_variant_builder_init(&builder, G_VARIANT_TYPE("av"));
+	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 	g_variant_builder_add_value(&builder, inside);
 	GVariant * outsidevariant = g_variant_builder_end(&builder);
 
