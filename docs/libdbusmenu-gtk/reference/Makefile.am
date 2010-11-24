@@ -1,4 +1,11 @@
+
 ## Process this file with automake to produce Makefile.in
+
+if USE_GTK3
+VER=3
+else
+VER=
+endif
 
 # We require automake 1.6 at least.
 AUTOMAKE_OPTIONS = 1.6
@@ -9,7 +16,7 @@ AUTOMAKE_OPTIONS = 1.6
 # of using the various options.
 
 # The name of the module, e.g. 'glib'.
-DOC_MODULE=libdbusmenu-gtk
+DOC_MODULE=libdbusmenu-gtk$(VER)
 
 # The top-level SGML file. You can change this if you want to.
 DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
@@ -68,7 +75,7 @@ expand_content_files=
 # e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 INCLUDES=-I$(top_srcdir) $(DBUSMENUGLIB_CFLAGS) $(DBUSMENUGTK_CFLAGS)
-GTKDOC_LIBS=$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk.la 
+GTKDOC_LIBS=$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la $(DBUSMENUGLIB_LIBS) $(DBUSMENUGTK_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.local.make

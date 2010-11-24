@@ -1,5 +1,20 @@
-libdbusmenu (0.3.90-0ubuntu1~ppa1) maverick; urgency=low
+libdbusmenu (0.3.90-0ubuntu1) UNRELEASED; urgency=low
 
+  * debian/rules
+    - Added build targets to build with gtk3 enabled in additional to 
+      default build with gtk2
+  * debian/control
+    - Updated build depends to support building with gtk+-3.0
+    - Added dh-autoreconf build depends
+    - Added libdbusmenu-gtk3-2, libdbusmenu-gtk3-dev, gir1.0-dbusmenu-gtk3-0.2
+      binaries
+    - build depend on libgdk-pixbuf2.0-dev >= 2.22.1-0ubuntu4, needed
+      for GIR fixes
+  * docs/libdbusmenu-gtk/reference/Makefile.am, libdbusmenu-glib/Makefile.am, 
+    libdbusmenu-gtk/Makefile.am
+    - Fixes needed for building with-gtk=3
+
+  [ Ted Gould ]
   * New upstream release.
     * Breaking ABI and getting reserved back
     * Adding build support for GTK2/3 builds
@@ -9,7 +24,7 @@ libdbusmenu (0.3.90-0ubuntu1~ppa1) maverick; urgency=low
     debian/libdbusmenu-gtk2.install: Switching package names to
     match .so bump.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 11 Nov 2010 11:34:00 -0600
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 24 Nov 2010 12:05:39 -0500
 
 libdbusmenu (0.3.16-0ubuntu1) maverick; urgency=low
 

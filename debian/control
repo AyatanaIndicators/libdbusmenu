@@ -8,6 +8,7 @@ Build-Depends: debhelper (>= 5.0),
                cdbs (>= 0.4.41),
                libgtk2.0-dev (>= 2.23.2-0ubuntu2),
                libgtk3.0-dev (>= 2.91.4-0ubuntu1),
+               libgdk-pixbuf2.0-dev (>= 2.22.1-0ubuntu4),
                libdbus-glib-1-dev,
                gnome-doc-utils,
                gtk-doc-tools,
@@ -22,6 +23,7 @@ Build-Depends: debhelper (>= 5.0),
                gir1.0-gtk-2.0,
                gir1.0-gtk-3.0,
                libx11-dev (>= 1.3), 
+               dh-autoreconf,
                valac
 Standards-Version: 3.9.1
 Homepage: https://launchpad.net/dbusmenu
@@ -152,7 +154,7 @@ Description: library for passing menus over DBus - GTK+ version documentation
  .
  This package contains developer documentation for libdbusmenu-gtk.
 
-Package: libdbusmenu-jsonloader1
+Package: libdbusmenu-jsonloader2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
@@ -181,7 +183,7 @@ Description: library for passing menus over DBus - Test lib development files
  This package contains files that are needed to build test suites in 
  applications or libraries using dbusmenu.
 
-Package: libdbusmenu-gtk3
+Package: libdbusmenu-gtk3-2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
@@ -198,7 +200,7 @@ Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libdbusmenu-gtk3 (= ${binary:Version}),
+         libdbusmenu-gtk3-2 (= ${binary:Version}),
          libdbus-glib-1-dev (>= 0.76),
          libgtk3.0-dev (>= 2.91.4-0ubuntu1),
          libdbusmenu-glib-dev
@@ -213,7 +215,7 @@ Package: gir1.0-dbusmenu-gtk3-0.2
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
-         libdbusmenu-gtk3 (= ${binary:Version}),
+         libdbusmenu-gtk3-2 (= ${binary:Version}),
          gir1.0-dbusmenu-glib-0.2 (= ${binary:Version}),
          gir1.0-gtk-3.0
 Description: typelib file for libdbusmenu-gtk2
