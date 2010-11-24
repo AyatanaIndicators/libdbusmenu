@@ -3,10 +3,43 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/gnome.mk
 
-DEB_MAKE_CHECK_TARGET := check
-DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc
+DEB_SRCDIR = .
+DEB_BUILDDIR = $(DEB_SRCDIR)/build
+
+DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
-DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk1 += -V 'libdbusmenu-gtk1 (>= 0.3.12)'
-DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-glib1 += -V 'libdbusmenu-glib1 (>= 0.3.12)'
+DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk2 += -V 'libdbusmenu-gtk2 (>= 0.3.90)'
+DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk3 += -V 'libdbusmenu-gtk3 (>= 0.3.90)'
+DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-glib2 += -V 'libdbusmenu-glib2 (>= 0.3.90)'
 
+configure/libdbusmenu-gtk3:: stamp-configure-gtk3
+stamp-configure-gtk3:
+	: # configure for GTK+ 3.0
+	set -e; \
+	rm -rf build-gtk3; \
+	mkdir build-gtk3; \
+	cd build-gtk3; \
+	$(DEB_CONFIGURE_SCRIPT_ENV) ../configure --with-gtk=3 \
+		$(filter-out --srcdir=%, $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)) \
+		--enable-gtk-doc=no; \
+	cd ..;
+	touch stamp-configure-gtk3
+
+build/libdbusmenu-gtk3:: stamp-build-gtk3
+stamp-build-gtk3: stamp-configure-gtk3
+	: # build for GTK+ 3.0
+	$(MAKE) -C build-gtk3;
+	touch stamp-build-gtk3
+
+binary-install/libdbusmenu:: binary-install/libdbusmenu-gtk2 stamp-build-gtk3
+	: # install for GTK+ 3.0
+	$(MAKE) -C build-gtk3 DESTDIR=$(CURDIR)/debian/tmp install
+	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
+
+binary-predeb/gir%::
+	dh_girepository -p$(cdbs_curpkg)
+
+clean::
+	rm -f stamp-*-gtk3
+	rm -rf build-gtk3
