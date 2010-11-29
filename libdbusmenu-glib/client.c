@@ -1287,7 +1287,7 @@ about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		/* Note: we're just ensuring only the callback gets called */
 		need_update = FALSE;
 	} else {
-		g_variant_get(params, "b", &need_update);
+		g_variant_get(params, "(b)", &need_update);
 		g_variant_unref(params);
 	}
 
