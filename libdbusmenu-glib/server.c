@@ -551,6 +551,7 @@ bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar
 				return dbusmenu_method_table[i].func(DBUSMENU_SERVER(user_data), params, invocation);
 			} else {
 				/* If we have a null function we're responding but nothing else. */
+				g_warning("Invalid function call for '%s' with parameters: %s", method, g_variant_print(params, TRUE));
 				g_dbus_method_invocation_return_value(invocation, NULL);
 				return;
 			}
@@ -829,7 +830,7 @@ bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 		return;
 	}
 
-	g_dbus_method_invocation_return_value(invocation, variant);
+	g_dbus_method_invocation_return_value(invocation, g_variant_new("(v)", variant));
 	return;
 }
 
@@ -862,7 +863,7 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 
 	GVariant * dict = dbusmenu_menuitem_properties_variant(mi);
 
-	g_dbus_method_invocation_return_value(invocation, dict);
+	g_dbus_method_invocation_return_value(invocation, g_variant_new("(a{sv})", dict));
 
 	return;
 }
@@ -978,7 +979,9 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 
 		g_list_foreach(children, serialize_menuitem, &builder);
 
-		ret = g_variant_builder_end(&builder);
+		ret = g_variant_new("(a(ia{svg}))", g_variant_builder_end(&builder));
+	} else {
+		ret = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, NULL);
 	}
 
 	g_dbus_method_invocation_return_value(invocation, ret);
