@@ -374,7 +374,7 @@ static void
 menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, GtkMenuItem * gmi)
 {
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
-		gtk_menu_item_set_label(gmi, g_variant_get_string(variant, NULL));
+		gtk_menu_item_set_label(gmi, variant == NULL ? NULL : g_variant_get_string(variant, NULL));
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
 		process_visible(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ENABLED)) {
@@ -742,7 +742,9 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 	}
 
 	const gchar * value = NULL;
-	value = g_variant_get_string(variant, NULL);
+	if (variant != NULL) {
+		value = g_variant_get_string(variant, NULL);
+	}
 	
 	if (value == NULL || value[0] == '\0') {
 		/* This means that we're unsetting a value. */
