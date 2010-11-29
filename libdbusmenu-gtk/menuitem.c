@@ -177,31 +177,26 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
 	g_return_val_if_fail(gtk_accelerator_valid(key, modifier), FALSE);
 
-	GArray * array = g_array_sized_new(TRUE, TRUE, sizeof(gchar *), 4); /* Four seems like the max we'd need, plus it's still small */
-
-	const gchar * control_val = DBUSMENU_MENUITEM_SHORTCUT_CONTROL;
-	const gchar * alt_val = DBUSMENU_MENUITEM_SHORTCUT_ALT;
-	const gchar * shift_val = DBUSMENU_MENUITEM_SHORTCUT_SHIFT;
-	const gchar * super_val = DBUSMENU_MENUITEM_SHORTCUT_SUPER;
+	GVariantBuilder builder;
+	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
 	if (modifier & GDK_CONTROL_MASK) {
-		g_array_append_val(array, control_val);
+		g_variant_builder_add(&builder, "s", DBUSMENU_MENUITEM_SHORTCUT_CONTROL);
 	}
 	if (modifier & GDK_MOD1_MASK) {
-		g_array_append_val(array, alt_val);
+		g_variant_builder_add(&builder, "s", DBUSMENU_MENUITEM_SHORTCUT_ALT);
 	}
 	if (modifier & GDK_SHIFT_MASK) {
-		g_array_append_val(array, shift_val);
+		g_variant_builder_add(&builder, "s", DBUSMENU_MENUITEM_SHORTCUT_SHIFT);
 	}
 	if (modifier & GDK_SUPER_MASK) {
-		g_array_append_val(array, super_val);
+		g_variant_builder_add(&builder, "s", DBUSMENU_MENUITEM_SHORTCUT_SUPER);
 	}
 
 	const gchar * keyname = gdk_keyval_name(key);
-	g_array_append_val(array, keyname);
+	g_variant_builder_add(&builder, "s", keyname);
 
-	GVariant * inside = g_variant_new_strv((const gchar * const *)array->data, -1);
-	GVariantBuilder builder;
+	GVariant * inside = g_variant_builder_end(&builder);
 	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 	g_variant_builder_add_value(&builder, inside);
 	GVariant * outsidevariant = g_variant_builder_end(&builder);
