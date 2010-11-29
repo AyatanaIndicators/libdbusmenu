@@ -297,35 +297,28 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 		return;
 	}
 
-	GVariantIter outsideiter;
-	GVariant * inside;
-	g_variant_iter_init(&outsideiter, wrapper);
+	g_debug("Data: %s", g_variant_print(wrapper, TRUE));
 
-	while(g_variant_iter_next(&outsideiter, "v", &inside)) {
-		GVariantIter insideiter;
-		g_variant_iter_init(&insideiter, inside);
-		gchar * string;
+	GVariantIter iter;
+	g_variant_iter_init(&iter, g_variant_get_child_value(wrapper, 0));
+	gchar * string;
 
-		while(g_variant_iter_next(&insideiter, "s", &string)) {
-			if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
-				*modifier |= GDK_CONTROL_MASK;
-			} else if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
-				*modifier |= GDK_MOD1_MASK;
-			} else if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
-				*modifier |= GDK_SHIFT_MASK;
-			} else if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
-				*modifier |= GDK_SUPER_MASK;
-			} else {
-				GdkModifierType tempmod;
-				gtk_accelerator_parse(string, key, &tempmod);
-			}
-
-			g_free(string);
+	while(g_variant_iter_next(&iter, "s", &string)) {
+		if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
+			*modifier |= GDK_CONTROL_MASK;
+		} else if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
+			*modifier |= GDK_MOD1_MASK;
+		} else if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_SHIFT) == 0) {
+			*modifier |= GDK_SHIFT_MASK;
+		} else if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_SUPER) == 0) {
+			*modifier |= GDK_SUPER_MASK;
+		} else {
+			GdkModifierType tempmod;
+			gtk_accelerator_parse(string, key, &tempmod);
 		}
 
-		g_variant_unref(inside);
+		g_free(string);
 	}
-	g_variant_unref(wrapper);
 
 	return;
 }
