@@ -201,12 +201,7 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	g_variant_builder_add_value(&builder, inside);
 	GVariant * outsidevariant = g_variant_builder_end(&builder);
 
-	dbusmenu_menuitem_property_set_variant(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT, outsidevariant);
-
-	g_variant_unref(outsidevariant);
-	g_variant_unref(inside);
-
-	return TRUE;
+	return dbusmenu_menuitem_property_set_variant(menuitem, DBUSMENU_MENUITEM_PROP_SHORTCUT, outsidevariant);
 }
 
 /* Look at the closures in an accel group and find
