@@ -287,8 +287,6 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 		return;
 	}
 
-	g_debug("Data: %s", g_variant_print(wrapper, TRUE));
-
 	GVariantIter iter;
 	g_variant_iter_init(&iter, g_variant_get_child_value(wrapper, 0));
 	gchar * string;
