@@ -694,7 +694,7 @@ menuitem_shown (DbusmenuMenuitem * mi, guint timestamp, DbusmenuServer * server)
 		                              NULL,
 		                              priv->dbusobject,
 		                              DBUSMENU_INTERFACE,
-		                              "ItemPropertyUpdated",
+		                              "ItemActivationRequested",
 		                              g_variant_new("(iu)", dbusmenu_menuitem_get_id(mi), timestamp),
 		                              NULL);
 	}
