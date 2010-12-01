@@ -7,7 +7,7 @@ EXTRA_DIST = \
 lib_LTLIBRARIES = \
 	libdbusmenu-gtk.la
 
-libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-gtk/
+libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-gtk/
 
 libdbusmenu_gtkinclude_HEADERS = \
 	client.h \
@@ -55,16 +55,16 @@ if HAVE_INTROSPECTION
 
 introspection_sources = $(libdbusmenu_gtkinclude_HEADERS)
 
-DbusmenuGtk-0.2.gir: libdbusmenu-gtk.la
-DbusmenuGtk_0_2_gir_INCLUDES = \
+DbusmenuGtk-0.4.gir: libdbusmenu-gtk.la
+DbusmenuGtk_0_4_gir_INCLUDES = \
 	GObject-2.0 \
 	Gtk-2.0 \
-	Dbusmenu-Glib-0.2
-DbusmenuGtk_0_2_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
-DbusmenuGtk_0_2_gir_LIBS = libdbusmenu-gtk.la
-DbusmenuGtk_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+	Dbusmenu-Glib-0.4
+DbusmenuGtk_0_4_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
+DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk.la
+DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 
-INTROSPECTION_GIRS += DbusmenuGtk-0.2.gir
+INTROSPECTION_GIRS += DbusmenuGtk-0.4.gir
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(INTROSPECTION_GIRS)
@@ -83,24 +83,24 @@ endif
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
-vapi_DATA = DbusmenuGtk-0.2.vapi
+vapi_DATA = DbusmenuGtk-0.4.vapi
 
-DbusmenuGtk-0.2.vapi: DbusmenuGtk-0.2.tmp.gir Makefile.am
-	$(VALA_API_GEN) --library=DbusmenuGtk-0.2 \
+DbusmenuGtk-0.4.vapi: DbusmenuGtk-0.4.tmp.gir Makefile.am
+	$(VALA_API_GEN) --library=DbusmenuGtk-0.4 \
 		--pkg gdk-pixbuf-2.0 \
 		--pkg gtk+-2.0 \
 		--pkg atk \
-		--pkg Dbusmenu-Glib-0.2 \
+		--pkg Dbusmenu-Glib-0.4 \
 		--vapidir=$(top_builddir)/libdbusmenu-glib \
 		$<
 
-DbusmenuGtk-0.2.tmp.gir: DbusmenuGtk-0.2.gir
+DbusmenuGtk-0.4.tmp.gir: DbusmenuGtk-0.4.gir
 	$(SED) \
 		-e "s|GdkPixbuf.Pixbuf|Gdk.Pixbuf|g" \
 		-e "s|Atk.ImplementorIface|Atk.Implementor|g" \
 		$< > $@
 
-CLEANFILES += $(vapi_DATA) DbusmenuGtk-0.2.tmp.gir
+CLEANFILES += $(vapi_DATA) DbusmenuGtk-0.4.tmp.gir
 
 endif
 
