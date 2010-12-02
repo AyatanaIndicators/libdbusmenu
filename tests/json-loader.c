@@ -56,7 +56,7 @@ node2variant (JsonNode * node)
 		switch (json_node_get_value_type(node)) {
 		case G_TYPE_INT:
 		case G_TYPE_INT64:
-			return g_variant_new_int64(json_node_get_int(node));
+			return g_variant_new_int32(json_node_get_int(node));
 		case G_TYPE_DOUBLE:
 		case G_TYPE_FLOAT:
 			return g_variant_new_double(json_node_get_double(node));
