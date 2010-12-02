@@ -3,7 +3,7 @@ CLEANFILES =
 
 EXTRA_DIST = \
 	clean-namespaces.xslt \
-	dbusmenu-glib.pc.in \
+	dbusmenu-glib-0.4.pc.in \
 	dbus-menu.xml \
 	client-marshal.list \
 	menuitem-marshal.list \
@@ -52,7 +52,7 @@ libdbusmenu_glib_la_CFLAGS = \
 libdbusmenu_glib_la_LIBADD = \
 	$(DBUSMENUGLIB_LIBS)
 
-pkgconfig_DATA = dbusmenu-glib.pc
+pkgconfig_DATA = dbusmenu-glib-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 %.xml.h: %.xml

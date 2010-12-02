@@ -14,8 +14,8 @@ lib_LTLIBRARIES = libdbusmenu-gtk.la
 endif
 
 EXTRA_DIST = \
-	dbusmenu-gtk.pc.in \
-	dbusmenu-gtk3.pc.in
+	dbusmenu-gtk-0.4.pc.in \
+	dbusmenu-gtk3-0.4.pc.in
 
 libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-gtk$(VER)/
 
@@ -57,7 +57,7 @@ libdbusmenu_gtk3_la_LDFLAGS = $(libdbusmenu_gtk_la_LDFLAGS)
 libdbusmenu_gtk3_la_CFLAGS = $(libdbusmenu_gtk_la_CFLAGS)
 libdbusmenu_gtk3_la_LIBADD = $(libdbusmenu_gtk_la_LIBADD)
 
-pkgconfig_DATA = dbusmenu-gtk$(VER).pc
+pkgconfig_DATA = dbusmenu-gtk$(VER)-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 #########################

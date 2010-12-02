@@ -159,10 +159,10 @@ AC_OUTPUT([
 Makefile
 po/Makefile.in
 libdbusmenu-glib/Makefile
-libdbusmenu-glib/dbusmenu-glib.pc
+libdbusmenu-glib/dbusmenu-glib-0.4.pc
 libdbusmenu-gtk/Makefile
-libdbusmenu-gtk/dbusmenu-gtk.pc
-libdbusmenu-gtk/dbusmenu-gtk3.pc
+libdbusmenu-gtk/dbusmenu-gtk-0.4.pc
+libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc
 tools/Makefile
 tools/testapp/Makefile
 tests/Makefile
