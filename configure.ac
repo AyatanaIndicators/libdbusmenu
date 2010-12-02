@@ -120,6 +120,12 @@ GOBJECT_INTROSPECTION_CHECK([0.6.7])
 AC_PATH_PROG([VALA_API_GEN], [vapigen])
 
 ###########################
+# XSLT Processor
+###########################
+
+AC_PATH_PROG([XSLT_PROC], [xsltproc])
+
+###########################
 # Lib versioning 
 ###########################
 

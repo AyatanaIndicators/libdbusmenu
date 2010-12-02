@@ -64,7 +64,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 	echo ";" >> $@
 
 dbus-menu-clean.xml: dbus-menu.xml
-	xsltproc $(srcdir)/clean-namespaces.xslt $< > $@ || (rm -f $@ && /bin/false)
+	$(XSLT_PROC) $(srcdir)/clean-namespaces.xslt $< > $@ || (rm -f $@ && /bin/false)
 
 CLEANFILES += dbus-menu-clean.xml
 
