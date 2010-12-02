@@ -1,13 +1,23 @@
 
 CLEANFILES = 
 
+if USE_GTK3
+VER=3
+GTKGIR=Gtk-3.0
+GTKVALA=gtk+-3.0
+lib_LTLIBRARIES = libdbusmenu-gtk3.la
+else
+VER=
+GTKGIR=Gtk-2.0
+GTKVALA=gtk+-2.0
+lib_LTLIBRARIES = libdbusmenu-gtk.la
+endif
+
 EXTRA_DIST = \
-	dbusmenu-gtk.pc.in
+	dbusmenu-gtk.pc.in \
+	dbusmenu-gtk3.pc.in
 
-lib_LTLIBRARIES = \
-	libdbusmenu-gtk.la
-
-libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-gtk/
+libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-gtk$(VER)/
 
 libdbusmenu_gtkinclude_HEADERS = \
 	client.h \
@@ -36,7 +46,18 @@ libdbusmenu_gtk_la_LIBADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGTK_LIBS)
 
-pkgconfig_DATA = dbusmenu-gtk.pc
+# We duplicate these here because Automake won't let us use $(VER) on the left hand side.
+# Since we carefully use $(VER) in the right hand side above, we can assign the same values.
+# Only one version of the library is every compiled at the same time, so it is safe to reuse
+# the right hand sides like this.
+libdbusmenu_gtk3includedir = $(libdbusmenu_gtkincludedir)
+libdbusmenu_gtk3include_HEADERS = $(libdbusmenu_gtkinclude_HEADERS)
+libdbusmenu_gtk3_la_SOURCES = $(libdbusmenu_gtk_la_SOURCES)
+libdbusmenu_gtk3_la_LDFLAGS = $(libdbusmenu_gtk_la_LDFLAGS)
+libdbusmenu_gtk3_la_CFLAGS = $(libdbusmenu_gtk_la_CFLAGS)
+libdbusmenu_gtk3_la_LIBADD = $(libdbusmenu_gtk_la_LIBADD)
+
+pkgconfig_DATA = dbusmenu-gtk$(VER).pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 #########################
@@ -55,16 +76,22 @@ if HAVE_INTROSPECTION
 
 introspection_sources = $(libdbusmenu_gtkinclude_HEADERS)
 
-DbusmenuGtk-0.4.gir: libdbusmenu-gtk.la
+DbusmenuGtk$(VER)-0.4.gir: libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_INCLUDES = \
 	GObject-2.0 \
-	Gtk-2.0 \
+	$(GTKGIR) \
 	Dbusmenu-Glib-0.4
 DbusmenuGtk_0_4_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
-DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk.la
+DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 
-INTROSPECTION_GIRS += DbusmenuGtk-0.4.gir
+# We duplicate these for the same reason as libdbusmenu_gtk3includedir above
+DbusmenuGtk3_0_4_gir_INCLUDES = $(DbusmenuGtk_0_4_gir_INCLUDES)
+DbusmenuGtk3_0_4_gir_CFLAGS = $(DbusmenuGtk_0_4_gir_CFLAGS)
+DbusmenuGtk3_0_4_gir_LIBS = $(DbusmenuGtk_0_4_gir_LIBS)
+DbusmenuGtk3_0_4_gir_FILES = $(DbusmenuGtk_0_4_gir_FILES)
+
+INTROSPECTION_GIRS += DbusmenuGtk$(VER)-0.4.gir
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(INTROSPECTION_GIRS)
@@ -83,24 +110,24 @@ endif
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
-vapi_DATA = DbusmenuGtk-0.4.vapi
+vapi_DATA = DbusmenuGtk$(VER)-0.4.vapi
 
-DbusmenuGtk-0.4.vapi: DbusmenuGtk-0.4.tmp.gir Makefile.am
-	$(VALA_API_GEN) --library=DbusmenuGtk-0.4 \
+DbusmenuGtk$(VER)-0.4.vapi: DbusmenuGtk$(VER)-0.4.tmp.gir Makefile.am
+	$(VALA_API_GEN) --library=DbusmenuGtk$(VER)-0.4 \
 		--pkg gdk-pixbuf-2.0 \
-		--pkg gtk+-2.0 \
+		--pkg $(GTKVALA) \
 		--pkg atk \
 		--pkg Dbusmenu-Glib-0.4 \
 		--vapidir=$(top_builddir)/libdbusmenu-glib \
 		$<
 
-DbusmenuGtk-0.4.tmp.gir: DbusmenuGtk-0.4.gir
+DbusmenuGtk$(VER)-0.4.tmp.gir: DbusmenuGtk$(VER)-0.4.gir
 	$(SED) \
 		-e "s|GdkPixbuf.Pixbuf|Gdk.Pixbuf|g" \
 		-e "s|Atk.ImplementorIface|Atk.Implementor|g" \
 		$< > $@
 
-CLEANFILES += $(vapi_DATA) DbusmenuGtk-0.4.tmp.gir
+CLEANFILES += $(vapi_DATA) DbusmenuGtk$(VER)-0.4.tmp.gir
 
 endif
 

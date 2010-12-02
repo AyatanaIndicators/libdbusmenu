@@ -49,8 +49,8 @@ tests/test-gtk-reorder-server.c
 tests/test-gtk-reorder-server
 tests/test-gtk-reorder
 tools/dbusmenu-dumper
-libdbusmenu-[0-9].[0-9].[0-9].tar.gz
-libdbusmenu-[0-9].[0-9].[0-9].tar.gz.asc
+libdbusmenu-[0-9]*.[0-9]*.[0-9]*.tar.gz
+libdbusmenu-[0-9]*.[0-9]*.[0-9]*.tar.gz.asc
 tests/test-mago
 tests/*.bustle
 libdbusmenu-gtk/libdbusmenu_gtk_la-genericmenuitem.lo
@@ -201,3 +201,12 @@ libdbusmenu-glib/dbus-menu-clean.xml
 libdbusmenu-glib/dbus-menu-clean.xml.c
 libdbusmenu-glib/dbus-menu-clean.xml.h
 libdbusmenu-glib/libdbusmenu_glib_la-dbus-menu-clean.xml.lo
+libdbusmenu-gtk/DbusmenuGtk3-0.2.gir
+libdbusmenu-gtk/DbusmenuGtk3-0.2.tmp.gir
+libdbusmenu-gtk/DbusmenuGtk3-0.2.typelib
+libdbusmenu-gtk/dbusmenu-gtk3.pc
+libdbusmenu-gtk/libdbusmenu-gtk3.la
+libdbusmenu-gtk/libdbusmenu_gtk3_la-client.lo
+libdbusmenu-gtk/libdbusmenu_gtk3_la-genericmenuitem.lo
+libdbusmenu-gtk/libdbusmenu_gtk3_la-menu.lo
+libdbusmenu-gtk/libdbusmenu_gtk3_la-menuitem.lo

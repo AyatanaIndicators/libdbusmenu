@@ -444,11 +444,17 @@ activate_helper (GtkMenuShell * shell)
 					activate_helper(GTK_MENU_SHELL(parent));
 				}
 
+				/* This code is being commented out for GTK 3 because it
+				   doesn't expose the right variables.  We need to figure
+				   this out as menus won't get grabs properly.
+				   TODO FIXME HELP ARGHHHHHHHH */
+#if (HAVE_GTK3 == 0)
 				if (!GTK_MENU_SHELL (parent)->active) {
 					gtk_grab_add (parent);
 					GTK_MENU_SHELL (parent)->have_grab = TRUE;
 					GTK_MENU_SHELL (parent)->active = TRUE;
 				}
+#endif
 
 				gtk_menu_shell_select_item(GTK_MENU_SHELL(parent), attach);
 			}

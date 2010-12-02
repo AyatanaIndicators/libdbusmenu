@@ -51,7 +51,6 @@ static void genericmenuitem_class_init (GenericmenuitemClass *klass);
 static void genericmenuitem_init       (Genericmenuitem *self);
 static void genericmenuitem_dispose    (GObject *object);
 static void genericmenuitem_finalize   (GObject *object);
-static void draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area);
 static void set_label (GtkMenuItem * menu_item, const gchar * label);
 static const gchar * get_label (GtkMenuItem * menu_item);
 static void activate (GtkMenuItem * menu_item);
@@ -59,8 +58,13 @@ static void activate (GtkMenuItem * menu_item);
 /* GObject stuff */
 G_DEFINE_TYPE (Genericmenuitem, genericmenuitem, GTK_TYPE_CHECK_MENU_ITEM);
 
-/* Globals */
+#if HAVE_GTK3
+static void draw_indicator (GtkCheckMenuItem *check_menu_item, cairo_t *cr);
+static void (*parent_draw_indicator) (GtkCheckMenuItem *check_menu_item, cairo_t *cr) = NULL;
+#else
+static void draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area);
 static void (*parent_draw_indicator) (GtkCheckMenuItem *check_menu_item, GdkRectangle *area) = NULL;
+#endif
 
 /* Initializing all of the classes.  Most notably we're
    disabling the drawing of the check early. */
@@ -121,6 +125,17 @@ genericmenuitem_finalize (GObject *object)
 /* Checks to see if we should be drawing a little box at
    all.  If we should be, let's do that, otherwise we're
    going suppress the box drawing. */
+#if HAVE_GTK3
+static void
+draw_indicator (GtkCheckMenuItem *check_menu_item, cairo_t *cr)
+{
+	Genericmenuitem * self = GENERICMENUITEM(check_menu_item);
+	if (self->priv->check_type != GENERICMENUITEM_CHECK_TYPE_NONE) {
+		parent_draw_indicator(check_menu_item, cr);
+	}
+	return;
+}
+#else
 static void
 draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area)
 {
@@ -130,6 +145,7 @@ draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area)
 	}
 	return;
 }
+#endif
 
 /* A small helper to look through the widgets in the
    box and find the one that is the label. */
@@ -325,32 +341,32 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 
 	GtkCheckMenuItem * check = GTK_CHECK_MENU_ITEM(item);
 
-	gboolean old_active = check->active;
-	gboolean old_inconsist = check->inconsistent;
+	gboolean old_active = gtk_check_menu_item_get_active (check);
+	gboolean old_inconsist = gtk_check_menu_item_get_inconsistent (check);
 
 	switch (item->priv->state) {
 	case GENERICMENUITEM_STATE_UNCHECKED:
-		check->active = FALSE;
-		check->inconsistent = FALSE;
+		gtk_check_menu_item_set_active (check, FALSE);
+		gtk_check_menu_item_set_inconsistent (check, FALSE);
 		break;
 	case GENERICMENUITEM_STATE_CHECKED:
-		check->active = TRUE;
-		check->inconsistent = FALSE;
+		gtk_check_menu_item_set_active (check, TRUE);
+		gtk_check_menu_item_set_inconsistent (check, FALSE);
 		break;
 	case GENERICMENUITEM_STATE_INDETERMINATE:
-		check->active = TRUE;
-		check->inconsistent = TRUE;
+		gtk_check_menu_item_set_active (check, TRUE);
+		gtk_check_menu_item_set_inconsistent (check, TRUE);
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check state: %d", state);
 		return;
 	}
 
-	if (old_active != check->active) {
+	if (old_active != gtk_check_menu_item_get_active (check)) {
 		g_object_notify(G_OBJECT(item), "active");
 	}
 
-	if (old_inconsist != check->inconsistent) {
+	if (old_inconsist != gtk_check_menu_item_get_inconsistent (check)) {
 		g_object_notify(G_OBJECT(item), "inconsistent");
 	}
 
