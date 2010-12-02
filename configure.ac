@@ -172,7 +172,7 @@ libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc
 tools/Makefile
 tools/testapp/Makefile
 tests/Makefile
-tests/dbusmenu-jsonloader.pc
+tests/dbusmenu-jsonloader-0.4.pc
 docs/Makefile
 docs/libdbusmenu-glib/Makefile
 docs/libdbusmenu-glib/reference/Makefile
