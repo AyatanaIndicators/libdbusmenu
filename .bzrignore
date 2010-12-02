@@ -210,3 +210,13 @@ libdbusmenu-gtk/libdbusmenu_gtk3_la-client.lo
 libdbusmenu-gtk/libdbusmenu_gtk3_la-genericmenuitem.lo
 libdbusmenu-gtk/libdbusmenu_gtk3_la-menu.lo
 libdbusmenu-gtk/libdbusmenu_gtk3_la-menuitem.lo
+libdbusmenu-glib/Dbusmenu-Glib-0.4.gir
+libdbusmenu-glib/Dbusmenu-Glib-0.4.typelib
+libdbusmenu-glib/Dbusmenu-Glib-0.4.vapi
+libdbusmenu-glib/dbusmenu-glib-0.4.pc
+libdbusmenu-gtk/DbusmenuGtk-0.4.gir
+libdbusmenu-gtk/DbusmenuGtk-0.4.tmp.gir
+libdbusmenu-gtk/DbusmenuGtk-0.4.typelib
+libdbusmenu-gtk/DbusmenuGtk-0.4.vapi
+libdbusmenu-gtk/dbusmenu-gtk-0.4.pc
+libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc
