@@ -66,10 +66,19 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
-INTROSPECTION_SCANNER_ARGS = \
-	--add-include-path=$(srcdir) \
+
+if INTROSPECTION_TEN
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+	--add-include-path=$(top_builddir)/libdbusmenu-glib \
+	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
+	--symbol-prefix=dbusmenu \
+	--identifier-prefix=DbusmenuGtk
+else
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
 	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
+endif
+
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_builddir)/libdbusmenu-glib
 
 if HAVE_INTROSPECTION
@@ -80,16 +89,22 @@ DbusmenuGtk$(VER)-0.2.gir: libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_2_gir_INCLUDES = \
 	GObject-2.0 \
 	$(GTKGIR) \
-	Dbusmenu-Glib-0.2
+	Dbusmenu-Glib-0.2 
 DbusmenuGtk_0_2_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
 DbusmenuGtk_0_2_gir_LIBS = libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+DbusmenuGtk_0_2_gir_NAMESPACE = DbusmenuGtk$(VER)
+DbusmenuGtk_0_2_gir_SCANNERFLAGS = $(INTROSPECTION_SCANNER_ARGS)
+DbusmenuGtk_0_2_gir_PACKAGES = dbusmenu-gtk$(VER)
 
 # We duplicate these for the same reason as libdbusmenu_gtk3includedir above
 DbusmenuGtk3_0_2_gir_INCLUDES = $(DbusmenuGtk_0_2_gir_INCLUDES)
 DbusmenuGtk3_0_2_gir_CFLAGS = $(DbusmenuGtk_0_2_gir_CFLAGS)
 DbusmenuGtk3_0_2_gir_LIBS = $(DbusmenuGtk_0_2_gir_LIBS)
 DbusmenuGtk3_0_2_gir_FILES = $(DbusmenuGtk_0_2_gir_FILES)
+DbusmenuGtk3_0_2_gir_NAMESPACE = $(DbusmenuGtk_0_2_gir_NAMESPACE)
+DbusmenuGtk3_0_2_gir_SCANNERFLAGS = $(DbusmenuGtk_0_2_gir_SCANNERFLAGS)
+DbusmenuGtk3_0_2_gir_PACKAGES = $(DbusmenuGtk_0_2_gir_PACKAGES)
 
 INTROSPECTION_GIRS += DbusmenuGtk$(VER)-0.2.gir
 

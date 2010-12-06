@@ -116,6 +116,12 @@ AC_SUBST(DBUSMENUTESTS_LIBS)
 
 GOBJECT_INTROSPECTION_CHECK([0.6.7])
 
+PKG_CHECK_EXISTS([gobject-introspection-1.0 >= 0.10],
+				 introspection_ten=yes,
+				 introspection_ten=no)
+
+AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
+
 ###########################
 # Vala API Generation
 ###########################
