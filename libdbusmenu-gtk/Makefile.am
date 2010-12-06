@@ -66,11 +66,19 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
+
+if INTROSPECTION_TEN
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
 	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
 	--symbol-prefix=dbusmenu \
 	--identifier-prefix=DbusmenuGtk
+else
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+	--add-include-path=$(top_builddir)/libdbusmenu-glib \
+	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
+endif
+
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_builddir)/libdbusmenu-glib
 
 if HAVE_INTROSPECTION
