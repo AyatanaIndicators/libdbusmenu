@@ -763,7 +763,10 @@ GETTEXT_PACKAGE
 LIBDBUSMENU_AGE
 LIBDBUSMENU_REVISION
 LIBDBUSMENU_CURRENT
+XSLT_PROC
 VALA_API_GEN
+INTROSPECTION_TEN_FALSE
+INTROSPECTION_TEN_TRUE
 HAVE_INTROSPECTION_FALSE
 HAVE_INTROSPECTION_TRUE
 INTROSPECTION_MAKEFILE
@@ -6312,13 +6315,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6315: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6318: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6318: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:6321: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6321: output\"" >&5)
+  (eval echo "\"\$as_me:6324: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7523,7 +7526,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7526 "configure"' > conftest.$ac_ext
+  echo '#line 7529 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8773,6 +8776,10 @@ _lt_linker_boilerplate=`cat conftest.err`
 $RM -r conftest*
 
 
+## CAVEAT EMPTOR:
+## There is no encapsulation within the following macros, do not change
+## the running order or otherwise move them around unless you know exactly
+## what you are doing...
 if test -n "$compiler"; then
 
 lt_prog_compiler_no_builtin_flag=
@@ -8798,11 +8805,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8801: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8808: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8805: \$? = $ac_status" >&5
+   echo "$as_me:8812: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9137,11 +9144,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9140: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9147: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9144: \$? = $ac_status" >&5
+   echo "$as_me:9151: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9242,11 +9249,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9245: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9252: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9249: \$? = $ac_status" >&5
+   echo "$as_me:9256: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9297,11 +9304,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9300: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9307: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9304: \$? = $ac_status" >&5
+   echo "$as_me:9311: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11681,7 +11688,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11684 "configure"
+#line 11691 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11777,7 +11784,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11780 "configure"
+#line 11787 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12477,8 +12484,7 @@ fi
 # Dependencies - GLib
 ###########################
 
-GLIB_REQUIRED_VERSION=2.18
-DBUS_REQUIRED_VERSION=0.76
+GLIB_REQUIRED_VERSION=2.26
 XML_REQUIRED_VERSION=2.6
 
 
@@ -12491,16 +12497,16 @@ if test -n "$DBUSMENUGLIB_CFLAGS"; then
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= \$GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= \$DBUS_REQUIRED_VERSION
+                                gio-2.0 >= \$GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= \$XML_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_DBUSMENUGLIB_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
@@ -12513,16 +12519,16 @@ if test -n "$DBUSMENUGLIB_LIBS"; then
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= \$GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= \$DBUS_REQUIRED_VERSION
+                                gio-2.0 >= \$GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= \$XML_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_DBUSMENUGLIB_LIBS=`$PKG_CONFIG --libs "glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
@@ -12544,18 +12550,18 @@ else
 fi
         if test $_pkg_short_errors_supported = yes; then
 	        DBUSMENUGLIB_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION" 2>&1`
         else
 	        DBUSMENUGLIB_PKG_ERRORS=`$PKG_CONFIG --print-errors "glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$DBUSMENUGLIB_PKG_ERRORS" >&5
 
 	as_fn_error $? "Package requirements (glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION) were not met:
 
 $DBUSMENUGLIB_PKG_ERRORS
@@ -12619,18 +12625,15 @@ if test -n "$DBUSMENUGTK_CFLAGS"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-3.0 >= \$GTK3_REQUIRED_VERSION
                                          glib-2.0 >= \$GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= \$DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= \$XML_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_DBUSMENUGTK_CFLAGS=`$PKG_CONFIG --cflags "gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
@@ -12644,18 +12647,15 @@ if test -n "$DBUSMENUGTK_LIBS"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-3.0 >= \$GTK3_REQUIRED_VERSION
                                          glib-2.0 >= \$GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= \$DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= \$XML_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_DBUSMENUGTK_LIBS=`$PKG_CONFIG --libs "gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
@@ -12678,12 +12678,10 @@ fi
         if test $_pkg_short_errors_supported = yes; then
 	        DBUSMENUGTK_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION" 2>&1`
         else
 	        DBUSMENUGTK_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
@@ -12691,7 +12689,6 @@ fi
 
 	as_fn_error $? "Package requirements (gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION) were not met:
 
 $DBUSMENUGTK_PKG_ERRORS
@@ -12742,18 +12739,15 @@ if test -n "$DBUSMENUGTK_CFLAGS"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-2.0 >= \$GTK_REQUIRED_VERSION
                                          glib-2.0 >= \$GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= \$DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= \$XML_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_DBUSMENUGTK_CFLAGS=`$PKG_CONFIG --cflags "gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
@@ -12767,18 +12761,15 @@ if test -n "$DBUSMENUGTK_LIBS"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-2.0 >= \$GTK_REQUIRED_VERSION
                                          glib-2.0 >= \$GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= \$DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= \$XML_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_DBUSMENUGTK_LIBS=`$PKG_CONFIG --libs "gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
@@ -12801,12 +12792,10 @@ fi
         if test $_pkg_short_errors_supported = yes; then
 	        DBUSMENUGTK_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION" 2>&1`
         else
 	        DBUSMENUGTK_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
@@ -12814,7 +12803,6 @@ fi
 
 	as_fn_error $? "Package requirements (gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION) were not met:
 
 $DBUSMENUGTK_PKG_ERRORS
@@ -13181,6 +13169,26 @@ fi
 
 
 
+if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gobject-introspection-1.0 >= 0.10\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gobject-introspection-1.0 >= 0.10") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  introspection_ten=yes
+else
+  introspection_ten=no
+fi
+
+ if test "x$introspection_ten" = "xyes"; then
+  INTROSPECTION_TEN_TRUE=
+  INTROSPECTION_TEN_FALSE='#'
+else
+  INTROSPECTION_TEN_TRUE='#'
+  INTROSPECTION_TEN_FALSE=
+fi
+
+
 ###########################
 # Vala API Generation
 ###########################
@@ -13219,6 +13227,51 @@ VALA_API_GEN=$ac_cv_path_VALA_API_GEN
 if test -n "$VALA_API_GEN"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $VALA_API_GEN" >&5
 $as_echo "$VALA_API_GEN" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+
+###########################
+# XSLT Processor
+###########################
+
+# Extract the first word of "xsltproc", so it can be a program name with args.
+set dummy xsltproc; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_XSLT_PROC+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $XSLT_PROC in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_XSLT_PROC="$XSLT_PROC" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_XSLT_PROC="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+XSLT_PROC=$ac_cv_path_XSLT_PROC
+if test -n "$XSLT_PROC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XSLT_PROC" >&5
+$as_echo "$XSLT_PROC" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -13977,7 +14030,7 @@ fi
 # Files
 ###########################
 
-ac_config_files="$ac_config_files Makefile po/Makefile.in libdbusmenu-glib/Makefile libdbusmenu-glib/dbusmenu-glib.pc libdbusmenu-gtk/Makefile libdbusmenu-gtk/dbusmenu-gtk.pc libdbusmenu-gtk/dbusmenu-gtk3.pc tools/Makefile tools/testapp/Makefile tests/Makefile tests/dbusmenu-jsonloader.pc docs/Makefile docs/libdbusmenu-glib/Makefile docs/libdbusmenu-glib/reference/Makefile docs/libdbusmenu-glib/reference/version.xml docs/libdbusmenu-gtk/Makefile docs/libdbusmenu-gtk/reference/Makefile docs/libdbusmenu-gtk/reference/version.xml"
+ac_config_files="$ac_config_files Makefile po/Makefile.in libdbusmenu-glib/Makefile libdbusmenu-glib/dbusmenu-glib-0.4.pc libdbusmenu-gtk/Makefile libdbusmenu-gtk/dbusmenu-gtk-0.4.pc libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc tools/Makefile tools/testapp/Makefile tests/Makefile tests/dbusmenu-jsonloader-0.4.pc docs/Makefile docs/libdbusmenu-glib/Makefile docs/libdbusmenu-glib/reference/Makefile docs/libdbusmenu-glib/reference/version.xml docs/libdbusmenu-gtk/Makefile docs/libdbusmenu-gtk/reference/Makefile docs/libdbusmenu-gtk/reference/version.xml"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -14139,6 +14192,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_INTROSPECTION_TRUE}" && test -z "${HAVE_INTROSPECTION_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_INTROSPECTION\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${INTROSPECTION_TEN_TRUE}" && test -z "${INTROSPECTION_TEN_FALSE}"; then
+  as_fn_error $? "conditional \"INTROSPECTION_TEN\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -15007,14 +15064,14 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "libdbusmenu-glib/Makefile") CONFIG_FILES="$CONFIG_FILES libdbusmenu-glib/Makefile" ;;
-    "libdbusmenu-glib/dbusmenu-glib.pc") CONFIG_FILES="$CONFIG_FILES libdbusmenu-glib/dbusmenu-glib.pc" ;;
+    "libdbusmenu-glib/dbusmenu-glib-0.4.pc") CONFIG_FILES="$CONFIG_FILES libdbusmenu-glib/dbusmenu-glib-0.4.pc" ;;
     "libdbusmenu-gtk/Makefile") CONFIG_FILES="$CONFIG_FILES libdbusmenu-gtk/Makefile" ;;
-    "libdbusmenu-gtk/dbusmenu-gtk.pc") CONFIG_FILES="$CONFIG_FILES libdbusmenu-gtk/dbusmenu-gtk.pc" ;;
-    "libdbusmenu-gtk/dbusmenu-gtk3.pc") CONFIG_FILES="$CONFIG_FILES libdbusmenu-gtk/dbusmenu-gtk3.pc" ;;
+    "libdbusmenu-gtk/dbusmenu-gtk-0.4.pc") CONFIG_FILES="$CONFIG_FILES libdbusmenu-gtk/dbusmenu-gtk-0.4.pc" ;;
+    "libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc") CONFIG_FILES="$CONFIG_FILES libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc" ;;
     "tools/Makefile") CONFIG_FILES="$CONFIG_FILES tools/Makefile" ;;
     "tools/testapp/Makefile") CONFIG_FILES="$CONFIG_FILES tools/testapp/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-    "tests/dbusmenu-jsonloader.pc") CONFIG_FILES="$CONFIG_FILES tests/dbusmenu-jsonloader.pc" ;;
+    "tests/dbusmenu-jsonloader-0.4.pc") CONFIG_FILES="$CONFIG_FILES tests/dbusmenu-jsonloader-0.4.pc" ;;
     "docs/Makefile") CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
     "docs/libdbusmenu-glib/Makefile") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-glib/Makefile" ;;
     "docs/libdbusmenu-glib/reference/Makefile") CONFIG_FILES="$CONFIG_FILES docs/libdbusmenu-glib/reference/Makefile" ;;
