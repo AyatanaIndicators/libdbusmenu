@@ -1,5 +1,5 @@
-debian/tmp/usr/lib/pkgconfig/dbusmenu-gtk3.pc
+debian/tmp/usr/lib/pkgconfig/dbusmenu-gtk3-0.4.pc
 debian/tmp/usr/lib/libdbusmenu-gtk3.a
 debian/tmp/usr/lib/libdbusmenu-gtk3.so
-debian/tmp/usr/share/gir-1.0/DbusmenuGtk3-0.2.gir
-debian/tmp/usr/share/vala/vapi/DbusmenuGtk3-0.2.vapi
+debian/tmp/usr/share/gir-1.0/DbusmenuGtk3-0.4.gir
+debian/tmp/usr/share/vala/vapi/DbusmenuGtk3-0.4.vapi
