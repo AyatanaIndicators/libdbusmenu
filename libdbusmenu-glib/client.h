@@ -84,7 +84,7 @@ struct _DbusmenuClientClass {
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
 	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
-	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GValue * data, guint timestamp, GError * error);
+	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GVariant * data, guint timestamp, GError * error);
 
 	/*< Private >*/
 	void (*reserved1) (void);
@@ -122,7 +122,7 @@ gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
 void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         gint id,
                                                         const gchar * name,
-                                                        const GValue * value,
+                                                        GVariant * variant,
                                                         guint timestamp);
 void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
                                                         gint id,

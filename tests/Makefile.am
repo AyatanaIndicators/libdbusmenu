@@ -80,7 +80,7 @@ libdbusmenu_jsonloader_la_LIBADD = \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
-pkgconfig_DATA = dbusmenu-jsonloader.pc
+pkgconfig_DATA = dbusmenu-jsonloader-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 ######################

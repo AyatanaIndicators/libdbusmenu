@@ -1,3 +1,10 @@
+libdbusmenu (0.3.90-0ubuntu2~ppa1~gdbus1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Porting from dbus-glib to GDBus
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 07 Dec 2010 09:45:06 -0600
+
 libdbusmenu (0.3.90-0ubuntu1) UNRELEASED; urgency=low
 
   * debian/rules
