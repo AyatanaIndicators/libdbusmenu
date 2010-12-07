@@ -142,7 +142,7 @@ Dbusmenu_Glib_0_4_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
 Dbusmenu_Glib_0_4_gir_LIBS = libdbusmenu-glib.la
 Dbusmenu_Glib_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 Dbusmenu_Glib_0_4_gir_NAMESPACE = Dbusmenu
-Dbusmenu_Glib_0_4_gir_VERSION = Glib-0.2
+Dbusmenu_Glib_0_4_gir_VERSION = Glib-0.4
 Dbusmenu_Glib_0_4_gir_PACKAGES = dbusmenu-glib
 Dbusmenu_Glib_0_4_gir_SCANNER_FLAGS = $(INTROSPECTION_SCANNER_ARGS)
 
