@@ -52,7 +52,7 @@ XVFB_RUN=". $(srcdir)/run-xvfb.sh"
 
 lib_LTLIBRARIES = libdbusmenu-jsonloader.la
 
-libdbusmenu_jsonloaderincludedir=$(includedir)/libdbusmenu-0.1/libdbusmenu-jsonloader/
+libdbusmenu_jsonloaderincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-jsonloader/
 
 libdbusmenu_jsonloaderinclude_HEADERS = \
 	json-loader.h
@@ -80,7 +80,7 @@ libdbusmenu_jsonloader_la_LIBADD = \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
-pkgconfig_DATA = dbusmenu-jsonloader.pc
+pkgconfig_DATA = dbusmenu-jsonloader-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 ######################

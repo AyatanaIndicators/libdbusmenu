@@ -21,7 +21,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <glib.h>
-#include <dbus/dbus-glib.h>
 
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -30,110 +29,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-glib/menuitem.h>
 
-#include <dbus/dbus-gtype-specialized.h>
 #include <X11/Xlib.h>
 
 static GMainLoop * mainloop = NULL;
-
-static gchar * value2string (const GValue * value, int depth);
-
-static gchar *
-strv_dumper(const GValue * value)
-{
-	gchar ** strv = (gchar **)g_value_get_boxed(value);
-
-	gchar * joined = g_strjoinv("\", \"", strv);
-	gchar * retval = g_strdup_printf("[\"%s\"]", joined);
-	g_free(joined);
-	return retval;
-}
-
-typedef struct _collection_iterator_t collection_iterator_t;
-struct _collection_iterator_t {
-	gchar * space;
-	GPtrArray * array;
-	gboolean first;
-	int depth;
-};
-
-static void
-collection_iterate (const GValue * value, gpointer user_data)
-{
-	collection_iterator_t * iter = (collection_iterator_t *)user_data;
-
-	gchar * str = value2string(value, iter->depth);
-	gchar * retval = NULL;
-
-	if (iter->first) {
-		iter->first = FALSE;
-		retval = g_strdup_printf("\n%s%s", iter->space, str);
-	} else {
-		retval = g_strdup_printf(",\n%s%s", iter->space, str);
-	}
-
-	g_ptr_array_add(iter->array, retval);
-	g_free(str);
-
-	return;
-}
-
-static gchar *
-collection_dumper (const GValue * value, int depth)
-{
-	gchar * space = g_strnfill(depth, ' ');
-	GPtrArray * array = g_ptr_array_new_with_free_func(g_free);
-
-	g_ptr_array_add(array, g_strdup("["));
-
-	collection_iterator_t iter;
-	iter.space = space;
-	iter.array = array;
-	iter.first = TRUE;
-	iter.depth = depth + 2;
-
-	dbus_g_type_collection_value_iterate(value, collection_iterate, &iter);
-
-	g_ptr_array_add(array, g_strdup_printf("\n%s]", space));
-
-	g_free(space);
-
-	gchar * retstr = NULL;
-	if (array->len == 3) {
-		retstr = g_strdup_printf("[%s]", ((gchar *)array->pdata[1]) + depth + 1/*for newline*/);
-	} else {
-		retstr = g_strjoinv(NULL, (gchar **)array->pdata);
-	}
-
-	g_ptr_array_free(array, TRUE);
-
-	return retstr;
-}
-
-static gchar *
-value2string (const GValue * value, int depth)
-{
-	gchar * str = NULL;
-
-	if (value == NULL) {
-		return g_strdup("(null)");
-	}
-
-	if (dbus_g_type_is_collection(G_VALUE_TYPE(value))) {
-		str = collection_dumper(value, depth);
-	} else if (G_VALUE_TYPE(value) == G_TYPE_STRV) {
-		str = strv_dumper(value);
-	} else if (G_VALUE_TYPE(value) == G_TYPE_BOOLEAN) {
-		if (g_value_get_boolean(value)) {
-			str = g_strdup("true");
-		} else {
-			str = g_strdup("false");
-		}
-	} else {
-		str = g_strdup_value_contents(value);
-	}
-
-	return str;
-}
 
 static gint
 list_str_cmp (gconstpointer a, gconstpointer b)
@@ -151,10 +49,11 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	GList * properties = g_list_sort(properties_raw, list_str_cmp);
 	GList * property;
 	for (property = properties; property != NULL; property = g_list_next(property)) {
-		const GValue * value = dbusmenu_menuitem_property_get_value(item, (gchar *)property->data);
-		gchar * str = value2string(value, depth + g_utf8_strlen((gchar *)property->data, -1) + 2 /*quotes*/ + 2 /*: */);
+		GVariant * variant = dbusmenu_menuitem_property_get_variant(item, (gchar *)property->data);
+		gchar * str = g_variant_print(variant, FALSE);
 		g_print(",\n%s\"%s\": %s", space, (gchar *)property->data, str);
 		g_free(str);
+		g_variant_unref(variant);
 	}
 	g_list_free(properties);
 
@@ -350,39 +249,46 @@ static gchar * dbusobject = NULL;
 static gboolean
 init_dbus_vars_from_window(Window window)
 {
-	DBusGConnection *connection;
 	GError *error;
-	DBusGProxy *proxy;
+	GDBusProxy *proxy;
 
 	error = NULL;
-	connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	if (connection == NULL) {
-		g_printerr("Failed to open connection to bus: %s\n", error->message);
+
+	proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+	                                       G_DBUS_PROXY_FLAGS_NONE,
+	                                       NULL,
+	                                       "org.ayatana.AppMenu.Registrar",
+	                                       "/org/ayatana/AppMenu/Registrar",
+	                                       "org.ayatana.AppMenu.Registrar",
+	                                       NULL,
+	                                       &error);
+	if (error != NULL) {
+		g_warning("Unable to get registrar proxy: %s", error->message);
 		g_error_free(error);
 		return FALSE;
 	}
 
-	proxy = dbus_g_proxy_new_for_name (connection,
-			"org.ayatana.AppMenu.Registrar",
-			"/org/ayatana/AppMenu/Registrar",
-			"org.ayatana.AppMenu.Registrar");
-
 	error = NULL;
-	if (!dbus_g_proxy_call (proxy, "GetMenuForWindow", &error,
-		G_TYPE_UINT, window, G_TYPE_INVALID, 
-		G_TYPE_STRING, &dbusname, DBUS_TYPE_G_OBJECT_PATH, &dbusobject, G_TYPE_INVALID))
-	{
-		g_printerr("ERROR: %s\n", error->message);
+	GVariant * retval;
+
+	retval = g_dbus_proxy_call_sync(proxy,
+	                                "GetMenuForWindow",
+	                                g_variant_new("u", window),
+	                                G_DBUS_CALL_FLAGS_NONE,
+	                                -1,
+	                                NULL,
+	                                &error);
+
+	if (error != NULL) {
+		g_warning("Unable to call 'GetMenuForWindow' on registrar: %s", error->message);
 		g_error_free(error);
-        g_object_unref(proxy);
 		return FALSE;
 	}
 
-	if (!g_strcmp0(dbusobject, "/")) {
-		return FALSE;
-	}
+	g_variant_get(retval, "so", &dbusname, &dbusobject);
 
-	g_object_unref (proxy);
+	g_variant_unref(retval);
+	g_object_unref(proxy);
 
 	return TRUE;
 }

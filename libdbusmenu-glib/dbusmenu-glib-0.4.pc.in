@@ -4,8 +4,8 @@ libdir=@libdir@
 bindir=@bindir@
 includedir=@includedir@
 
-Cflags: -I${includedir}/libdbusmenu-0.1
-Requires: dbus-glib-1
+Cflags: -I${includedir}/libdbusmenu-0.4
+Requires:
 Libs: -L${libdir} -ldbusmenu-glib
 
 Name: libdbusmenu-glib

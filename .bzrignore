@@ -182,7 +182,7 @@ docs/libdbusmenu-gtk/reference/tmpl/menuitem.sgml
 docs/libdbusmenu-gtk/reference/tmpl/menuitem.sgml.bak
 gtk-doc.make
 m4/gtk-doc.m4
-tests/dbusmenu-jsonloader.pc
+tests/dbusmenu-jsonloader-0.4.pc
 tests/libdbusmenu-jsonloader.la
 tests/libdbusmenu_jsonloader_la-json-loader.lo
 tests/test-json-server
@@ -194,6 +194,13 @@ libdbusmenu-glib/libdbusmenu_glib_la-client-marshal.lo
 tests/test-glib-events
 tests/test-glib-events-client
 tests/test-glib-events-server
+libdbusmenu-glib/dbus-menu.xml.c
+libdbusmenu-glib/dbus-menu.xml.h
+libdbusmenu-glib/libdbusmenu_glib_la-dbus-menu.xml.lo
+libdbusmenu-glib/dbus-menu-clean.xml
+libdbusmenu-glib/dbus-menu-clean.xml.c
+libdbusmenu-glib/dbus-menu-clean.xml.h
+libdbusmenu-glib/libdbusmenu_glib_la-dbus-menu-clean.xml.lo
 libdbusmenu-gtk/DbusmenuGtk3-0.2.gir
 libdbusmenu-gtk/DbusmenuGtk3-0.2.tmp.gir
 libdbusmenu-gtk/DbusmenuGtk3-0.2.typelib
@@ -203,3 +210,13 @@ libdbusmenu-gtk/libdbusmenu_gtk3_la-client.lo
 libdbusmenu-gtk/libdbusmenu_gtk3_la-genericmenuitem.lo
 libdbusmenu-gtk/libdbusmenu_gtk3_la-menu.lo
 libdbusmenu-gtk/libdbusmenu_gtk3_la-menuitem.lo
+libdbusmenu-glib/Dbusmenu-Glib-0.4.gir
+libdbusmenu-glib/Dbusmenu-Glib-0.4.typelib
+libdbusmenu-glib/Dbusmenu-Glib-0.4.vapi
+libdbusmenu-glib/dbusmenu-glib-0.4.pc
+libdbusmenu-gtk/DbusmenuGtk-0.4.gir
+libdbusmenu-gtk/DbusmenuGtk-0.4.tmp.gir
+libdbusmenu-gtk/DbusmenuGtk-0.4.typelib
+libdbusmenu-gtk/DbusmenuGtk-0.4.vapi
+libdbusmenu-gtk/dbusmenu-gtk-0.4.pc
+libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc
