@@ -6,8 +6,8 @@
 
 G_BEGIN_DECLS
 
-/* VOID:INT,STRING,POINTER (./server-marshal.list:1) */
-extern void _dbusmenu_server_marshal_VOID__INT_STRING_POINTER (GClosure     *closure,
+/* VOID:INT,STRING,VARIANT (./server-marshal.list:1) */
+extern void _dbusmenu_server_marshal_VOID__INT_STRING_VARIANT (GClosure     *closure,
                                                                GValue       *return_value,
                                                                guint         n_param_values,
                                                                const GValue *param_values,
