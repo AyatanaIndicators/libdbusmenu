@@ -212,6 +212,7 @@ USE_NLS = @USE_NLS@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
+XSLT_PROC = @XSLT_PROC@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@

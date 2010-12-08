@@ -1,6 +1,6 @@
-debian/tmp/usr/include/libdbusmenu-0.1/libdbusmenu-glib/*
-debian/tmp/usr/lib/pkgconfig/dbusmenu-glib.pc
+debian/tmp/usr/include/libdbusmenu-0.4/libdbusmenu-glib/*
+debian/tmp/usr/lib/pkgconfig/dbusmenu-glib-0.4.pc
 debian/tmp/usr/lib/libdbusmenu-glib.a
 debian/tmp/usr/lib/libdbusmenu-glib.so
-debian/tmp/usr/share/gir-1.0/Dbusmenu-Glib-0.2.gir
-debian/tmp/usr/share/vala/vapi/Dbusmenu-Glib-0.2.vapi
+debian/tmp/usr/share/gir-1.0/Dbusmenu-Glib-0.4.gir
+debian/tmp/usr/share/vala/vapi/Dbusmenu-Glib-0.4.vapi

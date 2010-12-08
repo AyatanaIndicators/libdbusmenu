@@ -72,7 +72,7 @@ test_object_prop_pixbuf (void)
 	g_object_unref(pixbuf);
 
 	/* Check to see if it's set */
-	const GValue * val = dbusmenu_menuitem_property_get_value(item, prop_name);
+	GVariant * val = dbusmenu_menuitem_property_get_variant(item, prop_name);
 	g_assert(val != NULL);
 
 	/* Get the pixbuf back! */
@@ -105,7 +105,7 @@ test_object_prop_shortcut (void)
 	g_assert(success);
 
 	/* Check for value */
-	const GValue * val = dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_SHORTCUT);
+	GVariant * val = dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_SHORTCUT);
 	g_assert(val != NULL);
 
 	/* Check to see if we love it */

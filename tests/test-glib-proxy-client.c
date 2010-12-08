@@ -150,10 +150,9 @@ layout_verify_timer (gpointer data)
 		g_main_loop_quit(mainloop);
 	}
 
-	GValue value = {0};
-	g_value_init(&value, G_TYPE_INT);
-	g_value_set_int(&value, 0);
-	dbusmenu_menuitem_handle_event(menuroot, "clicked", &value, layouton);
+	GVariant * value = g_variant_new("i", 0);
+	dbusmenu_menuitem_handle_event(menuroot, "clicked", value, layouton);
+	g_variant_unref(value);
 
 	return FALSE;
 }

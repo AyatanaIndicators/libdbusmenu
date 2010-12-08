@@ -41,12 +41,11 @@ GNOME_DOC_INIT
 # Dependencies - GLib
 ###########################
 
-GLIB_REQUIRED_VERSION=2.18
-DBUS_REQUIRED_VERSION=0.76
+GLIB_REQUIRED_VERSION=2.26
 XML_REQUIRED_VERSION=2.6
 
 PKG_CHECK_MODULES(DBUSMENUGLIB, glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION)
 
 AC_SUBST(DBUSMENUGLIB_CFLAGS)
@@ -67,7 +66,6 @@ AC_ARG_WITH([gtk],
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION)
          AC_SUBST(DBUSMENUGTK_CFLAGS)
          AC_SUBST(DBUSMENUGTK_LIBS)
@@ -76,7 +74,6 @@ AS_IF([test "x$with_gtk" = x3],
       [test "x$with_gtk" = x2],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         dbus-glib-1 >= $DBUS_REQUIRED_VERSION
                                          libxml-2.0 >= $XML_REQUIRED_VERSION)
          AC_SUBST(DBUSMENUGTK_CFLAGS)
          AC_SUBST(DBUSMENUGTK_LIBS)
@@ -116,11 +113,23 @@ AC_SUBST(DBUSMENUTESTS_LIBS)
 
 GOBJECT_INTROSPECTION_CHECK([0.6.7])
 
+PKG_CHECK_EXISTS([gobject-introspection-1.0 >= 0.10],
+				 introspection_ten=yes,
+				 introspection_ten=no)
+
+AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
+
 ###########################
 # Vala API Generation
 ###########################
 
 AC_PATH_PROG([VALA_API_GEN], [vapigen])
+
+###########################
+# XSLT Processor
+###########################
+
+AC_PATH_PROG([XSLT_PROC], [xsltproc])
 
 ###########################
 # Lib versioning 
@@ -162,14 +171,14 @@ AC_OUTPUT([
 Makefile
 po/Makefile.in
 libdbusmenu-glib/Makefile
-libdbusmenu-glib/dbusmenu-glib.pc
+libdbusmenu-glib/dbusmenu-glib-0.4.pc
 libdbusmenu-gtk/Makefile
-libdbusmenu-gtk/dbusmenu-gtk.pc
-libdbusmenu-gtk/dbusmenu-gtk3.pc
+libdbusmenu-gtk/dbusmenu-gtk-0.4.pc
+libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc
 tools/Makefile
 tools/testapp/Makefile
 tests/Makefile
-tests/dbusmenu-jsonloader.pc
+tests/dbusmenu-jsonloader-0.4.pc
 docs/Makefile
 docs/libdbusmenu-glib/Makefile
 docs/libdbusmenu-glib/reference/Makefile

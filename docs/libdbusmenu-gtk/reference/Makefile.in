@@ -179,6 +179,7 @@ USE_NLS = @USE_NLS@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
+XSLT_PROC = @XSLT_PROC@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -231,6 +232,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+@USE_GTK3_FALSE@VER = 
+@USE_GTK3_TRUE@VER = 3
 
 # We require automake 1.6 at least.
 AUTOMAKE_OPTIONS = 1.6
@@ -241,7 +244,7 @@ AUTOMAKE_OPTIONS = 1.6
 # of using the various options.
 
 # The name of the module, e.g. 'glib'.
-DOC_MODULE = libdbusmenu-gtk
+DOC_MODULE = libdbusmenu-gtk$(VER)
 
 # The top-level SGML file. You can change this if you want to.
 DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
@@ -300,7 +303,7 @@ expand_content_files =
 # e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 INCLUDES = -I$(top_srcdir) $(DBUSMENUGLIB_CFLAGS) $(DBUSMENUGTK_CFLAGS)
-GTKDOC_LIBS = $(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk.la 
+GTKDOC_LIBS = $(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la $(DBUSMENUGLIB_LIBS) $(DBUSMENUGTK_LIBS)
 @GTK_DOC_USE_LIBTOOL_FALSE@GTKDOC_CC = $(CC) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 @GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 @GTK_DOC_USE_LIBTOOL_FALSE@GTKDOC_LD = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS)

@@ -94,7 +94,7 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 static void g_value_transform_STRING_BOOLEAN (const GValue * in, GValue * out);
 static void g_value_transform_STRING_INT (const GValue * in, GValue * out);
-static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp);
 static void send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 /* GObject stuff */
@@ -129,8 +129,8 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET(DbusmenuMenuitemClass, property_changed),
 	                                           NULL, NULL,
-	                                           _dbusmenu_menuitem_marshal_VOID__STRING_POINTER,
-	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_POINTER);
+	                                           _dbusmenu_menuitem_marshal_VOID__STRING_VARIANT,
+	                                           G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_VARIANT);
 	/**
 		DbusmenuMenuitem::item-activated:
 		@arg0: The #DbusmenuMenuitem object.
@@ -271,15 +271,12 @@ g_value_transform_STRING_INT (const GValue * in, GValue * out)
 
 static gint menuitem_next_id = 1;
 
-/* A small little function to both clear the insides of a 
-   value as well as the memory it itself uses. */
+/* Make the unref function match the prototype need for the
+   hashtable destructor */
 static void
-_g_value_free (gpointer data)
+_g_variant_unref (gpointer data)
 {
-	if (data == NULL) return;
-	GValue * value = (GValue*)data;
-	g_value_unset(value);
-	g_free(data);
+	g_variant_unref((GVariant *)data);
 	return;
 }
 
@@ -295,7 +292,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 	priv->id = -1; 
 	priv->children = NULL;
 
-	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, _g_value_free);
+	priv->properties = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, _g_variant_unref);
 
 	priv->root = FALSE;
 	priv->realized = FALSE;
@@ -380,7 +377,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 
 /* Handles the activate event if it is sent. */
 static void
-handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp)
 {
 	if (g_strcmp0(name, "clicked") == 0) {
 		g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
@@ -916,10 +913,8 @@ dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 gboolean
 dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value)
 {
-	GValue val = {0};
-	g_value_init(&val, G_TYPE_STRING);
-	g_value_set_static_string(&val, value);
-	return dbusmenu_menuitem_property_set_value(mi, property, &val);
+	GVariant * variant = g_variant_new("s", value);
+	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
 }
 
 /**
@@ -940,10 +935,8 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 gboolean
 dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value)
 {
-	GValue val = {0};
-	g_value_init(&val, G_TYPE_BOOLEAN);
-	g_value_set_boolean(&val, value);
-	return dbusmenu_menuitem_property_set_value(mi, property, &val);
+	GVariant * variant = g_variant_new("b", value);
+	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
 }
 
 /**
@@ -964,14 +957,12 @@ dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * proper
 gboolean
 dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value)
 {
-	GValue val = {0};
-	g_value_init(&val, G_TYPE_INT);
-	g_value_set_int(&val, value);
-	return dbusmenu_menuitem_property_set_value(mi, property, &val);
+	GVariant * variant = g_variant_new("i", value);
+	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
 }
 
 /**
-	dbusmenu_menuitem_property_set:
+	dbusmenu_menuitem_property_set_variant:
 	@mi: The #DbusmenuMenuitem to set the property on.
 	@property: Name of the property to set.
 	@value: The value of the property.
@@ -986,37 +977,30 @@ dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * propert
 	Return value:  A boolean representing if the property value was set.
 */
 gboolean
-dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * property, const GValue * value)
+dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * property, GVariant * value)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
 	g_return_val_if_fail(property != NULL, FALSE);
-	g_return_val_if_fail(G_IS_VALUE(value), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
-	/* g_debug("Setting a property.  ID: %d  Prop: %s  Value: %s", priv->id, property, value); */
-
-	#if 0
-	gpointer lookup = g_hash_table_lookup(priv->properties, property);
-	if (g_strcmp0((gchar *)lookup, value) == 0) {
-		/* The value is the same as the value currently in the
-		   table so we don't really care.  Just say everything's okay */
-		return TRUE;
-	}
-	#endif
 
 	gchar * lprop = g_strdup(property);
-	GValue * lval = g_new0(GValue, 1);
-	g_value_init(lval, G_VALUE_TYPE(value));
-	g_value_copy(value, lval);
+	g_variant_ref(value);
 
-	g_hash_table_replace(priv->properties, lprop, lval);
-	#ifdef MASSIVEDEBUGGING
-	gchar * valstr = g_strdup_value_contents(lval);
-	g_debug("Menuitem %d (%s) signalling property '%s' changed to '%s'", ID(mi), LABEL(mi), property, g_utf8_strlen(valstr, 50) < 25 ? valstr : "<too long>");
-	g_free(valstr);
-	#endif
+	gboolean replaced = FALSE;
+	gpointer currentval = g_hash_table_lookup(priv->properties, lprop);
+	if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
+		g_hash_table_replace(priv->properties, lprop, value);
+		replaced = TRUE;
+	}
 
-	g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, lprop, lval, TRUE);
+	/* NOTE: The actual value is invalid at this point
+	   becuse it has been unref'd when replaced in the hash
+	   table.  But the fact that there was a value is
+	   the imporant part. */
+	if (currentval == NULL || replaced) {
+		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, lprop, value, TRUE);
+	}
 
 	return TRUE;
 }
@@ -1037,14 +1021,14 @@ dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * prope
 const gchar *
 dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
 {
-	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
-	if (value == NULL) return NULL;
-	if (G_VALUE_TYPE(value) != G_TYPE_STRING) return NULL;
-	return g_value_get_string(value);
+	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
+	if (variant == NULL) return NULL;
+	if (!g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) return NULL;
+	return g_variant_get_string(variant, NULL);
 }
 
 /**
-	dbusmenu_menuitem_property_get_value:
+	dbusmenu_menuitem_property_get_variant:
 	@mi: The #DbusmenuMenuitem to look for the property on.
 	@property: The property to grab.
 
@@ -1052,17 +1036,17 @@ dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
 	it exits.  #NULL will be returned if the property doesn't
 	exist.
 
-	Return value: A GValue for the property.
+	Return value: A GVariant for the property.
 */
-const GValue *
-dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * property)
+GVariant *
+dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 	g_return_val_if_fail(property != NULL, NULL);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
-	return (const GValue *)g_hash_table_lookup(priv->properties, property);
+	return (GVariant *)g_hash_table_lookup(priv->properties, property);
 }
 
 /**
@@ -1078,19 +1062,25 @@ dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * prope
 gboolean
 dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property)
 {
-	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
-	if (value == NULL) return FALSE;
-	if (G_VALUE_TYPE(value) != G_TYPE_BOOLEAN) {
-		if (g_value_type_transformable(G_VALUE_TYPE(value), G_TYPE_BOOLEAN)) {
-			GValue boolval = {0};
-			g_value_init(&boolval, G_TYPE_BOOLEAN);
-			g_value_transform(value, &boolval);
-			return g_value_get_boolean(&boolval);
+	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
+	if (variant == NULL) return FALSE;
+
+	if (g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_BOOLEAN)) {
+		return g_variant_get_boolean(variant);
+	}
+
+	if (g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) {
+		const gchar * string = g_variant_get_string(variant, NULL);
+
+		if (!g_strcmp0(string, "TRUE") || !g_strcmp0(string, "true") || !g_strcmp0(string, "True")) {
+			return TRUE;
 		} else {
 			return FALSE;
 		}
 	}
-	return g_value_get_boolean(value);
+
+	g_warning("Property '%s' has been requested as an boolean but is not one.", property);
+	return FALSE;
 }
 
 /**
@@ -1106,19 +1096,20 @@ dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * proper
 gint
 dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property)
 {
-	const GValue * value = dbusmenu_menuitem_property_get_value(mi, property);
-	if (value == NULL) return 0;
-	if (G_VALUE_TYPE(value) != G_TYPE_INT) {
-		if (g_value_type_transformable(G_VALUE_TYPE(value), G_TYPE_INT)) {
-			GValue intval = {0};
-			g_value_init(&intval, G_TYPE_INT);
-			g_value_transform(value, &intval);
-			return g_value_get_int(&intval);
-		} else {
-			return 0;
-		}
+	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
+	if (variant == NULL) return 0;
+
+	if (g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_INT32)) {
+		return g_variant_get_int32(variant);
 	}
-	return g_value_get_int(value);
+
+	if (g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE_STRING)) {
+		const gchar * string = g_variant_get_string(variant, NULL);
+		return atoi(string);
+	}
+
+	g_warning("Property '%s' has been requested as an int but is not one.", property);
+	return 0;
 }
 
 
@@ -1218,6 +1209,45 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 	g_hash_table_foreach(priv->properties, copy_helper, ret);
 
 	return ret;
+}
+
+/* Looks at each value in the hashtable and tries to convert it
+   into a variant and add it to our variant builder */
+static void
+variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
+{
+	g_variant_builder_add((GVariantBuilder *)user_data, "{sv}", in_key, in_value);
+	return;
+}
+
+/**
+	dbusmenu_menuitem_properties_variant:
+	@mi: #DbusmenuMenuitem to get properties from
+
+	Grabs the properties of the menuitem as a GVariant with the
+	type "a{sv}".
+
+	Return Value: A GVariant of type "a{sv}" or NULL on error.
+*/
+GVariant *
+dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	GVariant * final_variant = NULL;
+
+	if (g_hash_table_size(priv->properties) > 0) {
+		GVariantBuilder builder;
+		g_variant_builder_init(&builder, g_variant_type_new("a{sv}"));
+
+		g_hash_table_foreach(priv->properties, variant_helper, &builder);
+
+		final_variant = g_variant_builder_end(&builder);
+	}
+
+	return final_variant;
 }
 
 /**
@@ -1332,7 +1362,7 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 	dbusmenu_menuitem_handle_event:
 	@mi: The #DbusmenuMenuitem to send the signal on.
 	@name: The name of the signal
-	@value: A value that could be set for the event
+	@variant: A value that could be set for the event
 	@timestamp: The timestamp of when the event happened
 
 	This function is called to create an event.  It is likely
@@ -1348,7 +1378,7 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 	reason not to.
 */
 void
-dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	#ifdef MASSIVEDEBUGGING
@@ -1357,7 +1387,7 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
 	if (class->handle_event != NULL) {
-		return class->handle_event(mi, name, value, timestamp);
+		return class->handle_event(mi, name, variant, timestamp);
 	}
 	return;
 }

@@ -1,3 +1,13 @@
+libdbusmenu (0.3.90-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Porting from dbus-glib to GDBus
+  * debian/*.install: Changing to be the 0.4 version of the dbusmenu
+    API of all the filenames and paths.
+  * Autogen
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 08 Dec 2010 10:26:05 -0600
+
 libdbusmenu (0.3.90-0ubuntu1) UNRELEASED; urgency=low
 
   * debian/rules
