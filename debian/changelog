@@ -1,4 +1,4 @@
-libdbusmenu (0.3.90-0ubuntu2~ppa1~gdbus1) UNRELEASED; urgency=low
+libdbusmenu (0.3.90-0ubuntu2~ppa1~gdbus1) natty; urgency=low
 
   * Upstream Merge
     * Porting from dbus-glib to GDBus
@@ -6,7 +6,7 @@ libdbusmenu (0.3.90-0ubuntu2~ppa1~gdbus1) UNRELEASED; urgency=low
     API of all the filenames and paths.
   * Autogen
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 07 Dec 2010 10:02:55 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 07 Dec 2010 21:22:12 -0600
 
 libdbusmenu (0.3.90-0ubuntu1) UNRELEASED; urgency=low
 
