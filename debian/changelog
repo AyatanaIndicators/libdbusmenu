@@ -1,8 +1,8 @@
-libdbusmenu (0.3.90-0ubuntu2~ppa3) UNRELEASED; urgency=low
+libdbusmenu (0.3.90-0ubuntu2~ppa3) natty; urgency=low
 
   * debian/control: Forgot jsonloader
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 09 Dec 2010 16:58:02 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 09 Dec 2010 17:00:47 -0600
 
 libdbusmenu (0.3.90-0ubuntu2~ppa2) natty; urgency=low
 
