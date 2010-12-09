@@ -152,7 +152,7 @@ Description: library for passing menus over DBus - GTK+ version documentation
  .
  This package contains developer documentation for libdbusmenu-gtk.
 
-Package: libdbusmenu-jsonloader2
+Package: libdbusmenu-jsonloader3
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
