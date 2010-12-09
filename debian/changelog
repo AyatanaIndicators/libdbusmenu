@@ -1,3 +1,11 @@
+libdbusmenu (0.3.90-0ubuntu2) natty; urgency=low
+
+  * libdbusmenu-gtk/genericmenuitem.c
+    - Switching away from using set_activate as that doesn't actually set 
+      the value, it just signals
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 09 Dec 2010 17:46:41 -0500
+
 libdbusmenu (0.3.90-0ubuntu1) natty; urgency=low
 
   * debian/rules
