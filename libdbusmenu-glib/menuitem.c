@@ -70,6 +70,7 @@ enum {
 	CHILD_MOVED,
 	REALIZED,
 	SHOW_TO_USER,
+	ABOUT_TO_SHOW,
 	LAST_SIGNAL
 };
 
@@ -228,6 +229,21 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__UINT,
 	                                           G_TYPE_NONE, 1, G_TYPE_UINT, G_TYPE_NONE);
+
+	/**
+		DbusmenuMenuitem::about-to-show:
+		@arg0: The #DbusmenuMenuitem object.
+
+		Emitted when the submenu for this item
+		is about to be shown
+	*/
+	signals[ABOUT_TO_SHOW] =     g_signal_new(DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW,
+	                                          G_TYPE_FROM_CLASS(klass),
+	                                          G_SIGNAL_RUN_LAST,
+	                                          G_STRUCT_OFFSET(DbusmenuMenuitemClass, about_to_show),
+	                                          NULL, NULL,
+	                                          _dbusmenu_menuitem_marshal_VOID__VOID,
+	                                          G_TYPE_BOOLEAN, 0, G_TYPE_NONE);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
@@ -398,7 +414,8 @@ send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gp
 	if (dbusmenu_menuitem_get_children(mi) == NULL) {
 		g_warning("About to Show called on an item wihtout submenus.  We're ignoring it.");
 	} else {
-		g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, 0 /* timestamp */, TRUE);
+		gboolean dummy;
+		g_signal_emit(G_OBJECT(mi), signals[ABOUT_TO_SHOW], 0, &dummy);
 	}
 
 	if (cb != NULL) {

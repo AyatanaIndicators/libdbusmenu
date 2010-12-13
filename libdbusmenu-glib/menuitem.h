@@ -50,6 +50,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID         (g_signal_lookup(DBUSMENU_MENUITEM_SIGNAL_REALIZED, DBUSMENU_TYPE_MENUITEM))
 #define DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER        "show-to-user"
+#define DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW       "about-to-show"
 
 #define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
 #define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
@@ -158,6 +159,7 @@ struct _DbusmenuMenuitemClass
 	void (*send_about_to_show) (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
+	gboolean (*about_to_show) (void);
 
 	/*< Private >*/
 	void (*reserved1) (void);
@@ -165,7 +167,6 @@ struct _DbusmenuMenuitemClass
 	void (*reserved3) (void);
 	void (*reserved4) (void);
 	void (*reserved5) (void);
-	void (*reserved6) (void);
 };
 
 GType dbusmenu_menuitem_get_type (void);
