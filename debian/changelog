@@ -1,3 +1,9 @@
+libdbusmenu (0.3.90-0ubuntu3) natty; urgency=low
+
+  * Updated for the gir abi transition
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 16 Dec 2010 10:06:26 -0500
+
 libdbusmenu (0.3.90-0ubuntu2) natty; urgency=low
 
   * libdbusmenu-gtk/genericmenuitem.c
