@@ -984,14 +984,22 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
-	gchar * lprop = g_strdup(property);
-	g_variant_ref(value);
-
 	gboolean replaced = FALSE;
-	gpointer currentval = g_hash_table_lookup(priv->properties, lprop);
-	if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
-		g_hash_table_replace(priv->properties, lprop, value);
-		replaced = TRUE;
+	gpointer currentval = g_hash_table_lookup(priv->properties, property);
+
+	if (value != NULL) {
+		gchar * lprop = g_strdup(property);
+		g_variant_ref(value);
+
+		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
+			g_hash_table_replace(priv->properties, lprop, value);
+			replaced = TRUE;
+		}
+	} else {
+		if (currentval != NULL) {
+			g_hash_table_remove(priv->properties, property);
+			replaced = TRUE;
+		}
 	}
 
 	/* NOTE: The actual value is invalid at this point
@@ -999,7 +1007,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	   table.  But the fact that there was a value is
 	   the imporant part. */
 	if (currentval == NULL || replaced) {
-		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, lprop, value, TRUE);
+		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, value, TRUE);
 	}
 
 	return TRUE;
