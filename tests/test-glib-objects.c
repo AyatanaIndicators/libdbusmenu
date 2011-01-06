@@ -274,6 +274,29 @@ test_object_menuitem_props_boolstr (void)
 	return;
 }
 
+/* Set and then remove a prop */
+static void
+test_object_menuitem_props_removal (void)
+{
+	/* Build a menu item */
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+
+	/* Test to make sure it's a happy object */
+	g_assert(item != NULL);
+
+	/* Set the property and ensure that it's set */
+	dbusmenu_menuitem_property_set_variant(item, "myprop", g_variant_new_int32(34));
+	g_assert(dbusmenu_menuitem_property_get_variant(item, "myprop") != NULL);
+
+	/* Remove the property and ensure it goes away */
+	dbusmenu_menuitem_property_set_variant(item, "myprop", NULL);
+	g_assert(dbusmenu_menuitem_property_get_variant(item, "myprop") == NULL);
+
+	g_object_unref(item);
+
+	return;
+}
+
 /* Build the test suite */
 static void
 test_glib_objects_suite (void)
@@ -286,6 +309,7 @@ test_glib_objects_suite (void)
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_swap",    test_object_menuitem_props_swap);
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_signals", test_object_menuitem_props_signals);
 	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_boolstr", test_object_menuitem_props_boolstr);
+	g_test_add_func ("/dbusmenu/glib/objects/menuitem/props_removal", test_object_menuitem_props_removal);
 	return;
 }
 
