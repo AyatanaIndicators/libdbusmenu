@@ -1,3 +1,17 @@
+libdbusmenu (0.3.90-0ubuntu3) natty; urgency=low
+
+  * Updated for the gir abi transition
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 16 Dec 2010 10:06:26 -0500
+
+libdbusmenu (0.3.90-0ubuntu2) natty; urgency=low
+
+  * libdbusmenu-gtk/genericmenuitem.c
+    - Switching away from using set_activate as that doesn't actually set 
+      the value, it just signals
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 09 Dec 2010 17:46:41 -0500
+
 libdbusmenu (0.3.90-0ubuntu2~ppa3) natty; urgency=low
 
   * debian/control: Forgot jsonloader
@@ -23,7 +37,7 @@ libdbusmenu (0.3.90-0ubuntu2~ppa1) natty; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Wed, 08 Dec 2010 10:31:48 -0600
 
-libdbusmenu (0.3.90-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.3.90-0ubuntu1) natty; urgency=low
 
   * debian/rules
     - Added build targets to build with gtk3 enabled in additional to 
