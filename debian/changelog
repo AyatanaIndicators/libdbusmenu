@@ -1,9 +1,9 @@
-libdbusmenu (0.3.90-0ubuntu4~ppa2) UNRELEASED; urgency=low
+libdbusmenu (0.3.90-0ubuntu4~ppa2) natty; urgency=low
 
   * Upstream Merge
     * Supporting removing properties
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 06 Jan 2011 10:32:30 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 06 Jan 2011 10:36:43 -0600
 
 libdbusmenu (0.3.90-0ubuntu4~ppa1) natty; urgency=low
 
