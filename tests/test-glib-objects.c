@@ -292,6 +292,14 @@ test_object_menuitem_props_removal (void)
 	dbusmenu_menuitem_property_set_variant(item, "myprop", NULL);
 	g_assert(dbusmenu_menuitem_property_get_variant(item, "myprop") == NULL);
 
+	/* Set the property again */
+	dbusmenu_menuitem_property_set_variant(item, "myprop", g_variant_new_int32(34));
+	g_assert(dbusmenu_menuitem_property_get_variant(item, "myprop") != NULL);
+
+	/* Remove the property with a NULL string */
+	dbusmenu_menuitem_property_set(item, "myprop", NULL);
+	g_assert(dbusmenu_menuitem_property_get_variant(item, "myprop") == NULL);
+
 	g_object_unref(item);
 
 	return;
