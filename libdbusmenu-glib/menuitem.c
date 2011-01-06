@@ -915,7 +915,7 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 {
 	GVariant * variant = NULL;
 	if (value != NULL) {
-		g_variant_new_string(value);
+		variant = g_variant_new_string(value);
 	}
 	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
 }
