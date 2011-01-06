@@ -913,7 +913,10 @@ dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 gboolean
 dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value)
 {
-	GVariant * variant = g_variant_new("s", value);
+	GVariant * variant = NULL;
+	if (value != NULL) {
+		g_variant_new_string(value);
+	}
 	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
 }
 
