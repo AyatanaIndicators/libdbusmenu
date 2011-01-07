@@ -1079,6 +1079,8 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 		return;
 	}
 
+	dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
+
 	/* GTK+ does not support about-to-show concept for now */
 	g_dbus_method_invocation_return_value(invocation,
 	                                      g_variant_new("(b)", FALSE));
