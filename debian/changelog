@@ -1,4 +1,4 @@
-libdbusmenu (0.3.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.91-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * Porting from dbus-glib to GDBus
@@ -9,7 +9,7 @@ libdbusmenu (0.3.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * debian/control: Changing the GIR package names from "0.2" to
     "0.4" which now the names of the actual files.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 13 Jan 2011 10:13:02 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 13 Jan 2011 10:24:28 -0600
 
 libdbusmenu (0.3.90-0ubuntu3) natty; urgency=low
 
