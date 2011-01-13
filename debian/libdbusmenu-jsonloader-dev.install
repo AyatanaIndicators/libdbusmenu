@@ -1,4 +1,4 @@
-debian/tmp/usr/include/libdbusmenu-0.1/libdbusmenu-jsonloader/*
-debian/tmp/usr/lib/pkgconfig/dbusmenu-jsonloader.pc
+debian/tmp/usr/include/libdbusmenu-0.4/libdbusmenu-jsonloader/*
+debian/tmp/usr/lib/pkgconfig/dbusmenu-jsonloader-0.4.pc
 debian/tmp/usr/lib/libdbusmenu-jsonloader.a
 debian/tmp/usr/lib/libdbusmenu-jsonloader.so

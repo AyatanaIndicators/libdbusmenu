@@ -1,3 +1,16 @@
+libdbusmenu (0.3.91-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    * Porting from dbus-glib to GDBus
+    * Bumping the library ABI version
+  * debian/*.install: Changing to be the 0.4 version of the dbusmenu
+    API of all the filenames and paths.
+  * debian/control: Bumping ABI version in package names
+  * debian/control: Changing the GIR package names from "0.2" to
+    "0.4" which now the names of the actual files.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 13 Jan 2011 10:24:28 -0600
+
 libdbusmenu (0.3.90-0ubuntu3) natty; urgency=low
 
   * Updated for the gir abi transition

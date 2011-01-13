@@ -293,7 +293,6 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 	}
 
 	item->priv->check_type = check_type;
-	GValue value = {0};
 
 	switch (item->priv->check_type) {
 	case GENERICMENUITEM_CHECK_TYPE_NONE:
@@ -302,14 +301,10 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 		   check on the item. */
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_CHECKBOX:
-		g_value_init(&value, G_TYPE_BOOLEAN);
-		g_value_set_boolean(&value, FALSE);
-		g_object_set_property(G_OBJECT(item), "draw-as-radio", &value);
+		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), FALSE);
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_RADIO:
-		g_value_init(&value, G_TYPE_BOOLEAN);
-		g_value_set_boolean(&value, TRUE);
-		g_object_set_property(G_OBJECT(item), "draw-as-radio", &value);
+		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check type: %d", check_type);
