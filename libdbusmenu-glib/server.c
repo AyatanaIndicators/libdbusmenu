@@ -41,7 +41,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 static void layout_update_signal (DbusmenuServer * server);
 
 #define DBUSMENU_VERSION_NUMBER    2
-#define DBUSMENU_INTERFACE         "org.ayatana.dbusmenu"
+#define DBUSMENU_INTERFACE         "com.canonical.dbusmenu"
 
 /* Privates, I'll show you mine... */
 struct _DbusmenuServerPrivate
@@ -273,7 +273,7 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	g_object_class_install_property (object_class, PROP_DBUS_OBJECT,
 	                                 g_param_spec_string(DBUSMENU_SERVER_PROP_DBUS_OBJECT, "DBus object path",
 	                                              "The object that represents this set of menus on DBus",
-	                                              "/org/ayatana/dbusmenu",
+	                                              "/com/canonical/dbusmenu",
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property (object_class, PROP_ROOT_NODE,
 	                                 g_param_spec_object(DBUSMENU_SERVER_PROP_ROOT_NODE, "Root menu node",
@@ -1095,7 +1095,7 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 
 	Creates a new #DbusmenuServer object with a specific object
 	path on DBus.  If @object is set to NULL the default object
-	name of "/org/ayatana/dbusmenu" will be used.
+	name of "/com/canonical/dbusmenu" will be used.
 
 	Return value: A brand new #DbusmenuServer
 */
@@ -1103,7 +1103,7 @@ DbusmenuServer *
 dbusmenu_server_new (const gchar * object)
 {
 	if (object == NULL) {
-		object = "/org/ayatana/dbusmenu";
+		object = "/com/canonical/dbusmenu";
 	}
 
 	DbusmenuServer * self = g_object_new(DBUSMENU_TYPE_SERVER,

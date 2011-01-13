@@ -257,9 +257,9 @@ init_dbus_vars_from_window(Window window)
 	proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
 	                                       G_DBUS_PROXY_FLAGS_NONE,
 	                                       NULL,
-	                                       "org.ayatana.AppMenu.Registrar",
-	                                       "/org/ayatana/AppMenu/Registrar",
-	                                       "org.ayatana.AppMenu.Registrar",
+	                                       "com.canonical.AppMenu.Registrar",
+	                                       "/com/canonical/AppMenu/Registrar",
+	                                       "com.canonical.AppMenu.Registrar",
 	                                       NULL,
 	                                       &error);
 	if (error != NULL) {
