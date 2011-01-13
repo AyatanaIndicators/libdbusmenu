@@ -95,7 +95,7 @@ DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 DbusmenuGtk_0_4_gir_NAMESPACE = DbusmenuGtk$(VER)
 DbusmenuGtk_0_4_gir_SCANNERFLAGS = $(INTROSPECTION_SCANNER_ARGS)
-DbusmenuGtk_0_4_gir_PACKAGES = dbusmenu-gtk$(VER)
+DbusmenuGtk_0_4_gir_PACKAGES = dbusmenu-gtk$(VER)-0.4
 
 # We duplicate these for the same reason as libdbusmenu_gtk3includedir above
 DbusmenuGtk3_0_4_gir_INCLUDES = $(DbusmenuGtk_0_4_gir_INCLUDES)
