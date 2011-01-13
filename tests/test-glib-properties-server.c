@@ -20,10 +20,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <glib.h>
-
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
@@ -90,8 +87,6 @@ int
 main (int argc, char ** argv)
 {
 	g_type_init();
-
-	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
 
 	server = dbusmenu_server_new("/org/test");
 

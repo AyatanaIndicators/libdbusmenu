@@ -36,22 +36,27 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@HAVE_INTROSPECTION_TRUE@am__append_1 = DbusmenuGtk$(VER)-0.2.gir
+@HAVE_INTROSPECTION_TRUE@am__append_1 = DbusmenuGtk$(VER)-0.4.gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
 @HAVE_INTROSPECTION_TRUE@	$(vapi_DATA) \
-@HAVE_INTROSPECTION_TRUE@	DbusmenuGtk$(VER)-0.2.tmp.gir
+@HAVE_INTROSPECTION_TRUE@	DbusmenuGtk$(VER)-0.4.tmp.gir
 subdir = libdbusmenu-gtk
 DIST_COMMON = $(libdbusmenu_gtk3include_HEADERS) \
 	$(libdbusmenu_gtkinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-gtk.pc.in \
-	$(srcdir)/dbusmenu-gtk3.pc.in
+	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-gtk-0.4.pc.in \
+	$(srcdir)/dbusmenu-gtk3-0.4.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = dbusmenu-gtk.pc dbusmenu-gtk3.pc
+CONFIG_CLEAN_FILES = dbusmenu-gtk-0.4.pc dbusmenu-gtk3-0.4.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -258,6 +263,7 @@ USE_NLS = @USE_NLS@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
+XSLT_PROC = @XSLT_PROC@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -320,10 +326,10 @@ CLEANFILES = $(am__append_2)
 @USE_GTK3_FALSE@lib_LTLIBRARIES = libdbusmenu-gtk.la
 @USE_GTK3_TRUE@lib_LTLIBRARIES = libdbusmenu-gtk3.la
 EXTRA_DIST = \
-	dbusmenu-gtk.pc.in \
-	dbusmenu-gtk3.pc.in
+	dbusmenu-gtk-0.4.pc.in \
+	dbusmenu-gtk3-0.4.pc.in
 
-libdbusmenu_gtkincludedir = $(includedir)/libdbusmenu-0.1/libdbusmenu-gtk$(VER)/
+libdbusmenu_gtkincludedir = $(includedir)/libdbusmenu-0.4/libdbusmenu-gtk$(VER)/
 libdbusmenu_gtkinclude_HEADERS = \
 	client.h \
 	menu.h \
@@ -362,30 +368,41 @@ libdbusmenu_gtk3_la_SOURCES = $(libdbusmenu_gtk_la_SOURCES)
 libdbusmenu_gtk3_la_LDFLAGS = $(libdbusmenu_gtk_la_LDFLAGS)
 libdbusmenu_gtk3_la_CFLAGS = $(libdbusmenu_gtk_la_CFLAGS)
 libdbusmenu_gtk3_la_LIBADD = $(libdbusmenu_gtk_la_LIBADD)
-pkgconfig_DATA = dbusmenu-gtk$(VER).pc
+pkgconfig_DATA = dbusmenu-gtk$(VER)-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 INTROSPECTION_GIRS = $(am__append_1)
-INTROSPECTION_SCANNER_ARGS = \
-	--add-include-path=$(srcdir) \
-	--add-include-path=$(top_builddir)/libdbusmenu-glib \
-	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
+@INTROSPECTION_TEN_FALSE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+@INTROSPECTION_TEN_FALSE@	--add-include-path=$(top_builddir)/libdbusmenu-glib \
+@INTROSPECTION_TEN_FALSE@	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
+
+@INTROSPECTION_TEN_TRUE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+@INTROSPECTION_TEN_TRUE@	--add-include-path=$(top_builddir)/libdbusmenu-glib \
+@INTROSPECTION_TEN_TRUE@	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
+@INTROSPECTION_TEN_TRUE@	--symbol-prefix=dbusmenu \
+@INTROSPECTION_TEN_TRUE@	--identifier-prefix=DbusmenuGtk
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_builddir)/libdbusmenu-glib
 @HAVE_INTROSPECTION_TRUE@introspection_sources = $(libdbusmenu_gtkinclude_HEADERS)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_INCLUDES = \
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0 \
 @HAVE_INTROSPECTION_TRUE@	$(GTKGIR) \
-@HAVE_INTROSPECTION_TRUE@	Dbusmenu-Glib-0.2
+@HAVE_INTROSPECTION_TRUE@	Dbusmenu-Glib-0.4 
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_LIBS = libdbusmenu-gtk$(VER).la
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_NAMESPACE = DbusmenuGtk$(VER)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_SCANNERFLAGS = $(INTROSPECTION_SCANNER_ARGS)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_PACKAGES = dbusmenu-gtk$(VER)-0.4
 
 # We duplicate these for the same reason as libdbusmenu_gtk3includedir above
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_2_gir_INCLUDES = $(DbusmenuGtk_0_2_gir_INCLUDES)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_2_gir_CFLAGS = $(DbusmenuGtk_0_2_gir_CFLAGS)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_2_gir_LIBS = $(DbusmenuGtk_0_2_gir_LIBS)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_2_gir_FILES = $(DbusmenuGtk_0_2_gir_FILES)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_4_gir_INCLUDES = $(DbusmenuGtk_0_4_gir_INCLUDES)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_4_gir_CFLAGS = $(DbusmenuGtk_0_4_gir_CFLAGS)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_4_gir_LIBS = $(DbusmenuGtk_0_4_gir_LIBS)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_4_gir_FILES = $(DbusmenuGtk_0_4_gir_FILES)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_4_gir_NAMESPACE = $(DbusmenuGtk_0_4_gir_NAMESPACE)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_4_gir_SCANNERFLAGS = $(DbusmenuGtk_0_4_gir_SCANNERFLAGS)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_4_gir_PACKAGES = $(DbusmenuGtk_0_4_gir_PACKAGES)
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
 @HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
@@ -395,7 +412,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 # VAPI Files
 #########################
 @HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@vapi_DATA = DbusmenuGtk$(VER)-0.2.vapi
+@HAVE_INTROSPECTION_TRUE@vapi_DATA = DbusmenuGtk$(VER)-0.4.vapi
 all: all-am
 
 .SUFFIXES:
@@ -430,9 +447,9 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-dbusmenu-gtk.pc: $(top_builddir)/config.status $(srcdir)/dbusmenu-gtk.pc.in
+dbusmenu-gtk-0.4.pc: $(top_builddir)/config.status $(srcdir)/dbusmenu-gtk-0.4.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-dbusmenu-gtk3.pc: $(top_builddir)/config.status $(srcdir)/dbusmenu-gtk3.pc.in
+dbusmenu-gtk3-0.4.pc: $(top_builddir)/config.status $(srcdir)/dbusmenu-gtk3-0.4.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -922,18 +939,18 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 
 -include $(INTROSPECTION_MAKEFILE)
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.2.gir: libdbusmenu-gtk$(VER).la
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.4.gir: libdbusmenu-gtk$(VER).la
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.2.vapi: DbusmenuGtk$(VER)-0.2.tmp.gir Makefile.am
-@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=DbusmenuGtk$(VER)-0.2 \
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.4.vapi: DbusmenuGtk$(VER)-0.4.tmp.gir Makefile.am
+@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=DbusmenuGtk$(VER)-0.4 \
 @HAVE_INTROSPECTION_TRUE@		--pkg gdk-pixbuf-2.0 \
 @HAVE_INTROSPECTION_TRUE@		--pkg $(GTKVALA) \
 @HAVE_INTROSPECTION_TRUE@		--pkg atk \
-@HAVE_INTROSPECTION_TRUE@		--pkg Dbusmenu-Glib-0.2 \
+@HAVE_INTROSPECTION_TRUE@		--pkg Dbusmenu-Glib-0.4 \
 @HAVE_INTROSPECTION_TRUE@		--vapidir=$(top_builddir)/libdbusmenu-glib \
 @HAVE_INTROSPECTION_TRUE@		$<
 
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.2.tmp.gir: DbusmenuGtk$(VER)-0.2.gir
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.4.tmp.gir: DbusmenuGtk$(VER)-0.4.gir
 @HAVE_INTROSPECTION_TRUE@	$(SED) \
 @HAVE_INTROSPECTION_TRUE@		-e "s|GdkPixbuf.Pixbuf|Gdk.Pixbuf|g" \
 @HAVE_INTROSPECTION_TRUE@		-e "s|Atk.ImplementorIface|Atk.Implementor|g" \

@@ -36,19 +36,24 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@HAVE_INTROSPECTION_TRUE@am__append_1 = Dbusmenu-Glib-0.2.gir
+@HAVE_INTROSPECTION_TRUE@am__append_1 = Dbusmenu-Glib-0.4.gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
 @HAVE_INTROSPECTION_TRUE@	$(vapi_DATA)
 subdir = libdbusmenu-glib
 DIST_COMMON = $(libdbusmenu_glibinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-glib.pc.in
+	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-glib-0.4.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = dbusmenu-glib.pc
+CONFIG_CLEAN_FILES = dbusmenu-glib-0.4.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -78,7 +83,9 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(girdir)" \
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libdbusmenu_glib_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_libdbusmenu_glib_la_OBJECTS = libdbusmenu_glib_la-menuitem.lo \
+am_libdbusmenu_glib_la_OBJECTS =  \
+	libdbusmenu_glib_la-dbus-menu-clean.xml.lo \
+	libdbusmenu_glib_la-menuitem.lo \
 	libdbusmenu_glib_la-menuitem-marshal.lo \
 	libdbusmenu_glib_la-menuitem-proxy.lo \
 	libdbusmenu_glib_la-server.lo \
@@ -242,6 +249,7 @@ USE_NLS = @USE_NLS@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
+XSLT_PROC = @XSLT_PROC@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -294,9 +302,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-CLEANFILES = $(am__append_2)
+CLEANFILES = dbus-menu-clean.xml $(BUILT_SOURCES) $(am__append_2)
 EXTRA_DIST = \
-	dbusmenu-glib.pc.in \
+	clean-namespaces.xslt \
+	dbusmenu-glib-0.4.pc.in \
 	dbus-menu.xml \
 	client-marshal.list \
 	menuitem-marshal.list \
@@ -305,7 +314,7 @@ EXTRA_DIST = \
 lib_LTLIBRARIES = \
 	libdbusmenu-glib.la
 
-libdbusmenu_glibincludedir = $(includedir)/libdbusmenu-0.1/libdbusmenu-glib/
+libdbusmenu_glibincludedir = $(includedir)/libdbusmenu-0.4/libdbusmenu-glib/
 libdbusmenu_glibinclude_HEADERS = \
 	menuitem.h \
 	menuitem-proxy.h \
@@ -313,8 +322,8 @@ libdbusmenu_glibinclude_HEADERS = \
 	client.h
 
 libdbusmenu_glib_la_SOURCES = \
-	dbusmenu-server.h \
-	dbusmenu-client.h \
+	dbus-menu-clean.xml.h \
+	dbus-menu-clean.xml.c \
 	menuitem.h \
 	menuitem.c \
 	menuitem-marshal.h \
@@ -344,11 +353,11 @@ libdbusmenu_glib_la_CFLAGS = \
 libdbusmenu_glib_la_LIBADD = \
 	$(DBUSMENUGLIB_LIBS)
 
-pkgconfig_DATA = dbusmenu-glib.pc
+pkgconfig_DATA = dbusmenu-glib-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = \
-	dbusmenu-client.h \
-	dbusmenu-server.h \
+	dbus-menu-clean.xml.c \
+	dbus-menu-clean.xml.h \
 	client-marshal.h \
 	client-marshal.c \
 	menuitem-marshal.h \
@@ -357,20 +366,28 @@ BUILT_SOURCES = \
 	server-marshal.c
 
 INTROSPECTION_GIRS = $(am__append_1)
-INTROSPECTION_SCANNER_ARGS = \
-	--add-include-path=$(srcdir) \
-	$(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources))
+@INTROSPECTION_TEN_FALSE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+@INTROSPECTION_TEN_FALSE@        --add-include-path=$(srcdir) \
+@INTROSPECTION_TEN_FALSE@        $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources))
+
+@INTROSPECTION_TEN_TRUE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+@INTROSPECTION_TEN_TRUE@        --add-include-path=$(srcdir) \
+@INTROSPECTION_TEN_TRUE@        $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources)) \
+@INTROSPECTION_TEN_TRUE@        --symbol-prefix=dbusmenu \
+@INTROSPECTION_TEN_TRUE@        --identifier-prefix=Dbusmenu
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
-@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_INCLUDES = \
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0
 
-@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
-@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_LIBS = libdbusmenu-glib.la
-@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
-@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_NAMESPACE = Dbusmenu
-@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_2_gir_VERSION = Glib-0.2
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_LIBS = libdbusmenu-glib.la
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_NAMESPACE = Dbusmenu
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_VERSION = Glib-0.4
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_PACKAGES = dbusmenu-glib-0.4
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_SCANNER_FLAGS = $(INTROSPECTION_SCANNER_ARGS)
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
 @HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
@@ -380,7 +397,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 # VAPI Files
 #########################
 @HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@vapi_DATA = Dbusmenu-Glib-0.2.vapi
+@HAVE_INTROSPECTION_TRUE@vapi_DATA = Dbusmenu-Glib-0.4.vapi
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -416,7 +433,7 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-dbusmenu-glib.pc: $(top_builddir)/config.status $(srcdir)/dbusmenu-glib.pc.in
+dbusmenu-glib-0.4.pc: $(top_builddir)/config.status $(srcdir)/dbusmenu-glib-0.4.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -461,6 +478,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-client-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-client-menuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-client.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-dbus-menu-clean.xml.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-menuitem-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-menuitem-proxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-menuitem.Plo@am__quote@
@@ -490,6 +508,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+libdbusmenu_glib_la-dbus-menu-clean.xml.lo: dbus-menu-clean.xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_glib_la-dbus-menu-clean.xml.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_glib_la-dbus-menu-clean.xml.Tpo -c -o libdbusmenu_glib_la-dbus-menu-clean.xml.lo `test -f 'dbus-menu-clean.xml.c' || echo '$(srcdir)/'`dbus-menu-clean.xml.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_glib_la-dbus-menu-clean.xml.Tpo $(DEPDIR)/libdbusmenu_glib_la-dbus-menu-clean.xml.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbus-menu-clean.xml.c' object='libdbusmenu_glib_la-dbus-menu-clean.xml.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_glib_la-dbus-menu-clean.xml.lo `test -f 'dbus-menu-clean.xml.c' || echo '$(srcdir)/'`dbus-menu-clean.xml.c
 
 libdbusmenu_glib_la-menuitem.lo: menuitem.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_glib_la-menuitem.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_glib_la-menuitem.Tpo -c -o libdbusmenu_glib_la-menuitem.lo `test -f 'menuitem.c' || echo '$(srcdir)/'`menuitem.c
@@ -877,19 +903,16 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 	uninstall-vapiDATA
 
 
-dbusmenu-server.h: dbus-menu.xml
-	dbus-binding-tool \
-		--prefix=_dbusmenu_server \
-		--mode=glib-server \
-		--output=dbusmenu-server.h \
-		$(srcdir)/dbus-menu.xml
+%.xml.h: %.xml
+	echo "extern const char * $(subst -,_,$(subst .,_,$(basename $@)));" > $@
 
-dbusmenu-client.h: dbus-menu.xml
-	dbus-binding-tool \
-		--prefix=_dbusmenu_client \
-		--mode=glib-client \
-		--output=dbusmenu-client.h \
-		$(srcdir)/dbus-menu.xml
+%.xml.c: %.xml
+	echo "const char * $(subst -,_,$(subst .,_,$(basename $@))) = " > $@
+	sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
+	echo ";" >> $@
+
+dbus-menu-clean.xml: dbus-menu.xml
+	$(XSLT_PROC) $(srcdir)/clean-namespaces.xslt $< > $@ || (rm -f $@ && /bin/false)
 
 client-marshal.h: $(srcdir)/client-marshal.list
 	glib-genmarshal --header \
@@ -927,10 +950,10 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 
 -include $(INTROSPECTION_MAKEFILE)
 
-@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib-0.2.gir: libdbusmenu-glib.la
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib-0.4.gir: libdbusmenu-glib.la
 
-@HAVE_INTROSPECTION_TRUE@Dbusmenu-Glib-0.2.vapi: Dbusmenu-Glib-0.2.gir
-@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=Dbusmenu-Glib-0.2 $<
+@HAVE_INTROSPECTION_TRUE@Dbusmenu-Glib-0.4.vapi: Dbusmenu-Glib-0.4.gir
+@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=Dbusmenu-Glib-0.4 $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

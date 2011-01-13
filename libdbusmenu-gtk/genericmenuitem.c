@@ -65,6 +65,7 @@ static void (*parent_draw_indicator) (GtkCheckMenuItem *check_menu_item, cairo_t
 static void draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area);
 static void (*parent_draw_indicator) (GtkCheckMenuItem *check_menu_item, GdkRectangle *area) = NULL;
 #endif
+static void (*parent_menuitem_activate) (GtkMenuItem * mi) = NULL;
 
 /* Initializing all of the classes.  Most notably we're
    disabling the drawing of the check early. */
@@ -86,6 +87,7 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 	GtkMenuItemClass * menuitem_class = GTK_MENU_ITEM_CLASS (klass);
 	menuitem_class->set_label = set_label;
 	menuitem_class->get_label = get_label;
+	parent_menuitem_activate = menuitem_class->activate;
 	menuitem_class->activate = activate;
 
 	return;
@@ -291,7 +293,6 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 	}
 
 	item->priv->check_type = check_type;
-	GValue value = {0};
 
 	switch (item->priv->check_type) {
 	case GENERICMENUITEM_CHECK_TYPE_NONE:
@@ -300,14 +301,10 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 		   check on the item. */
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_CHECKBOX:
-		g_value_init(&value, G_TYPE_BOOLEAN);
-		g_value_set_boolean(&value, FALSE);
-		g_object_set_property(G_OBJECT(item), "draw-as-radio", &value);
+		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), FALSE);
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_RADIO:
-		g_value_init(&value, G_TYPE_BOOLEAN);
-		g_value_set_boolean(&value, TRUE);
-		g_object_set_property(G_OBJECT(item), "draw-as-radio", &value);
+		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check type: %d", check_type);
@@ -338,21 +335,19 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	item->priv->state = state;
 
 	GtkCheckMenuItem * check = GTK_CHECK_MENU_ITEM(item);
-
-	gboolean old_active = gtk_check_menu_item_get_active (check);
-	gboolean old_inconsist = gtk_check_menu_item_get_inconsistent (check);
+	gboolean goal_active = FALSE;
 
 	switch (item->priv->state) {
 	case GENERICMENUITEM_STATE_UNCHECKED:
-		gtk_check_menu_item_set_active (check, FALSE);
+		goal_active = FALSE;
 		gtk_check_menu_item_set_inconsistent (check, FALSE);
 		break;
 	case GENERICMENUITEM_STATE_CHECKED:
-		gtk_check_menu_item_set_active (check, TRUE);
+		goal_active = TRUE;
 		gtk_check_menu_item_set_inconsistent (check, FALSE);
 		break;
 	case GENERICMENUITEM_STATE_INDETERMINATE:
-		gtk_check_menu_item_set_active (check, TRUE);
+		goal_active = TRUE;
 		gtk_check_menu_item_set_inconsistent (check, TRUE);
 		break;
 	default:
@@ -360,15 +355,11 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 		return;
 	}
 
-	if (old_active != gtk_check_menu_item_get_active (check)) {
-		g_object_notify(G_OBJECT(item), "active");
+	if (goal_active != gtk_check_menu_item_get_active(check)) {
+		if (parent_menuitem_activate != NULL) {
+			parent_menuitem_activate(GTK_MENU_ITEM(check));
+		}
 	}
-
-	if (old_inconsist != gtk_check_menu_item_get_inconsistent (check)) {
-		g_object_notify(G_OBJECT(item), "inconsistent");
-	}
-
-	gtk_widget_queue_draw(GTK_WIDGET(item));
 
 	return;
 }
