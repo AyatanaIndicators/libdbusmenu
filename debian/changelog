@@ -1,16 +1,15 @@
-libdbusmenu (0.3.90-0ubuntu4~ppa2) natty; urgency=low
+libdbusmenu (0.3.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
-    * Supporting removing properties
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 06 Jan 2011 10:36:43 -0600
-
-libdbusmenu (0.3.90-0ubuntu4~ppa1) natty; urgency=low
-
+  * New upstream release.
+    * Porting from dbus-glib to GDBus
+    * Bumping the library ABI version
+  * debian/*.install: Changing to be the 0.4 version of the dbusmenu
+    API of all the filenames and paths.
+  * debian/control: Bumping ABI version in package names
   * debian/control: Changing the GIR package names from "0.2" to
     "0.4" which now the names of the actual files.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 06 Jan 2011 10:32:15 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 13 Jan 2011 10:13:02 -0600
 
 libdbusmenu (0.3.90-0ubuntu3) natty; urgency=low
 
@@ -25,31 +24,6 @@ libdbusmenu (0.3.90-0ubuntu2) natty; urgency=low
       the value, it just signals
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 09 Dec 2010 17:46:41 -0500
-
-libdbusmenu (0.3.90-0ubuntu2~ppa3) natty; urgency=low
-
-  * debian/control: Forgot jsonloader
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 09 Dec 2010 17:00:47 -0600
-
-libdbusmenu (0.3.90-0ubuntu2~ppa2) natty; urgency=low
-
-  * Upstream Merge
-    * Fixing check items
-    * Bumping the library ABI version
-  * debian/control: Bumping ABI version in package names
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 09 Dec 2010 16:56:55 -0600
-
-libdbusmenu (0.3.90-0ubuntu2~ppa1) natty; urgency=low
-
-  * Upstream Merge
-    * Porting from dbus-glib to GDBus
-  * debian/*.install: Changing to be the 0.4 version of the dbusmenu
-    API of all the filenames and paths.
-  * Autogen
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 08 Dec 2010 10:31:48 -0600
 
 libdbusmenu (0.3.90-0ubuntu1) natty; urgency=low
 

@@ -373,9 +373,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 INTROSPECTION_GIRS = $(am__append_1)
 @INTROSPECTION_TEN_FALSE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_FALSE@	--add-include-path=$(top_builddir)/libdbusmenu-glib \
-@INTROSPECTION_TEN_FALSE@	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
-@INTROSPECTION_TEN_FALSE@	--symbol-prefix=dbusmenu \
-@INTROSPECTION_TEN_FALSE@	--identifier-prefix=DbusmenuGtk
+@INTROSPECTION_TEN_FALSE@	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
 
 @INTROSPECTION_TEN_TRUE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_TRUE@	--add-include-path=$(top_builddir)/libdbusmenu-glib \
@@ -395,7 +393,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_NAMESPACE = DbusmenuGtk$(VER)
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_SCANNERFLAGS = $(INTROSPECTION_SCANNER_ARGS)
-@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_PACKAGES = dbusmenu-gtk$(VER)
+@HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_PACKAGES = dbusmenu-gtk$(VER)-0.4
 
 # We duplicate these for the same reason as libdbusmenu_gtk3includedir above
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk3_0_4_gir_INCLUDES = $(DbusmenuGtk_0_4_gir_INCLUDES)

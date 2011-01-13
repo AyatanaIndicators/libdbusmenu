@@ -35,7 +35,7 @@ from xml.etree import ElementTree as ET
 
 import dbus
 
-DBUS_INTERFACE = "org.ayatana.dbusmenu"
+DBUS_INTERFACE = "com.canonical.dbusmenu"
 DBUS_SERVICE = "org.dbusmenu.test"
 DBUS_PATH = "/MenuBar"
 

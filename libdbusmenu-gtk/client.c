@@ -249,6 +249,7 @@ dbusmenu_gtkclient_set_accel_group (DbusmenuGtkClient * client, GtkAccelGroup * 
 	}
 
 	priv->agroup = agroup;
+	g_object_ref(priv->agroup);
 
 	return;
 }

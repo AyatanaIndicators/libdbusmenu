@@ -50,6 +50,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID         (g_signal_lookup(DBUSMENU_MENUITEM_SIGNAL_REALIZED, DBUSMENU_TYPE_MENUITEM))
 #define DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER        "show-to-user"
+#define DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW       "about-to-show"
 
 #define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
 #define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
@@ -127,6 +128,7 @@ typedef void (*dbusmenu_menuitem_buildxml_slot_t) (DbusmenuMenuitem * mi, GPtrAr
  * @child_removed: Slot for #DbusmenuMenuitem::child-removed.
  * @child_moved: Slot for #DbusmenuMenuitem::child-moved.
  * @realized: Slot for #DbusmenuMenuitem::realized.
+ * @about_to_show: Slot for #DbusmenuMenuitem::about-to-show.
  * @buildxml: Virtual function that appends the strings required to represent this menu item in the menu XML file.
  * @handle_event: This function is to override how events are handled by subclasses.  Look at #dbusmenu_menuitem_handle_event for lots of good information.
  * @send_about_to_show: Virtual function that notifies server that the client is about to show a menu.
@@ -158,6 +160,7 @@ struct _DbusmenuMenuitemClass
 	void (*send_about_to_show) (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
+	gboolean (*about_to_show) (void);
 
 	/*< Private >*/
 	void (*reserved1) (void);
