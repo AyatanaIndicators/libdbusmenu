@@ -1047,6 +1047,12 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 	event_data->timestamp = g_variant_get_uint32(g_variant_get_child_value(params, 3));
 	event_data->variant = g_variant_get_child_value(params, 2);
 
+	if (g_variant_is_of_type(event_data->variant, G_VARIANT_TYPE_VARIANT)) {
+		event_data->variant = g_variant_get_variant(event_data->variant);
+	}
+
+	g_variant_ref(event_data->variant);
+
 	g_timeout_add(0, event_local_handler, event_data);
 
 	g_dbus_method_invocation_return_value(invocation, NULL);
