@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="libdbusmenu-glib-DbusmenuServer">
+<refmeta>
+<refentrytitle role="top_of_page" id="libdbusmenu-glib-DbusmenuServer.top_of_page">DbusmenuServer</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GLIB Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>DbusmenuServer</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="libdbusmenu-glib-DbusmenuServer.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>#define             <link linkend="DBUSMENU-SERVER-SIGNAL-ID-PROP-UPDATE:CAPS">DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE</link>
+#define             <link linkend="DBUSMENU-SERVER-SIGNAL-ID-UPDATE:CAPS">DBUSMENU_SERVER_SIGNAL_ID_UPDATE</link>
+#define             <link linkend="DBUSMENU-SERVER-SIGNAL-LAYOUT-UPDATED:CAPS">DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED</link>
+#define             <link linkend="DBUSMENU-SERVER-SIGNAL-LAYOUT-UPDATE:CAPS">DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE</link>
+#define             <link linkend="DBUSMENU-SERVER-PROP-DBUS-OBJECT:CAPS">DBUSMENU_SERVER_PROP_DBUS_OBJECT</link>
+#define             <link linkend="DBUSMENU-SERVER-PROP-ROOT-NODE:CAPS">DBUSMENU_SERVER_PROP_ROOT_NODE</link>
+#define             <link linkend="DBUSMENU-SERVER-PROP-VERSION:CAPS">DBUSMENU_SERVER_PROP_VERSION</link>
+                    <link linkend="DbusmenuServer">DbusmenuServer</link>;
+                    <link linkend="DbusmenuServerClass">DbusmenuServerClass</link>;
+<link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *    <link linkend="dbusmenu-server-new">dbusmenu_server_new</link>                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-server-set-root">dbusmenu_server_set_root</link>            (<parameter><link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> *server</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *root</parameter>);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="libdbusmenu-glib-DbusmenuServer.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+<refsect1 id="libdbusmenu-glib-DbusmenuServer.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="DBUSMENU-SERVER-SIGNAL-ID-PROP-UPDATE:CAPS" role="macro">
+<title>DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE</title>
+<indexterm zone="DBUSMENU-SERVER-SIGNAL-ID-PROP-UPDATE:CAPS"><primary>DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE</primary></indexterm>
+<programlisting>#define DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE  "item-property-updated"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-SERVER-SIGNAL-ID-UPDATE:CAPS" role="macro">
+<title>DBUSMENU_SERVER_SIGNAL_ID_UPDATE</title>
+<indexterm zone="DBUSMENU-SERVER-SIGNAL-ID-UPDATE:CAPS"><primary>DBUSMENU_SERVER_SIGNAL_ID_UPDATE</primary></indexterm>
+<programlisting>#define DBUSMENU_SERVER_SIGNAL_ID_UPDATE       "item-updated"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-SERVER-SIGNAL-LAYOUT-UPDATED:CAPS" role="macro">
+<title>DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED</title>
+<indexterm zone="DBUSMENU-SERVER-SIGNAL-LAYOUT-UPDATED:CAPS"><primary>DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED</primary></indexterm>
+<programlisting>#define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED  "layout-updated"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-SERVER-SIGNAL-LAYOUT-UPDATE:CAPS" role="macro">
+<title>DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE</title>
+<indexterm zone="DBUSMENU-SERVER-SIGNAL-LAYOUT-UPDATE:CAPS"><primary>DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE</primary></indexterm>
+<programlisting>#define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE   DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-SERVER-PROP-DBUS-OBJECT:CAPS" role="macro">
+<title>DBUSMENU_SERVER_PROP_DBUS_OBJECT</title>
+<indexterm zone="DBUSMENU-SERVER-PROP-DBUS-OBJECT:CAPS"><primary>DBUSMENU_SERVER_PROP_DBUS_OBJECT</primary></indexterm>
+<programlisting>#define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-SERVER-PROP-ROOT-NODE:CAPS" role="macro">
+<title>DBUSMENU_SERVER_PROP_ROOT_NODE</title>
+<indexterm zone="DBUSMENU-SERVER-PROP-ROOT-NODE:CAPS"><primary>DBUSMENU_SERVER_PROP_ROOT_NODE</primary></indexterm>
+<programlisting>#define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DBUSMENU-SERVER-PROP-VERSION:CAPS" role="macro">
+<title>DBUSMENU_SERVER_PROP_VERSION</title>
+<indexterm zone="DBUSMENU-SERVER-PROP-VERSION:CAPS"><primary>DBUSMENU_SERVER_PROP_VERSION</primary></indexterm>
+<programlisting>#define DBUSMENU_SERVER_PROP_VERSION           "version"
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DbusmenuServer" role="struct">
+<title>DbusmenuServer</title>
+<indexterm zone="DbusmenuServer"><primary>DbusmenuServer</primary></indexterm>
+<programlisting>typedef struct {
+	GObject parent;
+
+	/*&lt; Private &gt;*/
+	DbusmenuServerPrivate * priv;
+} DbusmenuServer;
+</programlisting>
+<para>
+A server which represents a sharing of a set of
+	<link linkend="DbusmenuMenuitems"><type>DbusmenuMenuitems</type></link> across DBus to a <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link>.
+</para><variablelist role="struct">
+<varlistentry><term><link linkend="GObject"><type>GObject</type></link>&#160;<structfield id="DbusmenuServer.parent">parent</structfield>;</term>
+<listitem><simpara><link linkend="GObject"><type>GObject</type></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><link linkend="DbusmenuServerPrivate"><type>DbusmenuServerPrivate</type></link>&#160;*<structfield id="DbusmenuServer.priv">priv</structfield>;</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="DbusmenuServerClass" role="struct">
+<title>DbusmenuServerClass</title>
+<indexterm zone="DbusmenuServerClass"><primary>DbusmenuServerClass</primary></indexterm>
+<programlisting>typedef struct {
+	GObjectClass parent_class;
+
+	/* Signals */
+	void (*id_prop_update)(gint id, gchar * property, gchar * value);
+	void (*id_update)(gint id);
+	void (*layout_updated)(gint revision);
+	void (*item_activation)(gint id, guint timestamp);
+
+	/*&lt; Private &gt;*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
+} DbusmenuServerClass;
+</programlisting>
+<para>
+<parameter>reserved1</parameter>: Reserved for future use.
+	<parameter>reserved2</parameter>: Reserved for future use.
+	<parameter>reserved3</parameter>: Reserved for future use.
+	<parameter>reserved4</parameter>: Reserved for future use.
+	<parameter>reserved5</parameter>: Reserved for future use.
+	<parameter>reserved6</parameter>: Reserved for future use.
+</para>
+<para>
+	The class implementing the virtual functions for <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>.
+</para><variablelist role="struct">
+<varlistentry><term><link linkend="GObjectClass"><type>GObjectClass</type></link>&#160;<structfield id="DbusmenuServerClass.parent-class">parent_class</structfield>;</term>
+<listitem><simpara><link linkend="GObjectClass"><type>GObjectClass</type></link>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.id-prop-update">id_prop_update</structfield>&#160;()</term>
+<listitem><simpara>Slot for <link linkend="DbusmenuServer-id-prop-update"><type>"id-prop-update"</type></link>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.id-update">id_update</structfield>&#160;()</term>
+<listitem><simpara>Slot for <link linkend="DbusmenuServer-id-update"><type>"id-update"</type></link>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.layout-updated">layout_updated</structfield>&#160;()</term>
+<listitem><simpara>Slot for <link linkend="DbusmenuServer-layout-update"><type>"layout-update"</type></link>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.item-activation">item_activation</structfield>&#160;()</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.reserved1">reserved1</structfield>&#160;()</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.reserved2">reserved2</structfield>&#160;()</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.reserved3">reserved3</structfield>&#160;()</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.reserved4">reserved4</structfield>&#160;()</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.reserved5">reserved5</structfield>&#160;()</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuServerClass.reserved6">reserved6</structfield>&#160;()</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-server-new" role="function">
+<title>dbusmenu_server_new ()</title>
+<indexterm zone="dbusmenu-server-new"><primary>dbusmenu_server_new</primary></indexterm>
+<programlisting><link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *    dbusmenu_server_new                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);</programlisting>
+<para>
+Creates a new <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> object with a specific object
+	path on DBus.  If <parameter>object</parameter> is set to NULL the default object
+	name of "/com/canonical/dbusmenu" will be used.
+</para><variablelist role="params">
+<varlistentry><term><parameter>object</parameter>&#160;:</term>
+<listitem><simpara>The object name to show for this menu structure
+		on DBus.  May be NULL.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A brand new <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-server-set-root" role="function">
+<title>dbusmenu_server_set_root ()</title>
+<indexterm zone="dbusmenu-server-set-root"><primary>dbusmenu_server_set_root</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbusmenu_server_set_root            (<parameter><link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> *server</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *root</parameter>);</programlisting>
+<para>
+This function contains all of the <link linkend="GValue"><type>GValue</type></link> wrapping
+	required to set the property <link linkend="DbusmenuServer--root-node"><type>"root-node"</type></link>
+	on the server <parameter>self</parameter>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>server</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>root</parameter>&#160;:</term>
+<listitem><simpara>The new root <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> tree
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>
