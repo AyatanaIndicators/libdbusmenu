@@ -6,7 +6,7 @@ libdbusmenu (0.3.92-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 14 Jan 2011 10:37:22 -0600
 
-libdbusmenu (0.3.91-0ubuntu1~ppa1) natty; urgency=low
+libdbusmenu (0.3.91-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     * Porting from dbus-glib to GDBus
