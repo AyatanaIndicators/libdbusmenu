@@ -56,10 +56,10 @@ pkgconfig_DATA = dbusmenu-glib-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 %.xml.h: %.xml
-	echo "extern const char * $(subst -,_,$(subst .,_,$(basename $@)));" > $@
+	echo "extern const char * $(subst -,_,$(subst .,_,$(basename $(notdir $@))));" > $@
 
 %.xml.c: %.xml
-	echo "const char * $(subst -,_,$(subst .,_,$(basename $@))) = " > $@
+	echo "const char * $(subst -,_,$(subst .,_,$(basename $(notdir $@)))) = " > $@
 	sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
 	echo ";" >> $@
 
