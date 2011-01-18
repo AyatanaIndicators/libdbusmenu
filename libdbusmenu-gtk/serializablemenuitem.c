@@ -73,6 +73,12 @@ dbusmenu_gtk_serializable_menu_item_get_dbusmenu_menuitem (DbusmenuGtkSerializab
 	return NULL;
 }
 
+typedef struct _type_handler_t type_handler_t;
+struct _type_handler_t {
+	DbusmenuGtkSerializableMenuItemClass * class;
+	GType type;
+};
+
 /* Handle the type with this item. */
 static gboolean
 type_handler (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
@@ -85,7 +91,10 @@ type_handler (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCli
 static void
 type_destroy_handler (DbusmenuClient * client, const gchar * type, gpointer user_data)
 {
-
+	g_return_if_fail(user_data != NULL);
+	type_handler_t * th = (type_handler_t *)user_data;
+	g_type_class_unref(th->class);
+	g_free(user_data);
 	return;
 }
 
@@ -106,7 +115,10 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 	}
 
 	/* Register type */
-	dbusmenu_client_add_type_handler_full(client, class->get_type_string(), type_handler, NULL, type_destroy_handler); /* need type */
+	type_handler_t * th = g_new0(type_handler_t, 1);
+	th->class = class;
+	th->type = item_type;
+	dbusmenu_client_add_type_handler_full(client, class->get_type_string(), type_handler, th, type_destroy_handler); /* need type */
 
 	/* Register defaults */
 	/* TODO: Need API on another branch */
