@@ -111,7 +111,7 @@ struct _DbusmenuClient {
 };
 
 typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
-typedef gboolean (*DbusmenuClientTypeDestroyHandler) (DbusmenuClient * client, const gchar * type, gpointer user_data);
+typedef void (*DbusmenuClientTypeDestroyHandler) (DbusmenuClient * client, const gchar * type, gpointer user_data);
 
 GType                dbusmenu_client_get_type          (void);
 DbusmenuClient *     dbusmenu_client_new               (const gchar * name,

@@ -75,10 +75,18 @@ dbusmenu_gtk_serializable_menu_item_get_dbusmenu_menuitem (DbusmenuGtkSerializab
 
 /* Handle the type with this item. */
 static gboolean
-type_handler (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+type_handler (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 
 	return TRUE;
+}
+
+/* Destruction is inevitable */
+static void
+type_destroy_handler (DbusmenuClient * client, const gchar * type, gpointer user_data)
+{
+
+	return;
 }
 
 void
@@ -98,7 +106,7 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 	}
 
 	/* Register type */
-	dbusmenu_client_add_type_handler(client, class->get_type_string(), type_handler); /* need type */
+	dbusmenu_client_add_type_handler_full(client, class->get_type_string(), type_handler, NULL, type_destroy_handler); /* need type */
 
 	/* Register defaults */
 	/* TODO: Need API on another branch */
