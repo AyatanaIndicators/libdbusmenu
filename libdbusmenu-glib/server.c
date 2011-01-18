@@ -1009,7 +1009,13 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 
 		ret = g_variant_new("(a(ia{svg}))", g_variant_builder_end(&builder));
 	} else {
-		ret = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, NULL);
+		GError * error = NULL;
+		ret = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, &error);
+		if (error != NULL) {
+			g_warning("Unable to parse '([(0, {})],)' as a '(a(ia{sv}))': %s", error->message);
+			g_error_free(error);
+			ret = NULL;
+		}
 	}
 
 	g_dbus_method_invocation_return_value(invocation, ret);
