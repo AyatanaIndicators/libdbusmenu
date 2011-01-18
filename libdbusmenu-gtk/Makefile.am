@@ -22,7 +22,8 @@ libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-gtk$(VER)/
 libdbusmenu_gtkinclude_HEADERS = \
 	client.h \
 	menu.h \
-	menuitem.h
+	menuitem.h \
+	serializablemenuitem.h
 
 libdbusmenu_gtk_la_SOURCES = \
 	client.h \
@@ -32,7 +33,9 @@ libdbusmenu_gtk_la_SOURCES = \
 	menu.h \
 	menu.c \
 	menuitem.h \
-	menuitem.c
+	menuitem.c \
+	serializablemenuitem.h \
+	serializablemenuitem.c
 
 libdbusmenu_gtk_la_LDFLAGS = \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
