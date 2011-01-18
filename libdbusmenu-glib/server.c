@@ -929,9 +929,14 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		ret = g_variant_parse(g_variant_type_new("a(ia(sv))"), "[]", NULL, NULL, NULL);
 	}
 
-	g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
-	g_variant_builder_add_value(&builder, ret);
-	GVariant * final = g_variant_builder_end(&builder);
+	GVariant * final = NULL;
+	if (ret != NULL) {
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
+		g_variant_builder_add_value(&builder, ret);
+		final = g_variant_builder_end(&builder);
+	} else {
+		g_warning("Error building property list, final variant is NULL");
+	}
 
 	g_dbus_method_invocation_return_value(invocation, final);
 
