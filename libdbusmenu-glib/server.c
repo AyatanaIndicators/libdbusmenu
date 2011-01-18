@@ -894,12 +894,17 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 	g_variant_iter_init(&ids, g_variant_get_child_value(params, 0));
 
 	GVariantBuilder builder;
-	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+	gboolean builder_init = FALSE;
 
 	gint id;
 	while (g_variant_iter_next(&ids, "i", &id)) {
 		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 		if (mi == NULL) continue;
+
+		if (!builder_init) {
+			g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+			builder_init = TRUE;
+		}
 
 		GVariantBuilder wbuilder;
 		g_variant_builder_init(&wbuilder, G_VARIANT_TYPE_TUPLE);
@@ -916,7 +921,13 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		g_variant_builder_add_value(&builder, mi_data);
 	}
 
-	GVariant * ret = g_variant_builder_end(&builder);
+	GVariant * ret = NULL;
+	
+	if (builder_init) {
+		ret = g_variant_builder_end(&builder);
+	} else {
+		ret = g_variant_parse(g_variant_type_new("a(ia(sv))"), "[]", NULL, NULL, NULL);
+	}
 
 	g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
 	g_variant_builder_add_value(&builder, ret);
