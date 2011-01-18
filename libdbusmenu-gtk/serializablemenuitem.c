@@ -73,6 +73,14 @@ dbusmenu_gtk_serializable_menu_item_get_dbusmenu_menuitem (DbusmenuGtkSerializab
 	return NULL;
 }
 
+/* Handle the type with this item. */
+static gboolean
+type_handler (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+{
+
+	return TRUE;
+}
+
 void
 dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client, GType item_type)
 {
@@ -90,10 +98,10 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 	}
 
 	/* Register type */
-
+	dbusmenu_client_add_type_handler(client, class->get_type_string(), type_handler); /* need type */
 
 	/* Register defaults */
-
+	/* TODO: Need API on another branch */
 
 	return;
 }
