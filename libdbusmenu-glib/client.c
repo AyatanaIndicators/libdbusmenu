@@ -1163,7 +1163,7 @@ menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer 
 	}
 
 	if (newfunc != NULL) {
-		handled = newfunc(propdata->item, propdata->parent, propdata->client);
+		handled = newfunc(propdata->item, propdata->parent, propdata->client, NULL);
 	}
 
 	#ifdef MASSIVEDEBUGGING
@@ -1699,6 +1699,12 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 gboolean
 dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc)
 {
+	return dbusmenu_client_add_type_handler_full(client, type, newfunc, NULL, NULL);
+}
+
+gboolean
+dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, DbusmenuClientTypeDestroyHandler destory_func)
+{
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
 	g_return_val_if_fail(type != NULL, FALSE);
 
@@ -1722,3 +1728,4 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
 	g_hash_table_insert(priv->type_handlers, g_strdup(type), newfunc);
 	return TRUE;
 }
+
