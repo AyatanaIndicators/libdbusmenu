@@ -118,7 +118,9 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 	type_handler_t * th = g_new0(type_handler_t, 1);
 	th->class = class;
 	th->type = item_type;
-	dbusmenu_client_add_type_handler_full(client, class->get_type_string(), type_handler, th, type_destroy_handler); /* need type */
+	if (!dbusmenu_client_add_type_handler_full(client, class->get_type_string(), type_handler, th, type_destroy_handler)) {
+		type_destroy_handler(client, class->get_type_string(), th);
+	}
 
 	/* Register defaults */
 	/* TODO: Need API on another branch */
