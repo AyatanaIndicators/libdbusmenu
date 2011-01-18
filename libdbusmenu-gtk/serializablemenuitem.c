@@ -2,39 +2,39 @@
 #include "config.h"
 #endif
 
-#include "idoserializablemenuitem.h"
+#include "serializablemenuitem.h"
 
-struct _IdoSerializableMenuItemPrivate {
+struct _DbusmenuGtkSerializableMenuItemPrivate {
 	int dummy;
 };
 
-#define IDO_SERIALIZABLE_MENU_ITEM_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), IDO_TYPE_SERIALIZABLE_MENU_ITEM, IdoSerializableMenuItemPrivate))
+#define DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_PRIVATE(o) \
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM, DbusmenuGtkSerializableMenuItemPrivate))
 
-static void ido_serializable_menu_item_class_init (IdoSerializableMenuItemClass *klass);
-static void ido_serializable_menu_item_init       (IdoSerializableMenuItem *self);
-static void ido_serializable_menu_item_dispose    (GObject *object);
-static void ido_serializable_menu_item_finalize   (GObject *object);
+static void dbusmenu_gtk_serializable_menu_item_class_init (DbusmenuGtkSerializableMenuItemClass *klass);
+static void dbusmenu_gtk_serializable_menu_item_init       (DbusmenuGtkSerializableMenuItem *self);
+static void dbusmenu_gtk_serializable_menu_item_dispose    (GObject *object);
+static void dbusmenu_gtk_serializable_menu_item_finalize   (GObject *object);
 
-G_DEFINE_TYPE (IdoSerializableMenuItem, ido_serializable_menu_item, GTK_TYPE_MENU_ITEM);
+G_DEFINE_TYPE (DbusmenuGtkSerializableMenuItem, dbusmenu_gtk_serializable_menu_item, GTK_TYPE_MENU_ITEM);
 
 static void
-ido_serializable_menu_item_class_init (IdoSerializableMenuItemClass *klass)
+dbusmenu_gtk_serializable_menu_item_class_init (DbusmenuGtkSerializableMenuItemClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (IdoSerializableMenuItemPrivate));
+	g_type_class_add_private (klass, sizeof (DbusmenuGtkSerializableMenuItemPrivate));
 
-	object_class->dispose = ido_serializable_menu_item_dispose;
-	object_class->finalize = ido_serializable_menu_item_finalize;
+	object_class->dispose = dbusmenu_gtk_serializable_menu_item_dispose;
+	object_class->finalize = dbusmenu_gtk_serializable_menu_item_finalize;
 
 	return;
 }
 
 static void
-ido_serializable_menu_item_init (IdoSerializableMenuItem *self)
+dbusmenu_gtk_serializable_menu_item_init (DbusmenuGtkSerializableMenuItem *self)
 {
-	self->priv = IDO_SERIALIZABLE_MENU_ITEM_GET_PRIVATE(self);
+	self->priv = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_PRIVATE(self);
 
 	self->priv->dummy = 5;
 
@@ -42,30 +42,30 @@ ido_serializable_menu_item_init (IdoSerializableMenuItem *self)
 }
 
 static void
-ido_serializable_menu_item_dispose (GObject *object)
+dbusmenu_gtk_serializable_menu_item_dispose (GObject *object)
 {
 
 
-	G_OBJECT_CLASS (ido_serializable_menu_item_parent_class)->dispose (object);
+	G_OBJECT_CLASS (dbusmenu_gtk_serializable_menu_item_parent_class)->dispose (object);
 	return;
 }
 
 static void
-ido_serializable_menu_item_finalize (GObject *object)
+dbusmenu_gtk_serializable_menu_item_finalize (GObject *object)
 {
 
 
 
-	G_OBJECT_CLASS (ido_serializable_menu_item_parent_class)->finalize (object);
+	G_OBJECT_CLASS (dbusmenu_gtk_serializable_menu_item_parent_class)->finalize (object);
 	return;
 }
 
 DbusmenuMenuitem *
-ido_serializable_menu_item_get_dbusmenu_menuitem (IdoSerializableMenuItem * smi)
+dbusmenu_gtk_serializable_menu_item_get_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi)
 {
-	g_return_val_if_fail(IDO_IS_SERIALIZABLE_MENU_ITEM(smi), NULL);
+	g_return_val_if_fail(DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(smi), NULL);
 
-	IdoSerializableMenuItemClass * klass = IDO_SERIALIZABLE_MENU_ITEM_GET_CLASS(smi);
+	DbusmenuGtkSerializableMenuItemClass * klass = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_CLASS(smi);
 	if (klass->get_dbusmenu_menuitem != NULL) {
 		return klass->get_dbusmenu_menuitem(smi);
 	}
@@ -74,18 +74,18 @@ ido_serializable_menu_item_get_dbusmenu_menuitem (IdoSerializableMenuItem * smi)
 }
 
 void
-ido_serializable_menu_item_register_to_client (DbusmenuClient * client, GType item_type)
+dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client, GType item_type)
 {
-	g_return_if_fail(g_type_is_a(item_type, IDO_TYPE_SERIALIZABLE_MENU_ITEM));
+	g_return_if_fail(g_type_is_a(item_type, DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM));
 
 	gpointer type_class = g_type_class_ref(item_type);
 	g_return_if_fail(type_class != NULL);
 
-	IdoSerializableMenuItemClass * class = IDO_SERIALIZABLE_MENU_ITEM_CLASS(type_class);
+	DbusmenuGtkSerializableMenuItemClass * class = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_CLASS(type_class);
 
 	if (class->get_type_string == NULL) {
 		g_type_class_unref(type_class);
-		g_error("No 'get_type_string' in subclass of IdoSerializableMenuItem");
+		g_error("No 'get_type_string' in subclass of DbusmenuGtkSerializableMenuItem");
 		return;
 	}
 
