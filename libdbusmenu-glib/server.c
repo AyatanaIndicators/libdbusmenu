@@ -915,7 +915,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 			GError * error = NULL;
 			props = g_variant_parse(g_variant_type_new("a{sv}"), "{}", NULL, NULL, &error);
 			if (error != NULL) {
-				g_warning("Unable to parse '{}' as a 'a{sv}'");
+				g_warning("Unable to parse '{}' as a 'a{sv}': %s", error->message);
 				g_error_free(error);
 				props = NULL;
 			}
@@ -935,7 +935,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		GError * error = NULL;
 		ret = g_variant_parse(g_variant_type_new("a(ia(sv))"), "[]", NULL, NULL, NULL);
 		if (error != NULL) {
-			g_warning("Unable to parse '[]' as a 'a(ia(sv))'");
+			g_warning("Unable to parse '[]' as a 'a(ia(sv))': %s", error->message);
 			g_error_free(error);
 			ret = NULL;
 		}
