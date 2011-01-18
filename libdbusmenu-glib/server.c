@@ -912,7 +912,13 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		GVariant * props = dbusmenu_menuitem_properties_variant(mi);
 
 		if (props == NULL) {
-			props = g_variant_parse(g_variant_type_new("a{sv}"), "{}", NULL, NULL, NULL);
+			GError * error = NULL;
+			props = g_variant_parse(g_variant_type_new("a{sv}"), "{}", NULL, NULL, &error);
+			if (error != NULL) {
+				g_warning("Unable to parse '{}' as a 'a{sv}'");
+				g_error_free(error);
+				props = NULL;
+			}
 		}
 
 		g_variant_builder_add_value(&wbuilder, props);
@@ -926,7 +932,13 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 	if (builder_init) {
 		ret = g_variant_builder_end(&builder);
 	} else {
+		GError * error = NULL;
 		ret = g_variant_parse(g_variant_type_new("a(ia(sv))"), "[]", NULL, NULL, NULL);
+		if (error != NULL) {
+			g_warning("Unable to parse '[]' as a 'a(ia(sv))'");
+			g_error_free(error);
+			ret = NULL;
+		}
 	}
 
 	GVariant * final = NULL;
