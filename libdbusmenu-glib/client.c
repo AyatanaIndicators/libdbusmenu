@@ -1702,8 +1702,33 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
 	return dbusmenu_client_add_type_handler_full(client, type, newfunc, NULL, NULL);
 }
 
+/**
+	dbusmenu_client_add_type_handler_full:
+	@client: Client where we're getting types coming in
+	@type: A text string that will be matched with the 'type'
+	    property on incoming menu items
+	@newfunc: The function that will be executed with those new
+	    items when they come in.
+	@user_data: Data passed to @newfunc when it is called
+	@destroy_func: A function that is called when the type handler is
+		removed (usually on client destruction) which will free
+		the resources in @user_data.
+
+	This function connects into the type handling of the #DbusmenuClient.
+	Every new menuitem that comes in immediately gets asked for it's
+	properties.  When we get those properties we check the 'type'
+	property and look to see if it matches a handler that is known
+	by the client.  If so, the @newfunc function is executed on that
+	#DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
+	signal is sent.
+
+	In the future the known types will be sent to the server so that it
+	can make choices about the menu item types availble.
+
+	Return value: If registering the new type was successful.
+*/
 gboolean
-dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, DbusmenuClientTypeDestroyHandler destory_func)
+dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, DbusmenuClientTypeDestroyHandler destroy_func)
 {
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
 	g_return_val_if_fail(type != NULL, FALSE);
