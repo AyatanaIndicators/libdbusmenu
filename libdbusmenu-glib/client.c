@@ -120,6 +120,15 @@ struct _event_data_t {
 	guint timestamp;
 };
 
+typedef struct _type_handler_t type_handler_t;
+struct _type_handler_t {
+	DbusmenuClient * client;
+	DbusmenuClientTypeHandler cb;
+	DbusmenuClientTypeDestroyHandler destroy_cb;
+	gpointer user_data;
+	gchar * type;
+};
+
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) (DBUSMENU_CLIENT(o)->priv)
 #define DBUSMENU_INTERFACE  "com.canonical.dbusmenu"
@@ -148,6 +157,7 @@ static void item_activated (GDBusProxy * proxy, gint id, guint timestamp, Dbusme
 static void menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data);
 static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data);
 static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
+static void type_handler_destroy (gpointer user_data);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
@@ -310,7 +320,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->dbusproxy = 0;
 
 	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
-	                                            g_free, NULL);
+	                                            g_free, type_handler_destroy);
 
 	priv->delayed_idle = 0;
 	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
@@ -1153,17 +1163,17 @@ menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer 
 	gboolean handled = FALSE;
 
 	const gchar * type;
-	DbusmenuClientTypeHandler newfunc = NULL;
+	type_handler_t * th = NULL;
 	
 	type = dbusmenu_menuitem_property_get(propdata->item, DBUSMENU_MENUITEM_PROP_TYPE);
 	if (type != NULL) {
-		newfunc = g_hash_table_lookup(priv->type_handlers, type);
+		th = (type_handler_t *)g_hash_table_lookup(priv->type_handlers, type);
 	} else {
-		newfunc = g_hash_table_lookup(priv->type_handlers, DBUSMENU_CLIENT_TYPES_DEFAULT);
+		th = (type_handler_t *)g_hash_table_lookup(priv->type_handlers, DBUSMENU_CLIENT_TYPES_DEFAULT);
 	}
 
-	if (newfunc != NULL) {
-		handled = newfunc(propdata->item, propdata->parent, propdata->client, NULL);
+	if (th != NULL && th->cb != NULL) {
+		handled = th->cb(propdata->item, propdata->parent, propdata->client, th->user_data);
 	}
 
 	#ifdef MASSIVEDEBUGGING
@@ -1675,6 +1685,19 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 	return priv->root;
 }
 
+/* Remove the type handler when we're all done with it */
+static void
+type_handler_destroy (gpointer user_data)
+{
+	type_handler_t * th = (type_handler_t *)user_data;
+	if (th->destroy_cb != NULL) {
+		th->destroy_cb(th->client, th->type, th->user_data);
+	}
+	g_free(th->type);
+	g_free(th);
+	return;
+}
+
 /**
 	dbusmenu_client_add_type_handler:
 	@client: Client where we're getting types coming in
@@ -1750,7 +1773,14 @@ dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * ty
 		return FALSE;
 	}
 
-	g_hash_table_insert(priv->type_handlers, g_strdup(type), newfunc);
+	type_handler_t * th = g_new0(type_handler_t, 1);
+	th->client = client;
+	th->cb = newfunc;
+	th->destroy_cb = destroy_func;
+	th->user_data = user_data;
+	th->type = g_strdup(type);
+
+	g_hash_table_insert(priv->type_handlers, g_strdup(type), th);
 	return TRUE;
 }
 
