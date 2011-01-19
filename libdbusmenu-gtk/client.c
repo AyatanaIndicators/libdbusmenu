@@ -789,6 +789,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 			gtkimage = NULL;
 		} else if (g_strcmp0(iconname, DBUSMENU_MENUITEM_ICON_NAME_BLANK) == 0) {
 			gtkimage = gtk_image_new();
+			g_object_set(G_OBJECT(gtkimage), "use-fallback", TRUE, NULL);
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
 			   'rtl' depending on what we're doing. */
@@ -807,6 +808,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 			   can just convert it to this name. */
 			if (gtkimage == NULL) {
 				gtkimage = gtk_image_new_from_icon_name(finaliconname, GTK_ICON_SIZE_MENU);
+				g_object_set(G_OBJECT(gtkimage), "use-fallback", TRUE, NULL);
 			} else {
 				gtk_image_set_from_icon_name(GTK_IMAGE(gtkimage), finaliconname, GTK_ICON_SIZE_MENU);
 			}
