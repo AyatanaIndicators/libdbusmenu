@@ -163,3 +163,10 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 
 	return;
 }
+
+void
+dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi)
+{
+
+	return;
+}

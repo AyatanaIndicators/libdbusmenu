@@ -80,6 +80,7 @@ GType dbusmenu_gtk_serializable_menu_item_get_type (void);
 
 DbusmenuMenuitem *  dbusmenu_gtk_serializable_menu_item_get_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi);
 void                dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client, GType item_type);
+void                dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi);
 
 G_END_DECLS
 
