@@ -30,6 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include "client.h"
 #include "serializablemenuitem.h"
 
 struct _DbusmenuGtkSerializableMenuItemPrivate {
@@ -111,6 +112,13 @@ struct _type_handler_t {
 static gboolean
 type_handler (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
+	type_handler_t * th = (type_handler_t *)user_data;
+
+	DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(g_object_new(th->type, NULL));
+	g_return_val_if_fail(smi != NULL, FALSE);
+
+	dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem(smi, newitem);
+	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, GTK_MENU_ITEM(smi), parent);
 
 	return TRUE;
 }
