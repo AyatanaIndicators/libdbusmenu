@@ -367,10 +367,12 @@ BUILT_SOURCES = \
 
 INTROSPECTION_GIRS = $(am__append_1)
 @INTROSPECTION_TEN_FALSE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+@INTROSPECTION_TEN_FALSE@	--warn-all \
 @INTROSPECTION_TEN_FALSE@        --add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_FALSE@        $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources))
 
 @INTROSPECTION_TEN_TRUE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+@INTROSPECTION_TEN_TRUE@	--warn-all \
 @INTROSPECTION_TEN_TRUE@        --add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_TRUE@        $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources)) \
 @INTROSPECTION_TEN_TRUE@        --symbol-prefix=dbusmenu \
@@ -386,7 +388,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_NAMESPACE = Dbusmenu
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_VERSION = Glib-0.4
-@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_PACKAGES = dbusmenu-glib-0.4
+@HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_EXPORT_PACKAGES = dbusmenu-glib-0.4
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_Glib_0_4_gir_SCANNER_FLAGS = $(INTROSPECTION_SCANNER_ARGS)
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
 @HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)

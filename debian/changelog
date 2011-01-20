@@ -1,3 +1,13 @@
+libdbusmenu (0.3.93-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Fixing scanner export
+    * Increasing scanner warnings
+    * Signalling to DBus when object is registered
+    * Handling errors in GVariant better than crashing
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 Jan 2011 08:36:37 -0600
+
 libdbusmenu (0.3.92-0ubuntu3) natty; urgency=low
 
   * libdbusmenu-glib/server.c
@@ -296,7 +306,7 @@ libdbusmenu (0.3.1-0ubuntu1) maverick; urgency=low
     * Add function to get submenu of GTK-ified items
     * Fix signal prototype of ID update
     * Fixing up VAPI files to build them correctly
-  	* Fixing the version string in the GIR file
+      * Fixing the version string in the GIR file
     * Fix documentation title page
     * Reject text nodes early (warnings with Qt integration)
   * debian/libdbusmenu-glib-dev.install: Updating gir and vapi file
@@ -312,7 +322,7 @@ libdbusmenu (0.3.0-0ubuntu1~ppa1) lucid; urgency=low
     * Add function to get submenu of GTK-ified items
     * Fix signal prototype of ID update
     * Fixing up VAPI files to build them correctly
-  	* Fixing the version string in the GIR file
+      * Fixing the version string in the GIR file
     * Fix documentation title page
     * Reject text nodes early (warnings with Qt integration)
   * debian/libdbusmenu-glib-dev.install: Updating gir and vapi file

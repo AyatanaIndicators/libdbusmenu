@@ -506,6 +506,19 @@ register_object (DbusmenuServer * server)
 	if (error != NULL) {
 		g_warning("Unable to register object on bus: %s", error->message);
 		g_error_free(error);
+		return;
+	}
+
+	/* If we've got it registered let's tell everyone about it */
+	g_signal_emit(G_OBJECT(server), signals[LAYOUT_UPDATED], 0, priv->layout_revision, 0, TRUE);
+	if (priv->dbusobject != NULL && priv->bus != NULL) {
+		g_dbus_connection_emit_signal(priv->bus,
+		                              NULL,
+		                              priv->dbusobject,
+		                              DBUSMENU_INTERFACE,
+		                              "LayoutUpdated",
+		                              g_variant_new("(ui)", priv->layout_revision, 0),
+		                              NULL);
 	}
 
 	return;
