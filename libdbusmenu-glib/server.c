@@ -894,12 +894,17 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 	g_variant_iter_init(&ids, g_variant_get_child_value(params, 0));
 
 	GVariantBuilder builder;
-	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+	gboolean builder_init = FALSE;
 
 	gint id;
 	while (g_variant_iter_next(&ids, "i", &id)) {
 		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 		if (mi == NULL) continue;
+
+		if (!builder_init) {
+			g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+			builder_init = TRUE;
+		}
 
 		GVariantBuilder wbuilder;
 		g_variant_builder_init(&wbuilder, G_VARIANT_TYPE_TUPLE);
@@ -907,7 +912,13 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		GVariant * props = dbusmenu_menuitem_properties_variant(mi);
 
 		if (props == NULL) {
-			props = g_variant_parse(g_variant_type_new("a{sv}"), "{}", NULL, NULL, NULL);
+			GError * error = NULL;
+			props = g_variant_parse(g_variant_type_new("a{sv}"), "{}", NULL, NULL, &error);
+			if (error != NULL) {
+				g_warning("Unable to parse '{}' as a 'a{sv}': %s", error->message);
+				g_error_free(error);
+				props = NULL;
+			}
 		}
 
 		g_variant_builder_add_value(&wbuilder, props);
@@ -916,11 +927,28 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		g_variant_builder_add_value(&builder, mi_data);
 	}
 
-	GVariant * ret = g_variant_builder_end(&builder);
+	GVariant * ret = NULL;
+	
+	if (builder_init) {
+		ret = g_variant_builder_end(&builder);
+	} else {
+		GError * error = NULL;
+		ret = g_variant_parse(g_variant_type_new("a(ia(sv))"), "[]", NULL, NULL, NULL);
+		if (error != NULL) {
+			g_warning("Unable to parse '[]' as a 'a(ia(sv))': %s", error->message);
+			g_error_free(error);
+			ret = NULL;
+		}
+	}
 
-	g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
-	g_variant_builder_add_value(&builder, ret);
-	GVariant * final = g_variant_builder_end(&builder);
+	GVariant * final = NULL;
+	if (ret != NULL) {
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
+		g_variant_builder_add_value(&builder, ret);
+		final = g_variant_builder_end(&builder);
+	} else {
+		g_warning("Error building property list, final variant is NULL");
+	}
 
 	g_dbus_method_invocation_return_value(invocation, final);
 
@@ -981,7 +1009,13 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 
 		ret = g_variant_new("(a(ia{svg}))", g_variant_builder_end(&builder));
 	} else {
-		ret = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, NULL);
+		GError * error = NULL;
+		ret = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, &error);
+		if (error != NULL) {
+			g_warning("Unable to parse '([(0, {})],)' as a '(a(ia{sv}))': %s", error->message);
+			g_error_free(error);
+			ret = NULL;
+		}
 	}
 
 	g_dbus_method_invocation_return_value(invocation, ret);

@@ -1,4 +1,18 @@
-libdbusmenu (0.3.92-0ubuntu1~ppa1) natty; urgency=low
+libdbusmenu (0.3.92-0ubuntu3) natty; urgency=low
+
+  * libdbusmenu-glib/server.c
+    * Better error handling when parsing g_variants (LP: #703039)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 18 Jan 2011 12:19:37 -0500
+
+libdbusmenu (0.3.92-0ubuntu2) natty; urgency=low
+
+  * libdbusmenu-glib/Makefile.am, libdbusmenu-gtk/Makefile.am
+    - Use EXPORT_PACKAGES to prevent circular build depends
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 18 Jan 2011 10:05:15 -0500
+
+libdbusmenu (0.3.92-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     * Fixing handle event to send unboxed values
