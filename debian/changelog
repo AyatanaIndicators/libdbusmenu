@@ -1,4 +1,4 @@
-libdbusmenu (0.3.93-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.93-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * Fixing scanner export
@@ -6,7 +6,7 @@ libdbusmenu (0.3.93-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Signalling to DBus when object is registered
     * Handling errors in GVariant better than crashing
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 20 Jan 2011 08:36:37 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 Jan 2011 08:43:12 -0600
 
 libdbusmenu (0.3.92-0ubuntu3) natty; urgency=low
 
