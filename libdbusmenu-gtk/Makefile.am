@@ -69,12 +69,14 @@ INTROSPECTION_GIRS =
 
 if INTROSPECTION_TEN
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+	--warn-all \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
 	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
 	--symbol-prefix=dbusmenu \
 	--identifier-prefix=DbusmenuGtk
 else
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+	--warn-all \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
 	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
 endif
