@@ -33,6 +33,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "client.h"
 #include "serializablemenuitem.h"
 
+/**
+	DbusmenuGtkSerializableMenuItemPrivate:
+	@mi: Menuitem to watch the property changes from
+*/
 struct _DbusmenuGtkSerializableMenuItemPrivate {
 	DbusmenuMenuitem * mi;
 };
@@ -43,16 +47,20 @@ enum {
 	PROP_MENUITEM
 };
 
+/* Private macro, only used in object init */
 #define DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM, DbusmenuGtkSerializableMenuItemPrivate))
 
+/* Function prototypes */
 static void dbusmenu_gtk_serializable_menu_item_class_init (DbusmenuGtkSerializableMenuItemClass *klass);
 static void dbusmenu_gtk_serializable_menu_item_init       (DbusmenuGtkSerializableMenuItem *self);
 static void dbusmenu_gtk_serializable_menu_item_dispose    (GObject *object);
 static void dbusmenu_gtk_serializable_menu_item_finalize   (GObject *object);
 
+/* GObject boiler plate */
 G_DEFINE_TYPE (DbusmenuGtkSerializableMenuItem, dbusmenu_gtk_serializable_menu_item, GTK_TYPE_MENU_ITEM);
 
+/* Initialize the stuff in the class structure */
 static void
 dbusmenu_gtk_serializable_menu_item_class_init (DbusmenuGtkSerializableMenuItemClass *klass)
 {
@@ -72,6 +80,7 @@ dbusmenu_gtk_serializable_menu_item_class_init (DbusmenuGtkSerializableMenuItemC
 	return;
 }
 
+/* Initialize the object structures and private structure */
 static void
 dbusmenu_gtk_serializable_menu_item_init (DbusmenuGtkSerializableMenuItem *self)
 {
@@ -82,6 +91,7 @@ dbusmenu_gtk_serializable_menu_item_init (DbusmenuGtkSerializableMenuItem *self)
 	return;
 }
 
+/* Free all references to objects */
 static void
 dbusmenu_gtk_serializable_menu_item_dispose (GObject *object)
 {
@@ -98,6 +108,7 @@ dbusmenu_gtk_serializable_menu_item_dispose (GObject *object)
 	return;
 }
 
+/* Free memory */
 static void
 dbusmenu_gtk_serializable_menu_item_finalize (GObject *object)
 {
@@ -121,6 +132,7 @@ dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem (DbusmenuGtkSerializ
 	return NULL;
 }
 
+/* Callback to the generic type handler */
 typedef struct _type_handler_t type_handler_t;
 struct _type_handler_t {
 	DbusmenuGtkSerializableMenuItemClass * class;
