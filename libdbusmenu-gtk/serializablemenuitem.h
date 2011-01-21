@@ -50,6 +50,19 @@ typedef struct _DbusmenuGtkSerializableMenuItem        DbusmenuGtkSerializableMe
 typedef struct _DbusmenuGtkSerializableMenuItemClass   DbusmenuGtkSerializableMenuItemClass;
 typedef struct _DbusmenuGtkSerializableMenuItemPrivate DbusmenuGtkSerializableMenuItemPrivate;
 
+/**
+	DbusmenuGtkSerializableMenuItemClass:
+	@parent_class: Inherit from GtkMenuItem
+	@get_type_string: Static function to get a string describing this type
+	@get_default_properties: Return a hashtable of defaults for the menu item type
+	@build_dbusmenu_menuitem: Build a menuitem that can be sent over dbus
+	@_dbusmenu_gtk_serializable_menu_item_reserved1: Reserved for future use.
+	@_dbusmenu_gtk_serializable_menu_item_reserved2: Reserved for future use.
+	@_dbusmenu_gtk_serializable_menu_item_reserved3: Reserved for future use.
+	@_dbusmenu_gtk_serializable_menu_item_reserved4: Reserved for future use.
+	@_dbusmenu_gtk_serializable_menu_item_reserved5: Reserved for future use.
+	@_dbusmenu_gtk_serializable_menu_item_reserved6: Reserved for future use.
+*/
 struct _DbusmenuGtkSerializableMenuItemClass {
 	GtkMenuItemClass parent_class;
 
@@ -64,6 +77,7 @@ struct _DbusmenuGtkSerializableMenuItemClass {
 
 
 	/* Empty Space */
+	/*< Private >*/
 	void (*_dbusmenu_gtk_serializable_menu_item_reserved1) (void);
 	void (*_dbusmenu_gtk_serializable_menu_item_reserved2) (void);
 	void (*_dbusmenu_gtk_serializable_menu_item_reserved3) (void);
@@ -72,6 +86,11 @@ struct _DbusmenuGtkSerializableMenuItemClass {
 	void (*_dbusmenu_gtk_serializable_menu_item_reserved6) (void);
 };
 
+/**
+	DbusmenuGtkSerializableMenuItem:
+	@parent: Inherit from GtkMenuItem
+	@priv: Blind structure of private variables
+*/
 struct _DbusmenuGtkSerializableMenuItem {
 	GtkMenuItem parent;
 
