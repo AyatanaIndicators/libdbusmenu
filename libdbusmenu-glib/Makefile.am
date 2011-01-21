@@ -15,6 +15,7 @@ lib_LTLIBRARIES = \
 libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-glib/
 
 libdbusmenu_glibinclude_HEADERS = \
+	dbusmenu-glib.h \
 	menuitem.h \
 	menuitem-proxy.h \
 	server.h \
