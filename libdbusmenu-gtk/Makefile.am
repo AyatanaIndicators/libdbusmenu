@@ -20,6 +20,7 @@ EXTRA_DIST = \
 libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-gtk$(VER)/
 
 libdbusmenu_gtkinclude_HEADERS = \
+	dbusmenu-gtk.h \
 	client.h \
 	menu.h \
 	menuitem.h \
@@ -72,12 +73,14 @@ INTROSPECTION_GIRS =
 
 if INTROSPECTION_TEN
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+	--warn-all \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
 	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
 	--symbol-prefix=dbusmenu \
 	--identifier-prefix=DbusmenuGtk
 else
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
+	--warn-all \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
 	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
 endif

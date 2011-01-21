@@ -1548,6 +1548,14 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 static void
 update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 {
+	DbusmenuClient * client = DBUSMENU_CLIENT(data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	if (priv->layoutcall != NULL) {
+		g_object_unref(priv->layoutcall);
+		priv->layoutcall = NULL;
+	}
+
 	GError * error = NULL;
 	GVariant * params = NULL;
 
@@ -1564,9 +1572,6 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 	g_variant_get(params, "(us)", &rev, &xml);
 	g_variant_unref(params);
 
-	DbusmenuClient * client = DBUSMENU_CLIENT(data);
-	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-
 	guint parseable = parse_layout(client, xml);
 	g_free(xml);
 
@@ -1577,10 +1582,6 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 
 	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
-	if (priv->layoutcall != NULL) {
-		g_object_unref(priv->layoutcall);
-		priv->layoutcall = NULL;
-	}
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client signaling layout has changed.");
 	#endif 
