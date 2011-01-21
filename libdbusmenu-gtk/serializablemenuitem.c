@@ -90,13 +90,13 @@ dbusmenu_gtk_serializable_menu_item_finalize (GObject *object)
 }
 
 DbusmenuMenuitem *
-dbusmenu_gtk_serializable_menu_item_get_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi)
+dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi)
 {
 	g_return_val_if_fail(DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(smi), NULL);
 
 	DbusmenuGtkSerializableMenuItemClass * klass = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_CLASS(smi);
-	if (klass->get_dbusmenu_menuitem != NULL) {
-		return klass->get_dbusmenu_menuitem(smi);
+	if (klass->build_dbusmenu_menuitem != NULL) {
+		return klass->build_dbusmenu_menuitem(smi);
 	}
 
 	return NULL;
