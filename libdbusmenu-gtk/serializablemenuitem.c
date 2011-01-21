@@ -119,6 +119,19 @@ dbusmenu_gtk_serializable_menu_item_finalize (GObject *object)
 	return;
 }
 
+/**
+	dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem:
+	@smi: #DbusmenuGtkSerializableMenuItem to build a #DbusmenuMenuitem mirroring
+
+	This function is for menu items that are instanciated from
+	GTK and have their properites set using GTK functions.  This
+	builds a #DbusmenuMenuitem that then has the properties that
+	should be sent over the bus to create a new item of this
+	type on the other side.
+
+	Return value: A #DbusmenuMenuitem who's values will be set by
+		this object.
+*/
 DbusmenuMenuitem *
 dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi)
 {
@@ -165,6 +178,16 @@ type_destroy_handler (DbusmenuClient * client, const gchar * type, gpointer user
 	return;
 }
 
+/**
+	dbusmenu_gtk_serializable_menu_item_register_to_client:
+	@client: #DbusmenuClient that we should register a type at.
+	@item_type: The #GType of a class that is a subclass of #DbusmenuGtkSerializableMenuItem
+
+	Registers a generic handler for dealing with all subclasses of
+	#DbusmenuGtkSerializableMenuItem.  This handler responds to the callback,
+	creates a new object and attaches it to the appropriate #DbusmenuMenuitem
+	object.
+*/
 void
 dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client, GType item_type)
 {
@@ -195,6 +218,17 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 	return;
 }
 
+/**
+	dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem:
+	@smi: #DbusmenuGtkSerializableMenuItem to set the @DbusmenuGtkSerializableMenuItem::dbusmenu-menuitem of
+	@mi: Menuitem to get the properties from
+
+	This function is used on the server side to signal to the object
+	that it should get its' property change events from @mi instead
+	of expecting calls to its' API.  A call to this function sets the
+	property and subclasses should listen to the notify signal to
+	pick up this property being set.
+*/
 void
 dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi)
 {
