@@ -56,6 +56,14 @@ static void dbusmenu_gtk_serializable_menu_item_class_init (DbusmenuGtkSerializa
 static void dbusmenu_gtk_serializable_menu_item_init       (DbusmenuGtkSerializableMenuItem *self);
 static void dbusmenu_gtk_serializable_menu_item_dispose    (GObject *object);
 static void dbusmenu_gtk_serializable_menu_item_finalize   (GObject *object);
+static void set_property                                   (GObject * obj,
+                                                            guint id,
+                                                            const GValue * value,
+                                                            GParamSpec * pspec);
+static void get_property                                   (GObject * obj,
+                                                            guint id,
+                                                            GValue * value,
+                                                            GParamSpec * pspec);
 
 /* GObject boiler plate */
 G_DEFINE_TYPE (DbusmenuGtkSerializableMenuItem, dbusmenu_gtk_serializable_menu_item, GTK_TYPE_MENU_ITEM);
@@ -70,6 +78,8 @@ dbusmenu_gtk_serializable_menu_item_class_init (DbusmenuGtkSerializableMenuItemC
 
 	object_class->dispose = dbusmenu_gtk_serializable_menu_item_dispose;
 	object_class->finalize = dbusmenu_gtk_serializable_menu_item_finalize;
+	object_class->set_property = set_property;
+	object_class->get_property = get_property;
 
 	g_object_class_install_property (object_class, PROP_MENUITEM,
 	                                 g_param_spec_object(DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM, "DBusmenu Menuitem attached to item",
@@ -116,6 +126,42 @@ dbusmenu_gtk_serializable_menu_item_finalize (GObject *object)
 
 
 	G_OBJECT_CLASS (dbusmenu_gtk_serializable_menu_item_parent_class)->finalize (object);
+	return;
+}
+
+/* Set an object property */
+static void
+set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
+{
+	DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(obj);
+
+	switch (id) {
+	case PROP_MENUITEM:
+		smi->priv->mi = g_value_get_object(value);
+		break;
+	default:
+		g_return_if_reached();
+		break;
+	}
+
+	return;
+}
+
+/* Get an object property */
+static void
+get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
+{
+	DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(obj);
+
+	switch (id) {
+	case PROP_MENUITEM:
+		g_value_set_object(value, smi->priv->mi);
+		break;
+	default:
+		g_return_if_reached();
+		break;
+	}
+
 	return;
 }
 
