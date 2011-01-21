@@ -34,7 +34,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "serializablemenuitem.h"
 
 struct _DbusmenuGtkSerializableMenuItemPrivate {
-	int dummy;
+	DbusmenuMenuitem * mi;
+};
+
+/* Properties */
+enum {
+	PROP_0,
+	PROP_MENUITEM
 };
 
 #define DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_PRIVATE(o) \
@@ -57,6 +63,12 @@ dbusmenu_gtk_serializable_menu_item_class_init (DbusmenuGtkSerializableMenuItemC
 	object_class->dispose = dbusmenu_gtk_serializable_menu_item_dispose;
 	object_class->finalize = dbusmenu_gtk_serializable_menu_item_finalize;
 
+	g_object_class_install_property (object_class, PROP_MENUITEM,
+	                                 g_param_spec_object(DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM, "DBusmenu Menuitem attached to item",
+	                                              "A menuitem who's properties are being watched and where changes should be watched for updates.  It is the responsibility of subclasses to set up the signal handlers for those property changes.",
+	                                              DBUSMENU_TYPE_MENUITEM,
+	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 	return;
 }
 
@@ -65,7 +77,7 @@ dbusmenu_gtk_serializable_menu_item_init (DbusmenuGtkSerializableMenuItem *self)
 {
 	self->priv = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_PRIVATE(self);
 
-	self->priv->dummy = 5;
+	self->priv->mi = NULL;
 
 	return;
 }
@@ -73,6 +85,13 @@ dbusmenu_gtk_serializable_menu_item_init (DbusmenuGtkSerializableMenuItem *self)
 static void
 dbusmenu_gtk_serializable_menu_item_dispose (GObject *object)
 {
+	DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(object);
+	g_return_if_fail(smi != NULL);
+
+	if (smi->priv->mi != NULL) {
+		g_object_unref(G_OBJECT(smi->priv->mi));
+		smi->priv->mi = NULL;
+	}
 
 
 	G_OBJECT_CLASS (dbusmenu_gtk_serializable_menu_item_parent_class)->dispose (object);

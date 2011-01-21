@@ -44,6 +44,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM))
 #define DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM, DbusmenuGtkSerializableMenuItemClass))
 
+#define DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM   "dbusmenu-menuitem"
+
 typedef struct _DbusmenuGtkSerializableMenuItem        DbusmenuGtkSerializableMenuItem;
 typedef struct _DbusmenuGtkSerializableMenuItemClass   DbusmenuGtkSerializableMenuItemClass;
 typedef struct _DbusmenuGtkSerializableMenuItemPrivate DbusmenuGtkSerializableMenuItemPrivate;
