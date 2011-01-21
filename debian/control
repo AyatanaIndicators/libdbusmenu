@@ -7,7 +7,7 @@ Uploaders: Evgeni Golov <evgeni@debian.org>
 Build-Depends: debhelper (>= 5.0),
                cdbs (>= 0.4.41),
                libgtk2.0-dev (>= 2.23.2-0ubuntu2),
-               libgtk3.0-dev (>= 2.91.4-0ubuntu1),
+               libgtk3.0-dev (>= 2.99.2-1ubuntu2),
                libgdk-pixbuf2.0-dev (>= 2.22.1-0ubuntu4),
                libdbus-glib-1-dev,
                gnome-doc-utils,
