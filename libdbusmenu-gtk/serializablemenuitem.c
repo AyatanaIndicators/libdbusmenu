@@ -175,8 +175,8 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	should be sent over the bus to create a new item of this
 	type on the other side.
 
-	Return value: A #DbusmenuMenuitem who's values will be set by
-		this object.
+	Return value: (transfer full) A #DbusmenuMenuitem who's values will be
+		set by this object.
 */
 DbusmenuMenuitem *
 dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi)
