@@ -278,6 +278,11 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 void
 dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi)
 {
+	g_return_if_fail(DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(smi));
+	g_return_if_fail(mi != NULL);
+
+	smi->priv->mi = mi;
+	g_object_notify(G_OBJECT(smi), DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM);
 
 	return;
 }
