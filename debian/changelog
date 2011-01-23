@@ -1,10 +1,10 @@
-libdbusmenu (0.3.93-0ubuntu2~ted1) UNRELEASED; urgency=low
+libdbusmenu (0.3.93-0ubuntu2~ted1) natty; urgency=low
 
   * Upstream Merge
     * Merging in the parser
     * Merging in serializable menu item
 
- -- Ted Gould <ted@ubuntu.com>  Sun, 23 Jan 2011 15:59:29 -0600
+ -- Ted Gould <ted@ubuntu.com>  Sun, 23 Jan 2011 16:13:31 -0600
 
 libdbusmenu (0.3.93-0ubuntu1) natty; urgency=low
 
