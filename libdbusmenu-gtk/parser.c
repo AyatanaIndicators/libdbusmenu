@@ -31,6 +31,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 typedef struct _RecurseContext
 {
+  GtkWidget * toplevel;
   gint count;
   DbusmenuMenuitem *stack[30];
 } RecurseContext;
@@ -61,12 +62,17 @@ static void           widget_notify_cb         (GtkWidget  *        widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
 static gboolean       should_show_image        (GtkImage *          image);
+static void           menuitem_notify_cb       (GtkWidget *         widget,
+                                                GParamSpec *        pspec,
+                                                gpointer            data);
 
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 {
   RecurseContext recurse = {0};
+
   recurse.count = -1;
+  recurse.toplevel = gtk_widget_get_toplevel(widget);
 
   parse_menu_structure_helper(widget, &recurse);
 
@@ -129,10 +135,10 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
           if (!gtk_widget_get_visible (widget))
             {
-              /*g_signal_connect (G_OBJECT (widget),
-                                "notify",
+              g_signal_connect (G_OBJECT (widget),
+                                "notify::visible",
                                 G_CALLBACK (menuitem_notify_cb),
-                                recurse->context); */
+                                recurse->toplevel);
             }
 
           if (GTK_IS_TEAROFF_MENU_ITEM (widget))
@@ -356,6 +362,27 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
   return mi;
 
 	return NULL;
+}
+
+static void
+menuitem_notify_cb (GtkWidget  *widget,
+                    GParamSpec *pspec,
+                    gpointer    data)
+{
+  if (pspec->name == g_intern_static_string ("visible"))
+    {
+      GtkWidget * new_toplevel = gtk_widget_get_toplevel (widget);
+	  GtkWidget * old_toplevel = GTK_WIDGET(data);
+
+      if (new_toplevel == old_toplevel) {
+          /* TODO: Figure this out -> rebuild (context->bridge, window); */
+      }
+
+      /* We only care about this once, so let's disconnect now. */
+      g_signal_handlers_disconnect_by_func (widget,
+                                            G_CALLBACK (menuitem_notify_cb),
+                                            data);
+    }
 }
 
 static void
