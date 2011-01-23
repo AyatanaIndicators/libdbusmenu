@@ -2,17 +2,30 @@
 #include "parser.h"
 #include "menuitem.h"
 
-static void accel_changed (GtkWidget *widget, gpointer data);
-static gboolean update_stock_item (DbusmenuMenuitem *menuitem, GtkWidget *widget);
-static void checkbox_toggled (GtkWidget *widget, DbusmenuMenuitem *mi);
-static void update_icon_name (DbusmenuMenuitem *menuitem, GtkWidget *widget);
-static GtkWidget * find_menu_label (GtkWidget *widget);
-static void label_notify_cb (GtkWidget  *widget, GParamSpec *pspec, gpointer    data);
-static void action_notify_cb (GtkAction  *action, GParamSpec *pspec, gpointer    data);
-static void item_activated (DbusmenuMenuitem *item, guint timestamp, gpointer user_data);
-static gboolean item_about_to_show (DbusmenuMenuitem *item, gpointer user_data);
-static void widget_notify_cb (GtkWidget  *widget, GParamSpec *pspec, gpointer    data);
-static gboolean should_show_image (GtkImage *image);
+static void           accel_changed            (GtkWidget *         widget,
+                                                gpointer            data);
+static gboolean       update_stock_item        (DbusmenuMenuitem *  menuitem,
+                                                GtkWidget *         widget);
+static void           checkbox_toggled         (GtkWidget *         widget,
+                                                DbusmenuMenuitem *  mi);
+static void           update_icon_name         (DbusmenuMenuitem *  menuitem,
+                                                GtkWidget *         widget);
+static GtkWidget *    find_menu_label          (GtkWidget *         widget);
+static void           label_notify_cb          (GtkWidget *         widget,
+                                                GParamSpec *        pspec,
+                                                gpointer            data);
+static void           action_notify_cb         (GtkAction *         action,
+                                                GParamSpec *        pspec,
+                                                gpointer            data);
+static void           item_activated           (DbusmenuMenuitem *  item,
+                                                guint               timestamp,
+                                                gpointer            user_data);
+static gboolean       item_about_to_show       (DbusmenuMenuitem *  item,
+                                                gpointer            user_data);
+static void           widget_notify_cb         (GtkWidget  *        widget,
+                                                GParamSpec *        pspec,
+                                                gpointer            data);
+static gboolean       should_show_image        (GtkImage *          image);
 
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
