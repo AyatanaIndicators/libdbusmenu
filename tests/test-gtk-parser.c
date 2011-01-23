@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <libdbusmenu-glib/menuitem-private.h>
 #include <libdbusmenu-gtk/parser.h>
 
 /* Just makes sure we can connect here people */
@@ -73,6 +74,12 @@ test_parser_children (void) {
 
 	DbusmenuMenuitem * mi = dbusmenu_gtk_parse_menu_structure(menu);
 	g_assert(mi != NULL);
+
+/*
+	GPtrArray * xmlarray = g_ptr_array_new();
+	dbusmenu_menuitem_buildxml(mi, xmlarray);
+	g_debug("XML: %s", g_strjoinv("", (gchar **)xmlarray->pdata));
+*/
 
 	GList * children = dbusmenu_menuitem_get_children(mi);
 	g_assert(children != NULL);
