@@ -29,6 +29,14 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "parser.h"
 #include "menuitem.h"
 
+typedef struct _RecurseContext
+{
+  gint count;
+  DbusmenuMenuitem *stack[30];
+} RecurseContext;
+
+static void parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse);
+static DbusmenuMenuitem * construct_dbusmenu_for_widget (GtkWidget * widget);
 static void           accel_changed            (GtkWidget *         widget,
                                                 gpointer            data);
 static gboolean       update_stock_item        (DbusmenuMenuitem *  menuitem,
@@ -56,6 +64,156 @@ static gboolean       should_show_image        (GtkImage *          image);
 
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
+{
+  RecurseContext recurse = {0};
+  recurse.count = -1;
+
+  parse_menu_structure_helper(widget, &recurse);
+
+  if (recurse.stack[0] != NULL && DBUSMENU_IS_MENUITEM(recurse.stack[0])) {
+  	return recurse.stack[0];
+  }
+
+  return NULL;
+}
+
+static void
+parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
+{
+  if (GTK_IS_CONTAINER (widget))
+    {
+      gboolean increment = GTK_IS_MENU_BAR (widget) || GTK_IS_MENU_ITEM (widget);
+
+      if (increment)
+        recurse->count++;
+
+      /* Okay, this is a little janky and all.. but some applications update some
+       * menuitem properties such as sensitivity on the activate callback.  This
+       * seems a little weird, but it's not our place to judge when all this code
+       * is so crazy.  So we're going to get ever crazier and activate all the
+       * menus that are directly below the menubar and force the applications to
+       * update their sensitivity.  The menus won't actually popup in the app
+       * window due to our gtk+ patches.
+       *
+       * Note that this will not force menuitems in submenus to be updated as well.
+       */
+      if (recurse->count == 0 && GTK_IS_MENU_BAR (widget))
+        {
+          GList *children = gtk_container_get_children (GTK_CONTAINER (widget));
+
+          for (; children != NULL; children = children->next)
+            {
+              gtk_menu_shell_activate_item (GTK_MENU_SHELL (widget),
+                                            children->data,
+                                            TRUE);
+            }
+
+          g_list_free (children);
+        }
+
+      if (recurse->count > -1 && increment)
+        {
+          DbusmenuMenuitem *dmi = NULL; //g_hash_table_lookup (recurse->context->lookup, widget);
+          if (dmi != NULL)
+            {
+              if (increment)
+                recurse->count--;
+
+              return;
+            }
+          else
+            {
+              recurse->stack[recurse->count] = construct_dbusmenu_for_widget (widget);
+              //g_hash_table_insert (recurse->context->lookup, widget, recurse->stack[recurse->count]);
+            }
+
+          if (!gtk_widget_get_visible (widget))
+            {
+              /*g_signal_connect (G_OBJECT (widget),
+                                "notify",
+                                G_CALLBACK (menuitem_notify_cb),
+                                recurse->context); */
+            }
+
+          if (GTK_IS_TEAROFF_MENU_ITEM (widget))
+            {
+              dbusmenu_menuitem_property_set_bool (recurse->stack[recurse->count],
+                                                   DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                                   FALSE);
+            }
+
+          if (recurse->count > 0)
+            {
+              GList *children = NULL;
+              GList *peek = NULL;
+
+              if (recurse->stack[recurse->count - 1])
+                {
+                  children = dbusmenu_menuitem_get_children (recurse->stack[recurse->count - 1]);
+
+                  if (children)
+                    {
+                      peek = g_list_find (children, recurse->stack[recurse->count]);
+                    }
+
+                  if (!peek)
+                    {
+                      /* Should we set a weak ref on the parent? */
+                      g_object_set_data (G_OBJECT (recurse->stack[recurse->count]),
+                                         "dbusmenu-parent",
+                                         recurse->stack[recurse->count - 1]);
+                      dbusmenu_menuitem_child_append (recurse->stack[recurse->count - 1],
+                                                      recurse->stack[recurse->count]);
+                    }
+                }
+              else
+                {
+                  DbusmenuMenuitem *item = NULL; /* g_hash_table_lookup (recurse->context->lookup,
+                                                                gtk_widget_get_parent (widget)); */
+
+                  if (item)
+                    {
+                      children = dbusmenu_menuitem_get_children (item);
+
+                      if (children)
+                        {
+                          peek = g_list_find (children, recurse->stack[recurse->count]);
+                        }
+
+                      if (!peek)
+                        {
+                          g_object_set_data (G_OBJECT (recurse->stack[recurse->count]),
+                                             "dbusmenu-parent",
+                                             recurse->stack[recurse->count - 1]);
+
+                          dbusmenu_menuitem_child_append (item, recurse->stack[recurse->count]);
+                        }
+                    }
+                }
+            }
+        }
+
+      gtk_container_foreach (GTK_CONTAINER (widget),
+                             (GtkCallback)parse_menu_structure_helper,
+                             recurse);
+
+      if (GTK_IS_MENU_ITEM (widget))
+        {
+          GtkWidget *menu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
+
+          if (menu != NULL)
+            {
+              parse_menu_structure_helper (menu, recurse);
+            }
+        }
+
+      if (increment)
+        recurse->count--;
+    }
+}
+
+static DbusmenuMenuitem *
+construct_dbusmenu_for_widget (GtkWidget * widget)
 {
   DbusmenuMenuitem *mi = dbusmenu_menuitem_new ();
 
