@@ -23,7 +23,8 @@ libdbusmenu_gtkinclude_HEADERS = \
 	dbusmenu-gtk.h \
 	client.h \
 	menu.h \
-	menuitem.h
+	menuitem.h \
+	parser.h
 
 libdbusmenu_gtk_la_SOURCES = \
 	client.h \
@@ -33,7 +34,9 @@ libdbusmenu_gtk_la_SOURCES = \
 	menu.h \
 	menu.c \
 	menuitem.h \
-	menuitem.c
+	menuitem.c \
+	parser.h \
+	parser.c
 
 libdbusmenu_gtk_la_LDFLAGS = \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
