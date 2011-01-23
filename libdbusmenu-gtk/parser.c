@@ -29,6 +29,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "parser.h"
 #include "menuitem.h"
 
+#define CACHED_MENUITEM  "dbusmenu-gtk-parser-cached-item"
+
 typedef struct _RecurseContext
 {
   GtkWidget * toplevel;
@@ -84,6 +86,20 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 }
 
 static void
+dbusmenu_cache_freed (gpointer data, GObject * obj)
+{
+	g_object_set_data(G_OBJECT(data), CACHED_MENUITEM, NULL);
+	return;
+}
+
+static void
+object_cache_freed (gpointer data)
+{
+	g_object_weak_unref(G_OBJECT(data), dbusmenu_cache_freed, data);
+	return;
+}
+
+static void
 parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 {
   if (GTK_IS_CONTAINER (widget))
@@ -119,7 +135,10 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
       if (recurse->count > -1 && increment)
         {
-          DbusmenuMenuitem *dmi = NULL; //g_hash_table_lookup (recurse->context->lookup, widget);
+		  gpointer pmi = g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM);
+          DbusmenuMenuitem *dmi = NULL;
+		  if (pmi != NULL) dmi = DBUSMENU_MENUITEM(pmi);
+
           if (dmi != NULL)
             {
               if (increment)
@@ -130,7 +149,8 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
           else
             {
               recurse->stack[recurse->count] = construct_dbusmenu_for_widget (widget);
-              //g_hash_table_insert (recurse->context->lookup, widget, recurse->stack[recurse->count]);
+			  g_object_set_data_full(G_OBJECT(widget), CACHED_MENUITEM, recurse->stack[recurse->count], object_cache_freed);
+			  g_object_weak_ref(G_OBJECT(recurse->stack[recurse->count]), dbusmenu_cache_freed, widget);
             }
 
           if (!gtk_widget_get_visible (widget))
