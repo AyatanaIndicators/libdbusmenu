@@ -1,3 +1,10 @@
+libdbusmenu (0.3.93-0ubuntu2~ted1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Merging in the parser
+
+ -- Ted Gould <ted@ubuntu.com>  Sun, 23 Jan 2011 15:57:57 -0600
+
 libdbusmenu (0.3.93-0ubuntu1) natty; urgency=low
 
   [ Ted Gould ]
