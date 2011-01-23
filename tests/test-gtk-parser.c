@@ -88,7 +88,6 @@ test_parser_children (void) {
 
 	g_object_unref(mi);
 	g_object_unref(menu);
-	g_object_unref(builder);
 
 	return;
 }
