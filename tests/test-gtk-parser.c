@@ -36,11 +36,62 @@ test_parser_runs (void)
 	return;
 }
 
+const gchar * test_parser_children_builder =
+"<?xml version=\"1.0\"?>"
+"<interface>"
+"<requires lib=\"gtk+\" version=\"2.16\"/>"
+/* Start menu bar */
+"<object class=\"GtkMenuBar\" id=\"menubar\"><property name=\"visible\">True</property>"
+/* Child 1 */
+"<child><object class=\"GtkMenuItem\" id=\"child_one\"><property name=\"visible\">True</property><property name=\"label\">Child One</property></object></child>"
+/* Child 2 */
+"<child><object class=\"GtkMenuItem\" id=\"child_two\"><property name=\"visible\">True</property><property name=\"label\">Child Two</property></object></child>"
+/* Child 3 */
+"<child><object class=\"GtkMenuItem\" id=\"child_three\"><property name=\"visible\">True</property><property name=\"label\">Child Three</property></object></child>"
+/* Child 4 */
+"<child><object class=\"GtkMenuItem\" id=\"child_four\"><property name=\"visible\">True</property><property name=\"label\">Child Four</property></object></child>"
+/* Stop menubar */
+"</object>"
+"</interface>";
+
+/* Ensure the parser can find children */
+static void
+test_parser_children (void) {
+	GtkBuilder * builder = gtk_builder_new();
+	g_assert(builder != NULL);
+
+	GError * error = NULL;
+	gtk_builder_add_from_string(builder, test_parser_children_builder, -1, &error);
+	if (error != NULL) {
+		g_error("Unable to parse UI definition: %s", error->message);
+		g_error_free(error);
+		error = NULL;
+	}
+
+	GtkWidget * menu = GTK_WIDGET(gtk_builder_get_object(builder, "menubar"));
+	g_assert(menu != NULL);
+
+	DbusmenuMenuitem * mi = dbusmenu_gtk_parse_menu_structure(menu);
+	g_assert(mi != NULL);
+
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	g_assert(children != NULL);
+
+	g_assert(g_list_length(children) == 4);
+
+	g_object_unref(mi);
+	g_object_unref(menu);
+	g_object_unref(builder);
+
+	return;
+}
+
 /* Build the test suite */
 static void
 test_gtk_parser_suite (void)
 {
 	g_test_add_func ("/dbusmenu/gtk/parser/base",          test_parser_runs);
+	g_test_add_func ("/dbusmenu/gtk/parser/children",      test_parser_children);
 	return;
 }
 
