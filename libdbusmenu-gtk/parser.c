@@ -427,12 +427,15 @@ update_stock_item (DbusmenuMenuitem *menuitem,
   if (gtk_image_get_storage_type (image) != GTK_IMAGE_STOCK)
     return FALSE;
 
-  gtk_stock_lookup (image->data.stock.stock_id, &stock);
+  gchar * stock_id = NULL;
+  gtk_image_get_stock(image, &stock_id, NULL);
+
+  gtk_stock_lookup (stock_id, &stock);
 
   if (should_show_image (image))
     dbusmenu_menuitem_property_set (menuitem,
                                     DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                    image->data.stock.stock_id);
+                                    stock_id);
   else
     dbusmenu_menuitem_property_remove (menuitem,
                                        DBUSMENU_MENUITEM_PROP_ICON_NAME);
@@ -473,13 +476,16 @@ update_icon_name (DbusmenuMenuitem *menuitem,
   if (gtk_image_get_storage_type (image) != GTK_IMAGE_ICON_NAME)
     return;
 
-  if (should_show_image (image))
+  if (should_show_image (image)) {
+    const gchar * icon_name = NULL;
+	gtk_image_get_icon_name(image, &icon_name, NULL);
     dbusmenu_menuitem_property_set (menuitem,
                                     DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                    image->data.name.icon_name);
-  else
+                                    icon_name);
+  } else {
     dbusmenu_menuitem_property_remove (menuitem,
                                        DBUSMENU_MENUITEM_PROP_ICON_NAME);
+  }
 }
 
 static GtkWidget *
