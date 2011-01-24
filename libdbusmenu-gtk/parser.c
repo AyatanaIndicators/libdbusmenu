@@ -88,7 +88,9 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 static void
 dbusmenu_cache_freed (gpointer data, GObject * obj)
 {
-	g_object_set_data(G_OBJECT(data), CACHED_MENUITEM, NULL);
+	/* If the dbusmenu item is killed we don't need to remove
+	   the weak ref as well. */
+	g_object_steal_data(G_OBJECT(data), CACHED_MENUITEM);
 	return;
 }
 
