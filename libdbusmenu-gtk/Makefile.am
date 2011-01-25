@@ -24,6 +24,7 @@ libdbusmenu_gtkinclude_HEADERS = \
 	client.h \
 	menu.h \
 	menuitem.h \
+	parser.h \
 	serializablemenuitem.h
 
 libdbusmenu_gtk_la_SOURCES = \
@@ -35,6 +36,8 @@ libdbusmenu_gtk_la_SOURCES = \
 	menu.c \
 	menuitem.h \
 	menuitem.c \
+	parser.h \
+	parser.c \
 	serializablemenuitem.h \
 	serializablemenuitem.c
 
