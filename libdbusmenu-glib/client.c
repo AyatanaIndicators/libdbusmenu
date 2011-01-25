@@ -1451,7 +1451,7 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	/* We've got everything built up at this node and reconcilled */
 
 	/* Flush the properties requests if this is the first level */
-	if (dbusmenu_menuitem_get_id(parent) == 0) {
+	if (parent != NULL && dbusmenu_menuitem_get_id(parent) == 0) {
 		get_properties_flush(client);
 	}
 
