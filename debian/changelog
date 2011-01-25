@@ -1,9 +1,9 @@
-libdbusmenu (0.3.93-0ubuntu2~ted3) UNRELEASED; urgency=low
+libdbusmenu (0.3.93-0ubuntu2~ted3) natty; urgency=low
 
   * Upstream Merge
     * Work with GtkMenu's as well
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 25 Jan 2011 11:51:01 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 25 Jan 2011 11:56:57 -0600
 
 libdbusmenu (0.3.93-0ubuntu2~ted2) natty; urgency=low
 
