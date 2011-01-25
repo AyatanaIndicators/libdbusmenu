@@ -220,3 +220,6 @@ libdbusmenu-gtk/DbusmenuGtk-0.4.typelib
 libdbusmenu-gtk/DbusmenuGtk-0.4.vapi
 libdbusmenu-gtk/dbusmenu-gtk-0.4.pc
 libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc
+libdbusmenu-gtk/libdbusmenu_gtk_la-serializablemenuitem.lo
+docs/libdbusmenu-gtk/reference/html/DbusmenuGtkSerializableMenuItem.html
+docs/libdbusmenu-gtk/reference/tmpl/serializablemenuitem.sgml

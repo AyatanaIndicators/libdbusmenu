@@ -110,7 +110,8 @@ struct _DbusmenuClient {
 	DbusmenuClientPrivate * priv;
 };
 
-typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+typedef void (*DbusmenuClientTypeDestroyHandler) (DbusmenuClient * client, const gchar * type, gpointer user_data);
 
 GType                dbusmenu_client_get_type          (void);
 DbusmenuClient *     dbusmenu_client_new               (const gchar * name,
@@ -119,6 +120,11 @@ DbusmenuMenuitem *   dbusmenu_client_get_root          (DbusmenuClient * client)
 gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
                                                         const gchar * type,
                                                         DbusmenuClientTypeHandler newfunc);
+gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * client,
+                                                        const gchar * type,
+                                                        DbusmenuClientTypeHandler newfunc,
+                                                        gpointer user_data,
+                                                        DbusmenuClientTypeDestroyHandler destory_func);
 void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         gint id,
                                                         const gchar * name,
