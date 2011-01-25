@@ -106,7 +106,7 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 {
   if (GTK_IS_CONTAINER (widget))
     {
-      gboolean increment = GTK_IS_MENU_BAR (widget) || GTK_IS_MENU_ITEM (widget);
+      gboolean increment = GTK_IS_MENU_SHELL (widget) || GTK_IS_MENU_ITEM (widget);
 
       if (increment)
         recurse->count++;
