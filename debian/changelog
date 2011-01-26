@@ -1,3 +1,10 @@
+libdbusmenu (0.3.93-0ubuntu2~ted9) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Only activate at the top level
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Jan 2011 16:28:02 -0600
+
 libdbusmenu (0.3.93-0ubuntu2~ted8) natty; urgency=low
 
   * Upstream Merge
