@@ -1026,7 +1026,8 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 
 		g_list_foreach(children, serialize_menuitem, &builder);
 
-		ret = g_variant_new("(a(ia{sv}))", g_variant_builder_end(&builder));
+		GVariant * end = g_variant_builder_end(&builder);
+		ret = g_variant_new_tuple(&end, 1);
 	} else {
 		GError * error = NULL;
 		ret = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, &error);
