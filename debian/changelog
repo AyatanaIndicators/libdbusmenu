@@ -1,9 +1,9 @@
-libdbusmenu (0.3.93-0ubuntu2~ted7) UNRELEASED; urgency=low
+libdbusmenu (0.3.93-0ubuntu2~ted7) natty; urgency=low
 
   * Upstream Merge
     * Changing tuple building
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 26 Jan 2011 11:12:46 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Jan 2011 11:17:59 -0600
 
 libdbusmenu (0.3.93-0ubuntu2~ted6) natty; urgency=low
 
