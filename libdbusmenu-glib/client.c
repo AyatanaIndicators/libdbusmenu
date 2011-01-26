@@ -527,6 +527,7 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 			listener->callback(NULL, error, listener->user_data);
 		}
 		g_array_free(listeners, TRUE);
+		g_error_free(error);
 		return;
 	}
 
@@ -1150,7 +1151,6 @@ menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer 
 	if (error != NULL) {
 		g_warning("Error getting properties on a new menuitem: %s", error->message);
 		g_object_unref(propdata->item);
-		g_free(data);
 		return;
 	}
 
@@ -1287,6 +1287,8 @@ about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		g_warning("Unable to send about_to_show: %s", error->message);
 		/* Note: we're just ensuring only the callback gets called */
 		need_update = FALSE;
+		g_error_free(error);
+		error = NULL;
 	} else {
 		g_variant_get(params, "(b)", &need_update);
 		g_variant_unref(params);
@@ -1563,6 +1565,7 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 
 	if (error != NULL) {
 		g_warning("Getting layout failed: %s", error->message);
+		g_error_free(error);
 		return;
 	}
 

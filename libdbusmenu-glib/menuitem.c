@@ -1204,11 +1204,17 @@ dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi)
 	return g_hash_table_get_keys(priv->properties);
 }
 
+/* Copy the keys and make references to the variants that are
+   in the new table.  They'll be free'd and unref'd when the
+   Hashtable gets destroyed. */
 static void
 copy_helper (gpointer in_key, gpointer in_value, gpointer in_data)
 {
 	GHashTable * table = (GHashTable *)in_data;
-	g_hash_table_insert(table, in_key, in_value);
+	gchar * key = (gchar *)in_key;
+	GVariant * value = (GVariant *)in_value;
+	g_variant_ref(value);
+	g_hash_table_insert(table, g_strdup(key), value);
 	return;
 }
 
@@ -1229,7 +1235,7 @@ copy_helper (gpointer in_key, gpointer in_value, gpointer in_data)
 GHashTable *
 dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 {
-	GHashTable * ret = g_hash_table_new(g_str_hash, g_str_equal);
+	GHashTable * ret = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, _g_variant_unref);
 
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), ret);
 
