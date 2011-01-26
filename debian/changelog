@@ -1,3 +1,11 @@
+libdbusmenu (0.3.93-0ubuntu2~ted8) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Factoring out the stack in the parser
+    * Fixing setting toggle to a boolean
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Jan 2011 16:19:29 -0600
+
 libdbusmenu (0.3.93-0ubuntu2~ted7) natty; urgency=low
 
   * Upstream Merge
