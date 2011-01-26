@@ -85,6 +85,8 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
   return NULL;
 }
 
+/* Called when the dbusmenu item that we're keeping around
+   is finalized */
 static void
 dbusmenu_cache_freed (gpointer data, GObject * obj)
 {
@@ -94,9 +96,12 @@ dbusmenu_cache_freed (gpointer data, GObject * obj)
 	return;
 }
 
+/* Called if we replace the cache on the object with a new
+   dbusmenu menuitem */
 static void
 object_cache_freed (gpointer data)
 {
+	if (!G_IS_OBJECT(data)) return;
 	g_object_weak_unref(G_OBJECT(data), dbusmenu_cache_freed, data);
 	return;
 }
