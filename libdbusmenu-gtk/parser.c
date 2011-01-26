@@ -119,7 +119,7 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 		 *
 		 * Note that this will not force menuitems in submenus to be updated as well.
 		 */
-		if (recurse->parent == NULL) {
+		if (recurse->parent == NULL && GTK_IS_MENU_BAR(widget)) {
 			GList *children = gtk_container_get_children (GTK_CONTAINER (widget));
 
 			for (; children != NULL; children = children->next) {
