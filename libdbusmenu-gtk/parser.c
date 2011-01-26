@@ -522,9 +522,9 @@ action_notify_cb (GtkAction  *action,
     }
   else if (pspec->name == g_intern_static_string ("active"))
     {
-      dbusmenu_menuitem_property_set_bool (mi,
-                                           DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
-                                           gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
+      dbusmenu_menuitem_property_set_int (mi,
+                                          DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
+                                          gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
