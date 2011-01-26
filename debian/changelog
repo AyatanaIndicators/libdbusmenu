@@ -1,10 +1,10 @@
-libdbusmenu (0.3.93-0ubuntu2~ted5) UNRELEASED; urgency=low
+libdbusmenu (0.3.93-0ubuntu2~ted5) natty; urgency=low
 
   * Upstream Merge
     * Fixing some memory leaks
     * Fixing signatures in GetChildren
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 26 Jan 2011 10:18:50 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Jan 2011 10:25:45 -0600
 
 libdbusmenu (0.3.93-0ubuntu2~ted4) natty; urgency=low
 
