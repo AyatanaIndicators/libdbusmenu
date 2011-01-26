@@ -979,7 +979,7 @@ serialize_menuitem(gpointer data, gpointer user_data)
 	gint id = dbusmenu_menuitem_get_id(mi);
 	GVariant * props = dbusmenu_menuitem_properties_variant(mi);
 
-	g_variant_builder_add(builder, "ia{sv}", id, props);
+	g_variant_builder_add(builder, "(ia{sv})", id, props);
 
 	return;
 }
