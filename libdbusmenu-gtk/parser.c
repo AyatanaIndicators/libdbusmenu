@@ -28,6 +28,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "parser.h"
 #include "menuitem.h"
+#include "serializablemenuitem.h"
 
 #define CACHED_MENUITEM  "dbusmenu-gtk-parser-cached-item"
 
@@ -221,13 +222,23 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 	return;
 }
 
+/* Turn a widget into a dbusmenu item depending on the type of GTK
+   object that it is. */
 static DbusmenuMenuitem *
 construct_dbusmenu_for_widget (GtkWidget * widget)
 {
-  DbusmenuMenuitem *mi = dbusmenu_menuitem_new ();
+	/* If it's a subclass of our serializable menu item then we can
+	   use its own build function */
+	if (DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(widget)) {
+		DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(widget);
+		return dbusmenu_gtk_serializable_menu_item_build_menuitem(smi);
+	}
 
+  /* If it's a standard GTK Menu Item we need to do some of our own work */
   if (GTK_IS_MENU_ITEM (widget))
     {
+      DbusmenuMenuitem *mi = dbusmenu_menuitem_new ();
+
       gboolean visible = FALSE;
       gboolean sensitive = FALSE;
       if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
@@ -360,11 +371,12 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                         "notify",
                         G_CALLBACK (widget_notify_cb),
                         mi);
+      return mi;
     }
 
-  return mi;
-
-	return NULL;
+	/* If it's none of those we're going to just create a
+	   generic menuitem as a place holder for it. */
+	return dbusmenu_menuitem_new();
 }
 
 static void
