@@ -224,3 +224,6 @@ libdbusmenu-gtk/libdbusmenu_gtk_la-parser.lo
 test-gtk-parser
 test-gtk-parser-test
 test-gtk-parser.xml
+libdbusmenu-gtk/libdbusmenu_gtk_la-serializablemenuitem.lo
+docs/libdbusmenu-gtk/reference/html/DbusmenuGtkSerializableMenuItem.html
+docs/libdbusmenu-gtk/reference/tmpl/serializablemenuitem.sgml
