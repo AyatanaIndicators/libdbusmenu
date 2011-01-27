@@ -9,12 +9,10 @@ DbusmenuMenuitem
 
 </para>
 
-
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -493,7 +491,8 @@ DbusmenuMenuitem
 </para>
 
 @mi: 
-@DbusmenuMenuitem * mi, gpointer data: 
+@DbusmenuMenuitem * mi, gpointer data:
+@func: 
 @data: 
 
 
@@ -514,7 +513,8 @@ DbusmenuMenuitem
 </para>
 
 @mi: 
-@DbusmenuMenuitem * mi, gpointer user_data: 
+@DbusmenuMenuitem * mi, gpointer user_data:
+@cb: 
 @cb_data: 
 
 

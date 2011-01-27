@@ -36,13 +36,14 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-CLIENT-TYPES-SEPARATOR:CAPS">DBUSMENU_CLIENT_TYPES_SEPARATOR</link>
 #define             <link linkend="DBUSMENU-CLIENT-TYPES-IMAGE:CAPS">DBUSMENU_CLIENT_TYPES_IMAGE</link>
                     <link linkend="DbusmenuClient">DbusmenuClient</link>;
-                    <link linkend="DbusmenuClientClass">DbusmenuClientClass</link>;
+struct              <link linkend="DbusmenuClientClass">DbusmenuClientClass</link>;
 <link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            (<link linkend="DbusmenuClientTypeHandler">*DbusmenuClientTypeHandler</link>)        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *newitem</parameter>,
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *parent</parameter>,
-                                                         <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
-<link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *    <link linkend="dbusmenu-client-new">dbusmenu_client_new</link>                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
+                                                         <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> user_data</parameter>);
+<link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *      <link linkend="dbusmenu-client-new">dbusmenu_client_new</link>               (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
-<link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  <link linkend="dbusmenu-client-get-root">dbusmenu_client_get_root</link>            (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
+<link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *    <link linkend="dbusmenu-client-get-root">dbusmenu_client_get_root</link>          (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
 <link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-client-add-type-handler">dbusmenu_client_add_type_handler</link>    (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *type</parameter>,
                                                          <parameter><link linkend="DbusmenuClientTypeHandler"><type>DbusmenuClientTypeHandler</type></link> newfunc</parameter>);
@@ -53,7 +54,7 @@ Unstable, unless otherwise indicated
                                                          <parameter><link linkend="guint"><type>guint</type></link> timestamp</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-client-send-about-to-show">dbusmenu_client_send_about_to_show</link>  (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
                                                          <parameter><link linkend="gint"><type>gint</type></link> id</parameter>,
-                                                         <parameter><link linkend="void"><type>void</type></link> (cbgpointer user_data) ()</parameter>,
+                                                         <parameter><link linkend="void"><type>void</type></link> (*cb) (gpointer user_data)</parameter>,
                                                          <parameter><link linkend="gpointer"><type>gpointer</type></link> cb_data</parameter>);
 </synopsis>
 </refsynopsisdiv>
@@ -138,30 +139,16 @@ The client exists as a mirror to the server.  For most folks
 <refsect2 id="DbusmenuClient" role="struct">
 <title>DbusmenuClient</title>
 <indexterm zone="DbusmenuClient"><primary>DbusmenuClient</primary></indexterm>
-<programlisting>typedef struct {
-	GObject parent;
-
-	/*&lt; Private &gt;*/
-	DbusmenuClientPrivate * priv;
-} DbusmenuClient;
-</programlisting>
+<programlisting>typedef struct _DbusmenuClient DbusmenuClient;</programlisting>
 <para>
 The client for a <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> creating a shared
 	object set of <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects.
 </para><variablelist role="struct">
-<varlistentry><term><link linkend="GObject"><type>GObject</type></link>&#160;<structfield id="DbusmenuClient.parent">parent</structfield>;</term>
-<listitem><simpara><link linkend="GObject"><type>GObject</type></link>.
-</simpara></listitem>
-</varlistentry>
-<varlistentry><term><link linkend="DbusmenuClientPrivate"><type>DbusmenuClientPrivate</type></link>&#160;*<structfield id="DbusmenuClient.priv">priv</structfield>;</term>
-<listitem><simpara>
-</simpara></listitem>
-</varlistentry>
 </variablelist></refsect2>
 <refsect2 id="DbusmenuClientClass" role="struct">
-<title>DbusmenuClientClass</title>
+<title>struct DbusmenuClientClass</title>
 <indexterm zone="DbusmenuClientClass"><primary>DbusmenuClientClass</primary></indexterm>
-<programlisting>typedef struct {
+<programlisting>struct DbusmenuClientClass {
 	GObjectClass parent_class;
 
 	void (*layout_updated)(void);
@@ -177,7 +164,7 @@ The client for a <link linkend="DbusmenuServer"><type>DbusmenuServer</type></lin
 	void (*reserved4) (void);
 	void (*reserved5) (void);
 	void (*reserved6) (void);
-} DbusmenuClientClass;
+};
 </programlisting>
 <para>
 A simple class that takes all of the information from a
@@ -185,52 +172,40 @@ A simple class that takes all of the information from a
 	<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects appear on the other side.
 </para><variablelist role="struct">
 <varlistentry><term><link linkend="GObjectClass"><type>GObjectClass</type></link>&#160;<structfield id="DbusmenuClientClass.parent-class">parent_class</structfield>;</term>
-<listitem><simpara><link linkend="GObjectClass"><type>GObjectClass</type></link>
-</simpara></listitem>
+<listitem><simpara><link linkend="GObjectClass"><type>GObjectClass</type></link></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.layout-updated">layout_updated</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="DbusmenuClient-layout-updated"><type>"layout-updated"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="DbusmenuClient-layout-updated"><type>"layout-updated"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.root-changed">root_changed</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.new-menuitem">new_menuitem</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="DbusmenuClient-new-menuitem"><type>"new-menuitem"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="DbusmenuClient-new-menuitem"><type>"new-menuitem"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.item-activate">item_activate</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="DbusmenuClient-item-activate"><type>"item-activate"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="DbusmenuClient-item-activate"><type>"item-activate"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.event-result">event_result</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="DbusmenuClient-event-error"><type>"event-error"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="DbusmenuClient-event-error"><type>"event-error"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.reserved1">reserved1</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.reserved2">reserved2</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.reserved3">reserved3</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.reserved4">reserved4</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.reserved5">reserved5</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuClientClass.reserved6">reserved6</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2 id="DbusmenuClientTypeHandler" role="function">
@@ -238,25 +213,25 @@ A simple class that takes all of the information from a
 <indexterm zone="DbusmenuClientTypeHandler"><primary>DbusmenuClientTypeHandler</primary></indexterm>
 <programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            (*DbusmenuClientTypeHandler)        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *newitem</parameter>,
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *parent</parameter>,
-                                                         <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
+                                                         <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="gpointer"><type>gpointer</type></link> user_data</parameter>);</programlisting>
 <para>
+The type handler is called when a dbusmenu item is created
+	with a matching type as setup in <link linkend="dbusmenu-client-add-type-handler"><type>dbusmenu_client_add_type_handler</type></link>
 </para><variablelist role="params">
 <varlistentry><term><parameter>newitem</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> that was created</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>parent</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The parent of <parameter>newitem</parameter> or <link linkend="NULL:CAPS"><type>NULL</type></link> if none</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>client</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
-</simpara></listitem></varlistentry>
+<listitem><simpara>A pointer to the <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>The data you gave us</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-client-new" role="function">
 <title>dbusmenu_client_new ()</title>
 <indexterm zone="dbusmenu-client-new"><primary>dbusmenu_client_new</primary></indexterm>
-<programlisting><link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *    dbusmenu_client_new                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
+<programlisting><link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *      dbusmenu_client_new               (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);</programlisting>
 <para>
 This function creates a new client that connects to a specific
@@ -266,18 +241,15 @@ This function creates a new client that connects to a specific
 	sending out events as it syncs up with the server.
 </para><variablelist role="params">
 <varlistentry><term><parameter>name</parameter>&#160;:</term>
-<listitem><simpara>The DBus name for the server to connect to
-</simpara></listitem></varlistentry>
+<listitem><simpara>The DBus name for the server to connect to</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>object</parameter>&#160;:</term>
-<listitem><simpara>The object on the server to monitor
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A brand new <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The object on the server to monitor</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A brand new <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-client-get-root" role="function">
 <title>dbusmenu_client_get_root ()</title>
 <indexterm zone="dbusmenu-client-get-root"><primary>dbusmenu_client_get_root</primary></indexterm>
-<programlisting><link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  dbusmenu_client_get_root            (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
+<programlisting><link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *    dbusmenu_client_get_root          (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
 <para>
 Grabs the root node for the specified client <parameter>client</parameter>.  This
 	function may block.  It will block if there is currently a
@@ -288,12 +260,10 @@ Grabs the root node for the specified client <parameter>client</parameter>.  Thi
 	it could block longer.
 </para><variablelist role="params">
 <varlistentry><term><parameter>client</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> to get the root node from
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> representing the root of
-		menu on the server.  If there is no server or there is
-		an error receiving its layout it'll return <link linkend="NULL:CAPS"><type>NULL</type></link>.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> to get the root node from</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> representing the root of
+menu on the server.  If there is no server or there is
+an error receiving its layout it'll return <link linkend="NULL:CAPS"><type>NULL</type></link>.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-client-add-type-handler" role="function">
 <title>dbusmenu_client_add_type_handler ()</title>
@@ -315,18 +285,14 @@ This function connects into the type handling of the <link linkend="DbusmenuClie
 	can make choices about the menu item types availble.
 </para><variablelist role="params">
 <varlistentry><term><parameter>client</parameter>&#160;:</term>
-<listitem><simpara>Client where we're getting types coming in
-</simpara></listitem></varlistentry>
+<listitem><simpara>Client where we're getting types coming in</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>type</parameter>&#160;:</term>
 <listitem><simpara>A text string that will be matched with the 'type'
-	    property on incoming menu items
-</simpara></listitem></varlistentry>
+property on incoming menu items</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>newfunc</parameter>&#160;:</term>
 <listitem><simpara>The function that will be executed with those new
-	    items when they come in.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> If registering the new type was successful.
-</simpara></listitem></varlistentry>
+items when they come in.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>If registering the new type was successful.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-client-send-event" role="function">
 <title>dbusmenu_client_send_event ()</title>
@@ -337,42 +303,18 @@ This function connects into the type handling of the <link linkend="DbusmenuClie
                                                          <parameter><link linkend="GVariant"><type>GVariant</type></link> *variant</parameter>,
                                                          <parameter><link linkend="guint"><type>guint</type></link> timestamp</parameter>);</programlisting>
 <para>
-</para><variablelist role="params">
-<varlistentry><term><parameter>client</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>id</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>name</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>variant</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>timestamp</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para></refsect2>
 <refsect2 id="dbusmenu-client-send-about-to-show" role="function">
 <title>dbusmenu_client_send_about_to_show ()</title>
 <indexterm zone="dbusmenu-client-send-about-to-show"><primary>dbusmenu_client_send_about_to_show</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbusmenu_client_send_about_to_show  (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
                                                          <parameter><link linkend="gint"><type>gint</type></link> id</parameter>,
-                                                         <parameter><link linkend="void"><type>void</type></link> (cbgpointer user_data) ()</parameter>,
+                                                         <parameter><link linkend="void"><type>void</type></link> (*cb) (gpointer user_data)</parameter>,
                                                          <parameter><link linkend="gpointer"><type>gpointer</type></link> cb_data</parameter>);</programlisting>
 <para>
 </para><variablelist role="params">
-<varlistentry><term><parameter>client</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>id</parameter>&#160;:</term>
-<listitem><simpara>
-<parameter>gpointer</parameter> user_data:
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cb_data</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
+<listitem><simpara><parameter>gpointer</parameter> user_data:</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

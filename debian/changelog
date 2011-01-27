@@ -1,6 +1,6 @@
-libdbusmenu (0.3.93-0ubuntu2~ppa1) natty; urgency=low
+libdbusmenu (0.3.94-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
     * Fixing setting toggle to a boolean
     * Fixing some memory leaks
     * Fixing signatures in GetChildren
@@ -12,7 +12,7 @@ libdbusmenu (0.3.93-0ubuntu2~ppa1) natty; urgency=low
     * Adding a parser
     * Adding a serializable menu item
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Jan 2011 14:19:04 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 Jan 2011 14:20:04 -0600
 
 libdbusmenu (0.3.93-0ubuntu1) natty; urgency=low
 
