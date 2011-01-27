@@ -16,7 +16,8 @@ TESTS = \
 	test-gtk-label \
 	test-gtk-shortcut \
 	test-gtk-reorder \
-	test-gtk-submenu
+	test-gtk-submenu \
+	test-gtk-parser-test
 
 check_PROGRAMS = \
 	glib-server-nomenu \
@@ -42,7 +43,8 @@ check_PROGRAMS = \
 	test-json-client \
 	test-json-server \
 	test-gtk-submenu-server \
-	test-gtk-submenu-client
+	test-gtk-submenu-client \
+	test-gtk-parser
 
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
 
@@ -383,6 +385,35 @@ test_gtk_objects_LDADD = \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
+
+######################
+# Test GTK Parser
+######################
+
+GTK_PARSER_XML_REPORT = test-gtk-parser.xml
+
+test-gtk-parser-test: test-gtk-parser Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo gtester --verbose -k -o $(GTK_PARSER_XML_REPORT) ./test-gtk-parser >> $@
+	@chmod +x $@
+
+test_gtk_parser_SOURCES = \
+	test-gtk-parser.c
+
+test_gtk_parser_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUGTK_CFLAGS) \
+	-DSRCDIR="\"$(srcdir)\"" \
+	-Wall -Werror
+
+test_gtk_parser_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGLIB_LIBS) \
+	$(DBUSMENUGTK_LIBS)
+
 
 #########################
 # Test GTK Label

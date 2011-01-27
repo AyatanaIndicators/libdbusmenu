@@ -15,6 +15,7 @@ lib_LTLIBRARIES = \
 libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-glib/
 
 libdbusmenu_glibinclude_HEADERS = \
+	dbusmenu-glib.h \
 	menuitem.h \
 	menuitem-proxy.h \
 	server.h \
@@ -140,7 +141,7 @@ introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
 Dbusmenu_Glib-0.4.gir: libdbusmenu-glib.la
 Dbusmenu_Glib_0_4_gir_INCLUDES = \
 	GObject-2.0
-Dbusmenu_Glib_0_4_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS)
+Dbusmenu_Glib_0_4_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS) -I$(top_srcdir)
 Dbusmenu_Glib_0_4_gir_LIBS = libdbusmenu-glib.la
 Dbusmenu_Glib_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 Dbusmenu_Glib_0_4_gir_NAMESPACE = Dbusmenu
