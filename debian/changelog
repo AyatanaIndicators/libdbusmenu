@@ -1,4 +1,4 @@
-libdbusmenu (0.3.93-0ubuntu2~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.93-0ubuntu2~ppa1) natty; urgency=low
 
   * Upstream Merge
     * Fixing setting toggle to a boolean
@@ -12,7 +12,7 @@ libdbusmenu (0.3.93-0ubuntu2~ppa1) UNRELEASED; urgency=low
     * Adding a parser
     * Adding a serializable menu item
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Jan 2011 14:13:01 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 Jan 2011 14:19:04 -0600
 
 libdbusmenu (0.3.93-0ubuntu1) natty; urgency=low
 
