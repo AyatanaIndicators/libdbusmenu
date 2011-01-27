@@ -250,7 +250,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 	   use its own build function */
 	if (DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(widget)) {
 		DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(widget);
-		return dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem(smi);
+		return dbusmenu_gtk_serializable_menu_item_build_menuitem(smi);
 	}
 
   /* If it's a standard GTK Menu Item we need to do some of our own work */
