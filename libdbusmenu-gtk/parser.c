@@ -81,6 +81,8 @@ static void           menuitem_notify_cb       (GtkWidget *         widget,
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 {
+  g_return_val_if_fail(GTK_IS_MENU_ITEM(widget) || GTK_IS_MENU_SHELL(widget), NULL);
+
   RecurseContext recurse = {0};
 
   recurse.toplevel = gtk_widget_get_toplevel(widget);
