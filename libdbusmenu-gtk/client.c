@@ -751,6 +751,7 @@ set_use_fallback (GtkWidget * widget)
 		if (!available) {
 			g_warning("The '" USE_FALLBACK_PROP "' is not available on GtkImage so icons may not show correctly.");
 		}
+		checked = TRUE;
 	}
 
 	if (available) {
