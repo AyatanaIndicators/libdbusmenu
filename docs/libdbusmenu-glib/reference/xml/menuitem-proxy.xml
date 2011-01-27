@@ -21,8 +21,8 @@
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>                    <link linkend="DbusmenuMenuitemProxy">DbusmenuMenuitemProxy</link>;
-                    <link linkend="DbusmenuMenuitemProxyClass">DbusmenuMenuitemProxyClass</link>;
-<link linkend="DbusmenuMenuitemProxy"><returnvalue>DbusmenuMenuitemProxy</returnvalue></link> * <link linkend="dbusmenu-menuitem-proxy-new">dbusmenu_menuitem_proxy_new</link>     (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>);
+struct              <link linkend="DbusmenuMenuitemProxyClass">DbusmenuMenuitemProxyClass</link>;
+<link linkend="DbusmenuMenuitemProxy"><returnvalue>DbusmenuMenuitemProxy</returnvalue></link> *  <link linkend="dbusmenu-menuitem-proxy-new">dbusmenu_menuitem_proxy_new</link>    (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>);
 <link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  <link linkend="dbusmenu-menuitem-proxy-get-wrapped">dbusmenu_menuitem_proxy_get_wrapped</link> (<parameter><link linkend="DbusmenuMenuitemProxy"><type>DbusmenuMenuitemProxy</type></link> *pmi</parameter>);
 </synopsis>
 </refsynopsisdiv>
@@ -37,19 +37,13 @@
 <refsect2 id="DbusmenuMenuitemProxy" role="struct">
 <title>DbusmenuMenuitemProxy</title>
 <indexterm zone="DbusmenuMenuitemProxy"><primary>DbusmenuMenuitemProxy</primary></indexterm>
-<programlisting>typedef struct {
-	DbusmenuMenuitem parent;
-
-	/*&lt; Private &gt;*/
-	DbusmenuMenuitemProxyPrivate * priv;
-} DbusmenuMenuitemProxy;
-</programlisting>
+<programlisting>typedef struct _DbusmenuMenuitemProxy DbusmenuMenuitemProxy;</programlisting>
 <para>
 </para></refsect2>
 <refsect2 id="DbusmenuMenuitemProxyClass" role="struct">
-<title>DbusmenuMenuitemProxyClass</title>
+<title>struct DbusmenuMenuitemProxyClass</title>
 <indexterm zone="DbusmenuMenuitemProxyClass"><primary>DbusmenuMenuitemProxyClass</primary></indexterm>
-<programlisting>typedef struct {
+<programlisting>struct DbusmenuMenuitemProxyClass {
 	DbusmenuMenuitemClass parent_class;
 
 	/*&lt; Private &gt;*/
@@ -57,45 +51,38 @@
 	void (*reserved2) (void);
 	void (*reserved3) (void);
 	void (*reserved4) (void);
-} DbusmenuMenuitemProxyClass;
+};
 </programlisting>
 <para>
 Functions and signal slots for <link linkend="DbusmenuMenuitemProxy"><type>DbusmenuMenuitemProxy</type></link>.
 </para><variablelist role="struct">
 <varlistentry><term><link linkend="DbusmenuMenuitemClass"><type>DbusmenuMenuitemClass</type></link>&#160;<structfield id="DbusmenuMenuitemProxyClass.parent-class">parent_class</structfield>;</term>
-<listitem><simpara>The Class of <link linkend="DbusmeneMenuitem"><type>DbusmeneMenuitem</type></link>
-</simpara></listitem>
+<listitem><simpara>The Class of <link linkend="DbusmeneMenuitem"><type>DbusmeneMenuitem</type></link></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuMenuitemProxyClass.reserved1">reserved1</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuMenuitemProxyClass.reserved2">reserved2</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuMenuitemProxyClass.reserved3">reserved3</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuMenuitemProxyClass.reserved4">reserved4</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-proxy-new" role="function">
 <title>dbusmenu_menuitem_proxy_new ()</title>
 <indexterm zone="dbusmenu-menuitem-proxy-new"><primary>dbusmenu_menuitem_proxy_new</primary></indexterm>
-<programlisting><link linkend="DbusmenuMenuitemProxy"><returnvalue>DbusmenuMenuitemProxy</returnvalue></link> * dbusmenu_menuitem_proxy_new     (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>);</programlisting>
+<programlisting><link linkend="DbusmenuMenuitemProxy"><returnvalue>DbusmenuMenuitemProxy</returnvalue></link> *  dbusmenu_menuitem_proxy_new    (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>);</programlisting>
 <para>
 Builds a new <link linkend="DbusmenuMenuitemProxy"><type>DbusmenuMenuitemProxy</type></link> object that proxies
 	all of the values for <parameter>mi</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>mi</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to proxy
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A new <link linkend="DbusmenuMenuitemProxy"><type>DbusmenuMenuitemProxy</type></link> object.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to proxy</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A new <link linkend="DbusmenuMenuitemProxy"><type>DbusmenuMenuitemProxy</type></link> object.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-proxy-get-wrapped" role="function">
 <title>dbusmenu_menuitem_proxy_get_wrapped ()</title>
@@ -106,11 +93,9 @@ Accesses the private variable of which <link linkend="DbusmenuMenuitem"><type>Db
 	we are doing the proxying for.
 </para><variablelist role="params">
 <varlistentry><term><parameter>pmi</parameter>&#160;:</term>
-<listitem><simpara><link linkend="DbusmenuMenuitemProxy"><type>DbusmenuMenuitemProxy</type></link> to look into
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> object or a <link linkend="NULL:CAPS"><type>NULL</type></link> if we
-		don't have one or there is an error.
-</simpara></listitem></varlistentry>
+<listitem><simpara><link linkend="DbusmenuMenuitemProxy"><type>DbusmenuMenuitemProxy</type></link> to look into</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> object or a <link linkend="NULL:CAPS"><type>NULL</type></link> if we
+don't have one or there is an error.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

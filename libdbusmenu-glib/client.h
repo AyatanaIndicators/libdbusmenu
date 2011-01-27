@@ -110,7 +110,29 @@ struct _DbusmenuClient {
 	DbusmenuClientPrivate * priv;
 };
 
-typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+/**
+	DbusmenuClientTypeHandler:
+	@newitem: The #DbusmenuMenuitem that was created
+	@parent: The parent of @newitem or #NULL if none
+	@client: A pointer to the #DbusmenuClient
+	@user_data: The data you gave us
+
+	The type handler is called when a dbusmenu item is created
+	with a matching type as setup in #dbusmenu_client_add_type_handler
+*/
+typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+
+/**
+	DbusmenuClientTypeDestroyHandler:
+	@client: A pointer to the #DbusmenuClient
+	@type: The type that this handler was registered with
+	@user_data: The data you gave us
+
+	This handler is called when the type becomes unregistered by the
+	client.  This is usally caused by the #DbusmenuClient being destroyed
+	and should free memory or unref objects in @user_data.
+*/
+typedef void (*DbusmenuClientTypeDestroyHandler) (DbusmenuClient * client, const gchar * type, gpointer user_data);
 
 GType                dbusmenu_client_get_type          (void);
 DbusmenuClient *     dbusmenu_client_new               (const gchar * name,
@@ -119,6 +141,11 @@ DbusmenuMenuitem *   dbusmenu_client_get_root          (DbusmenuClient * client)
 gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
                                                         const gchar * type,
                                                         DbusmenuClientTypeHandler newfunc);
+gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * client,
+                                                        const gchar * type,
+                                                        DbusmenuClientTypeHandler newfunc,
+                                                        gpointer user_data,
+                                                        DbusmenuClientTypeDestroyHandler destory_func);
 void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         gint id,
                                                         const gchar * name,

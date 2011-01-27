@@ -975,11 +975,17 @@ serialize_menuitem(gpointer data, gpointer user_data)
 {
 	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
 	GVariantBuilder * builder = (GVariantBuilder *)(user_data);
+	GVariantBuilder tuple;
+	
+	g_variant_builder_init(&tuple, G_VARIANT_TYPE_TUPLE);
 
 	gint id = dbusmenu_menuitem_get_id(mi);
-	GVariant * props = dbusmenu_menuitem_properties_variant(mi);
+	g_variant_builder_add_value(&tuple, g_variant_new_int32(id));
 
-	g_variant_builder_add(builder, "ia{sv}", id, props);
+	GVariant * props = dbusmenu_menuitem_properties_variant(mi);
+	g_variant_builder_add_value(&tuple, props);
+
+	g_variant_builder_add_value(builder, g_variant_builder_end(&tuple));
 
 	return;
 }
@@ -1020,7 +1026,8 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 
 		g_list_foreach(children, serialize_menuitem, &builder);
 
-		ret = g_variant_new("(a(ia{svg}))", g_variant_builder_end(&builder));
+		GVariant * end = g_variant_builder_end(&builder);
+		ret = g_variant_new_tuple(&end, 1);
 	} else {
 		GError * error = NULL;
 		ret = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, &error);

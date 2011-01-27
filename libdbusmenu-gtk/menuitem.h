@@ -26,8 +26,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 */
 
-#ifndef __DBUSMENU_GTKMENUITEM_H__
-#define __DBUSMENU_GTKMENUITEM_H__ 1
+#ifndef DBUSMENU_GTK_MENUITEM_H__
+#define DBUSMENU_GTK_MENUITEM_H__ 1
 
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>

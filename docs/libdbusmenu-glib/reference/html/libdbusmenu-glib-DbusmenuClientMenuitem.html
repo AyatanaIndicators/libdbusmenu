@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API">
 <link rel="prev" href="libdbusmenu-glib-DbusmenuClient.html" title="DbusmenuClient">
 <link rel="next" href="object-tree.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.16 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,7 +26,7 @@
                   <a href="#libdbusmenu-glib-DbusmenuClientMenuitem.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="DbusmenuClientMenuitem">
+<div class="refentry">
 <a name="libdbusmenu-glib-DbusmenuClientMenuitem"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -35,23 +35,23 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="libdbusmenu-glib-DbusmenuClientMenuitem.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">#define             <a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#DBUSMENU-CLIENT-MENUITEM-TYPE:CAPS" title="DBUSMENU_CLIENT_MENUITEM_TYPE">DBUSMENU_CLIENT_MENUITEM_TYPE</a>
                     <a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitem" title="DbusmenuClientMenuitem">DbusmenuClientMenuitem</a>;
-                    <a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitemClass" title="DbusmenuClientMenuitemClass">DbusmenuClientMenuitemClass</a>;
-<a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitem" title="DbusmenuClientMenuitem"><span class="returnvalue">DbusmenuClientMenuitem</span></a> * <a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#dbusmenu-client-menuitem-new" title="dbusmenu_client_menuitem_new ()">dbusmenu_client_menuitem_new</a>   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>,
+struct              <a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitemClass" title="struct DbusmenuClientMenuitemClass">DbusmenuClientMenuitemClass</a>;
+<a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitem" title="DbusmenuClientMenuitem"><span class="returnvalue">DbusmenuClientMenuitem</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#dbusmenu-client-menuitem-new" title="dbusmenu_client_menuitem_new ()">dbusmenu_client_menuitem_new</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>,
                                                          <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClient" title="DbusmenuClient"><span class="type">DbusmenuClient</span></a> *client</code></em>);
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="libdbusmenu-glib-DbusmenuClientMenuitem.description"></a><h2>Description</h2>
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="libdbusmenu-glib-DbusmenuClientMenuitem.details"></a><h2>Details</h2>
-<div class="refsect2" title="DBUSMENU_CLIENT_MENUITEM_TYPE">
+<div class="refsect2">
 <a name="DBUSMENU-CLIENT-MENUITEM-TYPE:CAPS"></a><h3>DBUSMENU_CLIENT_MENUITEM_TYPE</h3>
 <pre class="programlisting">#define DBUSMENU_CLIENT_MENUITEM_TYPE            (dbusmenu_client_menuitem_get_type ())
 </pre>
@@ -59,57 +59,34 @@
 </p>
 </div>
 <hr>
-<div class="refsect2" title="DbusmenuClientMenuitem">
+<div class="refsect2">
 <a name="DbusmenuClientMenuitem"></a><h3>DbusmenuClientMenuitem</h3>
-<pre class="programlisting">typedef struct {
-	DbusmenuMenuitem parent;
-} DbusmenuClientMenuitem;
-</pre>
+<pre class="programlisting">typedef struct _DbusmenuClientMenuitem DbusmenuClientMenuitem;</pre>
 <p>
 </p>
 </div>
 <hr>
-<div class="refsect2" title="DbusmenuClientMenuitemClass">
-<a name="DbusmenuClientMenuitemClass"></a><h3>DbusmenuClientMenuitemClass</h3>
-<pre class="programlisting">typedef struct {
+<div class="refsect2">
+<a name="DbusmenuClientMenuitemClass"></a><h3>struct DbusmenuClientMenuitemClass</h3>
+<pre class="programlisting">struct DbusmenuClientMenuitemClass {
 	DbusmenuMenuitemClass parent_class;
-} DbusmenuClientMenuitemClass;
+};
 </pre>
 <p>
 </p>
 </div>
 <hr>
-<div class="refsect2" title="dbusmenu_client_menuitem_new ()">
+<div class="refsect2">
 <a name="dbusmenu-client-menuitem-new"></a><h3>dbusmenu_client_menuitem_new ()</h3>
-<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitem" title="DbusmenuClientMenuitem"><span class="returnvalue">DbusmenuClientMenuitem</span></a> * dbusmenu_client_menuitem_new   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>,
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitem" title="DbusmenuClientMenuitem"><span class="returnvalue">DbusmenuClientMenuitem</span></a> *  dbusmenu_client_menuitem_new  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>,
                                                          <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClient" title="DbusmenuClient"><span class="type">DbusmenuClient</span></a> *client</code></em>);</pre>
 <p>
 </p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.16</div>
 </body>
 </html>

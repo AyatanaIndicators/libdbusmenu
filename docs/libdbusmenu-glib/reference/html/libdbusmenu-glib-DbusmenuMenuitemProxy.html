@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API">
 <link rel="prev" href="libdbusmenu-glib-DbusmenuServer.html" title="DbusmenuServer">
 <link rel="next" href="libdbusmenu-glib-DbusmenuMenuitem.html" title="DbusmenuMenuitem">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.16 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,7 +26,7 @@
                   <a href="#libdbusmenu-glib-DbusmenuMenuitemProxy.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="DbusmenuMenuitemProxy">
+<div class="refentry">
 <a name="libdbusmenu-glib-DbusmenuMenuitemProxy"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -35,37 +35,31 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="libdbusmenu-glib-DbusmenuMenuitemProxy.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">                    <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy">DbusmenuMenuitemProxy</a>;
-                    <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxyClass" title="DbusmenuMenuitemProxyClass">DbusmenuMenuitemProxyClass</a>;
-<a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="returnvalue">DbusmenuMenuitemProxy</span></a> * <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-new" title="dbusmenu_menuitem_proxy_new ()">dbusmenu_menuitem_proxy_new</a>     (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
-<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-get-wrapped" title="dbusmenu_menuitem_proxy_get_wrapped ()">dbusmenu_menuitem_proxy_get_wrapped</a> (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> *pmi</code></em>);
+struct              <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxyClass" title="struct DbusmenuMenuitemProxyClass">DbusmenuMenuitemProxyClass</a>;
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="returnvalue">DbusmenuMenuitemProxy</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-new" title="dbusmenu_menuitem_proxy_new ()">dbusmenu_menuitem_proxy_new</a>    (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-get-wrapped" title="dbusmenu_menuitem_proxy_get_wrapped ()">dbusmenu_menuitem_proxy_get_wrapped</a> (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> *pmi</code></em>);
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="libdbusmenu-glib-DbusmenuMenuitemProxy.description"></a><h2>Description</h2>
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="libdbusmenu-glib-DbusmenuMenuitemProxy.details"></a><h2>Details</h2>
-<div class="refsect2" title="DbusmenuMenuitemProxy">
+<div class="refsect2">
 <a name="DbusmenuMenuitemProxy"></a><h3>DbusmenuMenuitemProxy</h3>
-<pre class="programlisting">typedef struct {
-	DbusmenuMenuitem parent;
-
-	/*&lt; Private &gt;*/
-	DbusmenuMenuitemProxyPrivate * priv;
-} DbusmenuMenuitemProxy;
-</pre>
+<pre class="programlisting">typedef struct _DbusmenuMenuitemProxy DbusmenuMenuitemProxy;</pre>
 <p>
 </p>
 </div>
 <hr>
-<div class="refsect2" title="DbusmenuMenuitemProxyClass">
-<a name="DbusmenuMenuitemProxyClass"></a><h3>DbusmenuMenuitemProxyClass</h3>
-<pre class="programlisting">typedef struct {
+<div class="refsect2">
+<a name="DbusmenuMenuitemProxyClass"></a><h3>struct DbusmenuMenuitemProxyClass</h3>
+<pre class="programlisting">struct DbusmenuMenuitemProxyClass {
 	DbusmenuMenuitemClass parent_class;
 
 	/*&lt; Private &gt;*/
@@ -73,7 +67,7 @@
 	void (*reserved2) (void);
 	void (*reserved3) (void);
 	void (*reserved4) (void);
-} DbusmenuMenuitemProxyClass;
+};
 </pre>
 <p>
 Functions and signal slots for <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a>.
@@ -82,37 +76,33 @@ Functions and signal slots for <a class="link" href="libdbusmenu-glib-DbusmenuMe
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitemClass" title="DbusmenuMenuitemClass"><span class="type">DbusmenuMenuitemClass</span></a> <em class="structfield"><code><a name="DbusmenuMenuitemProxyClass.parent-class"></a>parent_class</code></em>;</span></p></td>
+<td><p><span class="term"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitemClass" title="struct DbusmenuMenuitemClass"><span class="type">DbusmenuMenuitemClass</span></a> <em class="structfield"><code><a name="DbusmenuMenuitemProxyClass.parent-class"></a>parent_class</code></em>;</span></p></td>
 <td>The Class of <span class="type">DbusmeneMenuitem</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemProxyClass.reserved1"></a>reserved1</code></em> ()</span></p></td>
-<td>Reserved for future use.
-</td>
+<td>Reserved for future use.</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemProxyClass.reserved2"></a>reserved2</code></em> ()</span></p></td>
-<td>Reserved for future use.
-</td>
+<td>Reserved for future use.</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemProxyClass.reserved3"></a>reserved3</code></em> ()</span></p></td>
-<td>Reserved for future use.
-</td>
+<td>Reserved for future use.</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemProxyClass.reserved4"></a>reserved4</code></em> ()</span></p></td>
-<td>Reserved for future use.
-</td>
+<td>Reserved for future use.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="dbusmenu_menuitem_proxy_new ()">
+<div class="refsect2">
 <a name="dbusmenu-menuitem-proxy-new"></a><h3>dbusmenu_menuitem_proxy_new ()</h3>
-<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="returnvalue">DbusmenuMenuitemProxy</span></a> * dbusmenu_menuitem_proxy_new     (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="returnvalue">DbusmenuMenuitemProxy</span></a> *  dbusmenu_menuitem_proxy_new    (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
 <p>
 Builds a new <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> object that proxies
 	all of the values for <em class="parameter"><code>mi</code></em>.
@@ -122,23 +112,21 @@ Builds a new <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#D
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
-<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to proxy
-</td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to proxy</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A new <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> object.
-</td>
+<td>A new <a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> object.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="dbusmenu_menuitem_proxy_get_wrapped ()">
+<div class="refsect2">
 <a name="dbusmenu-menuitem-proxy-get-wrapped"></a><h3>dbusmenu_menuitem_proxy_get_wrapped ()</h3>
-<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_menuitem_proxy_get_wrapped (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> *pmi</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_menuitem_proxy_get_wrapped (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> *pmi</code></em>);</pre>
 <p>
-Accesses the private variable of which <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>
+Accesses the private variable of which <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>
 	we are doing the proxying for.
 </p>
 <div class="variablelist"><table border="0">
@@ -147,14 +135,12 @@ Accesses the private variable of which <a class="link" href="libdbusmenu-glib-Db
 <tr>
 <td><p><span class="term"><em class="parameter"><code>pmi</code></em> :</span></p></td>
 <td>
-<a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> to look into
-</td>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy" title="DbusmenuMenuitemProxy"><span class="type">DbusmenuMenuitemProxy</span></a> to look into</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> object or a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if we
-		don't have one or there is an error.
-</td>
+<td>A <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> object or a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if we
+don't have one or there is an error.</td>
 </tr>
 </tbody>
 </table></div>
@@ -163,6 +149,6 @@ Accesses the private variable of which <a class="link" href="libdbusmenu-glib-Db
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.16</div>
 </body>
 </html>
