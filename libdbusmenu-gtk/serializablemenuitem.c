@@ -166,7 +166,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 }
 
 /**
-	dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem:
+	dbusmenu_gtk_serializable_menu_item_build_menuitem:
 	@smi: #DbusmenuGtkSerializableMenuItem to build a #DbusmenuMenuitem mirroring
 
 	This function is for menu items that are instanciated from
@@ -179,7 +179,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		set by this object.
 */
 DbusmenuMenuitem *
-dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi)
+dbusmenu_gtk_serializable_menu_item_build_menuitem (DbusmenuGtkSerializableMenuItem * smi)
 {
 	g_return_val_if_fail(DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(smi), NULL);
 
@@ -207,7 +207,7 @@ type_handler (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCli
 	DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(g_object_new(th->type, NULL));
 	g_return_val_if_fail(smi != NULL, FALSE);
 
-	dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem(smi, newitem);
+	dbusmenu_gtk_serializable_menu_item_set_menuitem(smi, newitem);
 	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, GTK_MENU_ITEM(smi), parent);
 
 	return TRUE;
@@ -265,7 +265,7 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 }
 
 /**
-	dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem:
+	dbusmenu_gtk_serializable_menu_item_set_menuitem:
 	@smi: #DbusmenuGtkSerializableMenuItem to set the @DbusmenuGtkSerializableMenuItem::dbusmenu-menuitem of
 	@mi: Menuitem to get the properties from
 
@@ -276,7 +276,7 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 	pick up this property being set.
 */
 void
-dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi)
+dbusmenu_gtk_serializable_menu_item_set_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi)
 {
 	g_return_if_fail(DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(smi));
 	g_return_if_fail(mi != NULL);

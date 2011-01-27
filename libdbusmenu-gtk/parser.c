@@ -68,10 +68,22 @@ static void           menuitem_notify_cb       (GtkWidget *         widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
 
+/**
+	dbusmenu_gtk_parse_menu_structure:
+	@widget: A #GtkMenuItem or #GtkMenuShell to turn into a #DbusmenuMenuitem
 
+	Goes through the GTK structures and turns them into the appropraite
+	Dbusmenu structures along with setting up all the relationships
+	between the objects.  It also stores the dbusmenu items as a cache
+	on the GTK items so that they'll be reused if necissary.
+
+	Return value: A dbusmenu item representing the menu structure
+*/
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 {
+  g_return_val_if_fail(GTK_IS_MENU_ITEM(widget) || GTK_IS_MENU_SHELL(widget), NULL);
+
   RecurseContext recurse = {0};
 
   recurse.toplevel = gtk_widget_get_toplevel(widget);
@@ -219,7 +231,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 	   use its own build function */
 	if (DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(widget)) {
 		DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(widget);
-		return dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem(smi);
+		return dbusmenu_gtk_serializable_menu_item_build_menuitem(smi);
 	}
 
   /* If it's a standard GTK Menu Item we need to do some of our own work */

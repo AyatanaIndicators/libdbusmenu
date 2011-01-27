@@ -42,6 +42,7 @@ struct _DbusmenuGtkClientPrivate {
 };
 
 #define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) (DBUSMENU_GTKCLIENT(o)->priv)
+#define USE_FALLBACK_PROP  "use-fallback"
 
 /* Prototypes */
 static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
@@ -737,6 +738,29 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 	return TRUE;
 }
 
+/* A little helper so we don't generate a bunch of warnings
+   about being able to set use-fallback */
+static void
+set_use_fallback (GtkWidget * widget)
+{
+	static gboolean checked = FALSE;
+	static gboolean available = FALSE;
+
+	if (!checked) {
+		available = (g_object_class_find_property(G_OBJECT_CLASS(GTK_IMAGE_GET_CLASS(widget)), USE_FALLBACK_PROP) != NULL);
+		if (!available) {
+			g_warning("The '" USE_FALLBACK_PROP "' is not available on GtkImage so icons may not show correctly.");
+		}
+		checked = TRUE;
+	}
+
+	if (available) {
+		g_object_set(G_OBJECT(widget), USE_FALLBACK_PROP, TRUE, NULL);
+	}
+
+	return;
+}
+
 /* This handler looks at property changes for items that are
    image menu items. */
 static void
@@ -789,7 +813,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 			gtkimage = NULL;
 		} else if (g_strcmp0(iconname, DBUSMENU_MENUITEM_ICON_NAME_BLANK) == 0) {
 			gtkimage = gtk_image_new();
-			g_object_set(G_OBJECT(gtkimage), "use-fallback", TRUE, NULL);
+			set_use_fallback(gtkimage);
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
 			   'rtl' depending on what we're doing. */
@@ -808,7 +832,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 			   can just convert it to this name. */
 			if (gtkimage == NULL) {
 				gtkimage = gtk_image_new_from_icon_name(finaliconname, GTK_ICON_SIZE_MENU);
-				g_object_set(G_OBJECT(gtkimage), "use-fallback", TRUE, NULL);
+				set_use_fallback(gtkimage);
 			} else {
 				gtk_image_set_from_icon_name(GTK_IMAGE(gtkimage), finaliconname, GTK_ICON_SIZE_MENU);
 			}

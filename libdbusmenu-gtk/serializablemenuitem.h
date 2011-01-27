@@ -90,6 +90,13 @@ struct _DbusmenuGtkSerializableMenuItemClass {
 	DbusmenuGtkSerializableMenuItem:
 	@parent: Inherit from GtkMenuItem
 	@priv: Blind structure of private variables
+
+	The Serializable Menuitem provides a way for menu items to be created
+	that can easily be picked up by the Dbusmenu GTK Parser.  This way
+	you can create custom items, and transport them across dbusmenu to
+	your menus or the appmenu on the other side of the bus.  By providing
+	these function the parser has enough information to both serialize, and
+	deserialize on the other side, the menuitem you've so carefully created.
 */
 struct _DbusmenuGtkSerializableMenuItem {
 	GtkMenuItem parent;
@@ -99,9 +106,9 @@ struct _DbusmenuGtkSerializableMenuItem {
 
 GType dbusmenu_gtk_serializable_menu_item_get_type (void);
 
-DbusmenuMenuitem *  dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi);
+DbusmenuMenuitem *  dbusmenu_gtk_serializable_menu_item_build_menuitem (DbusmenuGtkSerializableMenuItem * smi);
 void                dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client, GType item_type);
-void                dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi);
+void                dbusmenu_gtk_serializable_menu_item_set_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi);
 
 G_END_DECLS
 
