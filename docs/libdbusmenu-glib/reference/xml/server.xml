@@ -28,8 +28,8 @@
 #define             <link linkend="DBUSMENU-SERVER-PROP-ROOT-NODE:CAPS">DBUSMENU_SERVER_PROP_ROOT_NODE</link>
 #define             <link linkend="DBUSMENU-SERVER-PROP-VERSION:CAPS">DBUSMENU_SERVER_PROP_VERSION</link>
                     <link linkend="DbusmenuServer">DbusmenuServer</link>;
-                    <link linkend="DbusmenuServerClass">DbusmenuServerClass</link>;
-<link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *    <link linkend="dbusmenu-server-new">dbusmenu_server_new</link>                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
+struct              <link linkend="DbusmenuServerClass">DbusmenuServerClass</link>;
+<link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *     <link linkend="dbusmenu-server-new">dbusmenu_server_new</link>                (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-server-set-root">dbusmenu_server_set_root</link>            (<parameter><link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> *server</parameter>,
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *root</parameter>);
 </synopsis>
@@ -94,30 +94,16 @@
 <refsect2 id="DbusmenuServer" role="struct">
 <title>DbusmenuServer</title>
 <indexterm zone="DbusmenuServer"><primary>DbusmenuServer</primary></indexterm>
-<programlisting>typedef struct {
-	GObject parent;
-
-	/*&lt; Private &gt;*/
-	DbusmenuServerPrivate * priv;
-} DbusmenuServer;
-</programlisting>
+<programlisting>typedef struct _DbusmenuServer DbusmenuServer;</programlisting>
 <para>
 A server which represents a sharing of a set of
 	<link linkend="DbusmenuMenuitems"><type>DbusmenuMenuitems</type></link> across DBus to a <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link>.
 </para><variablelist role="struct">
-<varlistentry><term><link linkend="GObject"><type>GObject</type></link>&#160;<structfield id="DbusmenuServer.parent">parent</structfield>;</term>
-<listitem><simpara><link linkend="GObject"><type>GObject</type></link>
-</simpara></listitem>
-</varlistentry>
-<varlistentry><term><link linkend="DbusmenuServerPrivate"><type>DbusmenuServerPrivate</type></link>&#160;*<structfield id="DbusmenuServer.priv">priv</structfield>;</term>
-<listitem><simpara>
-</simpara></listitem>
-</varlistentry>
 </variablelist></refsect2>
 <refsect2 id="DbusmenuServerClass" role="struct">
-<title>DbusmenuServerClass</title>
+<title>struct DbusmenuServerClass</title>
 <indexterm zone="DbusmenuServerClass"><primary>DbusmenuServerClass</primary></indexterm>
-<programlisting>typedef struct {
+<programlisting>struct DbusmenuServerClass {
 	GObjectClass parent_class;
 
 	/* Signals */
@@ -133,7 +119,7 @@ A server which represents a sharing of a set of
 	void (*reserved4) (void);
 	void (*reserved5) (void);
 	void (*reserved6) (void);
-} DbusmenuServerClass;
+};
 </programlisting>
 <para>
 <parameter>reserved1</parameter>: Reserved for future use.
@@ -147,54 +133,43 @@ A server which represents a sharing of a set of
 	The class implementing the virtual functions for <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>.
 </para><variablelist role="struct">
 <varlistentry><term><link linkend="GObjectClass"><type>GObjectClass</type></link>&#160;<structfield id="DbusmenuServerClass.parent-class">parent_class</structfield>;</term>
-<listitem><simpara><link linkend="GObjectClass"><type>GObjectClass</type></link>
-</simpara></listitem>
+<listitem><simpara><link linkend="GObjectClass"><type>GObjectClass</type></link></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.id-prop-update">id_prop_update</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="DbusmenuServer-id-prop-update"><type>"id-prop-update"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="DbusmenuServer-id-prop-update"><type>"id-prop-update"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.id-update">id_update</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="DbusmenuServer-id-update"><type>"id-update"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="DbusmenuServer-id-update"><type>"id-update"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.layout-updated">layout_updated</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="DbusmenuServer-layout-update"><type>"layout-update"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="DbusmenuServer-layout-update"><type>"layout-update"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.item-activation">item_activation</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.reserved1">reserved1</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.reserved2">reserved2</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.reserved3">reserved3</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.reserved4">reserved4</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.reserved5">reserved5</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="DbusmenuServerClass.reserved6">reserved6</structfield>&#160;()</term>
-<listitem><simpara>
-</simpara></listitem>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-server-new" role="function">
 <title>dbusmenu_server_new ()</title>
 <indexterm zone="dbusmenu-server-new"><primary>dbusmenu_server_new</primary></indexterm>
-<programlisting><link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *    dbusmenu_server_new                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);</programlisting>
+<programlisting><link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *     dbusmenu_server_new                (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);</programlisting>
 <para>
 Creates a new <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> object with a specific object
 	path on DBus.  If <parameter>object</parameter> is set to NULL the default object
@@ -202,10 +177,8 @@ Creates a new <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> 
 </para><variablelist role="params">
 <varlistentry><term><parameter>object</parameter>&#160;:</term>
 <listitem><simpara>The object name to show for this menu structure
-		on DBus.  May be NULL.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A brand new <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>
-</simpara></listitem></varlistentry>
+on DBus.  May be NULL.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A brand new <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-server-set-root" role="function">
 <title>dbusmenu_server_set_root ()</title>
@@ -217,12 +190,8 @@ This function contains all of the <link linkend="GValue"><type>GValue</type></li
 	required to set the property <link linkend="DbusmenuServer--root-node"><type>"root-node"</type></link>
 	on the server <parameter>self</parameter>.
 </para><variablelist role="params">
-<varlistentry><term><parameter>server</parameter>&#160;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>root</parameter>&#160;:</term>
-<listitem><simpara>The new root <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> tree
-</simpara></listitem></varlistentry>
+<listitem><simpara>The new root <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> tree</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

@@ -44,6 +44,16 @@
         <para>Free data after the code is done.</para>
       </glossdef>
     </glossentry>
+</glossdiv>
+<glossdiv><title>C</title>
+    <glossentry>
+      <glossterm><anchor id="annotation-glossterm-closure"/>closure</glossterm>
+      <glossdef>
+        <para>This parameter is a 'user_data', for callbacks; many bindings can pass NULL here.</para>
+      </glossdef>
+    </glossentry>
+</glossdiv>
+<glossdiv><title>T</title>
     <glossentry>
       <glossterm><anchor id="annotation-glossterm-transfer none"/>transfer none</glossterm>
       <glossdef>

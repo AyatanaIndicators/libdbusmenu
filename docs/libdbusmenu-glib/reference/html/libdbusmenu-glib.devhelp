@@ -22,11 +22,11 @@
     <function name="DBUSMENU_SERVER_PROP_ROOT_NODE" link="libdbusmenu-glib-DbusmenuServer.html#DBUSMENU-SERVER-PROP-ROOT-NODE:CAPS"/>
     <function name="DBUSMENU_SERVER_PROP_VERSION" link="libdbusmenu-glib-DbusmenuServer.html#DBUSMENU-SERVER-PROP-VERSION:CAPS"/>
     <function name="DbusmenuServer" link="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"/>
-    <function name="DbusmenuServerClass" link="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServerClass"/>
+    <function name="struct DbusmenuServerClass" link="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServerClass"/>
     <function name="dbusmenu_server_new ()" link="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-new"/>
     <function name="dbusmenu_server_set_root ()" link="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-set-root"/>
     <function name="DbusmenuMenuitemProxy" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxy"/>
-    <function name="DbusmenuMenuitemProxyClass" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxyClass"/>
+    <function name="struct DbusmenuMenuitemProxyClass" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#DbusmenuMenuitemProxyClass"/>
     <function name="dbusmenu_menuitem_proxy_new ()" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-new"/>
     <function name="dbusmenu_menuitem_proxy_get_wrapped ()" link="libdbusmenu-glib-DbusmenuMenuitemProxy.html#dbusmenu-menuitem-proxy-get-wrapped"/>
     <function name="DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-PROPERTY-CHANGED:CAPS"/>
@@ -52,10 +52,10 @@
     <function name="DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNKNOWN:CAPS"/>
     <function name="DBUSMENU_MENUITEM_ICON_NAME_BLANK" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-ICON-NAME-BLANK:CAPS"/>
     <function name="DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-CHILD-DISPLAY-SUBMENU:CAPS"/>
-    <function name="DbusmenuMenuitem" link="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"/>
+    <function name="struct DbusmenuMenuitem" link="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"/>
     <function name="dbusmenu_menuitem_about_to_show_cb ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-about-to-show-cb"/>
     <function name="dbusmenu_menuitem_buildxml_slot_t ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-buildxml-slot-t"/>
-    <function name="DbusmenuMenuitemClass" link="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitemClass"/>
+    <function name="struct DbusmenuMenuitemClass" link="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitemClass"/>
     <function name="dbusmenu_menuitem_new ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-new"/>
     <function name="dbusmenu_menuitem_new_with_id ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-new-with-id"/>
     <function name="dbusmenu_menuitem_get_id ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-id"/>
@@ -94,7 +94,7 @@
     <function name="DBUSMENU_CLIENT_TYPES_SEPARATOR" link="libdbusmenu-glib-DbusmenuClient.html#DBUSMENU-CLIENT-TYPES-SEPARATOR:CAPS"/>
     <function name="DBUSMENU_CLIENT_TYPES_IMAGE" link="libdbusmenu-glib-DbusmenuClient.html#DBUSMENU-CLIENT-TYPES-IMAGE:CAPS"/>
     <function name="DbusmenuClient" link="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClient"/>
-    <function name="DbusmenuClientClass" link="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClientClass"/>
+    <function name="struct DbusmenuClientClass" link="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClientClass"/>
     <function name="DbusmenuClientTypeHandler ()" link="libdbusmenu-glib-DbusmenuClient.html#DbusmenuClientTypeHandler"/>
     <function name="dbusmenu_client_new ()" link="libdbusmenu-glib-DbusmenuClient.html#dbusmenu-client-new"/>
     <function name="dbusmenu_client_get_root ()" link="libdbusmenu-glib-DbusmenuClient.html#dbusmenu-client-get-root"/>
@@ -103,7 +103,7 @@
     <function name="dbusmenu_client_send_about_to_show ()" link="libdbusmenu-glib-DbusmenuClient.html#dbusmenu-client-send-about-to-show"/>
     <function name="DBUSMENU_CLIENT_MENUITEM_TYPE" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#DBUSMENU-CLIENT-MENUITEM-TYPE:CAPS"/>
     <function name="DbusmenuClientMenuitem" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitem"/>
-    <function name="DbusmenuClientMenuitemClass" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitemClass"/>
+    <function name="struct DbusmenuClientMenuitemClass" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#DbusmenuClientMenuitemClass"/>
     <function name="dbusmenu_client_menuitem_new ()" link="libdbusmenu-glib-DbusmenuClientMenuitem.html#dbusmenu-client-menuitem-new"/>
   </functions>
 </book>

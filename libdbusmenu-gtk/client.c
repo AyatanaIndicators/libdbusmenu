@@ -42,6 +42,7 @@ struct _DbusmenuGtkClientPrivate {
 };
 
 #define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) (DBUSMENU_GTKCLIENT(o)->priv)
+#define USE_FALLBACK_PROP  "use-fallback"
 
 /* Prototypes */
 static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
@@ -54,8 +55,8 @@ static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, Dbusm
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
 static void item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata);
 
-static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
-static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 
 static void process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value);
 static void process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value);
@@ -684,7 +685,7 @@ dbusmenu_gtkclient_menuitem_get_submenu (DbusmenuGtkClient * client, DbusmenuMen
 /* The base type handler that builds a plain ol'
    GtkMenuItem to represent, well, the GtkMenuItem */
 static gboolean
-new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
 	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
@@ -719,7 +720,7 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 /* Type handler for the seperators where it builds
    a GtkSeparator to act as the GtkMenuItem */
 static gboolean
-new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
 	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
@@ -735,6 +736,29 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 	}
 
 	return TRUE;
+}
+
+/* A little helper so we don't generate a bunch of warnings
+   about being able to set use-fallback */
+static void
+set_use_fallback (GtkWidget * widget)
+{
+	static gboolean checked = FALSE;
+	static gboolean available = FALSE;
+
+	if (!checked) {
+		available = (g_object_class_find_property(G_OBJECT_CLASS(GTK_IMAGE_GET_CLASS(widget)), USE_FALLBACK_PROP) != NULL);
+		if (!available) {
+			g_warning("The '" USE_FALLBACK_PROP "' is not available on GtkImage so icons may not show correctly.");
+		}
+		checked = TRUE;
+	}
+
+	if (available) {
+		g_object_set(G_OBJECT(widget), USE_FALLBACK_PROP, TRUE, NULL);
+	}
+
+	return;
 }
 
 /* This handler looks at property changes for items that are
@@ -789,7 +813,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 			gtkimage = NULL;
 		} else if (g_strcmp0(iconname, DBUSMENU_MENUITEM_ICON_NAME_BLANK) == 0) {
 			gtkimage = gtk_image_new();
-			g_object_set(G_OBJECT(gtkimage), "use-fallback", TRUE, NULL);
+			set_use_fallback(gtkimage);
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
 			   'rtl' depending on what we're doing. */
@@ -808,7 +832,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 			   can just convert it to this name. */
 			if (gtkimage == NULL) {
 				gtkimage = gtk_image_new_from_icon_name(finaliconname, GTK_ICON_SIZE_MENU);
-				g_object_set(G_OBJECT(gtkimage), "use-fallback", TRUE, NULL);
+				set_use_fallback(gtkimage);
 			} else {
 				gtk_image_set_from_icon_name(GTK_IMAGE(gtkimage), finaliconname, GTK_ICON_SIZE_MENU);
 			}

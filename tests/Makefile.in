@@ -40,7 +40,7 @@ TESTS = test-glib-objects-test test-glib-events test-glib-layout \
 	test-glib-properties test-glib-proxy \
 	test-glib-simple-items$(EXEEXT) test-glib-submenu test-json \
 	test-gtk-objects-test test-gtk-label test-gtk-shortcut \
-	test-gtk-reorder test-gtk-submenu
+	test-gtk-reorder test-gtk-submenu test-gtk-parser-test
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-objects$(EXEEXT) test-glib-events-client$(EXEEXT) \
 	test-glib-events-server$(EXEEXT) \
@@ -58,18 +58,13 @@ check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-simple-items$(EXEEXT) \
 	test-gtk-reorder-server$(EXEEXT) test-json-client$(EXEEXT) \
 	test-json-server$(EXEEXT) test-gtk-submenu-server$(EXEEXT) \
-	test-gtk-submenu-client$(EXEEXT)
+	test-gtk-submenu-client$(EXEEXT) test-gtk-parser$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(libdbusmenu_jsonloaderinclude_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/dbusmenu-jsonloader-0.4.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
-	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
-	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -282,6 +277,17 @@ test_gtk_objects_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_objects_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
+am_test_gtk_parser_OBJECTS =  \
+	test_gtk_parser-test-gtk-parser.$(OBJEXT)
+test_gtk_parser_OBJECTS = $(am_test_gtk_parser_OBJECTS)
+test_gtk_parser_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+test_gtk_parser_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_gtk_parser_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am_test_gtk_reorder_server_OBJECTS =  \
 	test_gtk_reorder_server-test-gtk-reorder-server.$(OBJEXT)
 test_gtk_reorder_server_OBJECTS =  \
@@ -406,7 +412,7 @@ SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(test_glib_submenu_server_SOURCES) \
 	$(test_gtk_label_client_SOURCES) \
 	$(test_gtk_label_server_SOURCES) $(test_gtk_objects_SOURCES) \
-	$(test_gtk_reorder_server_SOURCES) \
+	$(test_gtk_parser_SOURCES) $(test_gtk_reorder_server_SOURCES) \
 	$(test_gtk_shortcut_client_SOURCES) \
 	$(test_gtk_shortcut_server_SOURCES) \
 	$(test_gtk_submenu_client_SOURCES) \
@@ -429,7 +435,7 @@ DIST_SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(test_glib_submenu_server_SOURCES) \
 	$(test_gtk_label_client_SOURCES) \
 	$(test_gtk_label_server_SOURCES) $(test_gtk_objects_SOURCES) \
-	$(test_gtk_reorder_server_SOURCES) \
+	$(test_gtk_parser_SOURCES) $(test_gtk_reorder_server_SOURCES) \
 	$(test_gtk_shortcut_client_SOURCES) \
 	$(test_gtk_shortcut_server_SOURCES) \
 	$(test_gtk_submenu_client_SOURCES) \
@@ -873,6 +879,27 @@ test_gtk_objects_LDADD = \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
+
+######################
+# Test GTK Parser
+######################
+GTK_PARSER_XML_REPORT = test-gtk-parser.xml
+test_gtk_parser_SOURCES = \
+	test-gtk-parser.c
+
+test_gtk_parser_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(DBUSMENUGTK_CFLAGS) \
+	-DSRCDIR="\"$(srcdir)\"" \
+	-Wall -Werror
+
+test_gtk_parser_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	$(DBUSMENUGLIB_LIBS) \
+	$(DBUSMENUGTK_LIBS)
+
 test_gtk_label_server_SOURCES = \
 	test-gtk-label-server.c
 
@@ -1151,6 +1178,9 @@ test-gtk-label-server$(EXEEXT): $(test_gtk_label_server_OBJECTS) $(test_gtk_labe
 test-gtk-objects$(EXEEXT): $(test_gtk_objects_OBJECTS) $(test_gtk_objects_DEPENDENCIES) 
 	@rm -f test-gtk-objects$(EXEEXT)
 	$(AM_V_CCLD)$(test_gtk_objects_LINK) $(test_gtk_objects_OBJECTS) $(test_gtk_objects_LDADD) $(LIBS)
+test-gtk-parser$(EXEEXT): $(test_gtk_parser_OBJECTS) $(test_gtk_parser_DEPENDENCIES) 
+	@rm -f test-gtk-parser$(EXEEXT)
+	$(AM_V_CCLD)$(test_gtk_parser_LINK) $(test_gtk_parser_OBJECTS) $(test_gtk_parser_LDADD) $(LIBS)
 test-gtk-reorder-server$(EXEEXT): $(test_gtk_reorder_server_OBJECTS) $(test_gtk_reorder_server_DEPENDENCIES) 
 	@rm -f test-gtk-reorder-server$(EXEEXT)
 	$(AM_V_CCLD)$(test_gtk_reorder_server_LINK) $(test_gtk_reorder_server_OBJECTS) $(test_gtk_reorder_server_LDADD) $(LIBS)
@@ -1197,6 +1227,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_label_client-test-gtk-label-client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_label_server-test-gtk-label-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_objects-test-gtk-objects.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_parser-test-gtk-parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_reorder_server-test-gtk-reorder-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_shortcut_client-test-gtk-shortcut-client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gtk_shortcut_server-test-gtk-shortcut-server.Po@am__quote@
@@ -1508,6 +1539,22 @@ test_gtk_objects-test-gtk-objects.obj: test-gtk-objects.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-gtk-objects.c' object='test_gtk_objects-test-gtk-objects.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_objects_CFLAGS) $(CFLAGS) -c -o test_gtk_objects-test-gtk-objects.obj `if test -f 'test-gtk-objects.c'; then $(CYGPATH_W) 'test-gtk-objects.c'; else $(CYGPATH_W) '$(srcdir)/test-gtk-objects.c'; fi`
+
+test_gtk_parser-test-gtk-parser.o: test-gtk-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_parser_CFLAGS) $(CFLAGS) -MT test_gtk_parser-test-gtk-parser.o -MD -MP -MF $(DEPDIR)/test_gtk_parser-test-gtk-parser.Tpo -c -o test_gtk_parser-test-gtk-parser.o `test -f 'test-gtk-parser.c' || echo '$(srcdir)/'`test-gtk-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_gtk_parser-test-gtk-parser.Tpo $(DEPDIR)/test_gtk_parser-test-gtk-parser.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-gtk-parser.c' object='test_gtk_parser-test-gtk-parser.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_parser_CFLAGS) $(CFLAGS) -c -o test_gtk_parser-test-gtk-parser.o `test -f 'test-gtk-parser.c' || echo '$(srcdir)/'`test-gtk-parser.c
+
+test_gtk_parser-test-gtk-parser.obj: test-gtk-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_parser_CFLAGS) $(CFLAGS) -MT test_gtk_parser-test-gtk-parser.obj -MD -MP -MF $(DEPDIR)/test_gtk_parser-test-gtk-parser.Tpo -c -o test_gtk_parser-test-gtk-parser.obj `if test -f 'test-gtk-parser.c'; then $(CYGPATH_W) 'test-gtk-parser.c'; else $(CYGPATH_W) '$(srcdir)/test-gtk-parser.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_gtk_parser-test-gtk-parser.Tpo $(DEPDIR)/test_gtk_parser-test-gtk-parser.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-gtk-parser.c' object='test_gtk_parser-test-gtk-parser.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_parser_CFLAGS) $(CFLAGS) -c -o test_gtk_parser-test-gtk-parser.obj `if test -f 'test-gtk-parser.c'; then $(CYGPATH_W) 'test-gtk-parser.c'; else $(CYGPATH_W) '$(srcdir)/test-gtk-parser.c'; fi`
 
 test_gtk_reorder_server-test-gtk-reorder-server.o: test-gtk-reorder-server.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gtk_reorder_server_CFLAGS) $(CFLAGS) -MT test_gtk_reorder_server-test-gtk-reorder-server.o -MD -MP -MF $(DEPDIR)/test_gtk_reorder_server-test-gtk-reorder-server.Tpo -c -o test_gtk_reorder_server-test-gtk-reorder-server.o `test -f 'test-gtk-reorder-server.c' || echo '$(srcdir)/'`test-gtk-reorder-server.c
@@ -2086,6 +2133,12 @@ test-gtk-objects-test: test-gtk-objects Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_OBJECT_XML_REPORT) --parameter ./test-gtk-objects >> $@
+	@chmod +x $@
+
+test-gtk-parser-test: test-gtk-parser Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo gtester --verbose -k -o $(GTK_PARSER_XML_REPORT) ./test-gtk-parser >> $@
 	@chmod +x $@
 
 #########################
