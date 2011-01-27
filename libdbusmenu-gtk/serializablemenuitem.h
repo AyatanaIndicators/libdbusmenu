@@ -99,9 +99,9 @@ struct _DbusmenuGtkSerializableMenuItem {
 
 GType dbusmenu_gtk_serializable_menu_item_get_type (void);
 
-DbusmenuMenuitem *  dbusmenu_gtk_serializable_menu_item_build_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi);
+DbusmenuMenuitem *  dbusmenu_gtk_serializable_menu_item_build_menuitem (DbusmenuGtkSerializableMenuItem * smi);
 void                dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client, GType item_type);
-void                dbusmenu_gtk_serializable_menu_item_set_dbusmenu_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi);
+void                dbusmenu_gtk_serializable_menu_item_set_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi);
 
 G_END_DECLS
 
