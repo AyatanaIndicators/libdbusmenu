@@ -1,4 +1,4 @@
-libdbusmenu (0.3.94-0ubuntu1~ppa1) natty; urgency=low
+libdbusmenu (0.3.94-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     * Fixing setting toggle to a boolean
