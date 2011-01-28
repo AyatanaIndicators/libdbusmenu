@@ -649,6 +649,27 @@ widget_notify_cb (GtkWidget  *widget,
             }
         }
     }
+  else if (pspec->name == g_intern_static_string ("submenu"))
+    {
+      /* The underlying submenu got swapped out.  Let's see what it is now. */
+      /* First, delete any children that may exist currently. */
+      DbusmenuMenuitem * item = DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM));
+      if (item != NULL)
+        {
+          GList * children = dbusmenu_menuitem_get_children (item);
+          while (children != NULL) {
+            dbusmenu_menuitem_child_delete (item, DBUSMENU_MENUITEM(children->data));
+            children = children->next;
+          }
+        }
+
+      /* Now parse new submenu. */
+      GtkWidget * menu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
+      RecurseContext recurse = {0};
+      recurse.toplevel = gtk_widget_get_toplevel(widget);
+      recurse.parent = item;
+      parse_menu_structure_helper(menu, &recurse);
+    }
 }
 
 static gboolean
