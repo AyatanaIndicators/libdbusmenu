@@ -1441,6 +1441,9 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 	if (class->handle_event != NULL) {
 		return class->handle_event(mi, name, variant, timestamp);
 	}
+
+	g_signal_emit(G_OBJECT(mi), EVENT, g_quark_from_string(name), name, variant, timestamp, TRUE);
+
 	return;
 }
 
