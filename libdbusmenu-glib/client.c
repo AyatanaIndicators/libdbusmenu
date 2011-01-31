@@ -1553,11 +1553,6 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 	DbusmenuClient * client = DBUSMENU_CLIENT(data);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
-	if (priv->layoutcall != NULL) {
-		g_object_unref(priv->layoutcall);
-		priv->layoutcall = NULL;
-	}
-
 	GError * error = NULL;
 	GVariant * params = NULL;
 
@@ -1566,7 +1561,7 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 	if (error != NULL) {
 		g_warning("Getting layout failed: %s", error->message);
 		g_error_free(error);
-		return;
+		goto out;
 	}
 
 	guint rev;
@@ -1580,7 +1575,7 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 
 	if (parseable == 0) {
 		g_warning("Unable to parse layout!");
-		return;
+		goto out;
 	}
 
 	priv->my_revision = rev;
@@ -1596,6 +1591,13 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 		update_layout(client);
 	}
 
+out:
+	if (priv->layoutcall != NULL) {
+		g_object_unref(priv->layoutcall);
+		priv->layoutcall = NULL;
+	}
+
+	g_object_unref(G_OBJECT(client));
 	return;
 }
 
@@ -1622,6 +1624,7 @@ update_layout (DbusmenuClient * client)
 
 	priv->layoutcall = g_cancellable_new();
 
+	g_object_ref(G_OBJECT(client));
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "GetLayout",
 	                  g_variant_new("(i)", 0), /* root */
