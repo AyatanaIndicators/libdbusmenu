@@ -1,3 +1,14 @@
+libdbusmenu (0.3.95-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Fix crashes on rapidly creating and destroying client
+      and menu objects (LP: #709754)
+    * Fix dynamically changed submenus to get the parsed
+     (LP: #696896)
+    * Fix bad signature on GetProperties with no hits 
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 31 Jan 2011 15:45:37 -0600
+
 libdbusmenu (0.3.94-0ubuntu1) natty; urgency=low
 
   * New upstream release.
