@@ -129,6 +129,12 @@ struct _type_handler_t {
 	gchar * type;
 };
 
+typedef struct _properties_callback_t properties_callback_t;
+struct _properties_callback_t {
+	DbusmenuClient * client;
+	GArray * listeners;
+};
+
 
 #define DBUSMENU_CLIENT_GET_PRIVATE(o) (DBUSMENU_CLIENT(o)->priv)
 #define DBUSMENU_INTERFACE  "com.canonical.dbusmenu"
@@ -512,7 +518,8 @@ find_listener (GArray * listeners, guint index, gint id)
 static void 
 get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 {
-	GArray * listeners = (GArray *)user_data;
+	properties_callback_t * cbdata = (properties_callback_t *)user_data;
+	GArray * listeners = cbdata->listeners;
 	int i;
 	GError * error = NULL;
 	GVariant * params = NULL;
@@ -526,9 +533,8 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 			properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
 			listener->callback(NULL, error, listener->user_data);
 		}
-		g_array_free(listeners, TRUE);
 		g_error_free(error);
-		return;
+		goto out;
 	}
 
 	/* Callback all the folks we can find */
@@ -575,8 +581,11 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 		g_error_free(localerror);
 	}
 
+out:
 	/* Clean up */
 	g_array_free(listeners, TRUE);
+	g_object_unref(cbdata->client);
+	g_free(user_data);
 
 	return;
 }
@@ -586,6 +595,7 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 static gboolean
 get_properties_idle (gpointer user_data)
 {
+	properties_callback_t * cbdata = NULL;
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
 	g_return_val_if_fail(priv->menuproxy != NULL, TRUE);
 
@@ -616,6 +626,11 @@ get_properties_idle (gpointer user_data)
 	g_variant_builder_add_value(&builder, variant_props);
 	GVariant * variant_params = g_variant_builder_end(&builder);
 
+	cbdata = g_new(properties_callback_t, 1);
+	cbdata->listeners = priv->delayed_property_listeners;
+	cbdata->client = DBUSMENU_CLIENT(user_data);
+	g_object_ref(G_OBJECT(user_data));
+
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "GetGroupProperties",
 	                  variant_params,
@@ -623,7 +638,7 @@ get_properties_idle (gpointer user_data)
 	                  -1,   /* timeout */
 	                  NULL, /* cancellable */
 	                  get_properties_callback,
-	                  priv->delayed_property_listeners);
+	                  cbdata);
 
 	/* Free properties */
 	gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
