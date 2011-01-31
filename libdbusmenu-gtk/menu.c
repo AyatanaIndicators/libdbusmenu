@@ -46,6 +46,7 @@ enum {
 /* Private */
 struct _DbusmenuGtkMenuPrivate {
 	DbusmenuGtkClient * client;
+	DbusmenuMenuitem * root;
 
 	gchar * dbus_object;
 	gchar * dbus_name;
@@ -63,6 +64,8 @@ static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * 
 /* Internal */
 static void build_client (DbusmenuGtkMenu * self);
 static void child_realized (DbusmenuMenuitem * child, gpointer userdata);
+static void remove_child_signals (gpointer data, gpointer user_data);
+static void root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGtkMenu * menu);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkMenu, dbusmenu_gtkmenu, GTK_TYPE_MENU);
@@ -126,6 +129,12 @@ static void
 dbusmenu_gtkmenu_dispose (GObject *object)
 {
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(object);
+
+	/* Remove signals from the root */
+	if (priv->root != NULL) {
+		/* This will clear the root */
+		root_changed(priv->client, NULL, DBUSMENU_GTKMENU(object));
+	}
 
 	if (priv->client != NULL) {
 		g_object_unref(G_OBJECT(priv->client));
@@ -273,7 +282,7 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 	#endif
 
 	/* Remove signal for realized */
-	g_signal_handlers_disconnect_by_func(G_OBJECT(child), child_realized, menu);
+	remove_child_signals(child, menu);
 
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 	GtkWidget * item = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
@@ -312,14 +321,40 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 	return;
 }
 
+/* Remove any signals we attached to children -- just realized right now */
+static void
+remove_child_signals (gpointer data, gpointer user_data)
+{
+	g_signal_handlers_disconnect_by_func(G_OBJECT(data), child_realized, user_data);
+	return;
+}
+
 /* When the root menuitem changes we need to resetup things so that
    we're back in the game. */
 static void
 root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGtkMenu * menu) {
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+
+	/* Clear out our interest in the old root */
+	if (priv->root != NULL) {
+		GList * children = dbusmenu_menuitem_get_children(priv->root);
+		g_list_foreach(children, remove_child_signals, menu);
+
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_added, menu);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_moved, menu);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_delete, menu);
+
+		g_object_unref(priv->root);
+		priv->root = NULL;
+	}
+
 	if (newroot == NULL) {
 		gtk_widget_hide(GTK_WIDGET(menu));
 		return;
 	}
+
+	priv->root = newroot;
+	g_object_ref(priv->root);
 
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(root_child_added),  menu);
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(root_child_moved),  menu);
