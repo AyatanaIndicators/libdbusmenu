@@ -666,11 +666,19 @@ widget_notify_cb (GtkWidget  *widget,
         }
 
       /* Now parse new submenu. */
-      GtkWidget * menu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
       RecurseContext recurse = {0};
       recurse.toplevel = gtk_widget_get_toplevel(widget);
       recurse.parent = item;
-      parse_menu_structure_helper(menu, &recurse);
+
+	  if (item != NULL) {
+        GtkWidget * menu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
+        parse_menu_structure_helper(menu, &recurse);
+      } else {
+        /* Note: it would be really odd that we wouldn't have a cached
+           item, but we should handle that appropriately. */
+        parse_menu_structure_helper(widget, &recurse);
+        g_object_unref(G_OBJECT(recurse.parent));
+      }
     }
 }
 
