@@ -271,6 +271,10 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Root child deleted");
 	#endif
+
+	/* Remove signal for realized */
+	g_signal_handlers_disconnect_by_func(G_OBJECT(child), child_realized, menu);
+
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 	GtkWidget * item = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
 	if (item != NULL) {
