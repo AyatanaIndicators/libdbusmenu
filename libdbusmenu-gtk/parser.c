@@ -656,11 +656,13 @@ widget_notify_cb (GtkWidget  *widget,
       DbusmenuMenuitem * item = DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM));
       if (item != NULL)
         {
-          GList * children = dbusmenu_menuitem_get_children (item);
-          while (children != NULL) {
-            dbusmenu_menuitem_child_delete (item, DBUSMENU_MENUITEM(children->data));
-            children = children->next;
+          GList * children = dbusmenu_menuitem_take_children (item);
+          GList * child = children;
+          while (child != NULL) {
+            g_object_unref (G_OBJECT(child->data));
+            child = child->next;
           }
+          g_list_free(children);
         }
 
       /* Now parse new submenu. */
