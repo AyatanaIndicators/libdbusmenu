@@ -946,9 +946,9 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		ret = g_variant_builder_end(&builder);
 	} else {
 		GError * error = NULL;
-		ret = g_variant_parse(g_variant_type_new("a(ia(sv))"), "[]", NULL, NULL, NULL);
+		ret = g_variant_parse(g_variant_type_new("a(ia{sv})"), "[]", NULL, NULL, NULL);
 		if (error != NULL) {
-			g_warning("Unable to parse '[]' as a 'a(ia(sv))': %s", error->message);
+			g_warning("Unable to parse '[]' as a 'a(ia{sv})': %s", error->message);
 			g_error_free(error);
 			ret = NULL;
 		}
