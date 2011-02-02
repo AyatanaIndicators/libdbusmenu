@@ -102,6 +102,21 @@ dbusmenu_cache_freed (gpointer data, GObject * obj)
 	   the weak ref as well. */
 	g_object_steal_data(G_OBJECT(data), CACHED_MENUITEM);
 	g_signal_handlers_disconnect_by_func(data, G_CALLBACK(widget_notify_cb), obj);
+
+	GtkWidget *widget = GTK_WIDGET(data);
+	GtkWidget *label = find_menu_label (widget);
+	if (label != NULL) {
+		g_signal_handlers_disconnect_by_func(label, G_CALLBACK(label_notify_cb), obj);
+	}
+
+	if (GTK_IS_ACTIVATABLE (widget)) {
+		GtkAction *action = gtk_activatable_get_related_action (GTK_ACTIVATABLE (widget));
+
+		if (action) {
+	        	g_signal_handlers_disconnect_by_func(action, G_CALLBACK(action_notify_cb), obj);
+		}
+	}
+
 	return;
 }
 
