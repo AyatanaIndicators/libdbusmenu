@@ -5,7 +5,7 @@ libdbusmenu (0.3.96-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 03 Feb 2011 14:01:31 -0600
 
-libdbusmenu (0.3.95-0ubuntu1~ppa1) natty; urgency=low
+libdbusmenu (0.3.95-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     * Fix crashes on rapidly creating and destroying client
