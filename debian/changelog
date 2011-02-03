@@ -1,9 +1,9 @@
-libdbusmenu (0.3.96-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.96-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * Remove signal handlers for correct objects
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Feb 2011 14:01:31 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Feb 2011 14:11:16 -0600
 
 libdbusmenu (0.3.95-0ubuntu1) natty; urgency=low
 
