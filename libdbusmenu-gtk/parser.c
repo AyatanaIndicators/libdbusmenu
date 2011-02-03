@@ -31,6 +31,14 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "serializablemenuitem.h"
 
 #define CACHED_MENUITEM  "dbusmenu-gtk-parser-cached-item"
+#define PARSER_DATA      "dbusmenu-gtk-parser-data"
+
+typedef struct _ParserData
+{
+  GtkWidget *label;
+  GtkAction *action;
+  GtkWidget *widget;
+} ParserData;
 
 typedef struct _RecurseContext
 {
@@ -102,6 +110,24 @@ dbusmenu_cache_freed (gpointer data, GObject * obj)
 	   the weak ref as well. */
 	g_object_steal_data(G_OBJECT(data), CACHED_MENUITEM);
 	g_signal_handlers_disconnect_by_func(data, G_CALLBACK(widget_notify_cb), obj);
+
+	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
+
+	if (pdata != NULL && pdata->label != NULL) {
+		g_signal_handlers_disconnect_by_func(pdata->label, G_CALLBACK(label_notify_cb), obj);
+		g_object_remove_weak_pointer(G_OBJECT(pdata->label), (gpointer*)&pdata->label);
+	}
+
+	if (pdata != NULL && pdata->action != NULL) {
+		g_signal_handlers_disconnect_by_func(pdata->action, G_CALLBACK(action_notify_cb), obj);
+		g_object_remove_weak_pointer(G_OBJECT(pdata->action), (gpointer*)&pdata->action);
+	}
+
+	if (pdata != NULL && pdata->widget != NULL) {
+		g_signal_handlers_disconnect_by_func(pdata->widget, G_CALLBACK(widget_notify_cb), obj);
+		g_object_remove_weak_pointer(G_OBJECT(pdata->widget), (gpointer*)&pdata->widget);
+	}
+
 	return;
 }
 
@@ -110,8 +136,10 @@ dbusmenu_cache_freed (gpointer data, GObject * obj)
 static void
 object_cache_freed (gpointer data)
 {
-	if (!G_IS_OBJECT(data)) return;
-	g_object_weak_unref(G_OBJECT(data), dbusmenu_cache_freed, data);
+	// TODO: make this have access to both data and obj so we can call these
+	//if (!G_IS_OBJECT(obj)) return;
+	//g_object_weak_unref(G_OBJECT(obj), dbusmenu_cache_freed, data);
+	//dbusmenu_cache_freed(data, obj);
 	return;
 }
 
@@ -239,6 +267,9 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
     {
       DbusmenuMenuitem *mi = dbusmenu_menuitem_new ();
 
+      ParserData *pdata = g_new0 (ParserData, 1);
+      g_object_set_data_full (G_OBJECT (mi), PARSER_DATA, pdata, g_free);
+
       gboolean visible = FALSE;
       gboolean sensitive = FALSE;
       if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
@@ -313,10 +344,12 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
             {
               // Sometimes, an app will directly find and modify the label
               // (like empathy), so watch the label especially for that.
+              pdata->label = label;
               g_signal_connect (G_OBJECT (label),
                                 "notify",
                                 G_CALLBACK (label_notify_cb),
                                 mi);
+              g_object_add_weak_pointer(G_OBJECT (label), (gpointer*)&pdata->label);
             }
 
           if (GTK_IS_ACTIVATABLE (widget))
@@ -332,10 +365,12 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                       visible = gtk_action_is_visible (action);
                       sensitive = gtk_action_is_sensitive (action);
 
+                      pdata->action = action;
                       g_signal_connect_object (action, "notify",
                                                G_CALLBACK (action_notify_cb),
                                                mi,
                                                G_CONNECT_AFTER);
+                      g_object_add_weak_pointer(G_OBJECT (action), (gpointer*)&pdata->action);
                     }
                 }
             }
@@ -367,10 +402,13 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
                                            sensitive);
 
+      pdata->widget = widget;
       g_signal_connect (widget,
                         "notify",
                         G_CALLBACK (widget_notify_cb),
                         mi);
+      g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
+
       return mi;
     }
 
