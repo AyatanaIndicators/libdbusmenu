@@ -547,7 +547,6 @@ take_children_signal (gpointer data, gpointer user_data)
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(user_data), LABEL(user_data), ID(data), LABEL(data));
 	#endif
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
-	g_object_unref(G_OBJECT(data));
 	return;
 }
 
@@ -561,7 +560,8 @@ take_children_signal (gpointer data, gpointer user_data)
 	on the children it has taken.  A lot of responsibility involved
 	in taking children.
 
-	Return value: A #GList of pointers to #DbusmenuMenuitem objects.
+	Return value: (transfer full) (array) (element-type Dbusmenu.Menuitem)
+	A #GList of pointers to #DbusmenuMenuitem objects.
 */
 GList *
 dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
