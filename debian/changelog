@@ -1,3 +1,10 @@
+libdbusmenu (0.3.96-0ubuntu3~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Parser fixes for children added in GtkMenuShell (LP: #)
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Feb 2011 13:35:34 -0600
+
 libdbusmenu (0.3.96-0ubuntu2) natty; urgency=low
 
   * libdbusmenu-glib/menuitem.c
