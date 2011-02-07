@@ -633,12 +633,25 @@ layout_update_signal (DbusmenuServer * server)
 	return;
 }
 
-static void 
-menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * variant, DbusmenuServer * server)
-{
-	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+typedef struct _prop_idle_item_t prop_idle_item_t;
+struct _prop_idle_item_t {
+	guint id;
+	GArray * array;
+};
 
-	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, variant, TRUE);
+typedef struct _prop_idle_prop_t prop_idle_prop_t;
+struct _prop_idle_prop_t {
+	gchar * property;
+	GVariant * variant;
+};
+
+/* Works in the idle to send a set of property updates so that they'll
+   all update in a single dbus message. */
+static gboolean
+menuitem_property_idle (gpointer user_data)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(user_data);
+
 
 	if (priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
@@ -649,6 +662,82 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 		                              g_variant_new("(isv)", dbusmenu_menuitem_get_id(mi), property, variant),
 		                              NULL);
 	}
+
+	return FALSE;
+}
+
+static void 
+menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * variant, DbusmenuServer * server)
+{
+	int i;
+	guint item_id;
+
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	item_id = dbusmenu_menuitem_get_id(mi);
+
+	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, item_id, property, variant, TRUE);
+
+	/* See if we have a property array, if not, we need to
+	   build one of these suckers */
+	if (priv->prop_array == NULL) {
+		priv->prop_array = g_array_new();
+	}
+
+	/* Look to see if we already have this item in the list
+	   and use it if so */
+	prop_idle_item_t * item = NULL;
+	for (i = 0; i < priv->prop_array->len; i++) {
+		prop_idle_item_t * iitem = &g_array_index(prop_idle_item_t, i);
+		if (iitem->id == item_id) {
+			item = iitem;
+			break;
+		}
+	}
+
+	GArray * properties = NULL;
+	/* If not, we'll need to build ourselves one */
+	if (item == NULL) {
+		prop_idle_item_t myitem;
+		myitem.id = item_id;
+		myitem.array = g_array_new();
+
+		g_array_append(priv->prop_array, myitem);
+		properties = myitem.array;
+	} else {
+		properties = item->array;
+	}
+
+	/* Check to see if this property is in the list */
+	prop_idle_prop_t * prop = NULL;
+	for (i = 0; i < properties->len; i++) {
+		prop_idle_prop_t * iprop = &g_array_index(properties, prop_idle_prop_t, i);
+		if (g_strcmp0(iprop->name, property)) {
+			prop = iprop;
+			break;
+		}
+	}
+
+	/* If so, we need to swap the value */
+	if (prop != NULL) {
+		g_variant_unref(prop->variant);
+		prop->variant = variant;
+	} else {
+	/* else we need to add it */
+		prop_idle_prop_t myprop;
+		myprop.property = g_strdup(property);
+		myprop.variant = variant;
+
+		g_array_append(properties, myprop);
+	}
+	g_variant_ref(variant);
+
+	/* Check to see if the idle is already queued, and queue it
+	   if not. */
+	if (priv->property_idle == 0) {
+		priv->property_idle = g_idle_add(menuitem_property_idle, server);
+	}
+
 	return;
 }
 
