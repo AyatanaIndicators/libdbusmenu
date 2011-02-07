@@ -54,6 +54,9 @@ struct _DbusmenuServerPrivate
 	GDBusConnection * bus;
 	GCancellable * bus_lookup;
 	guint dbus_registration;
+
+	GArray * prop_array;
+	guint property_idle;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) (DBUSMENU_SERVER(o)->priv)
@@ -156,6 +159,7 @@ static void       menuitem_signals_create     (DbusmenuMenuitem * mi,
 static void       menuitem_signals_remove     (DbusmenuMenuitem * mi,
                                                gpointer data);
 static GQuark     error_quark                 (void);
+static void       prop_array_teardown         (GArray * prop_array);
 static void       bus_get_layout              (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
@@ -354,6 +358,17 @@ dbusmenu_server_dispose (GObject *object)
 
 	if (priv->layout_idle != 0) {
 		g_source_remove(priv->layout_idle);
+		priv->layout_idle = 0;
+	}
+	
+	if (priv->property_idle != 0) {
+		g_source_remove(priv->property_idle);
+		priv->property_idle = 0;
+	}
+
+	if (priv->prop_array != NULL) {
+		prop_array_teardown(priv->prop_array);
+		priv->prop_array = NULL;
 	}
 
 	if (priv->root != NULL) {
@@ -645,13 +660,22 @@ struct _prop_idle_prop_t {
 	GVariant * variant;
 };
 
+/* Takes appart our data structure so we don't leak any
+   memory or references. */
+static void
+prop_array_teardown (GArray * prop_array)
+{
+
+	return;
+}
+
 /* Works in the idle to send a set of property updates so that they'll
    all update in a single dbus message. */
 static gboolean
 menuitem_property_idle (gpointer user_data)
 {
+/*
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(user_data);
-
 
 	if (priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
@@ -662,7 +686,7 @@ menuitem_property_idle (gpointer user_data)
 		                              g_variant_new("(isv)", dbusmenu_menuitem_get_id(mi), property, variant),
 		                              NULL);
 	}
-
+*/
 	return FALSE;
 }
 
@@ -681,14 +705,14 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	/* See if we have a property array, if not, we need to
 	   build one of these suckers */
 	if (priv->prop_array == NULL) {
-		priv->prop_array = g_array_new();
+		priv->prop_array = g_array_new(FALSE, FALSE, sizeof(prop_idle_item_t));
 	}
 
 	/* Look to see if we already have this item in the list
 	   and use it if so */
 	prop_idle_item_t * item = NULL;
 	for (i = 0; i < priv->prop_array->len; i++) {
-		prop_idle_item_t * iitem = &g_array_index(prop_idle_item_t, i);
+		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
 		if (iitem->id == item_id) {
 			item = iitem;
 			break;
@@ -700,9 +724,9 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	if (item == NULL) {
 		prop_idle_item_t myitem;
 		myitem.id = item_id;
-		myitem.array = g_array_new();
+		myitem.array = g_array_new(FALSE, FALSE, sizeof(prop_idle_prop_t));
 
-		g_array_append(priv->prop_array, myitem);
+		g_array_append_val(priv->prop_array, myitem);
 		properties = myitem.array;
 	} else {
 		properties = item->array;
@@ -712,7 +736,7 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	prop_idle_prop_t * prop = NULL;
 	for (i = 0; i < properties->len; i++) {
 		prop_idle_prop_t * iprop = &g_array_index(properties, prop_idle_prop_t, i);
-		if (g_strcmp0(iprop->name, property)) {
+		if (g_strcmp0(iprop->property, property)) {
 			prop = iprop;
 			break;
 		}
@@ -728,7 +752,7 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 		myprop.property = g_strdup(property);
 		myprop.variant = variant;
 
-		g_array_append(properties, myprop);
+		g_array_append_val(properties, myprop);
 	}
 	g_variant_ref(variant);
 
