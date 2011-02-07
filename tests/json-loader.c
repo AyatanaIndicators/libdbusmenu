@@ -20,115 +20,76 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "json-loader.h"
-#include <dbus/dbus-gtype-specialized.h>
 
-static GValue *
-node2value (JsonNode * node)
+static GVariant * node2variant (JsonNode * node);
+
+static void
+array_foreach (JsonArray * array, guint index, JsonNode * node, gpointer user_data)
+{
+	GVariantBuilder * builder = (GVariantBuilder *)user_data;
+	GVariant * variant = node2variant(node);
+	if (variant != NULL) {
+		g_variant_builder_add_value(builder, variant);
+	}
+	return;
+}
+
+static void
+object_foreach (JsonObject * array, const gchar * member, JsonNode * node, gpointer user_data)
+{
+	GVariantBuilder * builder = (GVariantBuilder *)user_data;
+	GVariant * variant = node2variant(node);
+	if (variant != NULL) {
+		g_variant_builder_add(builder, "{sv}", member, variant);
+	}
+	return;
+}
+
+static GVariant *
+node2variant (JsonNode * node)
 {
 	if (node == NULL) {
 		return NULL;
 	}
 
-	GValue * value = g_new0(GValue, 1);
-
 	if (JSON_NODE_TYPE(node) == JSON_NODE_VALUE) {
-		json_node_get_value(node, value);
-		return value;
+		switch (json_node_get_value_type(node)) {
+		case G_TYPE_INT:
+		case G_TYPE_INT64:
+			return g_variant_new_int32(json_node_get_int(node));
+		case G_TYPE_DOUBLE:
+		case G_TYPE_FLOAT:
+			return g_variant_new_double(json_node_get_double(node));
+		case G_TYPE_BOOLEAN:
+			return g_variant_new_boolean(json_node_get_boolean(node));
+		case G_TYPE_STRING:
+			return g_variant_new_string(json_node_get_string(node));
+		default:
+			g_assert_not_reached();
+		}
 	}
 
 	if (JSON_NODE_TYPE(node) == JSON_NODE_ARRAY) {
+		GVariantBuilder builder;
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+
 		JsonArray * array = json_node_get_array(node);
-		JsonNode * first = json_array_get_element(array, 0);
+		json_array_foreach_element(array, array_foreach, &builder);
 
-		if (JSON_NODE_TYPE(first) == JSON_NODE_VALUE) {
-			GValue subvalue = {0};
-			json_node_get_value(first, &subvalue);
-
-			if (G_VALUE_TYPE(&subvalue) == G_TYPE_STRING) {
-				GArray * garray = g_array_sized_new(TRUE, TRUE, sizeof(gchar *), json_array_get_length(array));
-				g_value_init(value, G_TYPE_STRV);
-				g_value_take_boxed(value, garray->data);
-
-				int i;
-				for (i = 0; i < json_array_get_length(array); i++) {
-					const gchar * str = json_node_get_string(json_array_get_element(array, i));
-					gchar * dupstr = g_strdup(str);
-					g_array_append_val(garray, dupstr);
-				}
-
-				g_array_free(garray, FALSE);
-			} else {
-				GValueArray * varray = g_value_array_new(json_array_get_length(array));
-				g_value_init(value, G_TYPE_VALUE_ARRAY);
-				g_value_take_boxed(value, varray);
-
-				g_value_array_append(varray, &subvalue);
-				g_value_unset(&subvalue);
-
-				int i;
-				for (i = 1; i < json_array_get_length(array); i++) {
-					json_node_get_value(first, &subvalue);
-					g_value_array_append(varray, &subvalue);
-					g_value_unset(&subvalue);
-				}
-			}
-
-		} else {
-			GValue * subvalue = node2value(first);
-			GType type = dbus_g_type_get_collection("GPtrArray", G_VALUE_TYPE(subvalue));
-			gpointer * wrapper = dbus_g_type_specialized_construct(type);
-
-			g_value_init(value, type);
-			g_value_take_boxed(value, wrapper);
-
-			DBusGTypeSpecializedAppendContext ctx;
-			dbus_g_type_specialized_init_append(value, &ctx);
-
-			dbus_g_type_specialized_collection_append(&ctx, subvalue);
-			int i;
-			for (i = 1; i < json_array_get_length(array); i++) {
-				GValue * subvalue = node2value(node);
-				dbus_g_type_specialized_collection_append(&ctx, subvalue);
-			}
-
-			dbus_g_type_specialized_collection_end_append(&ctx);
-		}
+		return g_variant_builder_end(&builder);
 	}
 
 	if (JSON_NODE_TYPE(node) == JSON_NODE_OBJECT) {
-		JsonObject * obj = json_node_get_object(node);
+		GVariantBuilder builder;
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_DICTIONARY);
 
-		GType type = dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE);
-		GHashTable * hash = (GHashTable *)dbus_g_type_specialized_construct(type);
+		JsonObject * array = json_node_get_object(node);
+		json_object_foreach_member(array, object_foreach, &builder);
 
-		g_value_init(value, type);
-		g_value_take_boxed(value, hash);
-
-		DBusGTypeSpecializedAppendContext ctx;
-		dbus_g_type_specialized_init_append(value, &ctx);
-		
-		GList * members = NULL;
-		for (members = json_object_get_members(obj); members != NULL; members = g_list_next(members)) {
-			const gchar * member = members->data;
-
-			JsonNode * lnode = json_object_get_member(obj, member);
-			GValue * value = node2value(lnode);
-
-			if (value != NULL) {
-				GValue name = {0};
-				g_value_init(&name, G_TYPE_STRING);
-				g_value_set_static_string(&name, member);
-
-				dbus_g_type_specialized_map_append(&ctx, &name, value);
-			
-				g_value_unset(&name);
-				g_value_unset(value);
-				g_free(value);
-			}
-		}
+		return g_variant_builder_end(&builder);
 	}
 
-	return value;
+	return NULL;
 }
 
 static void
@@ -144,12 +105,11 @@ set_props (DbusmenuMenuitem * mi, JsonObject * node)
 		if (!g_strcmp0(member, "submenu")) { continue; }
 
 		JsonNode * lnode = json_object_get_member(node, member);
-		GValue * value = node2value(lnode);
+		GVariant * variant = node2variant(lnode);
 
-		if (value != NULL) {
-			dbusmenu_menuitem_property_set_value(mi, member, value);
-			g_value_unset(value);
-			g_free(value);
+		if (variant != NULL) {
+			dbusmenu_menuitem_property_set_variant(mi, member, variant);
+			g_variant_unref(variant);
 		}
 	}
 

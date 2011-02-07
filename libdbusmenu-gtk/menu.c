@@ -44,16 +44,15 @@ enum {
 };
 
 /* Private */
-typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
 struct _DbusmenuGtkMenuPrivate {
 	DbusmenuGtkClient * client;
+	DbusmenuMenuitem * root;
 
 	gchar * dbus_object;
 	gchar * dbus_name;
 };
 
-#define DBUSMENU_GTKMENU_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuPrivate))
+#define DBUSMENU_GTKMENU_GET_PRIVATE(o)  (DBUSMENU_GTKMENU(o)->priv)
 
 /* Prototypes */
 static void dbusmenu_gtkmenu_class_init (DbusmenuGtkMenuClass *klass);
@@ -65,6 +64,8 @@ static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * 
 /* Internal */
 static void build_client (DbusmenuGtkMenu * self);
 static void child_realized (DbusmenuMenuitem * child, gpointer userdata);
+static void remove_child_signals (gpointer data, gpointer user_data);
+static void root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGtkMenu * menu);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkMenu, dbusmenu_gtkmenu, GTK_TYPE_MENU);
@@ -110,6 +111,8 @@ menu_focus_cb(DbusmenuGtkMenu * menu, gpointer userdata)
 static void
 dbusmenu_gtkmenu_init (DbusmenuGtkMenu *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_GTKMENU_TYPE, DbusmenuGtkMenuPrivate);
+
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(self);
 
 	priv->client = NULL;
@@ -126,6 +129,12 @@ static void
 dbusmenu_gtkmenu_dispose (GObject *object)
 {
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(object);
+
+	/* Remove signals from the root */
+	if (priv->root != NULL) {
+		/* This will clear the root */
+		root_changed(priv->client, NULL, DBUSMENU_GTKMENU(object));
+	}
 
 	if (priv->client != NULL) {
 		g_object_unref(G_OBJECT(priv->client));
@@ -237,7 +246,7 @@ root_child_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint posit
 	GtkMenuItem * mi = dbusmenu_gtkclient_menuitem_get(priv->client, child);
 	if (mi != NULL) {
 		GtkWidget * item = GTK_WIDGET(mi);
-		gtk_menu_insert(GTK_MENU(menu), item, dbusmenu_menuitem_get_position_realized(child, root));
+		gtk_menu_shell_insert(GTK_MENU_SHELL(menu), item, dbusmenu_menuitem_get_position_realized(child, root));
 		#ifdef MASSIVEDEBUGGING
 		menu_pos_t menu_pos;
 		menu_pos.mi = mi;
@@ -271,6 +280,10 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Root child deleted");
 	#endif
+
+	/* Remove signal for realized */
+	remove_child_signals(child, menu);
+
 	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
 	GtkWidget * item = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
 	if (item != NULL) {
@@ -299,7 +312,7 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 	GtkWidget * child_widget = GTK_WIDGET(dbusmenu_gtkclient_menuitem_get(priv->client, child));
 
 	if (child_widget != NULL) {
-		gtk_menu_append(menu, child_widget);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), child_widget);
 		gtk_menu_reorder_child(GTK_MENU(menu), child_widget, dbusmenu_menuitem_get_position_realized(child, dbusmenu_client_get_root(DBUSMENU_CLIENT(priv->client))));
 	} else {
 		g_warning("Child is realized, but doesn't have a GTK Widget!");
@@ -308,14 +321,40 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 	return;
 }
 
+/* Remove any signals we attached to children -- just realized right now */
+static void
+remove_child_signals (gpointer data, gpointer user_data)
+{
+	g_signal_handlers_disconnect_by_func(G_OBJECT(data), child_realized, user_data);
+	return;
+}
+
 /* When the root menuitem changes we need to resetup things so that
    we're back in the game. */
 static void
 root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGtkMenu * menu) {
+	DbusmenuGtkMenuPrivate * priv = DBUSMENU_GTKMENU_GET_PRIVATE(menu);
+
+	/* Clear out our interest in the old root */
+	if (priv->root != NULL) {
+		GList * children = dbusmenu_menuitem_get_children(priv->root);
+		g_list_foreach(children, remove_child_signals, menu);
+
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_added, menu);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_moved, menu);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_delete, menu);
+
+		g_object_unref(priv->root);
+		priv->root = NULL;
+	}
+
 	if (newroot == NULL) {
 		gtk_widget_hide(GTK_WIDGET(menu));
 		return;
 	}
+
+	priv->root = newroot;
+	g_object_ref(priv->root);
 
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(root_child_added),  menu);
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(root_child_moved),  menu);

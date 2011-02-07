@@ -45,7 +45,7 @@ static void dbusmenu_client_menuitem_class_init (DbusmenuClientMenuitemClass *kl
 static void dbusmenu_client_menuitem_init       (DbusmenuClientMenuitem *self);
 static void dbusmenu_client_menuitem_dispose    (GObject *object);
 static void dbusmenu_client_menuitem_finalize   (GObject *object);
-static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp);
 static void send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 G_DEFINE_TYPE (DbusmenuClientMenuitem, dbusmenu_client_menuitem, DBUSMENU_TYPE_MENUITEM);
@@ -102,10 +102,10 @@ dbusmenu_client_menuitem_new (gint id, DbusmenuClient * client)
 
 /* Passes the event signal on through the client. */
 static void
-handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp)
 {
 	DbusmenuClientMenuitemPrivate * priv = DBUSMENU_CLIENT_MENUITEM_GET_PRIVATE(mi);
-	dbusmenu_client_send_event(priv->client, dbusmenu_menuitem_get_id(mi), name, value, timestamp);
+	dbusmenu_client_send_event(priv->client, dbusmenu_menuitem_get_id(mi), name, variant, timestamp);
 	return;
 }
 

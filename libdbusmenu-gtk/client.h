@@ -43,6 +43,8 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED  DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED
 
+typedef struct _DbusmenuGtkClientPrivate DbusmenuGtkClientPrivate;
+
 /**
 	DbusmenuGtkClientClass:
 	@parent_class: #GtkMenuClass
@@ -50,6 +52,8 @@ G_BEGIN_DECLS
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
 	@reserved4: Reserved for future use.
+	@reserved5: Reserved for future use.
+	@reserved6: Reserved for future use.
 */
 typedef struct _DbusmenuGtkClientClass DbusmenuGtkClientClass;
 struct _DbusmenuGtkClientClass {
@@ -58,11 +62,13 @@ struct _DbusmenuGtkClientClass {
 	/* Signals */
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 
-	/* Reserved */
+	/*< Private >*/
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
 	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 /**
@@ -72,6 +78,9 @@ struct _DbusmenuGtkClientClass {
 typedef struct _DbusmenuGtkClient      DbusmenuGtkClient;
 struct _DbusmenuGtkClient {
 	DbusmenuClient parent;
+
+	/*< Private >*/
+	DbusmenuGtkClientPrivate * priv;
 };
 
 GType dbusmenu_gtkclient_get_type (void);

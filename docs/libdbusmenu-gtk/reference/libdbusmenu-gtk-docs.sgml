@@ -13,8 +13,8 @@
     <title>API</title>
         <xi:include href="xml/menu.xml"/>
     <xi:include href="xml/client.xml"/>
-    <xi:include href="xml/genericmenuitem.xml"/>
     <xi:include href="xml/menuitem.xml"/>
+    <xi:include href="xml/serializablemenuitem.xml"/>
 
   </chapter>
   <chapter id="object-tree">

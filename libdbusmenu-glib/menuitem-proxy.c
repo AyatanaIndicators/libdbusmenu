@@ -32,7 +32,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "menuitem-proxy.h"
 
-typedef struct _DbusmenuMenuitemProxyPrivate DbusmenuMenuitemProxyPrivate;
 struct _DbusmenuMenuitemProxyPrivate {
 	DbusmenuMenuitem * mi;
 	gulong sig_property_changed;
@@ -49,8 +48,7 @@ enum {
 
 #define PROP_MENU_ITEM_S   "menu-item"
 
-#define DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_MENUITEM_PROXY, DbusmenuMenuitemProxyPrivate))
+#define DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(o) (DBUSMENU_MENUITEM_PROXY(o)->priv)
 
 static void dbusmenu_menuitem_proxy_class_init (DbusmenuMenuitemProxyClass *klass);
 static void dbusmenu_menuitem_proxy_init       (DbusmenuMenuitemProxy *self);
@@ -58,7 +56,7 @@ static void dbusmenu_menuitem_proxy_dispose    (GObject *object);
 static void dbusmenu_menuitem_proxy_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
-static void handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
 static void add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi);
 static void remove_menuitem (DbusmenuMenuitemProxy * pmi);
 
@@ -92,6 +90,8 @@ dbusmenu_menuitem_proxy_class_init (DbusmenuMenuitemProxyClass *klass)
 static void
 dbusmenu_menuitem_proxy_init (DbusmenuMenuitemProxy *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_TYPE_MENUITEM_PROXY, DbusmenuMenuitemProxyPrivate);
+
 	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(self);
 
 	priv->mi = NULL;
@@ -162,21 +162,21 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 /* Takes the event and passes it along to the item that we're
    playing proxy for. */
 static void
-handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp)
+handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM_PROXY(mi));
 	DbusmenuMenuitemProxyPrivate * priv = DBUSMENU_MENUITEM_PROXY_GET_PRIVATE(mi);
 	g_return_if_fail(priv->mi != NULL);
-	return dbusmenu_menuitem_handle_event(priv->mi, name, value, timestamp);
+	return dbusmenu_menuitem_handle_event(priv->mi, name, variant, timestamp);
 }
 
 /* Watches a property change and makes sure to put that value
    into our property list. */
 static void
-proxy_item_property_changed (DbusmenuMenuitem * mi, gchar * property, GValue * value, gpointer user_data)
+proxy_item_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * variant, gpointer user_data)
 {
 	DbusmenuMenuitemProxy * pmi = DBUSMENU_MENUITEM_PROXY(user_data);
-	dbusmenu_menuitem_property_set_value(DBUSMENU_MENUITEM(pmi), property, value);
+	dbusmenu_menuitem_property_set_variant(DBUSMENU_MENUITEM(pmi), property, variant);
 	return;
 }
 
@@ -273,7 +273,7 @@ add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
 	GList * prop;
 	for (prop = props; prop != NULL; prop = g_list_next(prop)) {
 		gchar * prop_name = (gchar *)prop->data;
-		dbusmenu_menuitem_property_set_value(DBUSMENU_MENUITEM(pmi), prop_name, dbusmenu_menuitem_property_get_value(priv->mi, prop_name));
+		dbusmenu_menuitem_property_set_variant(DBUSMENU_MENUITEM(pmi), prop_name, dbusmenu_menuitem_property_get_variant(priv->mi, prop_name));
 	}
 	g_list_free(props);
 
