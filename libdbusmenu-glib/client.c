@@ -1048,7 +1048,12 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			GVariant * value;
 
 			while (g_variant_iter_next(&properties, "{sv}", &property, &value)) {
-				id_prop_update(proxy, id, property, value, client);
+				GVariant * internalvalue = value;
+				if (G_LIKELY(g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT))) {
+					/* Unboxing if needed */
+					internalvalue = g_variant_get_variant(value);
+				}
+				id_prop_update(proxy, id, property, internalvalue, client);
 			}
 		}
 	} else if (g_strcmp0(signal, "ItemPropertyUpdated") == 0) {
