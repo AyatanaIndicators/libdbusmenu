@@ -1035,6 +1035,22 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 		guint revision; gint parent;
 		g_variant_get(params, "(ui)", &revision, &parent);
 		layout_update(proxy, revision, parent, client);
+	} else if (g_strcmp0(signal, "ItemPropertiesUpdated") == 0) {
+		GVariantIter items;
+		g_variant_iter_init(&items, g_variant_get_child_value(params, 0));
+
+		GVariant * item;
+		while ((item = g_variant_iter_next_value(&items)) != NULL) {
+			gint id = g_variant_get_int32(g_variant_get_child_value(item, 0));
+			GVariantIter properties;
+			g_variant_iter_init(&properties, g_variant_get_child_value(item, 1));
+			gchar * property;
+			GVariant * value;
+
+			while (g_variant_iter_next(&properties, "{sv}", &property, &value)) {
+				id_prop_update(proxy, id, property, value, client);
+			}
+		}
 	} else if (g_strcmp0(signal, "ItemPropertyUpdated") == 0) {
 		gint id; gchar * property; GVariant * value;
 		g_variant_get(params, "(isv)", &id, &property, &value);
