@@ -690,19 +690,63 @@ prop_array_teardown (GArray * prop_array)
 static gboolean
 menuitem_property_idle (gpointer user_data)
 {
-/*
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(user_data);
+
+	/* Source will get removed as we return */
+	priv->property_idle = 0;
+
+	/* If there are no items, let's just not signal */
+	if (priv->prop_array == NULL) {
+		return FALSE;
+	}
+
+	int i, j;
+	GVariantBuilder itembuilder;
+	g_variant_builder_init(&itembuilder, G_VARIANT_TYPE_ARRAY);
+
+	for (i = 0; i < priv->prop_array->len; i++) {
+		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
+
+		GVariantBuilder tuplebuilder;
+		g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
+
+		g_variant_builder_add_value(&tuplebuilder, g_variant_new_uint32(iitem->id));
+
+		GVariantBuilder dictbuilder;
+		g_variant_builder_init(&dictbuilder, G_VARIANT_TYPE_DICTIONARY);
+		
+		for (j = 0; j < iitem->array->len; j++) {
+			prop_idle_prop_t * iprop = &g_array_index(iitem->array, prop_idle_prop_t, j);
+
+			GVariant * entry = g_variant_new_dict_entry(g_variant_new_string(iprop->property),
+			                                            g_variant_new_variant(iprop->variant));
+
+			g_variant_builder_add_value(&dictbuilder, entry);
+		}
+
+		g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&dictbuilder));
+
+		g_variant_builder_add_value(&itembuilder, g_variant_builder_end(&tuplebuilder));
+	}
+
+	GVariant * megadata = g_variant_builder_end(&itembuilder);
 
 	if (priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
 		                              NULL,
 		                              priv->dbusobject,
 		                              DBUSMENU_INTERFACE,
-		                              "ItemPropertyUpdated",
-		                              g_variant_new("(isv)", dbusmenu_menuitem_get_id(mi), property, variant),
+		                              "ItemPropertiesUpdated",
+		                              g_variant_new_tuple(&megadata, 1),
 		                              NULL);
+	} else {
+		g_variant_unref(megadata);
 	}
-*/
+
+	/* Clean everything up */
+	prop_array_teardown(priv->prop_array);
+	priv->prop_array = NULL;
+
 	return FALSE;
 }
 
