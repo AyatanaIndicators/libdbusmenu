@@ -665,6 +665,22 @@ struct _prop_idle_prop_t {
 static void
 prop_array_teardown (GArray * prop_array)
 {
+	int i, j;
+
+	for (i = 0; i < prop_array->len; i++) {
+		prop_idle_item_t * iitem = &g_array_index(prop_array, prop_idle_item_t, i);
+		
+		for (j = 0; j < iitem->array->len; j++) {
+			prop_idle_prop_t * iprop = &g_array_index(iitem->array, prop_idle_prop_t, j);
+
+			g_free(iprop->property);
+			g_variant_unref(iprop->variant);
+		}
+
+		g_array_free(iitem->array, TRUE);
+	}
+
+	g_array_free(prop_array, TRUE);
 
 	return;
 }
