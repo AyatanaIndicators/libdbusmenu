@@ -650,7 +650,7 @@ layout_update_signal (DbusmenuServer * server)
 
 typedef struct _prop_idle_item_t prop_idle_item_t;
 struct _prop_idle_item_t {
-	guint id;
+	gint id;
 	GArray * array;
 };
 
@@ -710,7 +710,7 @@ menuitem_property_idle (gpointer user_data)
 		GVariantBuilder tuplebuilder;
 		g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-		g_variant_builder_add_value(&tuplebuilder, g_variant_new_uint32(iitem->id));
+		g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
 
 		GVariantBuilder dictbuilder;
 		g_variant_builder_init(&dictbuilder, G_VARIANT_TYPE_DICTIONARY);
@@ -754,7 +754,7 @@ static void
 menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * variant, DbusmenuServer * server)
 {
 	int i;
-	guint item_id;
+	gint item_id;
 
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
