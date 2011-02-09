@@ -1,3 +1,9 @@
+libdbusmenu (0.3.96-0ubuntu4~test1) UNRELEASED; urgency=low
+
+  * Merged GI fixes from lp:~ken-vandine/dbusmenu/lp713099 (LP: #713099)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 09 Feb 2011 12:51:53 -0500
+
 libdbusmenu (0.3.96-0ubuntu3) natty; urgency=low
 
   * libdbusmenu-gtk/parser.c
