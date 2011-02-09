@@ -138,18 +138,18 @@ if HAVE_INTROSPECTION
 
 introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
 
-Dbusmenu_Glib-0.4.gir: libdbusmenu-glib.la
-Dbusmenu_Glib_0_4_gir_INCLUDES = \
+Dbusmenu-0.4.gir: libdbusmenu-glib.la
+Dbusmenu_0_4_gir_INCLUDES = \
 	GObject-2.0
-Dbusmenu_Glib_0_4_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS) -I$(top_srcdir)
-Dbusmenu_Glib_0_4_gir_LIBS = libdbusmenu-glib.la
-Dbusmenu_Glib_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
-Dbusmenu_Glib_0_4_gir_NAMESPACE = Dbusmenu
-Dbusmenu_Glib_0_4_gir_VERSION = Glib-0.4
-Dbusmenu_Glib_0_4_gir_EXPORT_PACKAGES = dbusmenu-glib-0.4
-Dbusmenu_Glib_0_4_gir_SCANNER_FLAGS = $(INTROSPECTION_SCANNER_ARGS)
+Dbusmenu_0_4_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS) -I$(top_srcdir)
+Dbusmenu_0_4_gir_LIBS = libdbusmenu-glib.la
+Dbusmenu_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+Dbusmenu_0_4_gir_NAMESPACE = Dbusmenu
+Dbusmenu_0_4_gir_VERSION = 0.4
+Dbusmenu_0_4_gir_EXPORT_PACKAGES = dbusmenu-glib-0.4
+Dbusmenu_0_4_gir_SCANNER_FLAGS = $(INTROSPECTION_SCANNER_ARGS)
 
-INTROSPECTION_GIRS += Dbusmenu-Glib-0.4.gir
+INTROSPECTION_GIRS += Dbusmenu-0.4.gir
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(INTROSPECTION_GIRS)
@@ -168,10 +168,10 @@ endif
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
-vapi_DATA = Dbusmenu-Glib-0.4.vapi
+vapi_DATA = Dbusmenu-0.4.vapi
 
-Dbusmenu-Glib-0.4.vapi: Dbusmenu-Glib-0.4.gir
-	$(VALA_API_GEN) --library=Dbusmenu-Glib-0.4 $<
+Dbusmenu-0.4.vapi: Dbusmenu-0.4.gir
+	$(VALA_API_GEN) --library=Dbusmenu-0.4 $<
 
 CLEANFILES += $(vapi_DATA)
 
