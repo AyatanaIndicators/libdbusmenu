@@ -98,7 +98,7 @@ DbusmenuGtk$(VER)-0.4.gir: libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_INCLUDES = \
 	GObject-2.0 \
 	$(GTKGIR) \
-	Dbusmenu-Glib-0.4 
+	Dbusmenu-0.4 
 DbusmenuGtk_0_4_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
 DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
@@ -141,7 +141,7 @@ DbusmenuGtk$(VER)-0.4.vapi: DbusmenuGtk$(VER)-0.4.tmp.gir Makefile.am
 		--pkg gdk-pixbuf-2.0 \
 		--pkg $(GTKVALA) \
 		--pkg atk \
-		--pkg Dbusmenu-Glib-0.4 \
+		--pkg Dbusmenu-0.4 \
 		--vapidir=$(top_builddir)/libdbusmenu-glib \
 		$<
 
