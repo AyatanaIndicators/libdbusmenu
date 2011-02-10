@@ -1,11 +1,17 @@
 libdbusmenu (0.3.97-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
+  [Ted Gould]
   * New upstream release.
-    ∘ Handle ChildAdded on GtkShell items
+    ∘ Handle ChildAdded on GtkShell items (LP: #709839)
     ∘ Fixing take_children() to not unref
-    ∘ Fix naming of the GIR file
+    ∘ Fix naming of the GIR file (LP: #713099)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 14:29:39 -0600
+  [Ken VanDine]
+  * debian/gir1.2-dbusmenu-glib-0.4.install,
+    debian/libdbusmenu-glib-dev.install: Changing gir, typelib and vala
+    file names
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 14:33:51 -0600
 
 libdbusmenu (0.3.96-0ubuntu3) natty; urgency=low
 
