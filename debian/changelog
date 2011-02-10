@@ -1,4 +1,4 @@
-libdbusmenu (0.3.97-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.97-0ubuntu1~ppa1) natty; urgency=low
 
   [Ted Gould]
   * New upstream release.
@@ -11,7 +11,7 @@ libdbusmenu (0.3.97-0ubuntu1~ppa1) UNRELEASED; urgency=low
     debian/libdbusmenu-glib-dev.install: Changing gir, typelib and vala
     file names
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 14:33:51 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 14:40:14 -0600
 
 libdbusmenu (0.3.96-0ubuntu3) natty; urgency=low
 
