@@ -1,9 +1,10 @@
-libdbusmenu (0.3.96-0ubuntu3~ppa1) natty; urgency=low
+libdbusmenu (0.3.96-0ubuntu3) natty; urgency=low
 
-  * Upstream Merge
-    * Parser fixes for children added in GtkMenuShell (LP: #)
+  * libdbusmenu-gtk/parser.c
+    - Handle ChildAdded on GtkShell items and clean up the code so that it 
+      has single functions for doing common operations. (LP: #709839)
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 04 Feb 2011 15:16:47 -0600
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 07 Feb 2011 09:29:09 -0500
 
 libdbusmenu (0.3.96-0ubuntu2) natty; urgency=low
 
