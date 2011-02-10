@@ -499,7 +499,8 @@ While the name sounds devious that's exactly what this function
 </para><variablelist role="params">
 <varlistentry><term><parameter>mi</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="DbusmenMenuitem"><type>DbusmenMenuitem</type></link> to take the children from.</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GList"><type>GList</type></link> of pointers to <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>(transfer full) (array) (element-type Dbusmenu.Menuitem)
+A <link linkend="GList"><type>GList</type></link> of pointers to <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-get-position" role="function">
 <title>dbusmenu_menuitem_get_position ()</title>
