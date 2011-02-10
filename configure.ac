@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.3.96, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.3.97, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.3.96, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.3.97, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -136,7 +136,7 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 ###########################
 
 LIBDBUSMENU_CURRENT=3
-LIBDBUSMENU_REVISION=4
+LIBDBUSMENU_REVISION=5
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)

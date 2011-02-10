@@ -394,7 +394,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0 \
 @HAVE_INTROSPECTION_TRUE@	$(GTKGIR) \
-@HAVE_INTROSPECTION_TRUE@	Dbusmenu-Glib-0.4 
+@HAVE_INTROSPECTION_TRUE@	Dbusmenu-0.4 
 
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la
@@ -990,7 +990,7 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 @HAVE_INTROSPECTION_TRUE@		--pkg gdk-pixbuf-2.0 \
 @HAVE_INTROSPECTION_TRUE@		--pkg $(GTKVALA) \
 @HAVE_INTROSPECTION_TRUE@		--pkg atk \
-@HAVE_INTROSPECTION_TRUE@		--pkg Dbusmenu-Glib-0.4 \
+@HAVE_INTROSPECTION_TRUE@		--pkg Dbusmenu-0.4 \
 @HAVE_INTROSPECTION_TRUE@		--vapidir=$(top_builddir)/libdbusmenu-glib \
 @HAVE_INTROSPECTION_TRUE@		$<
 
