@@ -1,3 +1,12 @@
+libdbusmenu (0.3.97-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    ∘ Handle ChildAdded on GtkShell items
+    ∘ Fixing take_children() to not unref
+    ∘ Fix naming of the GIR file
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 14:29:39 -0600
+
 libdbusmenu (0.3.96-0ubuntu3) natty; urgency=low
 
   * libdbusmenu-gtk/parser.c
