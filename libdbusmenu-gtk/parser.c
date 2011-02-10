@@ -39,6 +39,7 @@ typedef struct _ParserData
   GtkAction *action;
   GtkWidget *widget;
   GtkWidget *shell;
+  GtkWidget *image;
 } ParserData;
 
 typedef struct _RecurseContext
@@ -51,14 +52,15 @@ static void parse_menu_structure_helper (GtkWidget * widget, RecurseContext * re
 static DbusmenuMenuitem * construct_dbusmenu_for_widget (GtkWidget * widget);
 static void           accel_changed            (GtkWidget *         widget,
                                                 gpointer            data);
-static gboolean       update_stock_item        (DbusmenuMenuitem *  menuitem,
-                                                GtkWidget *         widget);
 static void           checkbox_toggled         (GtkWidget *         widget,
                                                 DbusmenuMenuitem *  mi);
-static void           update_icon_name         (DbusmenuMenuitem *  menuitem,
-                                                GtkWidget *         widget);
+static void           update_icon              (DbusmenuMenuitem *  menuitem,
+                                                GtkImage *          image);
 static GtkWidget *    find_menu_label          (GtkWidget *         widget);
 static void           label_notify_cb          (GtkWidget *         widget,
+                                                GParamSpec *        pspec,
+                                                gpointer            data);
+static void           image_notify_cb          (GtkWidget *         widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
 static void           action_notify_cb         (GtkAction *         action,
@@ -66,6 +68,8 @@ static void           action_notify_cb         (GtkAction *         action,
                                                 gpointer            data);
 static void           child_added_cb           (GtkContainer *      menu,
                                                 GtkWidget *         widget,
+                                                gpointer            data);
+static void           theme_changed_cb         (GtkIconTheme *      theme,
                                                 gpointer            data);
 static void           item_activated           (DbusmenuMenuitem *  item,
                                                 guint               timestamp,
@@ -136,6 +140,11 @@ dbusmenu_cache_freed (gpointer data, GObject * obj)
 		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
 	}
 
+	if (pdata != NULL && pdata->image != NULL) {
+		g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), obj);
+		g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
+	}
+
 	return;
 }
 
@@ -148,6 +157,9 @@ object_cache_freed (gpointer data)
 	//if (!G_IS_OBJECT(obj)) return;
 	//g_object_weak_unref(G_OBJECT(obj), dbusmenu_cache_freed, data);
 	//dbusmenu_cache_freed(data, obj);
+
+	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), data);
+
 	return;
 }
 
@@ -347,8 +359,6 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
         }
       else
         {
-          gboolean label_set = FALSE;
-
           g_signal_connect (widget,
                             "accel-closures-changed",
                             G_CALLBACK (accel_changed),
@@ -373,41 +383,37 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
           if (GTK_IS_IMAGE_MENU_ITEM (widget))
             {
               GtkWidget *image;
-              GtkImageType image_type;
 
               image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
 
               if (GTK_IS_IMAGE (image))
                 {
-                  image_type = gtk_image_get_storage_type (GTK_IMAGE (image));
+                  update_icon (mi, GTK_IMAGE (image));
 
-                  if (image_type == GTK_IMAGE_STOCK)
-                    {
-                      label_set = update_stock_item (mi, image);
-                    }
-                  else if (image_type == GTK_IMAGE_ICON_NAME)
-                    {
-                      update_icon_name (mi, image);
-                    }
-                  else if (image_type == GTK_IMAGE_PIXBUF)
-                    {
-                      dbusmenu_menuitem_property_set_image (mi,
-                                                            DBUSMENU_MENUITEM_PROP_ICON_DATA,
-                                                            gtk_image_get_pixbuf (GTK_IMAGE (image)));
-                    }
+                  /* Watch for theme changes because if gicon changes, we want to send a
+                     different pixbuf. */
+                  g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
+                                   "changed", G_CALLBACK(theme_changed_cb), widget);
+
+                  pdata->image = image;
+                  g_signal_connect (G_OBJECT (image),
+                                    "notify",
+                                    G_CALLBACK (image_notify_cb),
+                                    mi);
+                  g_object_add_weak_pointer(G_OBJECT (image), (gpointer*)&pdata->image);
                 }
             }
 
           GtkWidget *label = find_menu_label (widget);
 
-          dbusmenu_menuitem_property_set (mi,
-                                          "label",
-                                          label ? gtk_label_get_text (GTK_LABEL (label)) : NULL);
-
           if (label)
             {
               // Sometimes, an app will directly find and modify the label
               // (like empathy), so watch the label especially for that.
+              dbusmenu_menuitem_property_set (mi,
+                                              "label",
+                                              gtk_label_get_text (GTK_LABEL (label)));
+
               pdata->label = label;
               g_signal_connect (G_OBJECT (label),
                                 "notify",
@@ -510,48 +516,6 @@ accel_changed (GtkWidget *widget,
   dbusmenu_menuitem_property_set_shortcut_menuitem (mi, GTK_MENU_ITEM (widget));
 }
 
-static gboolean
-update_stock_item (DbusmenuMenuitem *menuitem,
-                   GtkWidget        *widget)
-{
-  GtkStockItem stock;
-  GtkImage *image;
-
-  g_return_val_if_fail (GTK_IS_IMAGE (widget), FALSE);
-
-  image = GTK_IMAGE (widget);
-
-  if (gtk_image_get_storage_type (image) != GTK_IMAGE_STOCK)
-    return FALSE;
-
-  gchar * stock_id = NULL;
-  gtk_image_get_stock(image, &stock_id, NULL);
-
-  gtk_stock_lookup (stock_id, &stock);
-
-  if (should_show_image (image))
-    dbusmenu_menuitem_property_set (menuitem,
-                                    DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                    stock_id);
-  else
-    dbusmenu_menuitem_property_remove (menuitem,
-                                       DBUSMENU_MENUITEM_PROP_ICON_NAME);
-
-  const gchar *label = dbusmenu_menuitem_property_get (menuitem,
-                                                       DBUSMENU_MENUITEM_PROP_LABEL);
-
-  if (stock.label != NULL && label != NULL)
-    {
-      dbusmenu_menuitem_property_set (menuitem,
-                                      DBUSMENU_MENUITEM_PROP_LABEL,
-                                      stock.label);
-
-      return TRUE;
-    }
-
-  return FALSE;
-}
-
 static void
 checkbox_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
 {
@@ -561,27 +525,82 @@ checkbox_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
 }
 
 static void
-update_icon_name (DbusmenuMenuitem *menuitem,
-                  GtkWidget        *widget)
+update_icon (DbusmenuMenuitem *menuitem, GtkImage *image)
 {
-  GtkImage *image;
+  GdkPixbuf * pixbuf = NULL;
+  const gchar * icon_name = NULL;
+  GtkStockItem stock;
+  GIcon * gicon;
+  GtkIconInfo * info;
+  gint width;
 
-  g_return_if_fail (GTK_IS_IMAGE (widget));
+  if (image != NULL && should_show_image (image)) {
+    switch (gtk_image_get_storage_type (image)) {
+    case GTK_IMAGE_PIXBUF:
+      pixbuf = g_object_ref (gtk_image_get_pixbuf (image));
+      break;
 
-  image = GTK_IMAGE (widget);
+    case GTK_IMAGE_ICON_NAME:
+      gtk_image_get_icon_name (image, &icon_name, NULL);
+      break;
 
-  if (gtk_image_get_storage_type (image) != GTK_IMAGE_ICON_NAME)
-    return;
+    case GTK_IMAGE_STOCK:
+      gtk_image_get_stock (image, (gchar **) &icon_name, NULL);
+      if (gtk_stock_lookup (icon_name, &stock)) {
+        /* Now set label too */
+        const gchar * label = NULL;
+        label = dbusmenu_menuitem_property_get (menuitem,
+                                                DBUSMENU_MENUITEM_PROP_LABEL);
+        if (stock.label != NULL && label != NULL) {
+          dbusmenu_menuitem_property_set (menuitem,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          stock.label);
+        }
+      }
+      break;
 
-  if (should_show_image (image)) {
-    const gchar * icon_name = NULL;
-	gtk_image_get_icon_name(image, &icon_name, NULL);
+    case GTK_IMAGE_GICON:
+      /* Load up a pixbuf and send that over.  We don't bother differentiating
+         between icon-name gicons and pixbuf gicons because even when given a
+         icon-name gicon, there's no easy way to lookup which icon-name among
+         its set is present and should be used among the icon themes available.
+         So instead, we render to a pixbuf and watch icon theme changes. */
+      gtk_image_get_gicon (image, &gicon, NULL);
+		  gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, NULL);
+      info = gtk_icon_theme_lookup_by_gicon (gtk_icon_theme_get_default (),
+                                             gicon, width, 
+                                             GTK_ICON_LOOKUP_FORCE_SIZE);
+      if (info != NULL) {
+        pixbuf = gtk_icon_info_load_icon (info, NULL);
+        gtk_icon_info_free (info);
+      }
+      break;
+
+    default:
+      g_debug ("Could not handle image type %i\n", gtk_image_get_storage_type (image));
+      break;
+    }
+  }
+
+  if (icon_name != NULL) {
     dbusmenu_menuitem_property_set (menuitem,
                                     DBUSMENU_MENUITEM_PROP_ICON_NAME,
                                     icon_name);
-  } else {
+  }
+  else if (pixbuf != NULL) {
+    dbusmenu_menuitem_property_set_image (menuitem,
+                                          DBUSMENU_MENUITEM_PROP_ICON_DATA,
+                                          pixbuf);
+  }
+  else {
     dbusmenu_menuitem_property_remove (menuitem,
                                        DBUSMENU_MENUITEM_PROP_ICON_NAME);
+    dbusmenu_menuitem_property_remove (menuitem,
+                                       DBUSMENU_MENUITEM_PROP_ICON_DATA);
+  }
+
+  if (pixbuf != NULL) {
+    g_object_unref (pixbuf);
   }
 }
 
@@ -626,6 +645,29 @@ label_notify_cb (GtkWidget  *widget,
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       gtk_label_get_text (GTK_LABEL (widget)));
+    }
+}
+
+static void
+image_notify_cb (GtkWidget  *widget,
+                 GParamSpec *pspec,
+                 gpointer    data)
+{
+  DbusmenuMenuitem *mi = (DbusmenuMenuitem *)data;
+
+  if (pspec->name == g_intern_static_string ("file") ||
+      pspec->name == g_intern_static_string ("gicon") ||
+      pspec->name == g_intern_static_string ("icon-name") ||
+      pspec->name == g_intern_static_string ("icon-set") ||
+      pspec->name == g_intern_static_string ("image") ||
+      pspec->name == g_intern_static_string ("mask") ||
+      pspec->name == g_intern_static_string ("pixbuf") ||
+      pspec->name == g_intern_static_string ("pixbuf-animation") ||
+      pspec->name == g_intern_static_string ("pixmap") ||
+      pspec->name == g_intern_static_string ("stock") ||
+      pspec->name == g_intern_static_string ("storage-type"))
+    {
+      update_icon (mi, GTK_IMAGE (widget));
     }
 }
 
@@ -723,13 +765,12 @@ widget_notify_cb (GtkWidget  *widget,
                                            DBUSMENU_MENUITEM_PROP_VISIBLE,
                                            gtk_widget_get_visible (widget));
     }
-  else if (pspec->name == g_intern_static_string ("stock"))
+  else if (pspec->name == g_intern_static_string ("image") ||
+           pspec->name == g_intern_static_string ("always-show-image"))
     {
-      update_stock_item (child, widget);
-    }
-  else if (pspec->name == g_intern_static_string ("icon-name"))
-    {
-      update_icon_name (child, widget);
+      GtkWidget *image;
+      image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+      update_icon (child, GTK_IMAGE (image));
     }
   else if (pspec->name == g_intern_static_string ("parent"))
     {
@@ -795,6 +836,23 @@ child_added_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 	recurse.parent = menuitem;
 
 	parse_menu_structure_helper(widget, &recurse);
+}
+
+static void
+theme_changed_cb (GtkIconTheme *theme, gpointer data)
+{
+  GtkWidget *image;
+
+  image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (data));
+
+  gpointer pmi = g_object_get_data(G_OBJECT(data), CACHED_MENUITEM);
+  if (pmi != NULL) {
+    update_icon(DBUSMENU_MENUITEM(pmi), GTK_IMAGE(image));
+  }
+
+  /* Switch signal to new theme */
+  g_signal_handlers_disconnect_by_func(theme, G_CALLBACK(theme_changed_cb), data);
+  g_signal_connect(gtk_icon_theme_get_default(), "changed", G_CALLBACK(theme_changed_cb), data);
 }
 
 static gboolean
