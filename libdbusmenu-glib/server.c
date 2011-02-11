@@ -433,6 +433,15 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		if (priv->root != NULL) {
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, obj);
 			dbusmenu_menuitem_set_root(priv->root, FALSE);
+
+			GList * properties = dbusmenu_menuitem_properties_list(priv->root);
+			GList * iter;
+			for (iter = properties; iter != NULL; iter = g_list_next(iter)) {
+				gchar * property = (gchar *)iter->data;
+				menuitem_property_changed(priv->root, property, g_variant_new_int32(0), DBUSMENU_SERVER(obj));
+			}
+			g_list_free(properties);
+
 			g_object_unref(G_OBJECT(priv->root));
 			priv->root = NULL;
 		}
@@ -441,6 +450,14 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			g_object_ref(G_OBJECT(priv->root));
 			dbusmenu_menuitem_set_root(priv->root, TRUE);
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_create, obj);
+
+			GList * properties = dbusmenu_menuitem_properties_list(priv->root);
+			GList * iter;
+			for (iter = properties; iter != NULL; iter = g_list_next(iter)) {
+				gchar * property = (gchar *)iter->data;
+				menuitem_property_changed(priv->root, property, dbusmenu_menuitem_property_get_variant(priv->root, property), DBUSMENU_SERVER(obj));
+			}
+			g_list_free(properties);
 		} else {
 			g_debug("Setting root node to NULL");
 		}
