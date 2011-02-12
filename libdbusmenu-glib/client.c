@@ -30,7 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
-#include <dbus/dbus-glib-bindings.h>
+#include <gio/gio.h>
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -39,9 +39,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "menuitem-private.h"
 #include "client-menuitem.h"
-#include "dbusmenu-client.h"
 #include "server-marshal.h"
 #include "client-marshal.h"
+#include "dbus-menu-clean.xml.h"
+
+/* How many property requests should we queue before
+   sending the message on dbus */
+#define MAX_PROPERTIES_TO_QUEUE  100
 
 /* Properties */
 enum {
@@ -60,9 +64,10 @@ enum {
 	LAST_SIGNAL
 };
 
+typedef void (*properties_func) (GVariant * properties, GError * error, gpointer user_data);
+
 static guint signals[LAST_SIGNAL] = { 0 };
 
-typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 struct _DbusmenuClientPrivate
 {
 	DbusmenuMenuitem * root;
@@ -70,15 +75,18 @@ struct _DbusmenuClientPrivate
 	gchar * dbus_object;
 	gchar * dbus_name;
 
-	DBusGConnection * session_bus;
-	DBusGProxy * menuproxy;
-	DBusGProxy * propproxy;
-	DBusGProxyCall * layoutcall;
+	GDBusConnection * session_bus;
+	GCancellable * session_bus_cancel;
+
+	GDBusProxy * menuproxy;
+	GCancellable * menuproxy_cancel;
+
+	GCancellable * layoutcall;
 
 	gint current_revision;
 	gint my_revision;
 
-	DBusGProxy * dbusproxy;
+	guint dbusproxy;
 
 	GHashTable * type_handlers;
 
@@ -98,7 +106,7 @@ struct _newItemPropData
 typedef struct _properties_listener_t properties_listener_t;
 struct _properties_listener_t {
 	gint id;
-	org_ayatana_dbusmenu_get_properties_reply callback;
+	properties_func callback;
 	gpointer user_data;
 	gboolean replied;
 };
@@ -108,13 +116,28 @@ struct _event_data_t {
 	DbusmenuClient * client;
 	DbusmenuMenuitem * menuitem;
 	gchar * event;
-	GValue data;
+	GVariant * variant;
 	guint timestamp;
 };
 
+typedef struct _type_handler_t type_handler_t;
+struct _type_handler_t {
+	DbusmenuClient * client;
+	DbusmenuClientTypeHandler cb;
+	DbusmenuClientTypeDestroyHandler destroy_cb;
+	gpointer user_data;
+	gchar * type;
+};
 
-#define DBUSMENU_CLIENT_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate))
+typedef struct _properties_callback_t properties_callback_t;
+struct _properties_callback_t {
+	DbusmenuClient * client;
+	GArray * listeners;
+};
+
+
+#define DBUSMENU_CLIENT_GET_PRIVATE(o) (DBUSMENU_CLIENT(o)->priv)
+#define DBUSMENU_INTERFACE  "com.canonical.dbusmenu"
 
 /* GObject Stuff */
 static void dbusmenu_client_class_init (DbusmenuClientClass *klass);
@@ -124,19 +147,27 @@ static void dbusmenu_client_finalize   (GObject *object);
 static void set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec);
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 /* Private Funcs */
-static void layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient * client);
-static void id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client);
-static void id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client);
+static void layout_update (GDBusProxy * proxy, guint revision, gint parent, DbusmenuClient * client);
+static void id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GVariant * value, DbusmenuClient * client);
+static void id_update (GDBusProxy * proxy, gint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
 static gint parse_node_get_id (xmlNodePtr node);
-static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy);
+static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, GDBusProxy * proxy);
 static gint parse_layout (DbusmenuClient * client, const gchar * layout);
-static void update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * in_error, void * data);
+static void update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data);
 static void update_layout (DbusmenuClient * client);
-static void menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data);
-static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data);
+static void menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data);
+static void get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, properties_func callback, gpointer user_data);
 static GQuark error_domain (void);
-static void item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
+static void item_activated (GDBusProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
+static void menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data);
+static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data);
+static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
+static void type_handler_destroy (gpointer user_data);
+
+/* Globals */
+static GDBusNodeInfo *            dbusmenu_node_info = NULL;
+static GDBusInterfaceInfo *       dbusmenu_interface_info = NULL;
 
 /* Build a type */
 G_DEFINE_TYPE (DbusmenuClient, dbusmenu_client, G_TYPE_OBJECT);
@@ -234,8 +265,8 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        G_SIGNAL_RUN_LAST,
 	                                        G_STRUCT_OFFSET (DbusmenuClientClass, event_result),
 	                                        NULL, NULL,
-	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_POINTER_UINT_POINTER,
-	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_POINTER);
+	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_VARIANT_UINT_POINTER,
+	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT, G_TYPE_POINTER);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
@@ -248,12 +279,32 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                              NULL,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
+	if (dbusmenu_node_info == NULL) {
+		GError * error = NULL;
+
+		dbusmenu_node_info = g_dbus_node_info_new_for_xml(dbus_menu_clean_xml, &error);
+		if (error != NULL) {
+			g_error("Unable to parse DBusmenu Interface description: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (dbusmenu_interface_info == NULL) {
+		dbusmenu_interface_info = g_dbus_node_info_lookup_interface(dbusmenu_node_info, DBUSMENU_INTERFACE);
+
+		if (dbusmenu_interface_info == NULL) {
+			g_error("Unable to find interface '" DBUSMENU_INTERFACE "'");
+		}
+	}
+
 	return;
 }
 
 static void
 dbusmenu_client_init (DbusmenuClient *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_TYPE_CLIENT, DbusmenuClientPrivate);
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(self);
 
 	priv->root = NULL;
@@ -262,17 +313,20 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->dbus_name = NULL;
 
 	priv->session_bus = NULL;
+	priv->session_bus_cancel = NULL;
+
 	priv->menuproxy = NULL;
-	priv->propproxy = NULL;
+	priv->menuproxy_cancel = NULL;
+
 	priv->layoutcall = NULL;
 
 	priv->current_revision = 0;
 	priv->my_revision = 0;
 
-	priv->dbusproxy = NULL;
+	priv->dbusproxy = 0;
 
 	priv->type_handlers = g_hash_table_new_full(g_str_hash, g_str_equal,
-	                                            g_free, NULL);
+	                                            g_free, type_handler_destroy);
 
 	priv->delayed_idle = 0;
 	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
@@ -313,7 +367,7 @@ dbusmenu_client_dispose (GObject *object)
 				if (localerror == NULL) {
 					g_set_error_literal(&localerror, error_domain(), 0, "DbusmenuClient Shutdown");
 				}
-				listener->callback(priv->menuproxy, NULL, localerror, listener->user_data);
+				listener->callback(NULL, localerror, listener->user_data);
 			}
 		}
 		if (localerror != NULL) {
@@ -325,22 +379,39 @@ dbusmenu_client_dispose (GObject *object)
 	}
 
 	if (priv->layoutcall != NULL) {
-		dbus_g_proxy_cancel_call(priv->menuproxy, priv->layoutcall);
+		g_cancellable_cancel(priv->layoutcall);
+		g_object_unref(priv->layoutcall);
 		priv->layoutcall = NULL;
+	}
+
+	/* Bring down the menu proxy, ensure we're not
+	   looking for one at the same time. */
+	if (priv->menuproxy_cancel != NULL) {
+		g_cancellable_cancel(priv->menuproxy_cancel);
+		g_object_unref(priv->menuproxy_cancel);
+		priv->menuproxy_cancel = NULL;
 	}
 	if (priv->menuproxy != NULL) {
 		g_object_unref(G_OBJECT(priv->menuproxy));
 		priv->menuproxy = NULL;
 	}
-	if (priv->propproxy != NULL) {
-		g_object_unref(G_OBJECT(priv->propproxy));
-		priv->propproxy = NULL;
+
+	if (priv->dbusproxy != 0) {
+		g_bus_unwatch_name(priv->dbusproxy);
+		priv->dbusproxy = 0;
 	}
-	if (priv->dbusproxy != NULL) {
-		g_object_unref(G_OBJECT(priv->dbusproxy));
-		priv->dbusproxy = NULL;
+
+	/* Bring down the session bus, ensure we're not
+	   looking for one at the same time. */
+	if (priv->session_bus_cancel != NULL) {
+		g_cancellable_cancel(priv->session_bus_cancel);
+		g_object_unref(priv->session_bus_cancel);
+		priv->session_bus_cancel = NULL;
 	}
-	priv->session_bus = NULL;
+	if (priv->session_bus != NULL) {
+		g_object_unref(priv->session_bus);
+		priv->session_bus = NULL;
+	}
 
 	if (priv->root != NULL) {
 		g_object_unref(G_OBJECT(priv->root));
@@ -445,47 +516,38 @@ find_listener (GArray * listeners, guint index, gint id)
 /* Call back from getting the group properties, now we need
    to unwind and call the various functions. */
 static void 
-get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *error, gpointer userdata)
+get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 {
-	GArray * listeners = (GArray *)userdata;
+	properties_callback_t * cbdata = (properties_callback_t *)user_data;
+	GArray * listeners = cbdata->listeners;
 	int i;
+	GError * error = NULL;
+	GVariant * params = NULL;
 
-	#ifdef MASSIVEDEBUGGING
-	g_debug("Get properties callback: %d", OUT_properties->len);
-	#endif
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(obj), res, &error);
 
 	if (error != NULL) {
 		/* If we get an error, all our callbacks need to hear about it. */
 		g_warning("Group Properties error: %s", error->message);
 		for (i = 0; i < listeners->len; i++) {
 			properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
-			listener->callback(proxy, NULL, error, listener->user_data);
+			listener->callback(NULL, error, listener->user_data);
 		}
-		g_array_free(listeners, TRUE);
-		return;
+		g_error_free(error);
+		goto out;
 	}
 
 	/* Callback all the folks we can find */
-	for (i = 0; i < OUT_properties->len; i++) {
-		GValueArray * varray = (GValueArray *)g_ptr_array_index(OUT_properties, i);
-
-		if (varray->n_values != 2) {
-			g_warning("Value Array is %d entries long but we expected 2.", varray->n_values);
+	GVariantIter * iter = g_variant_iter_new(g_variant_get_child_value(params, 0));
+	GVariant * child;
+	while ((child = g_variant_iter_next_value(iter)) != NULL) {
+		if (g_strcmp0(g_variant_get_type_string(child), "(ia{sv})") != 0) {
+			g_warning("Properties return signature is not '(ia{sv})' it is '%s'", g_variant_get_type_string(child));
 			continue;
 		}
 
-		GValue * vid = g_value_array_get_nth(varray, 0);
-		GValue * vproperties = g_value_array_get_nth(varray, 1);
-
-		if (G_VALUE_TYPE(vid) != G_TYPE_INT) {
-			g_warning("ID Entry not holding an int: %s", G_VALUE_TYPE_NAME(vid));
-		}
-		if (G_VALUE_TYPE(vproperties) != dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
-			g_warning("Properties Entry not holding an a{sv}: %s", G_VALUE_TYPE_NAME(vproperties));
-		}
-
-		gint id = g_value_get_int(vid);
-		GHashTable * properties = g_value_get_boxed(vproperties);
+		gint id = g_variant_get_int32(g_variant_get_child_value(child, 0));
+		GVariant * properties = g_variant_get_child_value(child, 1);
 
 		properties_listener_t * listener = find_listener(listeners, 0, id);
 		if (listener == NULL) {
@@ -494,30 +556,36 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 		}
 
 		if (!listener->replied) {
-			listener->callback(proxy, properties, NULL, listener->user_data);
+			listener->callback(properties, NULL, listener->user_data);
 			listener->replied = TRUE;
 		} else {
 			g_warning("Odd, we've already replied to the listener on ID %d", id);
 		}
 	}
+	g_variant_iter_free(iter);
+	g_variant_unref(params);
 
 	/* Provide errors for those who we can't */
 	GError * localerror = NULL;
 	for (i = 0; i < listeners->len; i++) {
 		properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
 		if (!listener->replied) {
+			g_warning("Generating properties error for: %d", listener->id);
 			if (localerror == NULL) {
 				g_set_error_literal(&localerror, error_domain(), 0, "Error getting properties for ID");
 			}
-			listener->callback(proxy, NULL, localerror, listener->user_data);
+			listener->callback(NULL, localerror, listener->user_data);
 		}
 	}
 	if (localerror != NULL) {
 		g_error_free(localerror);
 	}
 
+out:
 	/* Clean up */
 	g_array_free(listeners, TRUE);
+	g_object_unref(cbdata->client);
+	g_free(user_data);
 
 	return;
 }
@@ -527,8 +595,9 @@ get_properties_callback (DBusGProxy *proxy, GPtrArray *OUT_properties, GError *e
 static gboolean
 get_properties_idle (gpointer user_data)
 {
+	properties_callback_t * cbdata = NULL;
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
-	//org_ayatana_dbusmenu_get_properties_async(priv->menuproxy, id, properties, callback, user_data);
+	g_return_val_if_fail(priv->menuproxy != NULL, TRUE);
 
 	if (priv->delayed_property_listeners->len == 0) {
 		g_warning("Odd, idle func got no listeners.");
@@ -536,16 +605,40 @@ get_properties_idle (gpointer user_data)
 	}
 
 	/* Build up an ID list to pass */
-	GArray * idlist = g_array_new(FALSE, FALSE, sizeof(gint));
+	GVariantBuilder builder;
+	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+
 	gint i;
 	for (i = 0; i < priv->delayed_property_listeners->len; i++) {
-		g_array_append_val(idlist, g_array_index(priv->delayed_property_listeners, properties_listener_t, i).id);
+		g_variant_builder_add(&builder, "i", g_array_index(priv->delayed_property_listeners, properties_listener_t, i).id);
 	}
 
-	org_ayatana_dbusmenu_get_group_properties_async(priv->menuproxy, idlist, (const gchar **)priv->delayed_property_list->data, get_properties_callback, priv->delayed_property_listeners);
+	GVariant * variant_ids = g_variant_builder_end(&builder);
 
-	/* Free ID List */
-	g_array_free(idlist, TRUE);
+	/* Build up a prop list to pass */
+	g_variant_builder_init(&builder, g_variant_type_new("as"));
+	/* TODO: need to use delayed property list here */
+	GVariant * variant_props = g_variant_builder_end(&builder);
+
+	/* Combine them into a value for the parameter */
+	g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
+	g_variant_builder_add_value(&builder, variant_ids);
+	g_variant_builder_add_value(&builder, variant_props);
+	GVariant * variant_params = g_variant_builder_end(&builder);
+
+	cbdata = g_new(properties_callback_t, 1);
+	cbdata->listeners = priv->delayed_property_listeners;
+	cbdata->client = DBUSMENU_CLIENT(user_data);
+	g_object_ref(G_OBJECT(user_data));
+
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "GetGroupProperties",
+	                  variant_params,
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  -1,   /* timeout */
+	                  NULL, /* cancellable */
+	                  get_properties_callback,
+	                  cbdata);
 
 	/* Free properties */
 	gchar ** dataregion = (gchar **)g_array_free(priv->delayed_property_list, FALSE);
@@ -579,22 +672,20 @@ get_properties_flush (DbusmenuClient * client)
 
 	get_properties_idle(client);
 
-	dbus_g_connection_flush(priv->session_bus);
-
 	return;
 }
 
 /* A function to group all the get_properties commands to make them
    more efficient over dbus. */
 static void
-get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, org_ayatana_dbusmenu_get_properties_reply callback, gpointer user_data)
+get_properties_globber (DbusmenuClient * client, gint id, const gchar ** properties, properties_func callback, gpointer user_data)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	if (find_listener(priv->delayed_property_listeners, 0, id) != NULL) {
 		g_warning("Asking for properties from same ID twice: %d", id);
 		GError * localerror = NULL;
 		g_set_error_literal(&localerror, error_domain(), 0, "ID already queued");
-		callback(priv->menuproxy, NULL, localerror, user_data);
+		callback(NULL, localerror, user_data);
 		g_error_free(localerror);
 		return;
 	}
@@ -628,12 +719,19 @@ get_properties_globber (DbusmenuClient * client, gint id, const gchar ** propert
 		priv->delayed_idle = g_idle_add(get_properties_idle, client);
 	}
 
+	/* Look at how many proprites we have queued up and
+	   make it so that we don't leave too many in one
+	   request. */
+	if (priv->delayed_property_listeners->len == MAX_PROPERTIES_TO_QUEUE) {
+		get_properties_flush(client);
+	}
+
 	return;
 }
 
 /* Called when a server item wants to activate the menu */
 static void
-item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * client)
+item_activated (GDBusProxy * proxy, gint id, guint timestamp, DbusmenuClient * client)
 {
 	g_return_if_fail(DBUSMENU_IS_CLIENT(client));
 
@@ -657,7 +755,7 @@ item_activated (DBusGProxy * proxy, gint id, guint timestamp, DbusmenuClient * c
 
 /* Annoying little wrapper to make the right function update */
 static void
-layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient * client)
+layout_update (GDBusProxy * proxy, guint revision, gint parent, DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	priv->current_revision = revision;
@@ -670,16 +768,8 @@ layout_update (DBusGProxy * proxy, guint revision, gint parent, DbusmenuClient *
 /* Signal from the server that a property has changed
    on one of our menuitems */
 static void
-id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, DbusmenuClient * client)
+id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GVariant * value, DbusmenuClient * client)
 {
-	#ifdef MASSIVEDEBUGGING
-	GValue valstr = {0};
-	g_value_init(&valstr, G_TYPE_STRING);
-	g_value_transform(value, &valstr);
-	g_debug("Property change sent to client for item %d property %s value %s", id, property, g_utf8_strlen(g_value_get_string(&valstr), 50) < 25 ? g_value_get_string(&valstr) : "<too long>");
-	g_value_unset(&valstr);
-	#endif
-
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	g_return_if_fail(priv->root != NULL);
@@ -692,7 +782,7 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 		return;
 	}
 
-	dbusmenu_menuitem_property_set_value(menuitem, property, value);
+	dbusmenu_menuitem_property_set_variant(menuitem, property, value);
 
 	return;
 }
@@ -700,7 +790,7 @@ id_prop_update (DBusGProxy * proxy, gint id, gchar * property, GValue * value, D
 /* Oh, lots of updates now.  That silly server, they want
    to change all kinds of stuff! */
 static void
-id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
+id_update (GDBusProxy * proxy, gint id, DbusmenuClient * client)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client side ID update: %d", id);
@@ -720,46 +810,15 @@ id_update (DBusGProxy * proxy, gint id, DbusmenuClient * client)
 
 /* Watches to see if our DBus savior comes onto the bus */
 static void
-dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, DbusmenuClient * client)
+dbus_owner_change (GDBusConnection * connection, const gchar * name, const gchar * owner, gpointer user_data)
 {
-	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	/* g_debug("Owner change: %s %s %s", name, prev, new); */
+	g_return_if_fail(DBUSMENU_IS_CLIENT(user_data));
 
-	if (!(new[0] != '\0' && prev[0] == '\0')) {
-		/* If it's not someone new getting on the bus, sorry we
-		   simply just don't care.  It's not that your service isn't
-		   important to someone, just not us.  You'll find the right
-		   process someday, there's lots of processes out there. */
-		return;
-	}
-
-	if (g_strcmp0(name, priv->dbus_name)) {
-		/* Again, someone else's service. */
-		return;
-	}
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
 
 	/* Woot!  A service for us to love and to hold for ever
 	   and ever and ever! */
 	return build_proxies(client);
-}
-
-/* This is the response to see if the name has an owner.  If
-   it does, then we should build the proxies here.  Race condition
-   check. */
-static void
-name_owner_check (DBusGProxy *proxy, gboolean has_owner, GError *error, gpointer userdata)
-{
-	if (error != NULL) {
-		return;
-	}
-
-	if (!has_owner) {
-		return;
-	}
-
-	DbusmenuClient * client = DBUSMENU_CLIENT(userdata);
-	build_proxies(client);
-	return;
 }
 
 /* This function builds the DBus proxy which will look out for
@@ -768,35 +827,22 @@ static void
 build_dbus_proxy (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	GError * error = NULL;
 
-	if (priv->dbusproxy != NULL) {
+	if (priv->dbusproxy != 0) {
 		return;
 	}
 
-	priv->dbusproxy = dbus_g_proxy_new_for_name_owner (priv->session_bus,
-	                                                   DBUS_SERVICE_DBUS,
-	                                                   DBUS_PATH_DBUS,
-	                                                   DBUS_INTERFACE_DBUS,
-	                                                   &error);
-	if (error != NULL) {
-		g_debug("Oh, that's bad.  That's really bad.  We can't get a proxy to DBus itself?  Seriously?  Here's all I know: %s", error->message);
-		g_error_free(error);
-		return;
-	}
-
-	dbus_g_proxy_add_signal(priv->dbusproxy, "NameOwnerChanged",
-	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-	                        G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->dbusproxy, "NameOwnerChanged",
-	                            G_CALLBACK(dbus_owner_change), client, NULL);
+	priv->dbusproxy = g_bus_watch_name_on_connection(priv->session_bus,
+	                                                 priv->dbus_name,
+	                                                 G_BUS_NAME_WATCHER_FLAGS_NONE,
+	                                                 dbus_owner_change,
+	                                                 NULL,
+	                                                 client,
+	                                                 NULL);
 
 	/* Now let's check to make sure we're not in some race
 	   condition case. */
-	org_freedesktop_DBus_name_has_owner_async(priv->dbusproxy,
-	                                          priv->dbus_name,
-	                                          name_owner_check,
-	                                          client);
+	/* TODO: Not sure how to check for names in GDBus */
 
 	return;
 }
@@ -820,7 +866,11 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	}
 
 	if ((gpointer)priv->menuproxy == (gpointer)gobj_proxy) {
-		priv->layoutcall = NULL;
+		if (priv->layoutcall != NULL) {
+			g_cancellable_cancel(priv->layoutcall);
+			g_object_unref(priv->layoutcall);
+			priv->layoutcall = NULL;
+		}
 	}
 
 	priv->current_revision = 0;
@@ -830,75 +880,197 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 	return;
 }
 
+/* Respond to us getting the session bus (hopefully) or handle
+   the error if not */
+void
+session_bus_cb (GObject * object, GAsyncResult * res, gpointer user_data)
+{
+	GError * error = NULL;
+
+	/* NOTE: We're not using any other variables before checking
+	   the result because they could be destroyed and thus invalid */
+	GDBusConnection * bus = g_bus_get_finish(res, &error);
+	if (error != NULL) {
+		g_warning("Unable to get session bus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* If this wasn't cancelled, we should be good */
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	priv->session_bus = bus;
+
+	if (priv->session_bus_cancel != NULL) {
+		g_object_unref(priv->session_bus_cancel);
+		priv->session_bus_cancel = NULL;
+	}
+
+	/* Retry to build the proxies now that we have a bus */
+	build_proxies(DBUSMENU_CLIENT(user_data));
+
+	return;
+}
+
 /* When we have a name and an object, build the two proxies and get the
    first version of the layout */
 static void
 build_proxies (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	GError * error = NULL;
 
 	g_return_if_fail(priv->dbus_object != NULL);
 	g_return_if_fail(priv->dbus_name != NULL);
 
-	priv->session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	if (error != NULL) {
-		g_error("Unable to get session bus: %s", error->message);
-		g_error_free(error);
-		build_dbus_proxy(client);
+	if (priv->session_bus == NULL) {
+		/* We don't have the session bus yet, that's okay, but
+		   we need to handle that. */
+
+		/* If we're already running we don't need to look again. */
+		if (priv->session_bus_cancel == NULL) {
+			priv->session_bus_cancel = g_cancellable_new();
+
+			/* Async get the session bus */
+			g_bus_get(G_BUS_TYPE_SESSION, priv->session_bus_cancel, session_bus_cb, client);
+		}
+
+		/* This function exists, it'll be called again when we get
+		   the session bus so this condition will be ignored */
 		return;
 	}
 
-	priv->propproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
-	                                                  priv->dbus_name,
-	                                                  priv->dbus_object,
-	                                                  DBUS_INTERFACE_PROPERTIES,
-	                                                  &error);
-	if (error != NULL) {
-		g_warning("Unable to get property proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
-		g_error_free(error);
-		build_dbus_proxy(client);
-		return;
-	}
-	g_object_add_weak_pointer(G_OBJECT(priv->propproxy), (gpointer *)&priv->propproxy);
-	g_signal_connect(G_OBJECT(priv->propproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
+	/* Build us a menu proxy */
+	if (priv->menuproxy == NULL) {
 
-	priv->menuproxy = dbus_g_proxy_new_for_name_owner(priv->session_bus,
-	                                                  priv->dbus_name,
-	                                                  priv->dbus_object,
-	                                                  "org.ayatana.dbusmenu",
-	                                                  &error);
+		/* Check to see if we're already building one */
+		if (priv->menuproxy_cancel == NULL) {
+			priv->menuproxy_cancel = g_cancellable_new();
+
+			g_dbus_proxy_new(priv->session_bus,
+			                 G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+			                 dbusmenu_interface_info,
+			                 priv->dbus_name,
+			                 priv->dbus_object,
+			                 DBUSMENU_INTERFACE,
+			                 priv->menuproxy_cancel,
+			                 menuproxy_build_cb,
+			                 client);
+		}
+	}
+
+	return;
+}
+
+/* Callback when we know if the menu proxy can be created or
+   not and do something with it! */
+static void
+menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
+{
+	GError * error = NULL;
+
+	/* NOTE: We're not using any other variables before checking
+	   the result because they could be destroyed and thus invalid */
+	GDBusProxy * proxy = g_dbus_proxy_new_finish(res, &error);
 	if (error != NULL) {
-		g_warning("Unable to get dbusmenu proxy for %s on %s: %s", priv->dbus_name, priv->dbus_object, error->message);
+		g_warning("Unable to get menu proxy: %s", error->message);
 		g_error_free(error);
-		build_dbus_proxy(client);
 		return;
 	}
-	g_object_add_weak_pointer(G_OBJECT(priv->menuproxy), (gpointer *)&priv->menuproxy);
-	g_signal_connect(G_OBJECT(priv->menuproxy), "destroy", G_CALLBACK(proxy_destroyed), client);
+
+	/* If this wasn't cancelled, we should be good */
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	priv->menuproxy = proxy;
+
+	if (priv->menuproxy_cancel != NULL) {
+		g_object_unref(priv->menuproxy_cancel);
+		priv->menuproxy_cancel = NULL;
+	}
 
 	/* If we get here, we don't need the DBus proxy */
-	if (priv->dbusproxy != NULL) {
-		g_object_unref(G_OBJECT(priv->dbusproxy));
-		priv->dbusproxy = NULL;
+	if (priv->dbusproxy != 0) {
+		g_bus_unwatch_name(priv->dbusproxy);
+		priv->dbusproxy = 0;
 	}
 
-	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__UINT_INT, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "LayoutUpdated", G_TYPE_UINT, G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "LayoutUpdated", G_CALLBACK(layout_update), client, NULL);
+	g_signal_connect(priv->menuproxy, "g-signal",             G_CALLBACK(menuproxy_signal_cb),       client);
+	g_signal_connect(priv->menuproxy, "notify::g-name-owner", G_CALLBACK(menuproxy_name_changed_cb), client);
 
-	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__INT_STRING_POINTER, G_TYPE_NONE, G_TYPE_INT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "ItemPropertyUpdated", G_TYPE_INT, G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemPropertyUpdated", G_CALLBACK(id_prop_update), client, NULL);
+	gchar * name_owner = g_dbus_proxy_get_name_owner(priv->menuproxy);
+	if (name_owner != NULL) {
+		update_layout(client);
+		g_free(name_owner);
+	}
 
-	dbus_g_proxy_add_signal(priv->menuproxy, "ItemUpdated", G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemUpdated", G_CALLBACK(id_update), client, NULL);
+	return;
+}
 
-	dbus_g_object_register_marshaller(_dbusmenu_server_marshal_VOID__INT_UINT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->menuproxy, "ItemActivationRequested", G_TYPE_INT, G_TYPE_UINT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->menuproxy, "ItemActivationRequested", G_CALLBACK(item_activated), client, NULL);
+/* Handle the case where we change owners */
+static void
+menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data)
+{
+	GDBusProxy * proxy = G_DBUS_PROXY(object);
 
-	update_layout(client);
+	gchar * owner = g_dbus_proxy_get_name_owner(proxy);
+
+	if (owner == NULL) {
+		/* Oh, no!  We lost our owner! */
+		proxy_destroyed(G_OBJECT(proxy), user_data);
+	} else {
+		g_free(owner);
+		update_layout(DBUSMENU_CLIENT(user_data));
+	}
+
+	return;
+}
+
+/* Handle the signals out of the proxy */
+static void
+menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data)
+{
+	g_return_if_fail(DBUSMENU_IS_CLIENT(user_data));
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+
+	if (g_strcmp0(signal, "LayoutUpdated") == 0) {
+		guint revision; gint parent;
+		g_variant_get(params, "(ui)", &revision, &parent);
+		layout_update(proxy, revision, parent, client);
+	} else if (g_strcmp0(signal, "ItemPropertiesUpdated") == 0) {
+		GVariantIter items;
+		g_variant_iter_init(&items, g_variant_get_child_value(params, 0));
+
+		GVariant * item;
+		while ((item = g_variant_iter_next_value(&items)) != NULL) {
+			gint id = g_variant_get_int32(g_variant_get_child_value(item, 0));
+			GVariantIter properties;
+			g_variant_iter_init(&properties, g_variant_get_child_value(item, 1));
+			gchar * property;
+			GVariant * value;
+
+			while (g_variant_iter_next(&properties, "{sv}", &property, &value)) {
+				GVariant * internalvalue = value;
+				if (G_LIKELY(g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT))) {
+					/* Unboxing if needed */
+					internalvalue = g_variant_get_variant(value);
+				}
+				id_prop_update(proxy, id, property, internalvalue, client);
+			}
+		}
+	} else if (g_strcmp0(signal, "ItemPropertyUpdated") == 0) {
+		gint id; gchar * property; GVariant * value;
+		g_variant_get(params, "(isv)", &id, &property, &value);
+		id_prop_update(proxy, id, property, value, client);
+	} else if (g_strcmp0(signal, "ItemUpdated") == 0) {
+		gint id;
+		g_variant_get(params, "(i)", &id);
+		id_update(proxy, id, client);
+	} else if (g_strcmp0(signal, "ItemActivationRequested") == 0) {
+		gint id; guint timestamp;
+		g_variant_get(params, "(iu)", &id, &timestamp);
+		item_activated(proxy, id, timestamp, client);
+	} else {
+		g_warning("Received signal '%s' from menu proxy that is unknown", signal);
+	}
 
 	return;
 }
@@ -937,32 +1109,38 @@ parse_node_get_id (xmlNodePtr node)
 	return -1;
 }
 
-/* A small helper that calls _property_set on each hash table
-   entry in the properties hash. */
-static void
-get_properties_helper (gpointer key, gpointer value, gpointer data)
-{
-	dbusmenu_menuitem_property_set_value((DbusmenuMenuitem *)data, (gchar *)key, (GValue *)value);
-	return;
-}
-
 /* This is the callback for the properties on a menu item.  There
    should be all of them in the Hash, and they we use foreach to
    copy them into the menuitem.
    This isn't the most efficient way.  We can optimize this by
    somehow removing the foreach.  But that is for later.  */
 static void
-menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
+	DbusmenuMenuitem * item = DBUSMENU_MENUITEM(data);
+
 	if (error != NULL) {
 		g_warning("Error getting properties on a menuitem: %s", error->message);
 		g_object_unref(data);
 		return;
 	}
-	g_hash_table_foreach(properties, get_properties_helper, data);
-	g_hash_table_destroy(properties);
+
+	GVariantIter * iter = g_variant_iter_new(properties);
+	gchar * key;
+	GVariant * value;
+
+	while (g_variant_iter_next(iter, "{sv}", &key, &value)) {
+		dbusmenu_menuitem_property_set_variant(item, key, value);
+
+		g_variant_unref(value);
+		g_free(key);
+	}
+
+	g_variant_iter_free(iter);
+
 	g_object_unref(data);
+
 	return;
 }
 
@@ -970,7 +1148,7 @@ menuitem_get_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError 
    is getting recycled with the update, but we think might have prop
    changes. */
 static void
-menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(data));
 	gboolean have_error = FALSE;
@@ -983,14 +1161,14 @@ menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties,
 	GList * current_props = NULL;
 
 	for (current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
-			current_props != NULL ; current_props = g_list_next(current_props)) {
-		if (have_error || g_hash_table_lookup(properties, current_props->data) == NULL) {
-			dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)current_props->data);
-		}
+			current_props != NULL && have_error == FALSE;
+			current_props = g_list_next(current_props)) {
+		dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)current_props->data);
 	}
+	g_list_free(current_props);
 
 	if (!have_error) {
-		menuitem_get_properties_cb(proxy, properties, error, data);
+		menuitem_get_properties_cb(properties, error, data);
 	} else {
 		g_object_unref(data);
 	}
@@ -1001,7 +1179,7 @@ menuitem_get_properties_replace_cb (DBusGProxy * proxy, GHashTable * properties,
 /* This is a different get properites call back that also sends
    new signals.  It basically is a small wrapper around the original. */
 static void
-menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer data)
 {
 	g_return_if_fail(data != NULL);
 	newItemPropData * propdata = (newItemPropData *)data;
@@ -1009,7 +1187,6 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 	if (error != NULL) {
 		g_warning("Error getting properties on a new menuitem: %s", error->message);
 		g_object_unref(propdata->item);
-		g_free(data);
 		return;
 	}
 
@@ -1017,22 +1194,22 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 
 	/* Extra ref as get_properties will unref once itself */
 	g_object_ref(propdata->item);
-	menuitem_get_properties_cb (proxy, properties, error, propdata->item);
+	menuitem_get_properties_cb (properties, error, propdata->item);
 
 	gboolean handled = FALSE;
 
 	const gchar * type;
-	DbusmenuClientTypeHandler newfunc = NULL;
+	type_handler_t * th = NULL;
 	
 	type = dbusmenu_menuitem_property_get(propdata->item, DBUSMENU_MENUITEM_PROP_TYPE);
 	if (type != NULL) {
-		newfunc = g_hash_table_lookup(priv->type_handlers, type);
+		th = (type_handler_t *)g_hash_table_lookup(priv->type_handlers, type);
 	} else {
-		newfunc = g_hash_table_lookup(priv->type_handlers, DBUSMENU_CLIENT_TYPES_DEFAULT);
+		th = (type_handler_t *)g_hash_table_lookup(priv->type_handlers, DBUSMENU_CLIENT_TYPES_DEFAULT);
 	}
 
-	if (newfunc != NULL) {
-		handled = newfunc(propdata->item, propdata->parent, propdata->client);
+	if (th != NULL && th->cb != NULL) {
+		handled = th->cb(propdata->item, propdata->parent, propdata->client, th->user_data);
 	}
 
 	#ifdef MASSIVEDEBUGGING
@@ -1053,20 +1230,31 @@ menuitem_get_properties_new_cb (DBusGProxy * proxy, GHashTable * properties, GEr
 /* Respond to the call function to make sure that the other side
    got it, or print a warning. */
 static void
-menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
+menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 {
+	GError * error = NULL;
 	event_data_t * edata = (event_data_t *)userdata;
+	GVariant * params;
+
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
 
 	if (error != NULL) {
 		g_warning("Unable to call event '%s' on menu item %d: %s", edata->event, dbusmenu_menuitem_get_id(edata->menuitem), error->message);
 	}
 
-	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, &edata->data, edata->timestamp, error, TRUE);
+	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->variant, edata->timestamp, error, TRUE);
 
-	g_value_unset(&edata->data);
+	g_variant_unref(edata->variant);
 	g_free(edata->event);
 	g_object_unref(edata->menuitem);
 	g_free(edata);
+
+	if (G_UNLIKELY(error != NULL)) {
+		g_error_free(error);
+	}
+	if (G_LIKELY(params != NULL)) {
+		g_variant_unref(params);
+	}
 
 	return;
 }
@@ -1074,7 +1262,7 @@ menuitem_call_cb (DBusGProxy * proxy, GError * error, gpointer userdata)
 /* Sends the event over DBus to the server on the other side
    of the bus. */
 void
-dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, const GValue * value, guint timestamp)
+dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, GVariant * variant, guint timestamp)
 {
 	g_return_if_fail(DBUSMENU_IS_CLIENT(client));
 	g_return_if_fail(id >= 0);
@@ -1087,11 +1275,8 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 		return;
 	}
 
-	if (value == NULL) {
-		GValue internalval = {0};
-		g_value_init(&internalval, G_TYPE_INT);
-		g_value_set_int(&internalval, 0);
-		value = &internalval;
+	if (variant == NULL) {
+		variant = g_variant_new_int32(0);
 	}
 
 	event_data_t * edata = g_new0(event_data_t, 1);
@@ -1099,15 +1284,18 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	edata->menuitem = mi;
 	g_object_ref(edata->menuitem);
 	edata->event = g_strdup(name);
-	g_value_init(&edata->data, G_VALUE_TYPE(value));
-	g_value_copy(value, &edata->data);
 	edata->timestamp = timestamp;
+	edata->variant = variant;
+	g_variant_ref(variant);
 
-	DBusGAsyncData *stuff;
-	stuff = g_slice_new (DBusGAsyncData);
-	stuff->cb = G_CALLBACK (menuitem_call_cb);
-	stuff->userdata = edata;
-	dbus_g_proxy_begin_call_with_timeout (priv->menuproxy, "Event", org_ayatana_dbusmenu_event_async_callback, stuff, _dbus_glib_async_data_free, 1000, G_TYPE_INT, id, G_TYPE_STRING, name, G_TYPE_VALUE, value, G_TYPE_UINT, timestamp, G_TYPE_INVALID);
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "Event",
+	                  g_variant_new("(isvu)", id, name, variant, timestamp),
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  1000,   /* timeout */
+	                  NULL, /* cancellable */
+	                  menuitem_call_cb,
+	                  edata);
 
 	return;
 }
@@ -1122,14 +1310,24 @@ struct _about_to_show_t {
 /* Reports errors and responds to update request that were a result
    of sending the about to show signal. */
 static void
-about_to_show_cb (DBusGProxy * proxy, gboolean need_update, GError * error, gpointer userdata)
+about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 {
+	gboolean need_update = FALSE;
+	GError * error = NULL;
 	about_to_show_t * data = (about_to_show_t *)userdata;
+	GVariant * params = NULL;
+
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
 
 	if (error != NULL) {
 		g_warning("Unable to send about_to_show: %s", error->message);
 		/* Note: we're just ensuring only the callback gets called */
 		need_update = FALSE;
+		g_error_free(error);
+		error = NULL;
+	} else {
+		g_variant_get(params, "(b)", &need_update);
+		g_variant_unref(params);
 	}
 
 	/* If we need to update, do that first. */
@@ -1160,7 +1358,14 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 	data->cb_data = cb_data;
 	g_object_ref(client);
 
-	org_ayatana_dbusmenu_about_to_show_async (priv->menuproxy, id, about_to_show_cb, data);
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "AboutToShow",
+	                  g_variant_new("(i)", id),
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  -1,   /* timeout */
+	                  NULL, /* cancellable */
+	                  about_to_show_cb,
+	                  data);
 	return;
 }
 
@@ -1206,7 +1411,7 @@ parse_layout_update (DbusmenuMenuitem * item, DbusmenuClient * client)
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
-parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, DBusGProxy * proxy)
+parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, GDBusProxy * proxy)
 {
 	/* First verify and figure out what we've got */
 	gint id = parse_node_get_id(node);
@@ -1283,8 +1488,10 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 
 	/* We've got everything built up at this node and reconcilled */
 
-	/* Flush the properties requests */
-	get_properties_flush(client);
+	/* Flush the properties requests if this is the first level */
+	if (parent != NULL && dbusmenu_menuitem_get_id(parent) == 0) {
+		get_properties_flush(client);
+	}
 
 	/* now it's time to recurse down the tree. */
 	children = node->children;
@@ -1377,24 +1584,38 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 
 /* When the layout property returns, here's where we take care of that. */
 static void
-update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, void * data)
+update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 {
 	DbusmenuClient * client = DBUSMENU_CLIENT(data);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
+	GError * error = NULL;
+	GVariant * params = NULL;
+
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
+
 	if (error != NULL) {
-		g_warning("Getting layout failed on client %s object %s: %s", priv->dbus_name, priv->dbus_object, error->message);
-		return;
+		g_warning("Getting layout failed: %s", error->message);
+		g_error_free(error);
+		goto out;
 	}
 
-	if (!parse_layout(client, xml)) {
+	guint rev;
+	gchar * xml;
+
+	g_variant_get(params, "(us)", &rev, &xml);
+	g_variant_unref(params);
+
+	guint parseable = parse_layout(client, xml);
+	g_free(xml);
+
+	if (parseable == 0) {
 		g_warning("Unable to parse layout!");
-		return;
+		goto out;
 	}
 
 	priv->my_revision = rev;
 	/* g_debug("Root is now: 0x%X", (unsigned int)priv->root); */
-	priv->layoutcall = NULL;
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client signaling layout has changed.");
 	#endif 
@@ -1406,6 +1627,13 @@ update_layout_cb (DBusGProxy * proxy, guint rev, gchar * xml, GError * error, vo
 		update_layout(client);
 	}
 
+out:
+	if (priv->layoutcall != NULL) {
+		g_object_unref(priv->layoutcall);
+		priv->layoutcall = NULL;
+	}
+
+	g_object_unref(G_OBJECT(client));
 	return;
 }
 
@@ -1420,14 +1648,27 @@ update_layout (DbusmenuClient * client)
 		return;
 	}
 
+	gchar * name_owner = g_dbus_proxy_get_name_owner(priv->menuproxy);
+	if (name_owner == NULL) {
+		return;
+	}
+	g_free(name_owner);
+
 	if (priv->layoutcall != NULL) {
 		return;
 	}
 
-	priv->layoutcall = org_ayatana_dbusmenu_get_layout_async(priv->menuproxy,
-	                                                         0, /* Parent is the root */
-	                                                         update_layout_cb,
-	                                                         client);
+	priv->layoutcall = g_cancellable_new();
+
+	g_object_ref(G_OBJECT(client));
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "GetLayout",
+	                  g_variant_new("(i)", 0), /* root */
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  -1,   /* timeout */
+	                  priv->layoutcall, /* cancellable */
+	                  update_layout_cb,
+	                  client);
 
 	return;
 }
@@ -1480,15 +1721,24 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
-	if (priv->propproxy == NULL) {
-		return NULL;
-	}
-
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client get root: %X", (guint)priv->root);
 	#endif
 
 	return priv->root;
+}
+
+/* Remove the type handler when we're all done with it */
+static void
+type_handler_destroy (gpointer user_data)
+{
+	type_handler_t * th = (type_handler_t *)user_data;
+	if (th->destroy_cb != NULL) {
+		th->destroy_cb(th->client, th->type, th->user_data);
+	}
+	g_free(th->type);
+	g_free(th);
+	return;
 }
 
 /**
@@ -1515,6 +1765,37 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 gboolean
 dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc)
 {
+	return dbusmenu_client_add_type_handler_full(client, type, newfunc, NULL, NULL);
+}
+
+/**
+	dbusmenu_client_add_type_handler_full:
+	@client: Client where we're getting types coming in
+	@type: A text string that will be matched with the 'type'
+	    property on incoming menu items
+	@newfunc: The function that will be executed with those new
+	    items when they come in.
+	@user_data: Data passed to @newfunc when it is called
+	@destroy_func: A function that is called when the type handler is
+		removed (usually on client destruction) which will free
+		the resources in @user_data.
+
+	This function connects into the type handling of the #DbusmenuClient.
+	Every new menuitem that comes in immediately gets asked for it's
+	properties.  When we get those properties we check the 'type'
+	property and look to see if it matches a handler that is known
+	by the client.  If so, the @newfunc function is executed on that
+	#DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
+	signal is sent.
+
+	In the future the known types will be sent to the server so that it
+	can make choices about the menu item types availble.
+
+	Return value: If registering the new type was successful.
+*/
+gboolean
+dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, DbusmenuClientTypeDestroyHandler destroy_func)
+{
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
 	g_return_val_if_fail(type != NULL, FALSE);
 
@@ -1535,6 +1816,14 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
 		return FALSE;
 	}
 
-	g_hash_table_insert(priv->type_handlers, g_strdup(type), newfunc);
+	type_handler_t * th = g_new0(type_handler_t, 1);
+	th->client = client;
+	th->cb = newfunc;
+	th->destroy_cb = destroy_func;
+	th->user_data = user_data;
+	th->type = g_strdup(type);
+
+	g_hash_table_insert(priv->type_handlers, g_strdup(type), th);
 	return TRUE;
 }
+

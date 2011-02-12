@@ -1,8 +1,8 @@
 /*
-A library to communicate a menu object set accross DBus and
-track updates and maintain consistency.
+Parse to take a set of GTK Menus and turn them into something that can
+be sent over the wire.
 
-Copyright 2009 Canonical Ltd.
+Copyright 2011 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
@@ -26,18 +26,12 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 */
 
-#ifndef __DBUSMENU_MENUITEM_PRIVATE_H__
-#define __DBUSMENU_MENUITEM_PRIVATE_H__
+#ifndef DBUSMENU_GTK_PARSER_H__
+#define DBUSMENU_GTK_PARSER_H__
 
-#include "menuitem.h"
+#include <libdbusmenu-glib/menuitem.h>
+#include <gtk/gtk.h>
 
-G_BEGIN_DECLS
+DbusmenuMenuitem * dbusmenu_gtk_parse_menu_structure (GtkWidget * widget);
 
-void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
-gboolean dbusmenu_menuitem_realized (DbusmenuMenuitem * mi);
-void dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi);
-GVariant * dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi);
-
-G_END_DECLS
-
-#endif
+#endif /* DBUSMENU_GTK_PARSER_H__ */

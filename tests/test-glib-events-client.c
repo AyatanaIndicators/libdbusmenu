@@ -35,7 +35,7 @@ static gboolean passed = TRUE;
 static gboolean first = TRUE;
 
 static void
-event_status (DbusmenuClient * client, DbusmenuMenuitem * item, gchar * name, GValue * data, guint timestamp, GError * error, gpointer user_data)
+event_status (DbusmenuClient * client, DbusmenuMenuitem * item, gchar * name, GVariant * data, guint timestamp, GError * error, gpointer user_data)
 {
 	g_debug("Event status: %s", error == NULL ? "Sent" : "Error");
 
@@ -46,8 +46,8 @@ event_status (DbusmenuClient * client, DbusmenuMenuitem * item, gchar * name, GV
 		return;
 	}
 
-	if (g_value_get_int(data) != DATA_VALUE) {
-		g_debug("Data value pass fail got: %d", g_value_get_int(data));
+	if (g_variant_get_int32(data) != DATA_VALUE) {
+		g_debug("Data value pass fail got: %d", g_variant_get_int32(g_variant_get_child_value(data, 0)));
 		passed = FALSE;
 		g_main_loop_quit(mainloop);
 		return;
@@ -96,11 +96,8 @@ layout_updated (DbusmenuClient * client, gpointer user_data)
 		return;
 	}
 
-	GValue data = {0};
-	g_value_init(&data, G_TYPE_INT);
-	g_value_set_int(&data, DATA_VALUE);
-
-	dbusmenu_menuitem_handle_event(menuroot, "clicked", &data, TIMESTAMP_VALUE);
+	GVariant * data = g_variant_new_int32(DATA_VALUE);
+	dbusmenu_menuitem_handle_event(menuroot, "clicked", data, TIMESTAMP_VALUE);
 
 	return;
 }
@@ -128,6 +125,7 @@ main (int argc, char ** argv)
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
 
+	g_debug("Main loop complete");
 	g_object_unref(G_OBJECT(client));
 
 	if (passed) {

@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.3.16, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.3.96, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.3.16, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.3.96, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -21,6 +21,15 @@ AC_CONFIG_MACRO_DIR([m4])
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
+AC_ARG_ENABLE([deprecations],
+  [AS_HELP_STRING([--enable-deprecations],
+    [allow deprecated API usage @<:@default=yes@:>@])],
+  [],
+  [enable_deprecations=yes])
+AS_IF([test "x$enable_deprecations" = xno],
+  [CFLAGS="$CFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGSEAL_ENABLE -DGTK_DISABLE_SINGLE_INCLUDES"]
+)
+
 ###########################
 # GTK Doc 
 ###########################
@@ -32,12 +41,11 @@ GNOME_DOC_INIT
 # Dependencies - GLib
 ###########################
 
-GLIB_REQUIRED_VERSION=2.18
-DBUS_REQUIRED_VERSION=0.76
+GLIB_REQUIRED_VERSION=2.26
 XML_REQUIRED_VERSION=2.6
 
 PKG_CHECK_MODULES(DBUSMENUGLIB, glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION
                                 libxml-2.0 >= $XML_REQUIRED_VERSION)
 
 AC_SUBST(DBUSMENUGLIB_CFLAGS)
@@ -48,14 +56,31 @@ AC_SUBST(DBUSMENUGLIB_LIBS)
 ###########################
 
 GTK_REQUIRED_VERSION=2.16
+GTK3_REQUIRED_VERSION=2.91
 
-PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                dbus-glib-1 >= $DBUS_REQUIRED_VERSION
-                                libxml-2.0 >= $XML_REQUIRED_VERSION)
-
-AC_SUBST(DBUSMENUGTK_CFLAGS)
-AC_SUBST(DBUSMENUGTK_LIBS)
+AC_ARG_WITH([gtk],
+  [AS_HELP_STRING([--with-gtk],
+    [Which version of gtk to use @<:@default=2@:>@])],
+  [],
+  [with_gtk=2])
+AS_IF([test "x$with_gtk" = x3],
+        [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                         libxml-2.0 >= $XML_REQUIRED_VERSION)
+         AC_SUBST(DBUSMENUGTK_CFLAGS)
+         AC_SUBST(DBUSMENUGTK_LIBS)
+         AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
+        ],
+      [test "x$with_gtk" = x2],
+        [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                         libxml-2.0 >= $XML_REQUIRED_VERSION)
+         AC_SUBST(DBUSMENUGTK_CFLAGS)
+         AC_SUBST(DBUSMENUGTK_LIBS)
+        ],
+      [AC_MSG_FAILURE([Value for --with-gtk was neither 2 nor 3])]
+)
+AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
 
 ###########################
 # Dependencies - dumper
@@ -88,6 +113,12 @@ AC_SUBST(DBUSMENUTESTS_LIBS)
 
 GOBJECT_INTROSPECTION_CHECK([0.6.7])
 
+PKG_CHECK_EXISTS([gobject-introspection-1.0 >= 0.10],
+				 introspection_ten=yes,
+				 introspection_ten=no)
+
+AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
+
 ###########################
 # Vala API Generation
 ###########################
@@ -95,11 +126,17 @@ GOBJECT_INTROSPECTION_CHECK([0.6.7])
 AC_PATH_PROG([VALA_API_GEN], [vapigen])
 
 ###########################
+# XSLT Processor
+###########################
+
+AC_PATH_PROG([XSLT_PROC], [xsltproc])
+
+###########################
 # Lib versioning 
 ###########################
 
-LIBDBUSMENU_CURRENT=1
-LIBDBUSMENU_REVISION=17
+LIBDBUSMENU_CURRENT=3
+LIBDBUSMENU_REVISION=4
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
@@ -134,13 +171,14 @@ AC_OUTPUT([
 Makefile
 po/Makefile.in
 libdbusmenu-glib/Makefile
-libdbusmenu-glib/dbusmenu-glib.pc
+libdbusmenu-glib/dbusmenu-glib-0.4.pc
 libdbusmenu-gtk/Makefile
-libdbusmenu-gtk/dbusmenu-gtk.pc
+libdbusmenu-gtk/dbusmenu-gtk-0.4.pc
+libdbusmenu-gtk/dbusmenu-gtk3-0.4.pc
 tools/Makefile
 tools/testapp/Makefile
 tests/Makefile
-tests/dbusmenu-jsonloader.pc
+tests/dbusmenu-jsonloader-0.4.pc
 docs/Makefile
 docs/libdbusmenu-glib/Makefile
 docs/libdbusmenu-glib/reference/Makefile
@@ -160,5 +198,6 @@ libdbusmenu Configuration:
 
 	Prefix:                 $prefix
 	Massive Debugging:      $with_massivedebugging
+	GTK+ Version:           $with_gtk
 ])
 

@@ -2,7 +2,7 @@
 A library to communicate a menu object set accross DBus and
 track updates and maintain consistency.
 
-Copyright 2009 Canonical Ltd.
+Copyright 2011 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
@@ -26,18 +26,12 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 */
 
-#ifndef __DBUSMENU_MENUITEM_PRIVATE_H__
-#define __DBUSMENU_MENUITEM_PRIVATE_H__
+#ifndef __DBUSMENU_GLIB_H__
+#define __DBUSMENU_GLIB_H__
 
-#include "menuitem.h"
+#include <libdbusmenu-glib/client.h>
+#include <libdbusmenu-glib/menuitem.h>
+#include <libdbusmenu-glib/menuitem-proxy.h>
+#include <libdbusmenu-glib/server.h>
 
-G_BEGIN_DECLS
-
-void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
-gboolean dbusmenu_menuitem_realized (DbusmenuMenuitem * mi);
-void dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi);
-GVariant * dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi);
-
-G_END_DECLS
-
-#endif
+#endif /* __DBUSMENU_GLIB_H__ */
