@@ -813,7 +813,7 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	prop_idle_prop_t * prop = NULL;
 	for (i = 0; i < properties->len; i++) {
 		prop_idle_prop_t * iprop = &g_array_index(properties, prop_idle_prop_t, i);
-		if (g_strcmp0(iprop->property, property)) {
+		if (g_strcmp0(iprop->property, property) == 0) {
 			prop = iprop;
 			break;
 		}
