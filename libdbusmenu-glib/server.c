@@ -438,7 +438,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			GList * iter;
 			for (iter = properties; iter != NULL; iter = g_list_next(iter)) {
 				gchar * property = (gchar *)iter->data;
-				menuitem_property_changed(priv->root, property, g_variant_new_int32(0), DBUSMENU_SERVER(obj));
+				menuitem_property_changed(priv->root, property, g_variant_new_string("deadvalue"), DBUSMENU_SERVER(obj));
 			}
 			g_list_free(properties);
 
