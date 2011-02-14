@@ -789,7 +789,7 @@ menuitem_property_idle (gpointer user_data)
 				removeitem_init = TRUE;
 			}
 
-			g_variant_builder_add_value(&itembuilder, g_variant_builder_end(&tuplebuilder));
+			g_variant_builder_add_value(&removeitembuilder, g_variant_builder_end(&tuplebuilder));
 		}
 	}
 
