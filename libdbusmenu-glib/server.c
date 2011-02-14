@@ -954,7 +954,7 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 		if (parent == 0) {
 			/* We should always have a root, so we'll make up one for
 			   right now. */
-			items = g_variant_parse(G_VARIANT_TYPE("(ia{sv}a(v))"), "(0, [], [])", NULL, NULL, NULL);
+			items = g_variant_parse(G_VARIANT_TYPE("(ia{sv}av)"), "(0, [], [])", NULL, NULL, NULL);
 		} else {
 			/* If we were looking for a specific ID that's an error that
 			   we should send back, so let's do that. */
