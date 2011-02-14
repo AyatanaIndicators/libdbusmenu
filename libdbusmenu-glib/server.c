@@ -472,17 +472,6 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 }
 
 static void
-xmlarray_foreach_free (gpointer arrayentry, gpointer userdata)
-{
-	if (arrayentry != NULL) {
-		/* g_debug("Freeing pointer: %s", (gchar *)arrayentry); */
-		g_free(arrayentry);
-	}
-
-	return;
-}
-
-static void
 get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(obj);
@@ -947,26 +936,28 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
-	gint parent = 0;
-	g_variant_get(params, "(i)", &parent);
+	/* Input */
+	gint parent = g_variant_get_int32(g_variant_get_child_value(params, 0));
+	//gint recurse = g_variant_get_int32(g_variant_get_child_value(params, 1));
+	const gchar ** props = g_variant_get_strv(g_variant_get_child_value(params, 2), NULL);
 
+	/* Output */
 	guint revision = priv->layout_revision;
-	GPtrArray * xmlarray = g_ptr_array_new();
+	GVariant * items = NULL;
 
-	if (parent == 0) {
-		if (priv->root == NULL) {
-			/* g_debug("Getting layout without root node!"); */
-			g_ptr_array_add(xmlarray, g_strdup("<menu id=\"0\"/>"));
+	if (priv->root != NULL) {
+		items = dbusmenu_menuitem_build_variant(priv->root, props);
+	}
+
+	/* What happens if we don't have anything? */
+	if (items == NULL) {
+		if (parent == 0) {
+			/* We should always have a root, so we'll make up one for
+			   right now. */
+			items = g_variant_parse(G_VARIANT_TYPE("(ia{sv}a(v))"), "(0, [], [])", NULL, NULL, NULL);
 		} else {
-			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
-		}
-	} else {
-		DbusmenuMenuitem * item = NULL;
-		if (priv->root != NULL) {
-			item = dbusmenu_menuitem_find_id(priv->root, parent);
-		}
-
-		if (item == NULL) {
+			/* If we were looking for a specific ID that's an error that
+			   we should send back, so let's do that. */
 			g_dbus_method_invocation_return_error(invocation,
 				                                  error_quark(),
 				                                  INVALID_MENUITEM_ID,
@@ -974,23 +965,17 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 				                                  parent);
 			return;
 		}
-		dbusmenu_menuitem_buildxml(item, xmlarray);
 	}
-	g_ptr_array_add(xmlarray, NULL);
 
-	/* build string */
-	gchar * layout = g_strjoinv("", (gchar **)xmlarray->pdata);
+	/* Build the final variant tuple */
+	GVariantBuilder tuplebuilder;
+	g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-	g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
-	g_ptr_array_free(xmlarray, TRUE);
+	g_variant_builder_add_value(&tuplebuilder, g_variant_new_uint32(revision));
+	g_variant_builder_add_value(&tuplebuilder, items);
 
 	g_dbus_method_invocation_return_value(invocation,
-	                                      g_variant_new("(us)",
-	                                                    revision,
-	                                                    layout));
-
-	g_free(layout);
-
+	                                      g_variant_builder_end(&tuplebuilder));
 	return;
 }
 
@@ -1064,7 +1049,7 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 		return;
 	}
 
-	GVariant * dict = dbusmenu_menuitem_properties_variant(mi);
+	GVariant * dict = dbusmenu_menuitem_properties_variant(mi, NULL);
 
 	g_dbus_method_invocation_return_value(invocation, g_variant_new("(a{sv})", dict));
 
@@ -1112,7 +1097,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		GVariantBuilder wbuilder;
 		g_variant_builder_init(&wbuilder, G_VARIANT_TYPE_TUPLE);
 		g_variant_builder_add(&wbuilder, "i", id);
-		GVariant * props = dbusmenu_menuitem_properties_variant(mi);
+		GVariant * props = dbusmenu_menuitem_properties_variant(mi, NULL);
 
 		if (props == NULL) {
 			GError * error = NULL;
@@ -1172,7 +1157,7 @@ serialize_menuitem(gpointer data, gpointer user_data)
 	gint id = dbusmenu_menuitem_get_id(mi);
 	g_variant_builder_add_value(&tuple, g_variant_new_int32(id));
 
-	GVariant * props = dbusmenu_menuitem_properties_variant(mi);
+	GVariant * props = dbusmenu_menuitem_properties_variant(mi, NULL);
 	g_variant_builder_add_value(&tuple, props);
 
 	g_variant_builder_add_value(builder, g_variant_builder_end(&tuple));

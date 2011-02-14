@@ -33,10 +33,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
-void dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array);
+GVariant * dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties);
 gboolean dbusmenu_menuitem_realized (DbusmenuMenuitem * mi);
 void dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi);
-GVariant * dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi);
+GVariant * dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** properties);
 
 G_END_DECLS
 

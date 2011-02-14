@@ -1264,7 +1264,7 @@ variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
 	Return Value: A GVariant of type "a{sv}" or NULL on error.
 */
 GVariant *
-dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
+dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** properties)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
@@ -1322,7 +1322,7 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 
 
 /**
-	dbusmenu_menuitem_buildxml:
+	dbusmenu_menuitem_buildvariant:
 	@mi: #DbusmenuMenuitem to represent in XML
 	@array: (element-type utf8): A list of string that will be turned into an XML file
 
@@ -1332,28 +1332,50 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 	start tag and one that is a closing tag.  It will allow it's
 	children to place their own tags in the array in between those two.
 */
-void
-dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
+GVariant *
+dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties)
 {
-	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
 	gint id = 0;
 	if (!dbusmenu_menuitem_get_root(mi)) {
 		id = dbusmenu_menuitem_get_id(mi);
 	}
 
-	GList * children = dbusmenu_menuitem_get_children(mi);
-	if (children == NULL) {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\"/>", id));
+	/* This is the tuple that'll build up being a representation of
+	   this entry */
+	GVariantBuilder tupleb;
+	g_variant_builder_init(&tupleb, G_VARIANT_TYPE_TUPLE);
+
+	/* Add our ID */
+	g_variant_builder_add_value(&tupleb, g_variant_new_int32(id));
+
+	/* Figure out the properties */
+	GVariant * props = dbusmenu_menuitem_properties_variant(mi, properties);
+	if (props != NULL) {
+		g_variant_builder_add_value(&tupleb, props);
 	} else {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\">", id));
-		for ( ; children != NULL; children = children->next) {
-			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array);
-		}
-		g_ptr_array_add(array, g_strdup("</menu>"));
+		g_variant_builder_add_value(&tupleb, g_variant_parse(G_VARIANT_TYPE("a{sv}"), "[ ]", NULL, NULL, NULL));
 	}
 
-	return;
+	/* Pillage the children */
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	if (children == NULL) {
+		g_variant_builder_add_value(&tupleb, g_variant_parse(G_VARIANT_TYPE("a(v)"), "[ ]", NULL, NULL, NULL));
+	} else {
+		GVariantBuilder childrenbuilder;
+		g_variant_builder_init(&childrenbuilder, G_VARIANT_TYPE_ARRAY);
+
+		for ( ; children != NULL; children = children->next) {
+			GVariant * child = dbusmenu_menuitem_build_variant(DBUSMENU_MENUITEM(children->data), properties);
+
+			g_variant_builder_add_value(&childrenbuilder, g_variant_new_variant(child));
+		}
+
+		g_variant_builder_add_value(&tupleb, g_variant_builder_end(&childrenbuilder));
+	}
+
+	return g_variant_builder_end(&tupleb);
 }
 
 typedef struct {
