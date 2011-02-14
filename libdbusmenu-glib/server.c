@@ -891,6 +891,13 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 		}
 	}
 
+	/* If it's the default value we want to treat it like a clearing
+	   of the value so that it doesn't get sent over dbus and waste
+	   bandwidth */
+	if (dbusmenu_menuitem_property_is_default(mi, property)) {
+		variant = NULL;
+	}
+
 	/* If so, we need to swap the value */
 	if (prop != NULL) {
 		g_variant_unref(prop->variant);
