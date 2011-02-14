@@ -1473,3 +1473,13 @@ dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp)
 
 	return;
 }
+
+/* Checks to see if the value of this property is unique or just the
+   default value. */
+/* TODO: Implement this */
+gboolean
+dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * property)
+{
+	/* No defaults system yet */
+	return FALSE;
+}
