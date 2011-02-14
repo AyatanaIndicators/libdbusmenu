@@ -719,34 +719,105 @@ menuitem_property_idle (gpointer user_data)
 
 	int i, j;
 	GVariantBuilder itembuilder;
-	g_variant_builder_init(&itembuilder, G_VARIANT_TYPE_ARRAY);
+	gboolean item_init = FALSE;
+
+	GVariantBuilder removeitembuilder;
+	gboolean removeitem_init = FALSE;
 
 	for (i = 0; i < priv->prop_array->len; i++) {
 		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
 
-		GVariantBuilder tuplebuilder;
-		g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
-
-		g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
-
 		GVariantBuilder dictbuilder;
-		g_variant_builder_init(&dictbuilder, G_VARIANT_TYPE_DICTIONARY);
+		gboolean dictinit = FALSE;
+
+		GVariantBuilder removedictbuilder;
+		gboolean removedictinit = FALSE;
 		
+		/* Go throught each item and see if it should go in the removal list
+		   or the additive list. */
 		for (j = 0; j < iitem->array->len; j++) {
 			prop_idle_prop_t * iprop = &g_array_index(iitem->array, prop_idle_prop_t, j);
 
-			GVariant * entry = g_variant_new_dict_entry(g_variant_new_string(iprop->property),
-			                                            g_variant_new_variant(iprop->variant));
+			if (iprop->variant != NULL) {
+				if (!dictinit) {
+					g_variant_builder_init(&dictbuilder, G_VARIANT_TYPE_DICTIONARY);
+					dictinit = TRUE;
+				}
 
-			g_variant_builder_add_value(&dictbuilder, entry);
+				GVariant * entry = g_variant_new_dict_entry(g_variant_new_string(iprop->property),
+				                                            g_variant_new_variant(iprop->variant));
+
+				g_variant_builder_add_value(&dictbuilder, entry);
+			} else {
+				if (!removedictinit) {
+					g_variant_builder_init(&removedictbuilder, G_VARIANT_TYPE_ARRAY);
+					removedictinit = TRUE;
+				}
+
+				g_variant_builder_add_value(&removedictbuilder, g_variant_new_string(iprop->property));
+			}
 		}
 
-		g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&dictbuilder));
+		/* If we've got new values that are real values we need to add that
+		   to the list of items to send the value of */
+		if (dictinit) {
+			GVariantBuilder tuplebuilder;
+			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-		g_variant_builder_add_value(&itembuilder, g_variant_builder_end(&tuplebuilder));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&dictbuilder));
+
+			if (!item_init) {
+				g_variant_builder_init(&itembuilder, G_VARIANT_TYPE_ARRAY);
+				item_init = TRUE;
+			}
+
+			g_variant_builder_add_value(&itembuilder, g_variant_builder_end(&tuplebuilder));
+		}
+
+		/* If we've got properties that have been removed then we need to add
+		   them to the list of removed items */
+		if (removedictinit) {
+			GVariantBuilder tuplebuilder;
+			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
+
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&removedictbuilder));
+
+			if (!removeitem_init) {
+				g_variant_builder_init(&removeitembuilder, G_VARIANT_TYPE_ARRAY);
+				removeitem_init = TRUE;
+			}
+
+			g_variant_builder_add_value(&itembuilder, g_variant_builder_end(&tuplebuilder));
+		}
 	}
 
-	GVariant * megadata = g_variant_builder_end(&itembuilder);
+	GVariant * megadata[2];
+
+	if (item_init) {
+		megadata[0] = g_variant_builder_end(&itembuilder);
+	} else {
+		GError * error = NULL;
+		megadata[0] = g_variant_parse(G_VARIANT_TYPE("a(ia{sv})"), "[ ]", NULL, NULL, &error);
+
+		if (error != NULL) {
+			g_warning("Unable to parse '[ ]' as a 'a(ia{sv})': %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (removeitem_init) {
+		megadata[1] = g_variant_builder_end(&removeitembuilder);
+	} else {
+		GError * error = NULL;
+		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ia(s))"), "[ ]", NULL, NULL, &error);
+
+		if (error != NULL) {
+			g_warning("Unable to parse '[ ]' as a 'a(ia(s))': %s", error->message);
+			g_error_free(error);
+		}
+	}
 
 	if (priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
@@ -754,10 +825,11 @@ menuitem_property_idle (gpointer user_data)
 		                              priv->dbusobject,
 		                              DBUSMENU_INTERFACE,
 		                              "ItemPropertiesUpdated",
-		                              g_variant_new_tuple(&megadata, 1),
+		                              g_variant_new_tuple(megadata, 2),
 		                              NULL);
 	} else {
-		g_variant_unref(megadata);
+		g_variant_unref(megadata[0]);
+		g_variant_unref(megadata[1]);
 	}
 
 	/* Clean everything up */
