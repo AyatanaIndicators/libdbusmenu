@@ -205,7 +205,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 				<dox:d>The revision number of the layout.  For matching
 				with layoutUpdated signals.</dox:d>
 			</arg>
-			<arg type="a(ia{sv}a(v))" name="layout" direction="out">
+			<arg type="(ia{sv}a(v))" name="layout" direction="out">
 				<dox:d>The layout as an XML string of IDs.</dox:d>
 			</arg>
 		</method>
