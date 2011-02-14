@@ -1625,10 +1625,17 @@ update_layout (DbusmenuClient * client)
 
 	priv->layoutcall = g_cancellable_new();
 
+	GVariantBuilder tupleb;
+	g_variant_builder_init(&tupleb, G_VARIANT_TYPE_TUPLE);
+	
+	g_variant_builder_add_value(&tupleb, g_variant_new_int32(0)); // root
+	g_variant_builder_add_value(&tupleb, g_variant_new_int32(-1)); // recurse
+	g_variant_builder_add_value(&tupleb, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0)); // props
+
 	g_object_ref(G_OBJECT(client));
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "GetLayout",
-	                  g_variant_new("(iia(s))", 0, -1, NULL), /* root */
+	                  g_variant_builder_end(&tupleb),
 	                  G_DBUS_CALL_FLAGS_NONE,
 	                  -1,   /* timeout */
 	                  priv->layoutcall, /* cancellable */
