@@ -317,6 +317,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			properties.
 			</dox:d>
 			<arg type="a(ia(sv))" name="props" direction="out" />
+			<arg type="a(ia(s))"  name="props_removed" direction="out" />
 		</signal>
 		<signal name="LayoutUpdated">
 			<dox:d>
