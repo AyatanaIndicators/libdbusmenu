@@ -1030,12 +1030,37 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 {
 	g_return_if_fail(DBUSMENU_IS_CLIENT(user_data));
 	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	if (g_strcmp0(signal, "LayoutUpdated") == 0) {
 		guint revision; gint parent;
 		g_variant_get(params, "(ui)", &revision, &parent);
 		layout_update(proxy, revision, parent, client);
 	} else if (g_strcmp0(signal, "ItemPropertiesUpdated") == 0) {
+		/* Remove before adding just incase there is a duplicate, against the
+		   rules, but we can handle it so let's do it. */
+		GVariantIter ritems;
+		g_variant_iter_init(&ritems, g_variant_get_child_value(params, 1));
+
+		GVariant * ritem;
+		while ((ritem = g_variant_iter_next_value(&ritems)) != NULL) {
+			gint id = g_variant_get_int32(g_variant_get_child_value(ritem, 0));
+			DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
+
+			if (menuitem == NULL) {
+				continue;
+			}
+
+			GVariantIter properties;
+			g_variant_iter_init(&properties, g_variant_get_child_value(ritem, 1));
+			gchar * property;
+
+			while (g_variant_iter_next(&properties, "s", &property)) {
+				g_debug("Removing property '%s' on %d", property, id);
+				dbusmenu_menuitem_property_remove(menuitem, property);
+			}
+		}
+
 		GVariantIter items;
 		g_variant_iter_init(&items, g_variant_get_child_value(params, 0));
 
