@@ -1036,6 +1036,9 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 		guint revision; gint parent;
 		g_variant_get(params, "(ui)", &revision, &parent);
 		layout_update(proxy, revision, parent, client);
+	} else if (priv->root == NULL) {
+		/* Drop out here, all the rest of these really need to have a root
+		   node so we can just ignore them if there isn't one. */
 	} else if (g_strcmp0(signal, "ItemPropertiesUpdated") == 0) {
 		/* Remove before adding just incase there is a duplicate, against the
 		   rules, but we can handle it so let's do it. */
