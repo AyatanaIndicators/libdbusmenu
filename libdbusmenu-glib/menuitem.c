@@ -1333,7 +1333,7 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 	children to place their own tags in the array in between those two.
 */
 GVariant *
-dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties)
+dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties, gint recurse)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
@@ -1360,14 +1360,14 @@ dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** propertie
 
 	/* Pillage the children */
 	GList * children = dbusmenu_menuitem_get_children(mi);
-	if (children == NULL) {
+	if (children == NULL && recurse != 0) {
 		g_variant_builder_add_value(&tupleb, g_variant_parse(G_VARIANT_TYPE("a(v)"), "[ ]", NULL, NULL, NULL));
 	} else {
 		GVariantBuilder childrenbuilder;
 		g_variant_builder_init(&childrenbuilder, G_VARIANT_TYPE_ARRAY);
 
 		for ( ; children != NULL; children = children->next) {
-			GVariant * child = dbusmenu_menuitem_build_variant(DBUSMENU_MENUITEM(children->data), properties);
+			GVariant * child = dbusmenu_menuitem_build_variant(DBUSMENU_MENUITEM(children->data), properties, recurse - 1);
 
 			g_variant_builder_add_value(&childrenbuilder, g_variant_new_variant(child));
 		}

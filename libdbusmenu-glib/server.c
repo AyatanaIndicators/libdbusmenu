@@ -938,7 +938,7 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 
 	/* Input */
 	gint parent = g_variant_get_int32(g_variant_get_child_value(params, 0));
-	//gint recurse = g_variant_get_int32(g_variant_get_child_value(params, 1));
+	gint recurse = g_variant_get_int32(g_variant_get_child_value(params, 1));
 	const gchar ** props = g_variant_get_strv(g_variant_get_child_value(params, 2), NULL);
 
 	/* Output */
@@ -946,7 +946,7 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	GVariant * items = NULL;
 
 	if (priv->root != NULL) {
-		items = dbusmenu_menuitem_build_variant(priv->root, props);
+		items = dbusmenu_menuitem_build_variant(priv->root, props, recurse);
 	}
 
 	/* What happens if we don't have anything? */
