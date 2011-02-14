@@ -1408,7 +1408,7 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 			child = g_variant_get_variant(child);
 		}
 
-		gint childid = g_variant_get_uint32(g_variant_get_child_value(child, 0));
+		gint childid = g_variant_get_int32(g_variant_get_child_value(child, 0));
 		if (childid < 0) {
 			/* Don't increment the position when there isn't a valid
 			   node in the XML tree.  It's probably a comment. */
@@ -1473,7 +1473,11 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 	child = g_variant_iter_next_value(&children);
 	GList * childmis = dbusmenu_menuitem_get_children(item);
 	while (child != NULL && childmis != NULL) {
-		gint xmlid = g_variant_get_uint32(g_variant_get_child_value(child, 0));
+		if (g_variant_is_of_type(child, G_VARIANT_TYPE_VARIANT)) {
+			child = g_variant_get_variant(child);
+		}
+
+		gint xmlid = g_variant_get_int32(g_variant_get_child_value(child, 0));
 		/* If this isn't a valid menu item we need to move on
 		   until we have one.  This avoids things like comments. */
 		if (xmlid < 0) {
