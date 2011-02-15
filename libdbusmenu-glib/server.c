@@ -903,7 +903,7 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 		g_array_append_val(properties, myprop);
 	}
 	if (variant != NULL) {
-		g_variant_ref(variant);
+		g_variant_ref_sink(variant);
 	}
 
 	/* Check to see if the idle is already queued, and queue it
@@ -1366,7 +1366,7 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 		event_data->variant = g_variant_get_variant(event_data->variant);
 	}
 
-	g_variant_ref(event_data->variant);
+	g_variant_ref_sink(event_data->variant);
 
 	g_timeout_add(0, event_local_handler, event_data);
 

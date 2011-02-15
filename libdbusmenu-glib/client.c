@@ -1276,7 +1276,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	edata->event = g_strdup(name);
 	edata->timestamp = timestamp;
 	edata->variant = variant;
-	g_variant_ref(variant);
+	g_variant_ref_sink(variant);
 
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "Event",

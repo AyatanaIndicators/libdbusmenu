@@ -1213,7 +1213,7 @@ copy_helper (gpointer in_key, gpointer in_value, gpointer in_data)
 	GHashTable * table = (GHashTable *)in_data;
 	gchar * key = (gchar *)in_key;
 	GVariant * value = (GVariant *)in_value;
-	g_variant_ref(value);
+	g_variant_ref_sink(value);
 	g_hash_table_insert(table, g_strdup(key), value);
 	return;
 }
