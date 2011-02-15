@@ -1009,7 +1009,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	if (value != NULL) {
 		gchar * lprop = g_strdup(property);
-		g_variant_ref(value);
+		g_variant_ref_sink(value);
 
 		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
 			g_hash_table_replace(priv->properties, lprop, value);
@@ -1213,7 +1213,7 @@ copy_helper (gpointer in_key, gpointer in_value, gpointer in_data)
 	GHashTable * table = (GHashTable *)in_data;
 	gchar * key = (gchar *)in_key;
 	GVariant * value = (GVariant *)in_value;
-	g_variant_ref(value);
+	g_variant_ref_sink(value);
 	g_hash_table_insert(table, g_strdup(key), value);
 	return;
 }
@@ -1250,7 +1250,9 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 static void
 variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
 {
-	g_variant_builder_add((GVariantBuilder *)user_data, "{sv}", in_key, in_value);
+	GVariant * value = g_variant_new_dict_entry(g_variant_new_string((gchar *)in_key),
+	                                            g_variant_new_variant((GVariant *)in_value));
+	g_variant_builder_add_value((GVariantBuilder *)user_data, value);
 	return;
 }
 
@@ -1274,7 +1276,7 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** prop
 
 	if (g_hash_table_size(priv->properties) > 0) {
 		GVariantBuilder builder;
-		g_variant_builder_init(&builder, g_variant_type_new("a{sv}"));
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
 		g_hash_table_foreach(priv->properties, variant_helper, &builder);
 
@@ -1494,4 +1496,14 @@ dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp)
 	g_signal_emit(G_OBJECT(mi), signals[SHOW_TO_USER], 0, timestamp, TRUE);
 
 	return;
+}
+
+/* Checks to see if the value of this property is unique or just the
+   default value. */
+/* TODO: Implement this */
+gboolean
+dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * property)
+{
+	/* No defaults system yet */
+	return FALSE;
 }
