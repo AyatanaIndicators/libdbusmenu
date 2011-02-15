@@ -1250,7 +1250,9 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 static void
 variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
 {
-	g_variant_builder_add((GVariantBuilder *)user_data, "{sv}", in_key, in_value);
+	GVariant * value = g_variant_new_dict_entry(g_variant_new_string((gchar *)in_key),
+	                                            g_variant_new_variant((GVariant *)in_value));
+	g_variant_builder_add_value((GVariantBuilder *)user_data, value);
 	return;
 }
 
@@ -1274,7 +1276,7 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** prop
 
 	if (g_hash_table_size(priv->properties) > 0) {
 		GVariantBuilder builder;
-		g_variant_builder_init(&builder, g_variant_type_new("a{sv}"));
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
 		g_hash_table_foreach(priv->properties, variant_helper, &builder);
 

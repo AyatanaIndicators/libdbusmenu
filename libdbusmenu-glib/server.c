@@ -1058,8 +1058,10 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	g_variant_builder_add_value(&tuplebuilder, g_variant_new_uint32(revision));
 	g_variant_builder_add_value(&tuplebuilder, items);
 
+	GVariant * retval = g_variant_builder_end(&tuplebuilder);
+	// g_debug("Sending layout type: %s", g_variant_get_type_string(retval));
 	g_dbus_method_invocation_return_value(invocation,
-	                                      g_variant_builder_end(&tuplebuilder));
+	                                      retval);
 	return;
 }
 
