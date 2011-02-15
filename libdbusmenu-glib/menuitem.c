@@ -1009,7 +1009,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	if (value != NULL) {
 		gchar * lprop = g_strdup(property);
-		g_variant_ref(value);
+		g_variant_ref_sink(value);
 
 		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
 			g_hash_table_replace(priv->properties, lprop, value);
