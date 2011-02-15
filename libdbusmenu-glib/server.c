@@ -680,7 +680,10 @@ prop_array_teardown (GArray * prop_array)
 			prop_idle_prop_t * iprop = &g_array_index(iitem->array, prop_idle_prop_t, j);
 
 			g_free(iprop->property);
-			g_variant_unref(iprop->variant);
+
+			if (iprop->variant != NULL) {
+				g_variant_unref(iprop->variant);
+			}
 		}
 
 		g_array_free(iitem->array, TRUE);
@@ -899,7 +902,9 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 
 		g_array_append_val(properties, myprop);
 	}
-	g_variant_ref(variant);
+	if (variant != NULL) {
+		g_variant_ref(variant);
+	}
 
 	/* Check to see if the idle is already queued, and queue it
 	   if not. */
