@@ -219,13 +219,13 @@ refresh_shortcut (DbusmenuGtkClient * client, DbusmenuMenuitem * mi)
 
 
 /**
-	dbusmenu_gtkclient_set_accel_group:
-	@client: To set the group on
-	@agroup: The new acceleration group
-
-	Sets the acceleration group for the menu items with accelerators
-	on this client.
-*/
+ * dbusmenu_gtkclient_set_accel_group:
+ * @client: To set the group on
+ * @agroup: The new acceleration group
+ * 
+ * Sets the acceleration group for the menu items with accelerators
+ * on this client.
+ */
 void
 dbusmenu_gtkclient_set_accel_group (DbusmenuGtkClient * client, GtkAccelGroup * agroup)
 {
@@ -256,14 +256,14 @@ dbusmenu_gtkclient_set_accel_group (DbusmenuGtkClient * client, GtkAccelGroup * 
 }
 
 /**
-	dbusmenu_gtkclient_get_accel_group:
-	@client: Client to query for an accelerator group
-
-	Gets the accel group for this client.
-
-	Return value: Either a valid group or #NULL on error or
-		none set.
-*/
+ * dbusmenu_gtkclient_get_accel_group:
+ * @client: Client to query for an accelerator group
+ * 
+ * Gets the accel group for this client.
+ * 
+ * Return value: (transfer none): Either a valid group or #NULL on error or
+ * 	none set.
+ */
 GtkAccelGroup *
 dbusmenu_gtkclient_get_accel_group (DbusmenuGtkClient * client)
 {
@@ -493,21 +493,21 @@ destroy_gmi (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 #endif
 
 /**
-	dbusmenu_gtkclient_newitem_base:
-	@client: The client handling everything on this connection
-	@item: The #DbusmenuMenuitem to attach the GTK-isms to
-	@gmi: A #GtkMenuItem representing the GTK world's view of this menuitem
-	@parent: The parent #DbusmenuMenuitem
-
-	This function provides some of the basic connectivity for being in
-	the GTK world.  Things like visibility and sensitivity of the item are
-	handled here so that the subclasses don't have to.  If you're building
-	your on GTK menu item you can use this function to apply those basic
-	attributes so that you don't have to deal with them either.
-
-	This also handles passing the "activate" signal back to the
-	#DbusmenuMenuitem side of thing.
-*/
+ * dbusmenu_gtkclient_newitem_base:
+ * @client: The client handling everything on this connection
+ * @item: The #DbusmenuMenuitem to attach the GTK-isms to
+ * @gmi: A #GtkMenuItem representing the GTK world's view of this menuitem
+ * @parent: The parent #DbusmenuMenuitem
+ * 
+ * This function provides some of the basic connectivity for being in
+ * the GTK world.  Things like visibility and sensitivity of the item are
+ * handled here so that the subclasses don't have to.  If you're building
+ * your on GTK menu item you can use this function to apply those basic
+ * attributes so that you don't have to deal with them either.
+ * 
+ * This also handles passing the "activate" signal back to the
+ * #DbusmenuMenuitem side of thing.
+ */
 void
 dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * item, GtkMenuItem * gmi, DbusmenuMenuitem * parent)
 {
@@ -617,15 +617,15 @@ move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint ol
 /* Public API */
 
 /**
-	dbusmenu_gtkclient_new:
-	@dbus_name: Name of the #DbusmenuServer on DBus
-	@dbus_name: Name of the object on the #DbusmenuServer
-
-	Creates a new #DbusmenuGtkClient object and creates a #DbusmenuClient
-	that connects across DBus to a #DbusmenuServer.
-
-	Return value: A new #DbusmenuGtkClient sync'd with a server
-*/
+ * dbusmenu_gtkclient_new:
+ * @dbus_name: Name of the #DbusmenuServer on DBus
+ * @dbus_name: Name of the object on the #DbusmenuServer
+ * 
+ * Creates a new #DbusmenuGtkClient object and creates a #DbusmenuClient
+ * that connects across DBus to a #DbusmenuServer.
+ * 
+ * Return value: A new #DbusmenuGtkClient sync'd with a server
+ */
 DbusmenuGtkClient *
 dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 {
@@ -636,15 +636,15 @@ dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 }
 
 /**
-	dbusmenu_gtkclient_menuitem_get:
-	@client: A #DbusmenuGtkClient with the item in it.
-	@item: #DbusmenuMenuitem to get associated #GtkMenuItem on.
-
-	This grabs the #GtkMenuItem that is associated with the
-	#DbusmenuMenuitem.
-
-	Return value: The #GtkMenuItem that can be played with.
-*/
+ * dbusmenu_gtkclient_menuitem_get:
+ * @client: A #DbusmenuGtkClient with the item in it.
+ * @item: #DbusmenuMenuitem to get associated #GtkMenuItem on.
+ * 
+ * This grabs the #GtkMenuItem that is associated with the
+ * #DbusmenuMenuitem.
+ * 
+ * Return value: (transfer none): The #GtkMenuItem that can be played with.
+ */
 GtkMenuItem *
 dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * item)
 {
@@ -660,13 +660,13 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 }
 
 /**
-	dbusmenu_gtkclient_menuitem_get_submenu:
-	@client: A #DbusmenuGtkClient with the item in it.
-	@item: #DbusmenuMenuitem to get associated #GtkMenu on.
-
-	This grabs the submenu associated with the menuitem.
-
-	Return value: The #GtkMenu if there is one.
+ * dbusmenu_gtkclient_menuitem_get_submenu:
+ * @client: A #DbusmenuGtkClient with the item in it.
+ * @item: #DbusmenuMenuitem to get associated #GtkMenu on.
+ * 
+ * This grabs the submenu associated with the menuitem.
+ * 
+ * Return value: (transfer none): The #GtkMenu if there is one.
 */
 GtkMenu *
 dbusmenu_gtkclient_menuitem_get_submenu (DbusmenuGtkClient * client, DbusmenuMenuitem * item)

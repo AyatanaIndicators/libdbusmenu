@@ -81,16 +81,16 @@ static void           menuitem_notify_cb       (GtkWidget *         widget,
                                                 gpointer            data);
 
 /**
-	dbusmenu_gtk_parse_menu_structure:
-	@widget: A #GtkMenuItem or #GtkMenuShell to turn into a #DbusmenuMenuitem
-
-	Goes through the GTK structures and turns them into the appropraite
-	Dbusmenu structures along with setting up all the relationships
-	between the objects.  It also stores the dbusmenu items as a cache
-	on the GTK items so that they'll be reused if necissary.
-
-	Return value: A dbusmenu item representing the menu structure
-*/
+ * dbusmenu_gtk_parse_menu_structure:
+ * @widget: A #GtkMenuItem or #GtkMenuShell to turn into a #DbusmenuMenuitem
+ * 
+ * Goes through the GTK structures and turns them into the appropraite
+ * Dbusmenu structures along with setting up all the relationships
+ * between the objects.  It also stores the dbusmenu items as a cache
+ * on the GTK items so that they'll be reused if necissary.
+ * 
+ * Return value: (transfer none): A dbusmenu item representing the menu structure
+ */
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 {

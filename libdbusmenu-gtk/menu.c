@@ -398,15 +398,15 @@ build_client (DbusmenuGtkMenu * self)
 /* Public API */
 
 /**
-	dbusmenu_gtkmenu_new:
-	@dbus_name: Name of the #DbusmenuServer on DBus
-	@dbus_name: Name of the object on the #DbusmenuServer
-
-	Creates a new #DbusmenuGtkMenu object and creates a #DbusmenuClient
-	that connects across DBus to a #DbusmenuServer.
-
-	Return value: A new #DbusmenuGtkMenu sync'd with a server
-*/
+ * dbusmenu_gtkmenu_new:
+ * @dbus_name: Name of the #DbusmenuServer on DBus
+ * @dbus_name: Name of the object on the #DbusmenuServer
+ * 
+ * Creates a new #DbusmenuGtkMenu object and creates a #DbusmenuClient
+ * that connects across DBus to a #DbusmenuServer.
+ * 
+ * Return value: A new #DbusmenuGtkMenu sync'd with a server
+ */
 DbusmenuGtkMenu *
 dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object)
 {
@@ -417,14 +417,14 @@ dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object)
 }
 
 /**
-	dbusmenu_gtkmenu_get_client:
-	@menu: The #DbusmenuGtkMenu to get the client from
-
-	An accessor for the client that this menu is using to
-	communicate with the server.
-
-	Return value: A valid #DbusmenuGtkClient or NULL on error.
-*/
+ * dbusmenu_gtkmenu_get_client:
+ * @menu: The #DbusmenuGtkMenu to get the client from
+ * 
+ * An accessor for the client that this menu is using to
+ * communicate with the server.
+ * 
+ * Return value: (transfer none): A valid #DbusmenuGtkClient or NULL on error.
+ */
 DbusmenuGtkClient *
 dbusmenu_gtkmenu_get_client (DbusmenuGtkMenu * menu)
 {
