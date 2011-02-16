@@ -78,21 +78,21 @@ if INTROSPECTION_TEN
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 	--warn-all \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
-	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
+	$(addprefix --c-include=libdbusmenu-gtk/, $(libdbusmenu_gtkinclude_HEADERS)) \
 	--symbol-prefix=dbusmenu \
 	--identifier-prefix=DbusmenuGtk
 else
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 	--warn-all \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
-	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
+	$(addprefix --c-include=libdbusmenu-gtk/, $(libdbusmenu_gtkinclude_HEADERS))
 endif
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_builddir)/libdbusmenu-glib
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(libdbusmenu_gtkinclude_HEADERS)
+introspection_sources = $(filter-out genericmenuitem.%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
 
 DbusmenuGtk$(VER)-0.4.gir: libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_INCLUDES = \
