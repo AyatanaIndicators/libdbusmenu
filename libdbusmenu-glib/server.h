@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <glib-object.h>
 
 #include "menuitem.h"
+#include "types.h"
 
 G_BEGIN_DECLS
 

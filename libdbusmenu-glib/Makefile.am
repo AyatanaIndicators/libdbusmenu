@@ -19,7 +19,8 @@ libdbusmenu_glibinclude_HEADERS = \
 	menuitem.h \
 	menuitem-proxy.h \
 	server.h \
-	client.h
+	client.h \
+	types.h
 
 libdbusmenu_glib_la_SOURCES = \
 	dbus-menu-clean.xml.h \
