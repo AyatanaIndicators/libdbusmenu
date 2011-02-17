@@ -1,4 +1,4 @@
-libdbusmenu (0.3.98-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.98-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     ∘ Fixing distcheck
@@ -8,7 +8,7 @@ libdbusmenu (0.3.98-0ubuntu1~ppa1) UNRELEASED; urgency=low
     ∘ Fixing signatures on dbusmenu-dumper
   * debian/control: Removing libxml2 Build-Dep
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Feb 2011 11:06:22 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Feb 2011 11:11:40 -0600
 
 libdbusmenu (0.3.97-0ubuntu1) natty; urgency=low
 
