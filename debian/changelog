@@ -6,8 +6,9 @@ libdbusmenu (0.3.98-0ubuntu1~ppa1) UNRELEASED; urgency=low
     ∘ Removing XML from the GetLayout function
     ∘ Clean up icon handling in the parser (LP: #715864)
     ∘ Fixing signatures on dbusmenu-dumper
+  * debian/control: Removing libxml2 Build-Dep
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Feb 2011 11:05:30 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Feb 2011 11:06:22 -0600
 
 libdbusmenu (0.3.97-0ubuntu1) natty; urgency=low
 
