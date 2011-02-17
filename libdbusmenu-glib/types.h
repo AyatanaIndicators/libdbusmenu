@@ -42,7 +42,7 @@ G_BEGIN_DECLS
 	will be sending strings as.
 */
 typedef enum _DbusmenuTextDirection DbusmenuTextDirection;
-enum _DbusmenuServerTextDirection { /*< prefix=DBUSMENU >*/
+enum _DbusmenuTextDirection { /*< prefix=DBUSMENU >*/
 	DBUSMENU_TEXT_DIRECTION_NONE, /*< nick=none >*/
 	DBUSMENU_TEXT_DIRECTION_LTR,  /*< nick=ltr  >*/
 	DBUSMENU_TEXT_DIRECTION_RTL   /*< nick=rtl  >*/
