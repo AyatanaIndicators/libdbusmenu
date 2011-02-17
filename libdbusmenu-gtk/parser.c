@@ -586,8 +586,12 @@ update_icon (DbusmenuMenuitem *menuitem, GtkImage *image)
     dbusmenu_menuitem_property_set (menuitem,
                                     DBUSMENU_MENUITEM_PROP_ICON_NAME,
                                     icon_name);
+    dbusmenu_menuitem_property_remove (menuitem,
+                                       DBUSMENU_MENUITEM_PROP_ICON_DATA);
   }
   else if (pixbuf != NULL) {
+    dbusmenu_menuitem_property_remove (menuitem,
+                                       DBUSMENU_MENUITEM_PROP_ICON_NAME);
     dbusmenu_menuitem_property_set_image (menuitem,
                                           DBUSMENU_MENUITEM_PROP_ICON_DATA,
                                           pixbuf);
