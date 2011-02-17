@@ -1,6 +1,7 @@
 
-CLEANFILES = 
-
+BUILT_SOURCES =
+CLEANFILES =
+DISTCLEANFILES =
 EXTRA_DIST = \
 	clean-namespaces.xslt \
 	dbusmenu-glib-0.4.pc.in \
@@ -8,6 +9,8 @@ EXTRA_DIST = \
 	client-marshal.list \
 	menuitem-marshal.list \
 	server-marshal.list
+
+include $(top_srcdir)/Makefile.am.enum
 
 lib_LTLIBRARIES = \
 	libdbusmenu-glib.la
@@ -25,6 +28,8 @@ libdbusmenu_glibinclude_HEADERS = \
 libdbusmenu_glib_la_SOURCES = \
 	dbus-menu-clean.xml.h \
 	dbus-menu-clean.xml.c \
+	enum-types.h \
+	enum-types.c \
 	menuitem.h \
 	menuitem.c \
 	menuitem-marshal.h \
@@ -57,6 +62,14 @@ libdbusmenu_glib_la_LIBADD = \
 pkgconfig_DATA = dbusmenu-glib-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
+glib_enum_h = enum-types.h
+glib_enum_c = enum-types.c
+glib_enum_headers = $(addprefix $(srcdir)/, $(libdbusmenu_glibinclude_HEADERS))
+
+DISTCLEANFILES += \
+	enum-types.c \
+	enum-types.h
+
 %.xml.h: %.xml
 	echo "extern const char * $(subst -,_,$(subst .,_,$(basename $(notdir $@))));" > $@
 
@@ -70,7 +83,7 @@ dbus-menu-clean.xml: dbus-menu.xml
 
 CLEANFILES += dbus-menu-clean.xml
 
-BUILT_SOURCES = \
+BUILT_SOURCES += \
 	dbus-menu-clean.xml.c \
 	dbus-menu-clean.xml.h \
 	client-marshal.h \
