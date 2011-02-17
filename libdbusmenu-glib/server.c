@@ -35,6 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem-private.h"
 #include "server.h"
 #include "server-marshal.h"
+#include "enum-types.h"
 
 #include "dbus-menu-clean.xml.h"
 
@@ -74,7 +75,8 @@ enum {
 	PROP_0,
 	PROP_DBUS_OBJECT,
 	PROP_ROOT_NODE,
-	PROP_VERSION
+	PROP_VERSION,
+	PROP_TEXT_DIRECTION
 };
 
 /* Errors */
@@ -285,6 +287,11 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                              "The version of the DBusmenu API that we're implementing.",
 	                                              DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER,
 	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_TEXT_DIRECTION,
+	                                 g_param_spec_enum(DBUSMENU_SERVER_PROP_TEXT_DIRECTION, "The default direction of text",
+	                                              "The object that represents this set of menus on DBus",
+	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
+	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
 		GError * error = NULL;
