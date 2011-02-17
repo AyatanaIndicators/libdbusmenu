@@ -41,12 +41,11 @@ G_BEGIN_DECLS
 	The direction of text that the strings that this server
 	will be sending strings as.
 */
-typedef enum _DbusmenuTextDirection DbusmenuTextDirection;
-enum _DbusmenuTextDirection { /*< prefix=DBUSMENU >*/
+typedef enum { /*< prefix=DBUSMENU_TEXT_DIRECTION >*/
 	DBUSMENU_TEXT_DIRECTION_NONE, /*< nick=none >*/
 	DBUSMENU_TEXT_DIRECTION_LTR,  /*< nick=ltr  >*/
 	DBUSMENU_TEXT_DIRECTION_RTL   /*< nick=rtl  >*/
-};
+} DbusmenuTextDirection;
 
 
 G_END_DECLS
