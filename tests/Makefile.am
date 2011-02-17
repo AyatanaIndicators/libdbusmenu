@@ -2,6 +2,7 @@
 DBUS_RUNNER=dbus-test-runner
 
 CLEANFILES=
+DISTCLEANFILES=
 
 TESTS = \
 	test-glib-objects-test \
@@ -260,6 +261,8 @@ test_glib_objects_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+DISTCLEANFILES += $(OBJECT_XML_REPORT)
+
 ######################
 # Test Glib Properties
 ######################
@@ -386,6 +389,8 @@ test_gtk_objects_LDADD = \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
+DISTCLEANFILES += $(GTK_OBJECT_XML_REPORT)
+
 ######################
 # Test GTK Parser
 ######################
@@ -414,6 +419,7 @@ test_gtk_parser_LDADD = \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
+DISTCLEANFILES += $(GTK_PARSER_XML_REPORT)
 
 #########################
 # Test GTK Label
@@ -622,8 +628,6 @@ CLEANFILES += \
 distclean-local:
 	-rm -rf $(builddir)/mago.results
 
-DISTCLEANFILES = \
-	$(TESTS) \
-	$(OBJECT_XML_REPORT) \
-	$(GTK_OBJECT_XML_REPORT)
+DISTCLEANFILES += \
+	$(TESTS) 
 

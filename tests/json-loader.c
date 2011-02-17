@@ -109,7 +109,6 @@ set_props (DbusmenuMenuitem * mi, JsonObject * node)
 
 		if (variant != NULL) {
 			dbusmenu_menuitem_property_set_variant(mi, member, variant);
-			g_variant_unref(variant);
 		}
 	}
 

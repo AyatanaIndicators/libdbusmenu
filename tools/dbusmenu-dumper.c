@@ -270,10 +270,12 @@ init_dbus_vars_from_window(Window window)
 
 	error = NULL;
 	GVariant * retval;
+	GVariant * args[1];
+	args[0] = g_variant_new("u", window);
 
 	retval = g_dbus_proxy_call_sync(proxy,
 	                                "GetMenuForWindow",
-	                                g_variant_new("u", window),
+	                                g_variant_new_tuple(args, 1),
 	                                G_DBUS_CALL_FLAGS_NONE,
 	                                -1,
 	                                NULL,
@@ -285,7 +287,7 @@ init_dbus_vars_from_window(Window window)
 		return FALSE;
 	}
 
-	g_variant_get(retval, "so", &dbusname, &dbusobject);
+	g_variant_get(retval, "(so)", &dbusname, &dbusobject);
 
 	g_variant_unref(retval);
 	g_object_unref(proxy);
