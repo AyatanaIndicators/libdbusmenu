@@ -1009,7 +1009,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	if (value != NULL) {
 		gchar * lprop = g_strdup(property);
-		g_variant_ref(value);
+		g_variant_ref_sink(value);
 
 		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
 			g_hash_table_replace(priv->properties, lprop, value);
@@ -1213,7 +1213,7 @@ copy_helper (gpointer in_key, gpointer in_value, gpointer in_data)
 	GHashTable * table = (GHashTable *)in_data;
 	gchar * key = (gchar *)in_key;
 	GVariant * value = (GVariant *)in_value;
-	g_variant_ref(value);
+	g_variant_ref_sink(value);
 	g_hash_table_insert(table, g_strdup(key), value);
 	return;
 }
@@ -1250,7 +1250,9 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 static void
 variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
 {
-	g_variant_builder_add((GVariantBuilder *)user_data, "{sv}", in_key, in_value);
+	GVariant * value = g_variant_new_dict_entry(g_variant_new_string((gchar *)in_key),
+	                                            g_variant_new_variant((GVariant *)in_value));
+	g_variant_builder_add_value((GVariantBuilder *)user_data, value);
 	return;
 }
 
@@ -1264,7 +1266,7 @@ variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
 	Return Value: A GVariant of type "a{sv}" or NULL on error.
 */
 GVariant *
-dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
+dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** properties)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
@@ -1274,7 +1276,7 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
 
 	if (g_hash_table_size(priv->properties) > 0) {
 		GVariantBuilder builder;
-		g_variant_builder_init(&builder, g_variant_type_new("a{sv}"));
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
 		g_hash_table_foreach(priv->properties, variant_helper, &builder);
 
@@ -1322,7 +1324,7 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 
 
 /**
-	dbusmenu_menuitem_buildxml:
+	dbusmenu_menuitem_buildvariant:
 	@mi: #DbusmenuMenuitem to represent in XML
 	@array: (element-type utf8): A list of string that will be turned into an XML file
 
@@ -1332,28 +1334,50 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 	start tag and one that is a closing tag.  It will allow it's
 	children to place their own tags in the array in between those two.
 */
-void
-dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
+GVariant *
+dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties, gint recurse)
 {
-	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
 	gint id = 0;
 	if (!dbusmenu_menuitem_get_root(mi)) {
 		id = dbusmenu_menuitem_get_id(mi);
 	}
 
-	GList * children = dbusmenu_menuitem_get_children(mi);
-	if (children == NULL) {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\"/>", id));
+	/* This is the tuple that'll build up being a representation of
+	   this entry */
+	GVariantBuilder tupleb;
+	g_variant_builder_init(&tupleb, G_VARIANT_TYPE_TUPLE);
+
+	/* Add our ID */
+	g_variant_builder_add_value(&tupleb, g_variant_new_int32(id));
+
+	/* Figure out the properties */
+	GVariant * props = dbusmenu_menuitem_properties_variant(mi, properties);
+	if (props != NULL) {
+		g_variant_builder_add_value(&tupleb, props);
 	} else {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\">", id));
-		for ( ; children != NULL; children = children->next) {
-			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array);
-		}
-		g_ptr_array_add(array, g_strdup("</menu>"));
+		g_variant_builder_add_value(&tupleb, g_variant_parse(G_VARIANT_TYPE("a{sv}"), "[ ]", NULL, NULL, NULL));
 	}
 
-	return;
+	/* Pillage the children */
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	if (children == NULL && recurse != 0) {
+		g_variant_builder_add_value(&tupleb, g_variant_new_array(G_VARIANT_TYPE_VARIANT, NULL, 0));
+	} else {
+		GVariantBuilder childrenbuilder;
+		g_variant_builder_init(&childrenbuilder, G_VARIANT_TYPE_ARRAY);
+
+		for ( ; children != NULL; children = children->next) {
+			GVariant * child = dbusmenu_menuitem_build_variant(DBUSMENU_MENUITEM(children->data), properties, recurse - 1);
+
+			g_variant_builder_add_value(&childrenbuilder, g_variant_new_variant(child));
+		}
+
+		g_variant_builder_add_value(&tupleb, g_variant_builder_end(&childrenbuilder));
+	}
+
+	return g_variant_builder_end(&tupleb);
 }
 
 typedef struct {
@@ -1472,4 +1496,14 @@ dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp)
 	g_signal_emit(G_OBJECT(mi), signals[SHOW_TO_USER], 0, timestamp, TRUE);
 
 	return;
+}
+
+/* Checks to see if the value of this property is unique or just the
+   default value. */
+/* TODO: Implement this */
+gboolean
+dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * property)
+{
+	/* No defaults system yet */
+	return FALSE;
 }
