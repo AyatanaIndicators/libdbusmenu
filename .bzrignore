@@ -227,3 +227,7 @@ libdbusmenu-gtk/libdbusmenu_gtk_la-parser.lo
 test-gtk-parser
 test-gtk-parser-test
 test-gtk-parser.xml
+enum-types.c
+enum-types.h
+libdbusmenu_glib_la-enum-types.lo
+stamp-enum-types
