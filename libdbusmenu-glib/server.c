@@ -444,6 +444,39 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		}
 		layout_update_signal(DBUSMENU_SERVER(obj));
 		break;
+	case PROP_TEXT_DIRECTION: {
+		DbusmenuTextDirection indir = g_value_get_enum(value);
+		DbusmenuTextDirection olddir = priv->text_direction;
+
+		/* If being set to none we need to go back to default, otherwise
+		   we'll set things the way that we've been told */
+		if (indir == DBUSMENU_TEXT_DIRECTION_NONE) {
+			default_text_direction(DBUSMENU_SERVER(obj));
+		} else {
+			priv->text_direction = indir;
+		}
+
+		/* If the value has changed we need to signal that on DBus */
+		if (priv->text_direction != olddir && priv->bus != NULL && priv->dbusobject != NULL) {
+			GVariantBuilder params;
+			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("text-direction"), g_variant_new_string("ltr"));
+			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
+			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
+			GVariant * vparams = g_variant_builder_end(&params);
+
+			g_dbus_connection_emit_signal(priv->bus,
+			                              NULL,
+			                              priv->dbusobject,
+			                              "org.freedesktop.DBus.Properties",
+			                              "PropertiesChanged",
+			                              vparams,
+			                              NULL);
+		}
+
+		break;
+	}
 	default:
 		g_return_if_reached();
 		break;
@@ -477,6 +510,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_VERSION:
 		g_value_set_uint(value, DBUSMENU_VERSION_NUMBER);
+		break;
+	case PROP_TEXT_DIRECTION:
+		g_value_set_enum(value, priv->text_direction);
 		break;
 	default:
 		g_return_if_reached();
