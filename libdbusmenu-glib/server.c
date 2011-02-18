@@ -1204,5 +1204,39 @@ dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 	return;
 }
 
+/**
+	dbusmenu_server_get_text_direction:
+	@server: The #DbusmenuServer object to get the text direction from
 
+	Returns the value of the text direction that is being exported
+	over DBus for this server.  It should relate to the direction
+	of the labels and other text fields that are being exported by
+	this server.
+
+	Return value: Text direction exported for this server.
+*/
+DbusmenuTextDirection
+dbusmenu_server_get_text_direction (DbusmenuServer * server)
+{
+
+
+	return DBUSMENU_TEXT_DIRECTION_NONE;
+}
+
+/**
+	dbusmenu_server_set_text_direction:
+	@server: The #DbusmenuServer object to set the text direction on
+
+	Sets the text direction that should be exported over DBus for
+	this server.  If the value is set to #DBUSMENU_TEXT_DIRECTION_NONE
+	the default detection will be used for setting the value and
+	exported over DBus.
+*/
+void
+dbusmenu_server_set_text_direction (DbusmenuServer * server, DbusmenuTextDirection dir)
+{
+
+
+	return;
+}
 
