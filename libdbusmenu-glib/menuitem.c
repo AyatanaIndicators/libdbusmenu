@@ -1507,3 +1507,12 @@ dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * prop
 	/* No defaults system yet */
 	return FALSE;
 }
+
+/* Check to see if this menu item has been sent into the bus yet or
+   not.  If no one cares we can give less info */
+gboolean
+dbusmenu_menuitem_exposed (DbusmenuMenuitem * mi)
+{
+
+	return TRUE;
+}
