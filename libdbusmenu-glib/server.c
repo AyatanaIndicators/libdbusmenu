@@ -58,6 +58,9 @@ struct _DbusmenuServerPrivate
 	guint dbus_registration;
 
 	DbusmenuTextDirection text_direction;
+
+	GArray * prop_array;
+	guint property_idle;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) (DBUSMENU_SERVER(o)->priv)
@@ -162,6 +165,7 @@ static void       menuitem_signals_create     (DbusmenuMenuitem * mi,
 static void       menuitem_signals_remove     (DbusmenuMenuitem * mi,
                                                gpointer data);
 static GQuark     error_quark                 (void);
+static void       prop_array_teardown         (GArray * prop_array);
 static void       bus_get_layout              (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
@@ -367,6 +371,17 @@ dbusmenu_server_dispose (GObject *object)
 
 	if (priv->layout_idle != 0) {
 		g_source_remove(priv->layout_idle);
+		priv->layout_idle = 0;
+	}
+	
+	if (priv->property_idle != 0) {
+		g_source_remove(priv->property_idle);
+		priv->property_idle = 0;
+	}
+
+	if (priv->prop_array != NULL) {
+		prop_array_teardown(priv->prop_array);
+		priv->prop_array = NULL;
 	}
 
 	if (priv->root != NULL) {
@@ -431,6 +446,15 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		if (priv->root != NULL) {
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, obj);
 			dbusmenu_menuitem_set_root(priv->root, FALSE);
+
+			GList * properties = dbusmenu_menuitem_properties_list(priv->root);
+			GList * iter;
+			for (iter = properties; iter != NULL; iter = g_list_next(iter)) {
+				gchar * property = (gchar *)iter->data;
+				menuitem_property_changed(priv->root, property, NULL, DBUSMENU_SERVER(obj));
+			}
+			g_list_free(properties);
+
 			g_object_unref(G_OBJECT(priv->root));
 			priv->root = NULL;
 		}
@@ -439,6 +463,14 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			g_object_ref(G_OBJECT(priv->root));
 			dbusmenu_menuitem_set_root(priv->root, TRUE);
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_create, obj);
+
+			GList * properties = dbusmenu_menuitem_properties_list(priv->root);
+			GList * iter;
+			for (iter = properties; iter != NULL; iter = g_list_next(iter)) {
+				gchar * property = (gchar *)iter->data;
+				menuitem_property_changed(priv->root, property, dbusmenu_menuitem_property_get_variant(priv->root, property), DBUSMENU_SERVER(obj));
+			}
+			g_list_free(properties);
 		} else {
 			g_debug("Setting root node to NULL");
 		}
@@ -480,17 +512,6 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 	default:
 		g_return_if_reached();
 		break;
-	}
-
-	return;
-}
-
-static void
-xmlarray_foreach_free (gpointer arrayentry, gpointer userdata)
-{
-	if (arrayentry != NULL) {
-		/* g_debug("Freeing pointer: %s", (gchar *)arrayentry); */
-		g_free(arrayentry);
 	}
 
 	return;
@@ -732,22 +753,264 @@ layout_update_signal (DbusmenuServer * server)
 	return;
 }
 
-static void 
-menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * variant, DbusmenuServer * server)
-{
-	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+typedef struct _prop_idle_item_t prop_idle_item_t;
+struct _prop_idle_item_t {
+	gint id;
+	GArray * array;
+};
 
-	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, dbusmenu_menuitem_get_id(mi), property, variant, TRUE);
+typedef struct _prop_idle_prop_t prop_idle_prop_t;
+struct _prop_idle_prop_t {
+	gchar * property;
+	GVariant * variant;
+};
+
+/* Takes appart our data structure so we don't leak any
+   memory or references. */
+static void
+prop_array_teardown (GArray * prop_array)
+{
+	int i, j;
+
+	for (i = 0; i < prop_array->len; i++) {
+		prop_idle_item_t * iitem = &g_array_index(prop_array, prop_idle_item_t, i);
+		
+		for (j = 0; j < iitem->array->len; j++) {
+			prop_idle_prop_t * iprop = &g_array_index(iitem->array, prop_idle_prop_t, j);
+
+			g_free(iprop->property);
+
+			if (iprop->variant != NULL) {
+				g_variant_unref(iprop->variant);
+			}
+		}
+
+		g_array_free(iitem->array, TRUE);
+	}
+
+	g_array_free(prop_array, TRUE);
+
+	return;
+}
+
+/* Works in the idle to send a set of property updates so that they'll
+   all update in a single dbus message. */
+static gboolean
+menuitem_property_idle (gpointer user_data)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(user_data);
+
+	/* Source will get removed as we return */
+	priv->property_idle = 0;
+
+	/* If there are no items, let's just not signal */
+	if (priv->prop_array == NULL) {
+		return FALSE;
+	}
+
+	int i, j;
+	GVariantBuilder itembuilder;
+	gboolean item_init = FALSE;
+
+	GVariantBuilder removeitembuilder;
+	gboolean removeitem_init = FALSE;
+
+	for (i = 0; i < priv->prop_array->len; i++) {
+		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
+
+		GVariantBuilder dictbuilder;
+		gboolean dictinit = FALSE;
+
+		GVariantBuilder removedictbuilder;
+		gboolean removedictinit = FALSE;
+		
+		/* Go throught each item and see if it should go in the removal list
+		   or the additive list. */
+		for (j = 0; j < iitem->array->len; j++) {
+			prop_idle_prop_t * iprop = &g_array_index(iitem->array, prop_idle_prop_t, j);
+
+			if (iprop->variant != NULL) {
+				if (!dictinit) {
+					g_variant_builder_init(&dictbuilder, G_VARIANT_TYPE_DICTIONARY);
+					dictinit = TRUE;
+				}
+
+				GVariant * entry = g_variant_new_dict_entry(g_variant_new_string(iprop->property),
+				                                            g_variant_new_variant(iprop->variant));
+
+				g_variant_builder_add_value(&dictbuilder, entry);
+			} else {
+				if (!removedictinit) {
+					g_variant_builder_init(&removedictbuilder, G_VARIANT_TYPE_ARRAY);
+					removedictinit = TRUE;
+				}
+
+				g_variant_builder_add_value(&removedictbuilder, g_variant_new_string(iprop->property));
+			}
+		}
+
+		/* If we've got new values that are real values we need to add that
+		   to the list of items to send the value of */
+		if (dictinit) {
+			GVariantBuilder tuplebuilder;
+			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
+
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&dictbuilder));
+
+			if (!item_init) {
+				g_variant_builder_init(&itembuilder, G_VARIANT_TYPE_ARRAY);
+				item_init = TRUE;
+			}
+
+			g_variant_builder_add_value(&itembuilder, g_variant_builder_end(&tuplebuilder));
+		}
+
+		/* If we've got properties that have been removed then we need to add
+		   them to the list of removed items */
+		if (removedictinit) {
+			GVariantBuilder tuplebuilder;
+			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
+
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&removedictbuilder));
+
+			if (!removeitem_init) {
+				g_variant_builder_init(&removeitembuilder, G_VARIANT_TYPE_ARRAY);
+				removeitem_init = TRUE;
+			}
+
+			g_variant_builder_add_value(&removeitembuilder, g_variant_builder_end(&tuplebuilder));
+		}
+	}
+
+	GVariant * megadata[2];
+
+	if (item_init) {
+		megadata[0] = g_variant_builder_end(&itembuilder);
+	} else {
+		GError * error = NULL;
+		megadata[0] = g_variant_parse(G_VARIANT_TYPE("a(ia{sv})"), "[ ]", NULL, NULL, &error);
+
+		if (error != NULL) {
+			g_warning("Unable to parse '[ ]' as a 'a(ia{sv})': %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (removeitem_init) {
+		megadata[1] = g_variant_builder_end(&removeitembuilder);
+	} else {
+		GError * error = NULL;
+		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ia(s))"), "[ ]", NULL, NULL, &error);
+
+		if (error != NULL) {
+			g_warning("Unable to parse '[ ]' as a 'a(ia(s))': %s", error->message);
+			g_error_free(error);
+		}
+	}
 
 	if (priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
 		                              NULL,
 		                              priv->dbusobject,
 		                              DBUSMENU_INTERFACE,
-		                              "ItemPropertyUpdated",
-		                              g_variant_new("(isv)", dbusmenu_menuitem_get_id(mi), property, variant),
+		                              "ItemPropertiesUpdated",
+		                              g_variant_new_tuple(megadata, 2),
 		                              NULL);
+	} else {
+		g_variant_unref(megadata[0]);
+		g_variant_unref(megadata[1]);
 	}
+
+	/* Clean everything up */
+	prop_array_teardown(priv->prop_array);
+	priv->prop_array = NULL;
+
+	return FALSE;
+}
+
+static void 
+menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * variant, DbusmenuServer * server)
+{
+	int i;
+	gint item_id;
+
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	item_id = dbusmenu_menuitem_get_id(mi);
+
+	g_signal_emit(G_OBJECT(server), signals[ID_PROP_UPDATE], 0, item_id, property, variant, TRUE);
+
+	/* See if we have a property array, if not, we need to
+	   build one of these suckers */
+	if (priv->prop_array == NULL) {
+		priv->prop_array = g_array_new(FALSE, FALSE, sizeof(prop_idle_item_t));
+	}
+
+	/* Look to see if we already have this item in the list
+	   and use it if so */
+	prop_idle_item_t * item = NULL;
+	for (i = 0; i < priv->prop_array->len; i++) {
+		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
+		if (iitem->id == item_id) {
+			item = iitem;
+			break;
+		}
+	}
+
+	GArray * properties = NULL;
+	/* If not, we'll need to build ourselves one */
+	if (item == NULL) {
+		prop_idle_item_t myitem;
+		myitem.id = item_id;
+		myitem.array = g_array_new(FALSE, FALSE, sizeof(prop_idle_prop_t));
+
+		g_array_append_val(priv->prop_array, myitem);
+		properties = myitem.array;
+	} else {
+		properties = item->array;
+	}
+
+	/* Check to see if this property is in the list */
+	prop_idle_prop_t * prop = NULL;
+	for (i = 0; i < properties->len; i++) {
+		prop_idle_prop_t * iprop = &g_array_index(properties, prop_idle_prop_t, i);
+		if (g_strcmp0(iprop->property, property) == 0) {
+			prop = iprop;
+			break;
+		}
+	}
+
+	/* If it's the default value we want to treat it like a clearing
+	   of the value so that it doesn't get sent over dbus and waste
+	   bandwidth */
+	if (dbusmenu_menuitem_property_is_default(mi, property)) {
+		variant = NULL;
+	}
+
+	/* If so, we need to swap the value */
+	if (prop != NULL) {
+		g_variant_unref(prop->variant);
+		prop->variant = variant;
+	} else {
+	/* else we need to add it */
+		prop_idle_prop_t myprop;
+		myprop.property = g_strdup(property);
+		myprop.variant = variant;
+
+		g_array_append_val(properties, myprop);
+	}
+	if (variant != NULL) {
+		g_variant_ref_sink(variant);
+	}
+
+	/* Check to see if the idle is already queued, and queue it
+	   if not. */
+	if (priv->property_idle == 0) {
+		priv->property_idle = g_idle_add(menuitem_property_idle, server);
+	}
+
 	return;
 }
 
@@ -856,26 +1119,28 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
-	gint parent = 0;
-	g_variant_get(params, "(i)", &parent);
+	/* Input */
+	gint parent = g_variant_get_int32(g_variant_get_child_value(params, 0));
+	gint recurse = g_variant_get_int32(g_variant_get_child_value(params, 1));
+	const gchar ** props = g_variant_get_strv(g_variant_get_child_value(params, 2), NULL);
 
+	/* Output */
 	guint revision = priv->layout_revision;
-	GPtrArray * xmlarray = g_ptr_array_new();
+	GVariant * items = NULL;
 
-	if (parent == 0) {
-		if (priv->root == NULL) {
-			/* g_debug("Getting layout without root node!"); */
-			g_ptr_array_add(xmlarray, g_strdup("<menu id=\"0\"/>"));
+	if (priv->root != NULL) {
+		items = dbusmenu_menuitem_build_variant(priv->root, props, recurse);
+	}
+
+	/* What happens if we don't have anything? */
+	if (items == NULL) {
+		if (parent == 0) {
+			/* We should always have a root, so we'll make up one for
+			   right now. */
+			items = g_variant_parse(G_VARIANT_TYPE("(ia{sv}av)"), "(0, [], [])", NULL, NULL, NULL);
 		} else {
-			dbusmenu_menuitem_buildxml(priv->root, xmlarray);
-		}
-	} else {
-		DbusmenuMenuitem * item = NULL;
-		if (priv->root != NULL) {
-			item = dbusmenu_menuitem_find_id(priv->root, parent);
-		}
-
-		if (item == NULL) {
+			/* If we were looking for a specific ID that's an error that
+			   we should send back, so let's do that. */
 			g_dbus_method_invocation_return_error(invocation,
 				                                  error_quark(),
 				                                  INVALID_MENUITEM_ID,
@@ -883,23 +1148,19 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 				                                  parent);
 			return;
 		}
-		dbusmenu_menuitem_buildxml(item, xmlarray);
 	}
-	g_ptr_array_add(xmlarray, NULL);
 
-	/* build string */
-	gchar * layout = g_strjoinv("", (gchar **)xmlarray->pdata);
+	/* Build the final variant tuple */
+	GVariantBuilder tuplebuilder;
+	g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-	g_ptr_array_foreach(xmlarray, xmlarray_foreach_free, NULL);
-	g_ptr_array_free(xmlarray, TRUE);
+	g_variant_builder_add_value(&tuplebuilder, g_variant_new_uint32(revision));
+	g_variant_builder_add_value(&tuplebuilder, items);
 
+	GVariant * retval = g_variant_builder_end(&tuplebuilder);
+	// g_debug("Sending layout type: %s", g_variant_get_type_string(retval));
 	g_dbus_method_invocation_return_value(invocation,
-	                                      g_variant_new("(us)",
-	                                                    revision,
-	                                                    layout));
-
-	g_free(layout);
-
+	                                      retval);
 	return;
 }
 
@@ -973,7 +1234,7 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 		return;
 	}
 
-	GVariant * dict = dbusmenu_menuitem_properties_variant(mi);
+	GVariant * dict = dbusmenu_menuitem_properties_variant(mi, NULL);
 
 	g_dbus_method_invocation_return_value(invocation, g_variant_new("(a{sv})", dict));
 
@@ -1021,7 +1282,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		GVariantBuilder wbuilder;
 		g_variant_builder_init(&wbuilder, G_VARIANT_TYPE_TUPLE);
 		g_variant_builder_add(&wbuilder, "i", id);
-		GVariant * props = dbusmenu_menuitem_properties_variant(mi);
+		GVariant * props = dbusmenu_menuitem_properties_variant(mi, NULL);
 
 		if (props == NULL) {
 			GError * error = NULL;
@@ -1081,7 +1342,7 @@ serialize_menuitem(gpointer data, gpointer user_data)
 	gint id = dbusmenu_menuitem_get_id(mi);
 	g_variant_builder_add_value(&tuple, g_variant_new_int32(id));
 
-	GVariant * props = dbusmenu_menuitem_properties_variant(mi);
+	GVariant * props = dbusmenu_menuitem_properties_variant(mi, NULL);
 	g_variant_builder_add_value(&tuple, props);
 
 	g_variant_builder_add_value(builder, g_variant_builder_end(&tuple));
@@ -1204,7 +1465,7 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 		event_data->variant = g_variant_get_variant(event_data->variant);
 	}
 
-	g_variant_ref(event_data->variant);
+	g_variant_ref_sink(event_data->variant);
 
 	g_timeout_add(0, event_local_handler, event_data);
 

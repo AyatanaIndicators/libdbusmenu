@@ -32,9 +32,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <gio/gio.h>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-
 #include "client.h"
 #include "menuitem.h"
 #include "menuitem-private.h"
@@ -155,9 +152,8 @@ static void layout_update (GDBusProxy * proxy, guint revision, gint parent, Dbus
 static void id_prop_update (GDBusProxy * proxy, gint id, gchar * property, GVariant * value, DbusmenuClient * client);
 static void id_update (GDBusProxy * proxy, gint id, DbusmenuClient * client);
 static void build_proxies (DbusmenuClient * client);
-static gint parse_node_get_id (xmlNodePtr node);
-static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, GDBusProxy * proxy);
-static gint parse_layout (DbusmenuClient * client, const gchar * layout);
+static DbusmenuMenuitem * parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, GDBusProxy * proxy);
+static gint parse_layout (DbusmenuClient * client, GVariant * layout);
 static void update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data);
 static void update_layout (DbusmenuClient * client);
 static void menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data);
@@ -1107,11 +1103,60 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 {
 	g_return_if_fail(DBUSMENU_IS_CLIENT(user_data));
 	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	if (g_strcmp0(signal, "LayoutUpdated") == 0) {
 		guint revision; gint parent;
 		g_variant_get(params, "(ui)", &revision, &parent);
 		layout_update(proxy, revision, parent, client);
+	} else if (priv->root == NULL) {
+		/* Drop out here, all the rest of these really need to have a root
+		   node so we can just ignore them if there isn't one. */
+	} else if (g_strcmp0(signal, "ItemPropertiesUpdated") == 0) {
+		/* Remove before adding just incase there is a duplicate, against the
+		   rules, but we can handle it so let's do it. */
+		GVariantIter ritems;
+		g_variant_iter_init(&ritems, g_variant_get_child_value(params, 1));
+
+		GVariant * ritem;
+		while ((ritem = g_variant_iter_next_value(&ritems)) != NULL) {
+			gint id = g_variant_get_int32(g_variant_get_child_value(ritem, 0));
+			DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
+
+			if (menuitem == NULL) {
+				continue;
+			}
+
+			GVariantIter properties;
+			g_variant_iter_init(&properties, g_variant_get_child_value(ritem, 1));
+			gchar * property;
+
+			while (g_variant_iter_next(&properties, "s", &property)) {
+				g_debug("Removing property '%s' on %d", property, id);
+				dbusmenu_menuitem_property_remove(menuitem, property);
+			}
+		}
+
+		GVariantIter items;
+		g_variant_iter_init(&items, g_variant_get_child_value(params, 0));
+
+		GVariant * item;
+		while ((item = g_variant_iter_next_value(&items)) != NULL) {
+			gint id = g_variant_get_int32(g_variant_get_child_value(item, 0));
+			GVariantIter properties;
+			g_variant_iter_init(&properties, g_variant_get_child_value(item, 1));
+			gchar * property;
+			GVariant * value;
+
+			while (g_variant_iter_next(&properties, "{sv}", &property, &value)) {
+				GVariant * internalvalue = value;
+				if (G_LIKELY(g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT))) {
+					/* Unboxing if needed */
+					internalvalue = g_variant_get_variant(value);
+				}
+				id_prop_update(proxy, id, property, internalvalue, client);
+			}
+		}
 	} else if (g_strcmp0(signal, "ItemPropertyUpdated") == 0) {
 		gint id; gchar * property; GVariant * value;
 		g_variant_get(params, "(isv)", &id, &property, &value);
@@ -1129,40 +1174,6 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 	}
 
 	return;
-}
-
-/* Get the ID attribute of the node, parse it and
-   return it.  Also we're checking to ensure the node
-   is a 'menu' here. */
-static gint
-parse_node_get_id (xmlNodePtr node)
-{
-	if (node == NULL) {
-		return -1;
-	}
-	if (node->type != XML_ELEMENT_NODE) {
-		return -1;
-	}
-	if (g_strcmp0((gchar *)node->name, "menu") != 0) {
-		/* This kills some nodes early */
-		g_warning("XML Node is not 'menu' it is '%s'", node->name);
-		return -1;
-	}
-
-	xmlAttrPtr attrib;
-	for (attrib = node->properties; attrib != NULL; attrib = attrib->next) {
-		if (g_strcmp0((gchar *)attrib->name, "id") == 0) {
-			if (attrib->children != NULL) {
-				gint id = (guint)g_ascii_strtoll((gchar *)attrib->children->content, NULL, 10);
-				/* g_debug ("Found ID: %d", id); */
-				return id;
-			}
-			break;
-		}
-	}
-
-	g_warning("Unable to find an ID on the node");
-	return -1;
 }
 
 /* This is the callback for the properties on a menu item.  There
@@ -1342,7 +1353,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	edata->event = g_strdup(name);
 	edata->timestamp = timestamp;
 	edata->variant = variant;
-	g_variant_ref(variant);
+	g_variant_ref_sink(variant);
 
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "Event",
@@ -1467,10 +1478,14 @@ parse_layout_update (DbusmenuMenuitem * item, DbusmenuClient * client)
 /* Parse recursively through the XML and make it into
    objects as need be */
 static DbusmenuMenuitem *
-parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, GDBusProxy * proxy)
+parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * item, DbusmenuMenuitem * parent, GDBusProxy * proxy)
 {
+	if (layout == NULL) {
+		return NULL;
+	}
+
 	/* First verify and figure out what we've got */
-	gint id = parse_node_get_id(node);
+	gint id = g_variant_get_int32(g_variant_get_child_value(layout, 0));
 	if (id < 0) {
 		return NULL;
 	}
@@ -1482,20 +1497,26 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	g_return_val_if_fail(id == dbusmenu_menuitem_get_id(item), NULL);
 
 	/* Some variables */
-	xmlNodePtr children;
-	guint position;
+	GVariantIter children;
+	g_variant_iter_init(&children, g_variant_get_child_value(layout, 2));
+	GVariant * child;
+
+	guint position = 0;
 	GList * oldchildren = g_list_copy(dbusmenu_menuitem_get_children(item));
 	/* g_debug("Starting old children: %d", g_list_length(oldchildren)); */
 
 	/* Go through all the XML Nodes and make sure that we have menuitems
 	   to cover those XML nodes. */
-	for (children = node->children, position = 0; children != NULL; children = children->next, position++) {
+	while ((child = g_variant_iter_next_value(&children)) != NULL) {
 		/* g_debug("Looking at child: %d", position); */
-		gint childid = parse_node_get_id(children);
+		if (g_variant_is_of_type(child, G_VARIANT_TYPE_VARIANT)) {
+			child = g_variant_get_variant(child);
+		}
+
+		gint childid = g_variant_get_int32(g_variant_get_child_value(child, 0));
 		if (childid < 0) {
 			/* Don't increment the position when there isn't a valid
 			   node in the XML tree.  It's probably a comment. */
-			position--;
 			continue;
 		}
 		DbusmenuMenuitem * childmi = NULL;
@@ -1528,6 +1549,8 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 			dbusmenu_menuitem_child_reorder(item, childmi, position);
 			parse_layout_update(childmi, client);
 		}
+
+		position++;
 	}
 
 	/* Remove any children that are no longer used by this version of
@@ -1550,14 +1573,20 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 	}
 
 	/* now it's time to recurse down the tree. */
-	children = node->children;
+	g_variant_iter_init(&children, g_variant_get_child_value(layout, 2));
+
+	child = g_variant_iter_next_value(&children);
 	GList * childmis = dbusmenu_menuitem_get_children(item);
-	while (children != NULL && childmis != NULL) {
-		gint xmlid = parse_node_get_id(children);
+	while (child != NULL && childmis != NULL) {
+		if (g_variant_is_of_type(child, G_VARIANT_TYPE_VARIANT)) {
+			child = g_variant_get_variant(child);
+		}
+
+		gint xmlid = g_variant_get_int32(g_variant_get_child_value(child, 0));
 		/* If this isn't a valid menu item we need to move on
 		   until we have one.  This avoids things like comments. */
 		if (xmlid < 0) {
-			children = children->next;
+			child = g_variant_iter_next_value(&children);
 			continue;
 		}
 
@@ -1566,13 +1595,14 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 		g_debug("Recursing parse_layout_xml.  XML ID: %d  MI ID: %d", xmlid, miid);
 		#endif
 		
-		parse_layout_xml(client, children, DBUSMENU_MENUITEM(childmis->data), item, proxy);
+		parse_layout_xml(client, child, DBUSMENU_MENUITEM(childmis->data), item, proxy);
 
-		children = children->next;
+		child = g_variant_iter_next_value(&children);
 		childmis = g_list_next(childmis);
 	}
-	if (children != NULL) {
-		g_warning("Sync failed, now we've got extra XML nodes.");
+
+	if (child != NULL) {
+		g_warning("Sync failed, now we've got extra layout nodes.");
 	}
 	if (childmis != NULL) {
 		g_warning("Sync failed, now we've got extra menu items.");
@@ -1584,24 +1614,13 @@ parse_layout_xml(DbusmenuClient * client, xmlNodePtr node, DbusmenuMenuitem * it
 /* Take the layout passed to us over DBus and turn it into
    a set of beautiful objects */
 static gint
-parse_layout (DbusmenuClient * client, const gchar * layout)
+parse_layout (DbusmenuClient * client, GVariant * layout)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Client Parsing a new layout");
 	#endif 
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-
-	xmlDocPtr xmldoc;
-
-	/* No one should need more characters than this! */
-	xmldoc = xmlReadMemory(layout, g_utf8_strlen(layout, 1024*1024), "dbusmenu.xml", NULL, 0);
-
-	xmlNodePtr root = xmlDocGetRootElement(xmldoc);
-
-	if (root == NULL) {
-		g_warning("Unable to get root node of menu XML");
-	}
 
 	DbusmenuMenuitem * oldroot = priv->root;
 
@@ -1611,11 +1630,10 @@ parse_layout (DbusmenuClient * client, const gchar * layout)
 		parse_layout_update(priv->root, client);
 	}
 
-	priv->root = parse_layout_xml(client, root, priv->root, NULL, priv->menuproxy);
-	xmlFreeDoc(xmldoc);
+	priv->root = parse_layout_xml(client, layout, priv->root, NULL, priv->menuproxy);
 
 	if (priv->root == NULL) {
-		g_warning("Unable to parse layout on client %s object %s: %s", priv->dbus_name, priv->dbus_object, layout);
+		g_warning("Unable to parse layout on client %s object %s: %s", priv->dbus_name, priv->dbus_object, g_variant_print(layout, TRUE));
 	}
 
 	if (priv->root != oldroot) {
@@ -1656,14 +1674,10 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 		goto out;
 	}
 
-	guint rev;
-	gchar * xml;
+	guint rev = g_variant_get_uint32(g_variant_get_child_value(params, 0));
+	GVariant * layout = g_variant_get_child_value(params, 1);
 
-	g_variant_get(params, "(us)", &rev, &xml);
-	g_variant_unref(params);
-
-	guint parseable = parse_layout(client, xml);
-	g_free(xml);
+	guint parseable = parse_layout(client, layout);
 
 	if (parseable == 0) {
 		g_warning("Unable to parse layout!");
@@ -1687,6 +1701,10 @@ out:
 	if (priv->layoutcall != NULL) {
 		g_object_unref(priv->layoutcall);
 		priv->layoutcall = NULL;
+	}
+
+	if (params != NULL) {
+		g_variant_unref(params);
 	}
 
 	g_object_unref(G_OBJECT(client));
@@ -1716,10 +1734,20 @@ update_layout (DbusmenuClient * client)
 
 	priv->layoutcall = g_cancellable_new();
 
+	GVariantBuilder tupleb;
+	g_variant_builder_init(&tupleb, G_VARIANT_TYPE_TUPLE);
+	
+	g_variant_builder_add_value(&tupleb, g_variant_new_int32(0)); // root
+	g_variant_builder_add_value(&tupleb, g_variant_new_int32(-1)); // recurse
+	g_variant_builder_add_value(&tupleb, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0)); // props
+
+	GVariant * args = g_variant_builder_end(&tupleb);
+	// g_debug("Args (type: %s): %s", g_variant_get_type_string(args), g_variant_print(args, TRUE));
+
 	g_object_ref(G_OBJECT(client));
 	g_dbus_proxy_call(priv->menuproxy,
 	                  "GetLayout",
-	                  g_variant_new("(i)", 0), /* root */
+	                  args,
 	                  G_DBUS_CALL_FLAGS_NONE,
 	                  -1,   /* timeout */
 	                  priv->layoutcall, /* cancellable */
