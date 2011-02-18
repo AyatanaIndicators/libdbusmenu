@@ -1218,9 +1218,16 @@ dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 DbusmenuTextDirection
 dbusmenu_server_get_text_direction (DbusmenuServer * server)
 {
+	g_return_val_if_fail(DBUSMENU_IS_SERVER(server), DBUSMENU_TEXT_DIRECTION_NONE);
 
+	GValue val = {0};
+	g_value_init(&val, DBUSMENU_TYPE_TEXT_DIRECTION);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_TEXT_DIRECTION, &val);
 
-	return DBUSMENU_TEXT_DIRECTION_NONE;
+	DbusmenuTextDirection retval = g_value_get_enum(&val);
+	g_value_unset(&val);
+
+	return retval;
 }
 
 /**
@@ -1235,8 +1242,14 @@ dbusmenu_server_get_text_direction (DbusmenuServer * server)
 void
 dbusmenu_server_set_text_direction (DbusmenuServer * server, DbusmenuTextDirection dir)
 {
+	g_return_if_fail(DBUSMENU_IS_SERVER(server));
+	g_return_if_fail(dir == DBUSMENU_TEXT_DIRECTION_NONE || dir == DBUSMENU_TEXT_DIRECTION_LTR || dir == DBUSMENU_TEXT_DIRECTION_RTL);
 
-
+	GValue newval = {0};
+	g_value_init(&newval, DBUSMENU_TYPE_TEXT_DIRECTION);
+	g_value_set_enum(&newval, dir);
+	g_object_set_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_TEXT_DIRECTION, &newval);
+	g_value_unset(&newval);
 	return;
 }
 
