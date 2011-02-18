@@ -47,6 +47,17 @@ typedef enum { /*< prefix=DBUSMENU_TEXT_DIRECTION >*/
 	DBUSMENU_TEXT_DIRECTION_RTL   /*< nick=rtl  >*/
 } DbusmenuTextDirection;
 
+/**
+	DbusmenuStatus:
+	@DBUSMENU_STATUS_NORMAL: Everything is normal
+	@DBUSMENU_STATUS_NOTICE: The menus should be shown at a higher priority
+
+	Tracks how the menus should be presented to the user.
+*/
+typedef enum { /*< prefix=DBUSMENU_STATUS >*/
+	DBUSMENU_STATUS_NORMAL,   /*< nick=normal >*/
+	DBUSMENU_STATUS_NOTICE    /*< nick=notice >*/
+} DbusmenuStatus;
 
 G_END_DECLS
 
