@@ -58,6 +58,7 @@ struct _DbusmenuServerPrivate
 	guint dbus_registration;
 
 	DbusmenuTextDirection text_direction;
+	DbusmenuStatus status;
 
 	GArray * prop_array;
 	guint property_idle;
@@ -366,6 +367,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->dbus_registration = 0;
 
 	default_text_direction(self);
+	priv->status = DBUSMENU_STATUS_NORMAL;
 
 	return;
 }
@@ -515,6 +517,31 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 
 		break;
 	}
+	case PROP_STATUS: {
+		DbusmenuStatus instatus = g_value_get_enum(value);
+
+		/* If the value has changed we need to signal that on DBus */
+		if (priv->status != instatus && priv->bus != NULL && priv->dbusobject != NULL) {
+			GVariantBuilder params;
+			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
+			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
+			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
+			GVariant * vparams = g_variant_builder_end(&params);
+
+			g_dbus_connection_emit_signal(priv->bus,
+			                              NULL,
+			                              priv->dbusobject,
+			                              "org.freedesktop.DBus.Properties",
+			                              "PropertiesChanged",
+			                              vparams,
+			                              NULL);
+		}
+
+		priv->status = instatus;
+		break;
+	}
 	default:
 		g_return_if_reached();
 		break;
@@ -540,6 +567,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_TEXT_DIRECTION:
 		g_value_set_enum(value, priv->text_direction);
+		break;
+	case PROP_STATUS:
+		g_value_set_enum(value, priv->status);
 		break;
 	default:
 		g_return_if_reached();
