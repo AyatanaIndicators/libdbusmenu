@@ -1486,6 +1486,21 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 			parse_layout_update(childmi, client);
 		}
 
+		/* Apply known properties sent in the structure to the
+		   menu item.  Sometimes they may just be copies */
+		if (childmi != NULL) {
+			GVariantIter iter;
+			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
+			gchar * prop;
+			GVariant * value;
+
+			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+				dbusmenu_menuitem_property_set_variant(childmi, prop, value);
+				g_free(prop);
+				g_variant_unref(value);
+			}
+		}
+
 		position++;
 	}
 
