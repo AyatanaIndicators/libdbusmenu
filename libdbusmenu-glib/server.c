@@ -30,6 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include <glib/gi18n.h>
 #include <gio/gio.h>
 
 #include "menuitem-private.h"
@@ -55,6 +56,8 @@ struct _DbusmenuServerPrivate
 	GDBusConnection * bus;
 	GCancellable * bus_lookup;
 	guint dbus_registration;
+
+	DbusmenuTextDirection text_direction;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) (DBUSMENU_SERVER(o)->priv)
@@ -123,6 +126,7 @@ static void       get_property                (GObject * obj,
                                                guint id,
                                                GValue * value,
                                                GParamSpec * pspec);
+static void       default_text_direction      (DbusmenuServer * server);
 static void       register_object             (DbusmenuServer * server);
 static void       bus_got_cb                  (GObject * obj,
                                                GAsyncResult * result,
@@ -351,6 +355,8 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->bus_lookup = NULL;
 	priv->dbus_registration = 0;
 
+	default_text_direction(self);
+
 	return;
 }
 
@@ -476,6 +482,49 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		g_return_if_reached();
 		break;
 	}
+
+	return;
+}
+
+/* Determines the default text direction */
+static void
+default_text_direction (DbusmenuServer * server)
+{
+	DbusmenuTextDirection dir = DBUSMENU_TEXT_DIRECTION_NONE;
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	const gchar * env = g_getenv("DBUSMENU_TEXT_DIRECTION");
+	if (env != NULL) {
+		if (g_strcmp0(env, "ltr") == 0) {
+			dir = DBUSMENU_TEXT_DIRECTION_LTR;
+		} else if (g_strcmp0(env, "rtl") == 0) {
+			dir = DBUSMENU_TEXT_DIRECTION_RTL;
+		} else {
+			g_warning("Value of 'DBUSMENU_TEXT_DIRECTION' is '%s' which is not one of 'rtl' or 'ltr'", env);
+		}
+	}
+
+	if (dir == DBUSMENU_TEXT_DIRECTION_NONE) {
+		/* TRANSLATORS: This is the direction of the text and can
+		   either be the value 'ltr' for left-to-right text (English)
+		   or 'rtl' for right-to-left (Arabic). */
+		const gchar * default_dir = C_("default text direction", "ltr");
+
+		if (g_strcmp0(default_dir, "ltr") == 0) {
+			dir = DBUSMENU_TEXT_DIRECTION_LTR;
+		} else if (g_strcmp0(default_dir, "rtl") == 0) {
+			dir = DBUSMENU_TEXT_DIRECTION_RTL;
+		} else {
+			g_warning("Translation has an invalid value '%s' for default text direction.  Defaulting to left-to-right.", default_dir);
+			dir = DBUSMENU_TEXT_DIRECTION_LTR;
+		}
+	}
+
+	/* Shouldn't happen, but incase future patches make a mistake
+	   this'll catch them */
+	g_return_if_fail(dir != DBUSMENU_TEXT_DIRECTION_NONE);
+
+	priv->text_direction = dir;
 
 	return;
 }
