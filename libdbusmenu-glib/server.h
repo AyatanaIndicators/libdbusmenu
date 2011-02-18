@@ -111,6 +111,8 @@ struct _DbusmenuServer {
 GType               dbusmenu_server_get_type   (void);
 DbusmenuServer *    dbusmenu_server_new        (const gchar * object);
 void                dbusmenu_server_set_root   (DbusmenuServer * server, DbusmenuMenuitem * root);
+DbusmenuTextDirection dbusmenu_server_get_text_direction  (DbusmenuServer * server);
+void  dbusmenu_server_set_text_direction  (DbusmenuServer * server, DbusmenuTextDirection dir);
 
 /**
 	SECIONT:server
