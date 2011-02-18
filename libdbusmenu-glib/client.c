@@ -1072,7 +1072,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	}
 
 	if (olddir != priv->text_direction) {
-		g_signal_emit(G_OBJECT(user_data), TEXT_DIRECTION_CHANGED, 0, priv->text_direction, TRUE);
+		g_signal_emit(G_OBJECT(user_data), signals[TEXT_DIRECTION_CHANGED], 0, priv->text_direction, TRUE);
 	}
 
 	return;
