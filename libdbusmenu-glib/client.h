@@ -53,6 +53,7 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
+#define DBUSMENU_CLIENT_PROP_STATUS        "status"
 
 #define DBUSMENU_CLIENT_TYPES_DEFAULT      "standard"
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
@@ -159,6 +160,7 @@ void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
                                                         void (*cb) (gpointer user_data),
                                                         gpointer cb_data);
 DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
+DbusmenuStatus       dbusmenu_client_get_status        (DbusmenuClient * client);
 
 /**
 	SECTION:client
