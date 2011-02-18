@@ -1823,3 +1823,20 @@ dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * ty
 	return TRUE;
 }
 
+/**
+	dbusmenu_client_get_text_direction:
+	@client: #DbusmenuClient to check the text direction on
+
+	Gets the text direction that the server is exporting.  If
+	the server is not exporting a direction then the value
+	#DBUSMENU_TEXT_DIRECTION_NONE will be returned.
+
+	Return value: Text direction being exported.
+*/
+DbusmenuTextDirection
+dbusmenu_client_get_text_direction (DbusmenuClient * client)
+{
+
+
+	return DBUSMENU_TEXT_DIRECTION_NONE;
+}
