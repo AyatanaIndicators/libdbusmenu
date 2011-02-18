@@ -50,7 +50,8 @@ enum {
 	PROP_0,
 	PROP_DBUSOBJECT,
 	PROP_DBUSNAME,
-	PROP_STATUS
+	PROP_STATUS,
+	PROP_TEXT_DIRECTION
 };
 
 /* Signals */
@@ -60,7 +61,6 @@ enum {
 	NEW_MENUITEM,
 	ITEM_ACTIVATE,
 	EVENT_RESULT,
-	TEXT_DIRECTION_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -252,21 +252,6 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        _dbusmenu_client_marshal_VOID__OBJECT_UINT,
 	                                        G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_UINT);
 	/**
-		DbusmenuClient::text-direction-changed:
-		@arg0: The #DbusmenuClient object
-		@arg1: The new text direction
-
-		Signal sent to show that there was an error in sending the event
-		to the server.
-	*/
-	signals[TEXT_DIRECTION_CHANGED] = g_signal_new(DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED,
-	                                        G_TYPE_FROM_CLASS (klass),
-	                                        G_SIGNAL_RUN_LAST,
-	                                        G_STRUCT_OFFSET (DbusmenuClientClass, text_direction_changed),
-	                                        NULL, NULL,
-	                                        _dbusmenu_client_marshal_VOID__ENUM,
-	                                        G_TYPE_NONE, 1, DBUSMENU_TYPE_TEXT_DIRECTION);
-	/**
 		DbusmenuClient::event-error:
 		@arg0: The #DbusmenuClient object
 		@arg1: The #DbusmenuMenuitem sent an event
@@ -300,6 +285,11 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                 g_param_spec_enum(DBUSMENU_CLIENT_PROP_STATUS, "Status of viewing the menus",
 	                                              "Whether the menus should be given special visuals",
 	                                              DBUSMENU_TYPE_STATUS, DBUSMENU_STATUS_NORMAL,
+	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_TEXT_DIRECTION,
+	                                 g_param_spec_enum(DBUSMENU_CLIENT_PROP_TEXT_DIRECTION, "Direction text values have",
+	                                              "Signals which direction the default text direction is for the menus",
+	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
 	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
@@ -504,6 +494,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_STATUS:
 		g_value_set_enum(value, priv->status);
+		break;
+	case PROP_TEXT_DIRECTION:
+		g_value_set_enum(value, priv->text_direction);
 		break;
 	default:
 		g_warning("Unknown property %d.", id);
@@ -1095,7 +1088,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	}
 
 	if (olddir != priv->text_direction) {
-		g_signal_emit(G_OBJECT(user_data), signals[TEXT_DIRECTION_CHANGED], 0, priv->text_direction, TRUE);
+		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_TEXT_DIRECTION);
 	}
 
 	if (oldstatus != priv->status) {

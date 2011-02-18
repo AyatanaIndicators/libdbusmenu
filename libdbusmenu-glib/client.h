@@ -54,6 +54,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
 #define DBUSMENU_CLIENT_PROP_STATUS        "status"
+#define DBUSMENU_CLIENT_PROP_TEXT_DIRECTION "text-direction"
 
 #define DBUSMENU_CLIENT_TYPES_DEFAULT      "standard"
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
@@ -68,7 +69,6 @@ typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
 	@item_activate: Slot for #DbusmenuClient::item-activate.
 	@event_result: Slot for #DbusmenuClient::event-error.
-	@text_direction_changed: Slot for #DbusmenuClient::text-direction-changed.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
@@ -89,7 +89,6 @@ struct _DbusmenuClientClass {
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
 	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
 	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GVariant * data, guint timestamp, GError * error);
-	void (*text_direction_changed) (DbusmenuTextDirection newdirection);
 
 	/*< Private >*/
 	void (*reserved1) (void);
@@ -97,6 +96,7 @@ struct _DbusmenuClientClass {
 	void (*reserved3) (void);
 	void (*reserved4) (void);
 	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 /**
