@@ -59,6 +59,7 @@ struct _DbusmenuMenuitemPrivate
 	GHashTable * properties;
 	gboolean root;
 	gboolean realized;
+	gboolean exposed;
 };
 
 /* Signals */
@@ -312,6 +313,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 
 	priv->root = FALSE;
 	priv->realized = FALSE;
+	priv->exposed = FALSE;
 	
 	return;
 }
@@ -1338,6 +1340,8 @@ GVariant *
 dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties, gint recurse)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->exposed = TRUE;
 
 	gint id = 0;
 	if (!dbusmenu_menuitem_get_root(mi)) {
@@ -1513,6 +1517,7 @@ dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * prop
 gboolean
 dbusmenu_menuitem_exposed (DbusmenuMenuitem * mi)
 {
-
-	return TRUE;
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return priv->exposed;
 }
