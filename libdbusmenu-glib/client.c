@@ -1045,12 +1045,12 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	DbusmenuTextDirection olddir = priv->text_direction;
 
 	/* Invalidate first */
-	gchar * invalid = *invalidated;
-	while (invalid != NULL) {
+	gchar * invalid;
+	gint i = 0;
+	for (invalid = invalidated[i]; invalid != NULL; invalid = invalidated[++i]) {
 		if (g_strcmp0(invalid, "text-direction") == 0) {
 			priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
 		}
-		invalid++;
 	}
 
 	/* Check updates */
