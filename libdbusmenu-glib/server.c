@@ -461,7 +461,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			GVariantBuilder params;
 			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("text-direction"), g_variant_new_string("ltr"));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("text-direction"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
