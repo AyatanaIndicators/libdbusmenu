@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <glib-object.h>
 
 #include "menuitem.h"
+#include "types.h"
 
 G_BEGIN_DECLS
 
@@ -48,6 +49,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
 #define DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE   "item-activate"
 #define DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT    "event-result"
+#define DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED    "text-direction-changed"
 
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
@@ -65,6 +67,7 @@ typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
 	@item_activate: Slot for #DbusmenuClient::item-activate.
 	@event_result: Slot for #DbusmenuClient::event-error.
+	@text_direction_changed: Slot for #DbusmenuClient::text-direction-changed.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
@@ -85,6 +88,7 @@ struct _DbusmenuClientClass {
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
 	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
 	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GVariant * data, guint timestamp, GError * error);
+	void (*text_direction_changed) (DbusmenuTextDirection newdirection);
 
 	/*< Private >*/
 	void (*reserved1) (void);
@@ -92,7 +96,6 @@ struct _DbusmenuClientClass {
 	void (*reserved3) (void);
 	void (*reserved4) (void);
 	void (*reserved5) (void);
-	void (*reserved6) (void);
 };
 
 /**
@@ -155,6 +158,7 @@ void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
                                                         gint id,
                                                         void (*cb) (gpointer user_data),
                                                         gpointer cb_data);
+DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
 
 /**
 	SECTION:client
