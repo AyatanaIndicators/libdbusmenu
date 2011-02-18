@@ -42,6 +42,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "server-marshal.h"
 #include "client-marshal.h"
 #include "dbus-menu-clean.xml.h"
+#include "enum-types.h"
 
 /* How many property requests should we queue before
    sending the message on dbus */
@@ -61,6 +62,7 @@ enum {
 	NEW_MENUITEM,
 	ITEM_ACTIVATE,
 	EVENT_RESULT,
+	TEXT_DIRECTION_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -248,6 +250,21 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        _dbusmenu_client_marshal_VOID__OBJECT_UINT,
 	                                        G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_UINT);
+	/**
+		DbusmenuClient::text-direction-changed:
+		@arg0: The #DbusmenuClient object
+		@arg1: The new text direction
+
+		Signal sent to show that there was an error in sending the event
+		to the server.
+	*/
+	signals[TEXT_DIRECTION_CHANGED] = g_signal_new(DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, text_direction_changed),
+	                                        NULL, NULL,
+	                                        _dbusmenu_client_marshal_VOID__ENUM,
+	                                        G_TYPE_NONE, 1, DBUSMENU_TYPE_TEXT_DIRECTION);
 	/**
 		DbusmenuClient::event-error:
 		@arg0: The #DbusmenuClient object
