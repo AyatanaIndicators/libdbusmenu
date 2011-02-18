@@ -1618,8 +1618,16 @@ dbusmenu_server_set_text_direction (DbusmenuServer * server, DbusmenuTextDirecti
 DbusmenuStatus
 dbusmenu_server_get_status (DbusmenuServer * server)
 {
+	g_return_val_if_fail(DBUSMENU_IS_SERVER(server), DBUSMENU_STATUS_NORMAL);
 
-	return DBUSMENU_STATUS_NORMAL;
+	GValue val = {0};
+	g_value_init(&val, DBUSMENU_TYPE_STATUS);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_STATUS, &val);
+
+	DbusmenuStatus retval = g_value_get_enum(&val);
+	g_value_unset(&val);
+
+	return retval;
 }
 
 /**
@@ -1631,6 +1639,13 @@ dbusmenu_server_get_status (DbusmenuServer * server)
 void
 dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
 {
+	g_return_if_fail(DBUSMENU_IS_SERVER(server));
+
+	GValue val = {0};
+	g_value_init(&val, DBUSMENU_TYPE_STATUS);
+	g_value_set_enum(&val, status);
+	g_object_set_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_STATUS, &val);
+	g_value_unset(&val);
 
 	return;
 }
