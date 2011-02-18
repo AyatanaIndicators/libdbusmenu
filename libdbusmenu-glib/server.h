@@ -54,6 +54,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
 #define DBUSMENU_SERVER_PROP_VERSION           "version"
 #define DBUSMENU_SERVER_PROP_TEXT_DIRECTION    "text-direction"
+#define DBUSMENU_SERVER_PROP_STATUS            "status"
 
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 

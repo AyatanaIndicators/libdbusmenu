@@ -82,7 +82,8 @@ enum {
 	PROP_DBUS_OBJECT,
 	PROP_ROOT_NODE,
 	PROP_VERSION,
-	PROP_TEXT_DIRECTION
+	PROP_TEXT_DIRECTION,
+	PROP_STATUS
 };
 
 /* Errors */
@@ -299,6 +300,11 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                 g_param_spec_enum(DBUSMENU_SERVER_PROP_TEXT_DIRECTION, "The default direction of text",
 	                                              "The object that represents this set of menus on DBus",
 	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
+	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_STATUS,
+	                                 g_param_spec_enum(DBUSMENU_SERVER_PROP_STATUS, "Status of viewing the menus",
+	                                              "Exports over DBus whether the menus should be given special visuals",
+	                                              DBUSMENU_TYPE_STATUS, DBUSMENU_STATUS_NORMAL,
 	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
