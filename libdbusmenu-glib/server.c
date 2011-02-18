@@ -1606,3 +1606,31 @@ dbusmenu_server_set_text_direction (DbusmenuServer * server, DbusmenuTextDirecti
 	return;
 }
 
+/**
+	dbusmenu_server_get_status:
+	@server: The #DbusmenuServer to get the status from
+
+	Gets the current statust hat the server is sending out over
+	DBus.
+
+	Return value: The current status the server is sending
+*/
+DbusmenuStatus
+dbusmenu_server_get_status (DbusmenuServer * server)
+{
+
+	return DBUSMENU_STATUS_NORMAL;
+}
+
+/**
+	dbusmenu_server_set_status:
+	@server: The #DbusmenuServer to set the status on
+
+	Changes the status of the server.
+*/
+void
+dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
+{
+
+	return;
+}

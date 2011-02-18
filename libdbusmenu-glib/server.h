@@ -115,6 +115,9 @@ void                    dbusmenu_server_set_root            (DbusmenuServer *   
 DbusmenuTextDirection   dbusmenu_server_get_text_direction  (DbusmenuServer *       server);
 void                    dbusmenu_server_set_text_direction  (DbusmenuServer *       server,
                                                              DbusmenuTextDirection  dir);
+DbusmenuStatus          dbusmenu_server_get_status          (DbusmenuServer *       server);
+void                    dbusmenu_server_set_status          (DbusmenuServer *       server,
+                                                             DbusmenuStatus         status);
 
 /**
 	SECIONT:server
