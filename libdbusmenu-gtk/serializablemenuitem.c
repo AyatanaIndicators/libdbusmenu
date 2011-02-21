@@ -33,7 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "client.h"
 #include "serializablemenuitem.h"
 
-/**
+/*
 	DbusmenuGtkSerializableMenuItemPrivate:
 	@mi: Menuitem to watch the property changes from
 */
