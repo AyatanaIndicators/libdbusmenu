@@ -19,8 +19,6 @@ dbusmenu_client_new
 dbusmenu_client_get_root
 dbusmenu_client_add_type_handler
 dbusmenu_client_add_type_handler_full
-dbusmenu_client_send_event
-dbusmenu_client_send_about_to_show
 <SUBSECTION Standard>
 DBUSMENU_CLIENT
 DBUSMENU_IS_CLIENT
