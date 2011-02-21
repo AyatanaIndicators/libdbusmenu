@@ -169,6 +169,7 @@ dbusmenu_defaults_ref_default (void)
 {
 	if (default_defaults == NULL) {
 		default_defaults = DBUSMENU_DEFAULTS(g_object_new(DBUSMENU_TYPE_DEFAULTS, NULL));
+		g_object_add_weak_pointer(G_OBJECT(default_defaults), (gpointer *)&default_defaults);
 	}
 
 	return default_defaults;
