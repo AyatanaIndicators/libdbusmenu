@@ -47,7 +47,7 @@ struct _DefaultEntry {
 };
 
 #define DBUSMENU_DEFAULTS_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_DEFAULTS_TYPE, DbusmenuDefaultsPrivate))
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_DEFAULTS, DbusmenuDefaultsPrivate))
 
 static void dbusmenu_defaults_class_init (DbusmenuDefaultsClass *klass);
 static void dbusmenu_defaults_init       (DbusmenuDefaults *self);
@@ -74,6 +74,9 @@ dbusmenu_defaults_class_init (DbusmenuDefaultsClass *klass)
 static void
 dbusmenu_defaults_init (DbusmenuDefaults *self)
 {
+	self->priv = DBUSMENU_DEFAULTS_GET_PRIVATE(self); 
+
+	self->priv->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, entry_destroy);
 
 	/* Standard defaults */
 	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_VISIBLE,        G_VARIANT_TYPE_BOOLEAN,   g_variant_new_boolean(TRUE)); 
@@ -94,6 +97,12 @@ dbusmenu_defaults_init (DbusmenuDefaults *self)
 static void
 dbusmenu_defaults_dispose (GObject *object)
 {
+	DbusmenuDefaults * self = DBUSMENU_DEFAULTS(object);
+
+	if (self->priv->types != NULL) {
+		g_hash_table_destroy(self->priv->types);
+		self->priv->types = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_defaults_parent_class)->dispose (object);
 	return;
