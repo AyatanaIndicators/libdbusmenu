@@ -24,6 +24,8 @@ libdbusmenu_glibinclude_HEADERS = \
 libdbusmenu_glib_la_SOURCES = \
 	dbus-menu-clean.xml.h \
 	dbus-menu-clean.xml.c \
+	defaults.h \
+	defaults.c \
 	menuitem.h \
 	menuitem.c \
 	menuitem-marshal.h \
