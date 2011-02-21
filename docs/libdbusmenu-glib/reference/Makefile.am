@@ -50,6 +50,7 @@ CFILE_GLOB=$(top_srcdir)/libdbusmenu-glib/*.c
 IGNORE_HFILES= \
 	dbus-menu-clean.xml.h \
 	client-menuitem.h \
+	client-private.h \
 	menuitem-marshal.h \
 	server-marshal.h \
 	menuitem-private.h
