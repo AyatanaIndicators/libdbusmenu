@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <gio/gio.h>
 
 #include "client.h"
+#include "client-private.h"
 #include "menuitem.h"
 #include "menuitem-private.h"
 #include "client-menuitem.h"
