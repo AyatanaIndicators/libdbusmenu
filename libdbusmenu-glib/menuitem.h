@@ -297,7 +297,7 @@ typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpoin
 /**
  * dbusmenu_menuitem_buildvariant_slot_t:
  * @mi: (in): Menu item that should be built from
- * @properties: (allow none): A list of properties that should be the only ones in the resulting variant structure
+ * @properties: (allow-none): A list of properties that should be the only ones in the resulting variant structure
  * 
  * This is the function that is called to represent this menu item
  * as a variant.  Should call it's own children.
