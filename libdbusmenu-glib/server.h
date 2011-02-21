@@ -93,7 +93,6 @@ struct _DbusmenuServerClass {
 
 /**
 	DbusmenuServer:
-	@parent: #GObject
 
 	A server which represents a sharing of a set of
 	#DbusmenuMenuitems across DBus to a #DbusmenuClient.

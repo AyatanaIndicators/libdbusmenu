@@ -97,7 +97,6 @@ struct _DbusmenuClientClass {
 
 /**
 	DbusmenuClient:
-	@parent: #GObject.
 
 	The client for a #DbusmenuServer creating a shared
 	object set of #DbusmenuMenuitem objects.
