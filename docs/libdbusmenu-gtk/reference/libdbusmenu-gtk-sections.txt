@@ -2,6 +2,7 @@
 <FILE>client</FILE>
 <TITLE>DbusmenuGtkClient</TITLE>
 DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED
+DbusmenuGtkClient
 DbusmenuGtkClientClass
 dbusmenu_gtkclient_new
 dbusmenu_gtkclient_menuitem_get
