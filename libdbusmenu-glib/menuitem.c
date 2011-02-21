@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "menuitem-marshal.h"
 #include "menuitem-private.h"
+#include "defaults.h"
 
 #ifdef MASSIVEDEBUGGING
 #define LABEL(x)  dbusmenu_menuitem_property_get(DBUSMENU_MENUITEM(x), DBUSMENU_MENUITEM_PROP_LABEL)
@@ -59,6 +60,7 @@ struct _DbusmenuMenuitemPrivate
 	GHashTable * properties;
 	gboolean root;
 	gboolean realized;
+	DbusmenuDefaults * defaults;
 };
 
 /* Signals */
@@ -312,6 +314,8 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 
 	priv->root = FALSE;
 	priv->realized = FALSE;
+
+	priv->defaults = dbusmenu_defaults_ref_default();
 	
 	return;
 }
@@ -327,6 +331,11 @@ dbusmenu_menuitem_dispose (GObject *object)
 	}
 	g_list_free(priv->children);
 	priv->children = NULL;
+
+	if (priv->defaults != NULL) {
+		g_object_unref(priv->defaults);
+		priv->defaults = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_parent_class)->dispose (object);
 	return;
