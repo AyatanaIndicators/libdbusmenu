@@ -31,17 +31,17 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <gtk/gtk.h>
 
 /**
-	dbusmenu_menuitem_property_set_image:
-	@menuitem: The #DbusmenuMenuitem to set the property on.
-	@property: Name of the property to set.
-	@data: The image to place on the property.
-
-	This function takes the pixbuf that is stored in @data and
-	turns it into a base64 encoded PNG so that it can be placed
-	onto a standard #DbusmenuMenuitem property.
-
-	Return value: Whether the function was able to set the property
-		or not.
+ * dbusmenu_menuitem_property_set_image:
+ * @menuitem: The #DbusmenuMenuitem to set the property on.
+ * @property: Name of the property to set.
+ * @data: The image to place on the property.
+ * 
+ * This function takes the pixbuf that is stored in @data and
+ * turns it into a base64 encoded PNG so that it can be placed
+ * onto a standard #DbusmenuMenuitem property.
+ * 
+ * Return value: Whether the function was able to set the property
+ * 	or not.
 */
 gboolean
 dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar * property, const GdkPixbuf * data)
@@ -77,17 +77,17 @@ dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar *
 }
 
 /**
-	dbusmenu_menuitem_property_get_image:
-	@menuitem: The #DbusmenuMenuite to look for the property on
-	@property: The name of the property to look for.
-
-	This function looks on the menu item for a property by the
-	name of @property.  If one exists it tries to turn it into
-	a #GdkPixbuf.  It assumes that the property is a base64 encoded
-	PNG file like the one created by #dbusmenu_menuite_property_set_image.
-
-	Return value: A pixbuf or #NULL to signal error.
-*/
+ * dbusmenu_menuitem_property_get_image:
+ * @menuitem: The #DbusmenuMenuitem to look for the property on
+ * @property: The name of the property to look for.
+ * 
+ * This function looks on the menu item for a property by the
+ * name of @property.  If one exists it tries to turn it into
+ * a #GdkPixbuf.  It assumes that the property is a base64 encoded
+ * PNG file like the one created by #dbusmenu_menuite_property_set_image.
+ * 
+ * Return value: (transfer full): A pixbuf or #NULL to signal error.
+ */
 GdkPixbuf *
 dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar * property)
 {
@@ -131,16 +131,16 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 }
 
 /**
-	dbusmenu_menuitem_property_set_shortcut_string:
-	@menuitem: The #DbusmenuMenuitem to set the shortcut on
-	@shortcut: String describing the shortcut
-
-	This function takes a GTK shortcut string as defined in
-	#gtk_accelerator_parse and turns that into the information
-	required to send it over DBusmenu.
-
-	Return value: Whether it was successful at setting the property.
-*/
+ * dbusmenu_menuitem_property_set_shortcut_string:
+ * @menuitem: The #DbusmenuMenuitem to set the shortcut on
+ * @shortcut: String describing the shortcut
+ * 
+ * This function takes a GTK shortcut string as defined in
+ * #gtk_accelerator_parse and turns that into the information
+ * required to send it over DBusmenu.
+ * 
+ * Return value: Whether it was successful at setting the property.
+ */
 gboolean
 dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, const gchar * shortcut)
 {
@@ -161,16 +161,16 @@ dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, con
 }
 
 /**
-	dbusmenu_menuitem_property_set_shortcut:
-	@menuitem: The #DbusmenuMenuitem to set the shortcut on
-	@key: The keycode of the key to send
-	@modifier: A bitmask of modifiers used to activate the item
-
-	Takes the modifer described by @key and @modifier and places that into
-	the format sending across Dbus for shortcuts.
-
-	Return value: Whether it was successful at setting the property.
-*/
+ * dbusmenu_menuitem_property_set_shortcut:
+ * @menuitem: The #DbusmenuMenuitem to set the shortcut on
+ * @key: The keycode of the key to send
+ * @modifier: A bitmask of modifiers used to activate the item
+ * 
+ * Takes the modifer described by @key and @modifier and places that into
+ * the format sending across Dbus for shortcuts.
+ * 
+ * Return value: Whether it was successful at setting the property.
+ */
 gboolean
 dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key, GdkModifierType modifier)
 {
@@ -213,16 +213,16 @@ find_closure (GtkAccelKey * key, GClosure * closure, gpointer user_data)
 }
 
 /**
-	dbusmenu_menuitem_property_set_shortcut_menuitem:
-	@menuitem: The #DbusmenuMenuitem to set the shortcut on
-	@gmi: A menu item to steal the shortcut off of
-
-	Takes the shortcut that is installed on a menu item and calls
-	#dbusmenu_menuitem_property_set_shortcut with it.  It also sets
-	up listeners to watch it change.
-
-	Return value: Whether it was successful at setting the property.
-*/
+ * dbusmenu_menuitem_property_set_shortcut_menuitem:
+ * @menuitem: The #DbusmenuMenuitem to set the shortcut on
+ * @gmi: A menu item to steal the shortcut off of
+ * 
+ * Takes the shortcut that is installed on a menu item and calls
+ * #dbusmenu_menuitem_property_set_shortcut with it.  It also sets
+ * up listeners to watch it change.
+ * 
+ * Return value: Whether it was successful at setting the property.
+ */
 gboolean
 dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, const GtkMenuItem * gmi)
 {
@@ -260,14 +260,14 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 }
 
 /**
-	dbusmenu_menuitem_property_get_shortcut:
-	@menuitem: The #DbusmenuMenuitem to get the shortcut off
-	@key: Location to put the key value
-	@modifier: Location to put the modifier mask
-
-	This function gets a GTK shortcut as a key and a mask
-	for use to set the accelerators.
-*/
+ * dbusmenu_menuitem_property_get_shortcut:
+ * @menuitem: The #DbusmenuMenuitem to get the shortcut off
+ * @key: (out): Location to put the key value
+ * @modifier: (out): Location to put the modifier mask
+ * 
+ * This function gets a GTK shortcut as a key and a mask
+ * for use to set the accelerators.
+ */
 void
 dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifier)
 {

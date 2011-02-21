@@ -325,14 +325,14 @@ remove_menuitem (DbusmenuMenuitemProxy * pmi)
 }
 
 /**
-	dbusmenu_menuitem_proxy_new:
-	@mi: The #DbusmenuMenuitem to proxy
-
-	Builds a new #DbusmenuMenuitemProxy object that proxies
-	all of the values for @mi.
-
-	Return value: A new #DbusmenuMenuitemProxy object.
-*/
+ * dbusmenu_menuitem_proxy_new:
+ * @mi: The #DbusmenuMenuitem to proxy
+ * 
+ * Builds a new #DbusmenuMenuitemProxy object that proxies
+ * all of the values for @mi.
+ * 
+ * Return value: A new #DbusmenuMenuitemProxy object.
+ */
 DbusmenuMenuitemProxy *
 dbusmenu_menuitem_proxy_new (DbusmenuMenuitem * mi)
 {
@@ -344,15 +344,15 @@ dbusmenu_menuitem_proxy_new (DbusmenuMenuitem * mi)
 }
 
 /**
-	dbusmenu_menuitem_proxy_get_wrapped:
-	@pmi: #DbusmenuMenuitemProxy to look into
-
-	Accesses the private variable of which #DbusmenuMenuitem
-	we are doing the proxying for.
-
-	Return value: A #DbusmenuMenuitem object or a #NULL if we
-		don't have one or there is an error.
-*/
+ * dbusmenu_menuitem_proxy_get_wrapped:
+ * @pmi: #DbusmenuMenuitemProxy to look into
+ * 
+ * Accesses the private variable of which #DbusmenuMenuitem
+ * we are doing the proxying for.
+ * 
+ * Return value: (transfer none): A #DbusmenuMenuitem object or a #NULL if we
+ * 	don't have one or there is an error.
+ */
 DbusmenuMenuitem *
 dbusmenu_menuitem_proxy_get_wrapped (DbusmenuMenuitemProxy * pmi)
 {

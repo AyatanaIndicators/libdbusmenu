@@ -122,21 +122,21 @@ if INTROSPECTION_TEN
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 	--warn-all \
         --add-include-path=$(srcdir) \
-        $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources)) \
+        $(addprefix --c-include=libdbusmenu-glib/, $(libdbusmenu_glibinclude_HEADERS)) \
         --symbol-prefix=dbusmenu \
         --identifier-prefix=Dbusmenu
 else
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 	--warn-all \
         --add-include-path=$(srcdir) \
-        $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources))
+        $(addprefix --c-include=libdbusmenu-glib/, $(libdbusmenu_glibinclude_HEADERS))
 endif
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
+introspection_sources = $(libdbusmenu_glibinclude_HEADERS) $(libdbusmenu_glib_la_SOURCES)
 
 Dbusmenu-0.4.gir: libdbusmenu-glib.la
 Dbusmenu_0_4_gir_INCLUDES = \
