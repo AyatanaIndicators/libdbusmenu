@@ -81,6 +81,11 @@ layout_updated (DbusmenuClient * client, gpointer data)
 	g_debug("Layout Updated");
 
 	DbusmenuMenuitem * menuroot = dbusmenu_client_get_root(client);
+	if (menuroot == NULL) {
+		g_debug("Root NULL, waiting");
+		return;
+	}
+
 	layout_t * layout = &layouts[layouton];
 	
 	if (!verify_root_to_layout(menuroot, layout)) {

@@ -36,6 +36,14 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "genericmenuitem.h"
 
+/* Private */
+struct _DbusmenuGtkClientPrivate {
+	GtkAccelGroup * agroup;
+};
+
+#define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) (DBUSMENU_GTKCLIENT(o)->priv)
+#define USE_FALLBACK_PROP  "use-fallback"
+
 /* Prototypes */
 static void dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass);
 static void dbusmenu_gtkclient_init       (DbusmenuGtkClient *self);
@@ -45,13 +53,14 @@ static void new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpoint
 static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, DbusmenuGtkClient * gtkclient);
 static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient);
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
+static void item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata);
 
-static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
-static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 
-static void process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value);
-static void process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value);
-static void image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata);
+static void process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value);
+static void process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value);
+static void image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant * invalue, gpointer userdata);
 
 /* GObject Stuff */
 G_DEFINE_TYPE (DbusmenuGtkClient, dbusmenu_gtkclient, DBUSMENU_TYPE_CLIENT);
@@ -61,6 +70,8 @@ static void
 dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (DbusmenuGtkClientPrivate));
 
 	object_class->dispose = dbusmenu_gtkclient_dispose;
 	object_class->finalize = dbusmenu_gtkclient_finalize;
@@ -73,10 +84,18 @@ dbusmenu_gtkclient_class_init (DbusmenuGtkClientClass *klass)
 static void
 dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 {
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientPrivate);
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(self);
+
+	priv->agroup = NULL;
+
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
 
+	/* TODO: I think these can be handled in the class... */
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
+	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE, G_CALLBACK(item_activate), NULL);
 
 	return;
 }
@@ -85,6 +104,12 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 static void
 dbusmenu_gtkclient_dispose (GObject *object)
 {
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(object);
+
+	if (priv->agroup != NULL) {
+		g_object_unref(priv->agroup);
+		priv->agroup = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->dispose (object);
 	return;
@@ -99,6 +124,156 @@ dbusmenu_gtkclient_finalize (GObject *object)
 	return;
 }
 
+/* Structure for passing data to swap_agroup */
+typedef struct _swap_agroup_t swap_agroup_t;
+struct _swap_agroup_t {
+	DbusmenuGtkClient * client;
+	GtkAccelGroup * old_agroup;
+	GtkAccelGroup * new_agroup;
+};
+
+/* Looks at the old version of the accelerator group and
+   the new one and makes the state proper. */
+static gboolean
+do_swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
+        swap_agroup_t * data = (swap_agroup_t *)userdata;
+
+	/* If we don't have a shortcut we don't care */
+	if (!dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
+		return FALSE;
+	}
+
+	guint key = 0;
+	GdkModifierType modifiers = 0;
+
+	dbusmenu_menuitem_property_get_shortcut(mi, &key, &modifiers);
+
+	if (key == 0) {
+		return FALSE;
+	}
+
+	#ifdef MASSIVEDEBUGGING
+	g_debug("Setting shortcut on '%s': %d %X", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL), key, modifiers);
+	#endif
+
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(data->client, mi);
+	if (gmi == NULL) {
+		return FALSE;
+	}
+
+	const gchar * accel_path = gtk_menu_item_get_accel_path(gmi);
+
+	if (accel_path != NULL) {
+		gtk_accel_map_change_entry(accel_path, key, modifiers, TRUE /* replace */);
+	} else {
+		gchar * accel_path = g_strdup_printf("<Appmenus>/Generated/%X/%d", GPOINTER_TO_UINT(data->client), dbusmenu_menuitem_get_id(mi));
+
+		gtk_accel_map_add_entry(accel_path, key, modifiers);
+		gtk_widget_set_accel_path(GTK_WIDGET(gmi), accel_path, data->new_agroup);
+		g_free(accel_path);
+	}
+
+	GtkMenu * submenu = dbusmenu_gtkclient_menuitem_get_submenu(data->client, mi);
+	if (submenu != NULL) {
+		gtk_menu_set_accel_group(submenu, data->new_agroup);
+	}
+
+	return TRUE;
+}
+
+static void
+swap_agroup (DbusmenuMenuitem *mi, gpointer userdata) {
+        do_swap_agroup (mi, userdata);
+
+        return;  /* See what I did here, Ted? :)  */
+}
+
+/* Refresh the shortcut for an entry */
+static void
+refresh_shortcut (DbusmenuGtkClient * client, DbusmenuMenuitem * mi)
+{
+	g_return_if_fail(DBUSMENU_IS_GTKCLIENT(client));
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	swap_agroup_t data;
+	data.client = client;
+	data.old_agroup = priv->agroup;
+	data.new_agroup = priv->agroup;
+
+	if (do_swap_agroup(mi, &data)) {
+		guint key = 0;
+		GdkModifierType mod = 0;
+		GtkMenuItem *gmi = dbusmenu_gtkclient_menuitem_get (client, mi);
+
+		dbusmenu_menuitem_property_get_shortcut (mi, &key, &mod);
+
+		if (key != 0) {
+			gtk_widget_add_accelerator (GTK_WIDGET (gmi), "activate", priv->agroup, key, mod, GTK_ACCEL_VISIBLE);
+		}
+	}
+
+	return;
+}
+
+
+/**
+ * dbusmenu_gtkclient_set_accel_group:
+ * @client: To set the group on
+ * @agroup: The new acceleration group
+ * 
+ * Sets the acceleration group for the menu items with accelerators
+ * on this client.
+ */
+void
+dbusmenu_gtkclient_set_accel_group (DbusmenuGtkClient * client, GtkAccelGroup * agroup)
+{
+	g_return_if_fail(DBUSMENU_IS_GTKCLIENT(client));
+	g_return_if_fail(GTK_IS_ACCEL_GROUP(agroup));
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	DbusmenuMenuitem * root = dbusmenu_client_get_root(DBUSMENU_CLIENT(client));
+	if (root != NULL) {
+		swap_agroup_t data;
+		data.client = client;
+		data.old_agroup = priv->agroup;
+		data.new_agroup = agroup;
+
+		dbusmenu_menuitem_foreach(root, swap_agroup, &data);
+	}
+
+	if (priv->agroup != NULL) {
+		g_object_unref(priv->agroup);
+		priv->agroup = NULL;
+	}
+
+	priv->agroup = agroup;
+	g_object_ref(priv->agroup);
+
+	return;
+}
+
+/**
+ * dbusmenu_gtkclient_get_accel_group:
+ * @client: Client to query for an accelerator group
+ * 
+ * Gets the accel group for this client.
+ * 
+ * Return value: (transfer none): Either a valid group or #NULL on error or
+ * 	none set.
+ */
+GtkAccelGroup *
+dbusmenu_gtkclient_get_accel_group (DbusmenuGtkClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), NULL);
+
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+
+	return priv->agroup;
+}
+
 /* Internal Functions */
 
 static const gchar * data_menuitem = "dbusmenugtk-data-gtkmenuitem";
@@ -110,10 +285,8 @@ static gboolean
 menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 {
 	if (gtk_menu_item_get_submenu(gmi) == NULL) {
-		GValue value = {0};
-		g_value_init(&value, G_TYPE_INT);
-		g_value_set_int(&value, 0);
-		dbusmenu_menuitem_handle_event(mi, "clicked", &value, gtk_get_current_event_time());
+		GVariant * variant = g_variant_new("i", 0);
+		dbusmenu_menuitem_handle_event(mi, "clicked", variant, gtk_get_current_event_time());
 	} else {
 		/* TODO: We need to stop the display of the submenu
 		         until this callback returns. */
@@ -124,7 +297,7 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 
 /* Process the visible property */
 static void
-process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value)
 {
 	gboolean val = TRUE;
 	if (value != NULL) {
@@ -141,7 +314,7 @@ process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
 
 /* Process the sensitive property */
 static void
-process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value)
 {
 	gboolean val = TRUE;
 	if (value != NULL) {
@@ -153,26 +326,21 @@ process_sensitive (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * valu
 
 /* Process the sensitive property */
 static void
-process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
-	if (value == NULL) return;
+	if (variant == NULL) return;
 
 	GenericmenuitemCheckType type = GENERICMENUITEM_CHECK_TYPE_NONE;
 
-	GValue strvalue = {0};
-	g_value_init(&strvalue, G_TYPE_STRING);
-
-	if (value != NULL && g_value_transform(value, &strvalue)) {
-		const gchar * strval = g_value_get_string(&strvalue);
+	if (variant != NULL) {
+		const gchar * strval = g_variant_get_string(variant, NULL);
 
 		if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_CHECK)) {
 			type = GENERICMENUITEM_CHECK_TYPE_CHECKBOX;
 		} else if (!g_strcmp0(strval, DBUSMENU_MENUITEM_TOGGLE_RADIO)) {
 			type = GENERICMENUITEM_CHECK_TYPE_RADIO;
 		}
-
-		g_value_unset(&strvalue);
 	}
 
 	genericmenuitem_set_check_type(GENERICMENUITEM(gmi), type);
@@ -182,17 +350,14 @@ process_toggle_type (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * va
 
 /* Process the sensitive property */
 static void
-process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * value)
+process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant)
 {
 	if (!IS_GENERICMENUITEM(gmi)) return;
 
 	GenericmenuitemState state = GENERICMENUITEM_STATE_UNCHECKED;
 
-	GValue intvalue = {0};
-	g_value_init(&intvalue, G_TYPE_INT);
-
-	if (value != NULL && g_value_transform(value, &intvalue)) {
-		int val = g_value_get_int(&intvalue);
+	if (variant != NULL) {
+		int val = g_variant_get_int32(variant);
 
 		if (val == DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED) {
 			state = GENERICMENUITEM_STATE_CHECKED;
@@ -208,20 +373,31 @@ process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, const GValue * v
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
-menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GValue * value, GtkMenuItem * gmi)
+menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, GtkMenuItem * gmi)
 {
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
-		gtk_menu_item_set_label(gmi, g_value_get_string(value));
+		gtk_menu_item_set_label(gmi, variant == NULL ? NULL : g_variant_get_string(variant, NULL));
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
-		process_visible(mi, gmi, value);
+		process_visible(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ENABLED)) {
-		process_sensitive(mi, gmi, value);
+		process_sensitive(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE)) {
-		process_toggle_type(mi, gmi, value);
+		process_toggle_type(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE)) {
-		process_toggle_state(mi, gmi, value);
+		process_toggle_state(mi, gmi, variant);
 	}
 
+	return;
+}
+
+/* Special handler for the shortcut changing as we need to have the
+   client for that one to get the accel group. */
+static void
+menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * value, DbusmenuGtkClient * client)
+{
+	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
+		refresh_shortcut(client, mi);
+	}
 	return;
 }
 
@@ -250,6 +426,63 @@ new_menuitem (DbusmenuClient * client, DbusmenuMenuitem * mi, gpointer userdata)
 	return;
 }
 
+/* Goes through the tree of items and ensure's that all the items
+   above us are also displayed. */
+static void
+activate_helper (GtkMenuShell * shell)
+{
+	if (shell == NULL) {
+		return;
+	}
+
+	if (GTK_IS_MENU(shell)) {
+		GtkWidget * attach = gtk_menu_get_attach_widget(GTK_MENU(shell));
+
+		if (attach != NULL) {
+			GtkWidget * parent = gtk_widget_get_parent(GTK_WIDGET(attach));
+
+			if (parent != NULL) {
+				if (GTK_IS_MENU(parent)) {
+					activate_helper(GTK_MENU_SHELL(parent));
+				}
+
+				/* This code is being commented out for GTK 3 because it
+				   doesn't expose the right variables.  We need to figure
+				   this out as menus won't get grabs properly.
+				   TODO FIXME HELP ARGHHHHHHHH */
+#if (HAVE_GTK3 == 0)
+				if (!GTK_MENU_SHELL (parent)->active) {
+					gtk_grab_add (parent);
+					GTK_MENU_SHELL (parent)->have_grab = TRUE;
+					GTK_MENU_SHELL (parent)->active = TRUE;
+				}
+#endif
+
+				gtk_menu_shell_select_item(GTK_MENU_SHELL(parent), attach);
+			}
+		}
+	}
+
+	return;
+}
+
+/* Signaled when we should show a menuitem at request of the application
+   that it is in. */
+static void
+item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata)
+{
+	gpointer pmenu = g_object_get_data(G_OBJECT(mi), data_menu);
+	if (pmenu == NULL) {
+		g_warning("Activated menu item doesn't have a menu?  ID: %d", dbusmenu_menuitem_get_id(mi));
+		return;
+	}
+
+	activate_helper(GTK_MENU_SHELL(pmenu));
+	gtk_menu_shell_select_first(GTK_MENU_SHELL(pmenu), FALSE);
+
+	return;
+}
+
 #ifdef MASSIVEDEBUGGING
 static void
 destroy_gmi (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
@@ -260,21 +493,21 @@ destroy_gmi (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 #endif
 
 /**
-	dbusmenu_gtkclient_newitem_base:
-	@client: The client handling everything on this connection
-	@item: The #DbusmenuMenuitem to attach the GTK-isms to
-	@gmi: A #GtkMenuItem representing the GTK world's view of this menuitem
-	@parent: The parent #DbusmenuMenuitem
-
-	This function provides some of the basic connectivity for being in
-	the GTK world.  Things like visibility and sensitivity of the item are
-	handled here so that the subclasses don't have to.  If you're building
-	your on GTK menu item you can use this function to apply those basic
-	attributes so that you don't have to deal with them either.
-
-	This also handles passing the "activate" signal back to the
-	#DbusmenuMenuitem side of thing.
-*/
+ * dbusmenu_gtkclient_newitem_base:
+ * @client: The client handling everything on this connection
+ * @item: The #DbusmenuMenuitem to attach the GTK-isms to
+ * @gmi: A #GtkMenuItem representing the GTK world's view of this menuitem
+ * @parent: The parent #DbusmenuMenuitem
+ * 
+ * This function provides some of the basic connectivity for being in
+ * the GTK world.  Things like visibility and sensitivity of the item are
+ * handled here so that the subclasses don't have to.  If you're building
+ * your on GTK menu item you can use this function to apply those basic
+ * attributes so that you don't have to deal with them either.
+ * 
+ * This also handles passing the "activate" signal back to the
+ * #DbusmenuMenuitem side of thing.
+ */
 void
 dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * item, GtkMenuItem * gmi, DbusmenuMenuitem * parent)
 {
@@ -291,6 +524,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_shortcut_change_cb), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
 
@@ -301,14 +535,15 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
 	/* Check our set of props to see if any are set already */
-	process_visible(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
-	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_ENABLED));
-	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
-	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_value(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
+	process_visible(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
+	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_ENABLED));
+	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
+	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
+	refresh_shortcut(client, item);
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
-		new_child(parent, item, dbusmenu_menuitem_get_position_realized(item, parent), DBUSMENU_GTKCLIENT(client));
+		new_child(parent, item, dbusmenu_menuitem_get_position(item, parent), DBUSMENU_GTKCLIENT(client));
 	}
 
 	return;
@@ -322,6 +557,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 	#endif
 
 	if (dbusmenu_menuitem_get_root(mi)) { return; }
+	if (g_strcmp0(dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_TYPE), DBUSMENU_CLIENT_TYPES_SEPARATOR) == 0) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	GtkMenu * menu = GTK_MENU(ann_menu);
@@ -335,7 +571,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 	} 
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
-	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), dbusmenu_menuitem_get_position_realized(child, mi));
+	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
 	gtk_widget_show(GTK_WIDGET(menu));
 	
 	return;
@@ -381,15 +617,15 @@ move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint ol
 /* Public API */
 
 /**
-	dbusmenu_gtkclient_new:
-	@dbus_name: Name of the #DbusmenuServer on DBus
-	@dbus_name: Name of the object on the #DbusmenuServer
-
-	Creates a new #DbusmenuGtkClient object and creates a #DbusmenuClient
-	that connects across DBus to a #DbusmenuServer.
-
-	Return value: A new #DbusmenuGtkClient sync'd with a server
-*/
+ * dbusmenu_gtkclient_new:
+ * @dbus_name: Name of the #DbusmenuServer on DBus
+ * @dbus_object: Name of the object on the #DbusmenuServer
+ * 
+ * Creates a new #DbusmenuGtkClient object and creates a #DbusmenuClient
+ * that connects across DBus to a #DbusmenuServer.
+ * 
+ * Return value: A new #DbusmenuGtkClient sync'd with a server
+ */
 DbusmenuGtkClient *
 dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 {
@@ -400,15 +636,15 @@ dbusmenu_gtkclient_new (gchar * dbus_name, gchar * dbus_object)
 }
 
 /**
-	dbusmenu_gtkclient_menuitem_get:
-	@client: A #DbusmenuGtkClient with the item in it.
-	@item: #DbusmenuMenuitem to get associated #GtkMenuItem on.
-
-	This grabs the #GtkMenuItem that is associated with the
-	#DbusmenuMenuitem.
-
-	Return value: The #GtkMenuItem that can be played with.
-*/
+ * dbusmenu_gtkclient_menuitem_get:
+ * @client: A #DbusmenuGtkClient with the item in it.
+ * @item: #DbusmenuMenuitem to get associated #GtkMenuItem on.
+ * 
+ * This grabs the #GtkMenuItem that is associated with the
+ * #DbusmenuMenuitem.
+ * 
+ * Return value: (transfer none): The #GtkMenuItem that can be played with.
+ */
 GtkMenuItem *
 dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * item)
 {
@@ -424,13 +660,13 @@ dbusmenu_gtkclient_menuitem_get (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 }
 
 /**
-	dbusmenu_gtkclient_menuitem_get_submenu:
-	@client: A #DbusmenuGtkClient with the item in it.
-	@item: #DbusmenuMenuitem to get associated #GtkMenu on.
-
-	This grabs the submenu associated with the menuitem.
-
-	Return value: The #GtkMenu if there is one.
+ * dbusmenu_gtkclient_menuitem_get_submenu:
+ * @client: A #DbusmenuGtkClient with the item in it.
+ * @item: #DbusmenuMenuitem to get associated #GtkMenu on.
+ * 
+ * This grabs the submenu associated with the menuitem.
+ * 
+ * Return value: (transfer none): The #GtkMenu if there is one.
 */
 GtkMenu *
 dbusmenu_gtkclient_menuitem_get_submenu (DbusmenuGtkClient * client, DbusmenuMenuitem * item)
@@ -449,7 +685,7 @@ dbusmenu_gtkclient_menuitem_get_submenu (DbusmenuGtkClient * client, DbusmenuMen
 /* The base type handler that builds a plain ol'
    GtkMenuItem to represent, well, the GtkMenuItem */
 static gboolean
-new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
 	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
@@ -467,11 +703,11 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 
 	image_property_handle(newitem,
 	                      DBUSMENU_MENUITEM_PROP_ICON_NAME,
-	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_NAME),
+	                      dbusmenu_menuitem_property_get_variant(newitem, DBUSMENU_MENUITEM_PROP_ICON_NAME),
 	                      client);
 	image_property_handle(newitem,
 	                      DBUSMENU_MENUITEM_PROP_ICON_DATA,
-	                      dbusmenu_menuitem_property_get_value(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
+	                      dbusmenu_menuitem_property_get_variant(newitem, DBUSMENU_MENUITEM_PROP_ICON_DATA),
 	                      client);
 	g_signal_connect(G_OBJECT(newitem),
 	                 DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
@@ -484,7 +720,7 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 /* Type handler for the seperators where it builds
    a GtkSeparator to act as the GtkMenuItem */
 static gboolean
-new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
 	g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
@@ -502,10 +738,33 @@ new_item_seperator (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 	return TRUE;
 }
 
+/* A little helper so we don't generate a bunch of warnings
+   about being able to set use-fallback */
+static void
+set_use_fallback (GtkWidget * widget)
+{
+	static gboolean checked = FALSE;
+	static gboolean available = FALSE;
+
+	if (!checked) {
+		available = (g_object_class_find_property(G_OBJECT_CLASS(GTK_IMAGE_GET_CLASS(widget)), USE_FALLBACK_PROP) != NULL);
+		if (!available) {
+			g_warning("The '" USE_FALLBACK_PROP "' is not available on GtkImage so icons may not show correctly.");
+		}
+		checked = TRUE;
+	}
+
+	if (available) {
+		g_object_set(G_OBJECT(widget), USE_FALLBACK_PROP, TRUE, NULL);
+	}
+
+	return;
+}
+
 /* This handler looks at property changes for items that are
    image menu items. */
 static void
-image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GValue * invalue, gpointer userdata)
+image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer userdata)
 {
 	/* We're only looking at these two properties here */
 	if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_NAME) != 0 &&
@@ -514,11 +773,10 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 	}
 
 	const gchar * value = NULL;
-	
-	if (invalue != NULL && G_VALUE_TYPE(invalue) == G_TYPE_STRING) {
-		value = g_value_get_string(invalue);
+	if (variant != NULL) {
+		value = g_variant_get_string(variant, NULL);
 	}
-
+	
 	if (value == NULL || value[0] == '\0') {
 		/* This means that we're unsetting a value. */
 		/* Try to use the other one */
@@ -555,6 +813,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 			gtkimage = NULL;
 		} else if (g_strcmp0(iconname, DBUSMENU_MENUITEM_ICON_NAME_BLANK) == 0) {
 			gtkimage = gtk_image_new();
+			set_use_fallback(gtkimage);
 		} else {
 			/* Look to see if we want to have an icon with the 'ltr' or
 			   'rtl' depending on what we're doing. */
@@ -573,6 +832,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, const GV
 			   can just convert it to this name. */
 			if (gtkimage == NULL) {
 				gtkimage = gtk_image_new_from_icon_name(finaliconname, GTK_ICON_SIZE_MENU);
+				set_use_fallback(gtkimage);
 			} else {
 				gtk_image_set_from_icon_name(GTK_IMAGE(gtkimage), finaliconname, GTK_ICON_SIZE_MENU);
 			}

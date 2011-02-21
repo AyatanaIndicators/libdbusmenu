@@ -26,14 +26,25 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 */
 
-#ifndef __DBUSMENU_GTKMENUITEM_H__
-#define __DBUSMENU_GTKMENUITEM_H__ 1
+#ifndef DBUSMENU_GTK_MENUITEM_H__
+#define DBUSMENU_GTK_MENUITEM_H__ 1
 
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libdbusmenu-glib/menuitem.h>
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
+
+G_BEGIN_DECLS
 
 gboolean dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar * property, const GdkPixbuf * data);
 GdkPixbuf * dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar * property);
+
+gboolean dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key, GdkModifierType modifier);
+gboolean dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menuitem, const gchar * shortcut);
+gboolean dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, const GtkMenuItem * gmi);
+void dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifier);
+
+G_END_DECLS
 
 #endif

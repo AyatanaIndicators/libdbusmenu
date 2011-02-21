@@ -22,7 +22,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gtk/gtk.h>
 #include <libdbusmenu-gtk/menu.h>
 
-static guint layouton = 0;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
 static guint death_timer = 0;
@@ -105,7 +104,6 @@ verify_root_to_layout(DbusmenuMenuitem * mi, proplayout_t * layout)
 static gboolean
 timer_func (gpointer data)
 {
-	g_debug("Death timer.  Oops.  Got to: %d", layouton);
 	passed = TRUE;
 	g_main_loop_quit(mainloop);
 	return FALSE;

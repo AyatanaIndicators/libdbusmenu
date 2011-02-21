@@ -46,6 +46,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED  "layout-updated"
 #define DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED    "root-changed"
 #define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
+#define DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE   "item-activate"
+#define DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT    "event-result"
 
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
@@ -54,15 +56,21 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
 #define DBUSMENU_CLIENT_TYPES_IMAGE        "standard"
 
+typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
+
 /**
 	DbusmenuClientClass:
 	@parent_class: #GObjectClass
 	@layout_updated: Slot for #DbusmenuClient::layout-updated.
 	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
+	@item_activate: Slot for #DbusmenuClient::item-activate.
+	@event_result: Slot for #DbusmenuClient::event-error.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
 	@reserved4: Reserved for future use.
+	@reserved5: Reserved for future use.
+	@reserved6: Reserved for future use.
 
 	A simple class that takes all of the information from a
 	#DbusmenuServer over DBus and makes the same set of 
@@ -75,12 +83,16 @@ struct _DbusmenuClientClass {
 	void (*layout_updated)(void);
 	void (*root_changed) (DbusmenuMenuitem * newroot);
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
+	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
+	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GVariant * data, guint timestamp, GError * error);
 
-	/* Reserved for future use */
+	/*< Private >*/
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
 	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 /**
@@ -93,9 +105,34 @@ struct _DbusmenuClientClass {
 typedef struct _DbusmenuClient      DbusmenuClient;
 struct _DbusmenuClient {
 	GObject parent;
+
+	/*< Private >*/
+	DbusmenuClientPrivate * priv;
 };
 
-typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+/**
+	DbusmenuClientTypeHandler:
+	@newitem: The #DbusmenuMenuitem that was created
+	@parent: The parent of @newitem or #NULL if none
+	@client: A pointer to the #DbusmenuClient
+	@user_data: The data you gave us
+
+	The type handler is called when a dbusmenu item is created
+	with a matching type as setup in #dbusmenu_client_add_type_handler
+*/
+typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+
+/**
+	DbusmenuClientTypeDestroyHandler:
+	@client: A pointer to the #DbusmenuClient
+	@type: The type that this handler was registered with
+	@user_data: The data you gave us
+
+	This handler is called when the type becomes unregistered by the
+	client.  This is usally caused by the #DbusmenuClient being destroyed
+	and should free memory or unref objects in @user_data.
+*/
+typedef void (*DbusmenuClientTypeDestroyHandler) (DbusmenuClient * client, const gchar * type, gpointer user_data);
 
 GType                dbusmenu_client_get_type          (void);
 DbusmenuClient *     dbusmenu_client_new               (const gchar * name,
@@ -104,10 +141,15 @@ DbusmenuMenuitem *   dbusmenu_client_get_root          (DbusmenuClient * client)
 gboolean             dbusmenu_client_add_type_handler  (DbusmenuClient * client,
                                                         const gchar * type,
                                                         DbusmenuClientTypeHandler newfunc);
+gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * client,
+                                                        const gchar * type,
+                                                        DbusmenuClientTypeHandler newfunc,
+                                                        gpointer user_data,
+                                                        DbusmenuClientTypeDestroyHandler destroy_func);
 void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         gint id,
                                                         const gchar * name,
-                                                        const GValue * value,
+                                                        GVariant * variant,
                                                         guint timestamp);
 void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
                                                         gint id,

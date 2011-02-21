@@ -51,7 +51,6 @@ static void genericmenuitem_class_init (GenericmenuitemClass *klass);
 static void genericmenuitem_init       (Genericmenuitem *self);
 static void genericmenuitem_dispose    (GObject *object);
 static void genericmenuitem_finalize   (GObject *object);
-static void draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area);
 static void set_label (GtkMenuItem * menu_item, const gchar * label);
 static const gchar * get_label (GtkMenuItem * menu_item);
 static void activate (GtkMenuItem * menu_item);
@@ -59,8 +58,14 @@ static void activate (GtkMenuItem * menu_item);
 /* GObject stuff */
 G_DEFINE_TYPE (Genericmenuitem, genericmenuitem, GTK_TYPE_CHECK_MENU_ITEM);
 
-/* Globals */
+#if HAVE_GTK3
+static void draw_indicator (GtkCheckMenuItem *check_menu_item, cairo_t *cr);
+static void (*parent_draw_indicator) (GtkCheckMenuItem *check_menu_item, cairo_t *cr) = NULL;
+#else
+static void draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area);
 static void (*parent_draw_indicator) (GtkCheckMenuItem *check_menu_item, GdkRectangle *area) = NULL;
+#endif
+static void (*parent_menuitem_activate) (GtkMenuItem * mi) = NULL;
 
 /* Initializing all of the classes.  Most notably we're
    disabling the drawing of the check early. */
@@ -82,6 +87,7 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 	GtkMenuItemClass * menuitem_class = GTK_MENU_ITEM_CLASS (klass);
 	menuitem_class->set_label = set_label;
 	menuitem_class->get_label = get_label;
+	parent_menuitem_activate = menuitem_class->activate;
 	menuitem_class->activate = activate;
 
 	return;
@@ -121,6 +127,17 @@ genericmenuitem_finalize (GObject *object)
 /* Checks to see if we should be drawing a little box at
    all.  If we should be, let's do that, otherwise we're
    going suppress the box drawing. */
+#if HAVE_GTK3
+static void
+draw_indicator (GtkCheckMenuItem *check_menu_item, cairo_t *cr)
+{
+	Genericmenuitem * self = GENERICMENUITEM(check_menu_item);
+	if (self->priv->check_type != GENERICMENUITEM_CHECK_TYPE_NONE) {
+		parent_draw_indicator(check_menu_item, cr);
+	}
+	return;
+}
+#else
 static void
 draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area)
 {
@@ -130,6 +147,7 @@ draw_indicator (GtkCheckMenuItem *check_menu_item, GdkRectangle *area)
 	}
 	return;
 }
+#endif
 
 /* A small helper to look through the widgets in the
    box and find the one that is the label. */
@@ -158,6 +176,8 @@ get_hpadding (GtkWidget * widget)
 static void
 set_label (GtkMenuItem * menu_item, const gchar * label)
 {
+	if (label == NULL) return;
+
 	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
 	GtkLabel * labelw = NULL;
 	gboolean suppress_update = FALSE;
@@ -191,9 +211,10 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 	   update the one that we already have. */
 	if (labelw == NULL) {
 		/* Build it */
-		labelw = GTK_LABEL(gtk_label_new(label));
+		labelw = GTK_LABEL(gtk_accel_label_new(label));
 		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
+		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 		gtk_widget_show(GTK_WIDGET(labelw));
 
 		/* Check to see if it needs to be in the bin for this
@@ -257,12 +278,12 @@ activate (GtkMenuItem * menu_item)
 }
 
 /**
-	genericmenuitem_set_check_type:
-	@item: #Genericmenuitem to set the type on
-	@check_type: Which type of check should be displayed
-
-	This function changes the type of the checkmark that
-	appears in the left hand gutter for the menuitem.
+ * genericmenuitem_set_check_type:
+ * @item: #Genericmenuitem to set the type on
+ * @check_type: Which type of check should be displayed
+ * 
+ * This function changes the type of the checkmark that
+ * appears in the left hand gutter for the menuitem.
 */
 void
 genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType check_type)
@@ -272,7 +293,6 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 	}
 
 	item->priv->check_type = check_type;
-	GValue value = {0};
 
 	switch (item->priv->check_type) {
 	case GENERICMENUITEM_CHECK_TYPE_NONE:
@@ -281,14 +301,10 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 		   check on the item. */
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_CHECKBOX:
-		g_value_init(&value, G_TYPE_BOOLEAN);
-		g_value_set_boolean(&value, FALSE);
-		g_object_set_property(G_OBJECT(item), "draw-as-radio", &value);
+		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), FALSE);
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_RADIO:
-		g_value_init(&value, G_TYPE_BOOLEAN);
-		g_value_set_boolean(&value, TRUE);
-		g_object_set_property(G_OBJECT(item), "draw-as-radio", &value);
+		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check type: %d", check_type);
@@ -301,14 +317,14 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 }
 
 /**
-	genericmenuitem_set_state:
-	@item: #Genericmenuitem to set the type on
-	@check_type: What is the state of the check 
-
-	Sets the state of the check in the menu item.  It does
-	not require, but isn't really useful if the type of
-	check that the menuitem is set to #GENERICMENUITEM_CHECK_TYPE_NONE.
-*/
+ * genericmenuitem_set_state:
+ * @item: #Genericmenuitem to set the type on
+ * @check_type: What is the state of the check 
+ * 
+ * Sets the state of the check in the menu item.  It does
+ * not require, but isn't really useful if the type of
+ * check that the menuitem is set to #GENERICMENUITEM_CHECK_TYPE_NONE.
+ */
 void
 genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 {
@@ -319,37 +335,31 @@ genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 	item->priv->state = state;
 
 	GtkCheckMenuItem * check = GTK_CHECK_MENU_ITEM(item);
-
-	gboolean old_active = check->active;
-	gboolean old_inconsist = check->inconsistent;
+	gboolean goal_active = FALSE;
 
 	switch (item->priv->state) {
 	case GENERICMENUITEM_STATE_UNCHECKED:
-		check->active = FALSE;
-		check->inconsistent = FALSE;
+		goal_active = FALSE;
+		gtk_check_menu_item_set_inconsistent (check, FALSE);
 		break;
 	case GENERICMENUITEM_STATE_CHECKED:
-		check->active = TRUE;
-		check->inconsistent = FALSE;
+		goal_active = TRUE;
+		gtk_check_menu_item_set_inconsistent (check, FALSE);
 		break;
 	case GENERICMENUITEM_STATE_INDETERMINATE:
-		check->active = TRUE;
-		check->inconsistent = TRUE;
+		goal_active = TRUE;
+		gtk_check_menu_item_set_inconsistent (check, TRUE);
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check state: %d", state);
 		return;
 	}
 
-	if (old_active != check->active) {
-		g_object_notify(G_OBJECT(item), "active");
+	if (goal_active != gtk_check_menu_item_get_active(check)) {
+		if (parent_menuitem_activate != NULL) {
+			parent_menuitem_activate(GTK_MENU_ITEM(check));
+		}
 	}
-
-	if (old_inconsist != check->inconsistent) {
-		g_object_notify(G_OBJECT(item), "inconsistent");
-	}
-
-	gtk_widget_queue_draw(GTK_WIDGET(item));
 
 	return;
 }
@@ -367,11 +377,11 @@ set_image_helper (GtkWidget * widget, gpointer data)
 }
 
 /**
-	genericmenuitem_set_image:
-	@item: A #Genericmenuitem
-	@image: The image to set as the image of @item
-
-	Sets the image of the menu item.
+ * genericmenuitem_set_image:
+ * @item: A #Genericmenuitem
+ * @image: The image to set as the image of @item
+ * 
+ * Sets the image of the menu item.
 */
 void
 genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
@@ -429,13 +439,13 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 }
 
 /**
-	genericmenuitem_get_image:
-	@item: A #Genericmenuitem
-
-	Returns the image if there is one.
-
-	Return value: A pointer to the image of the item or #NULL
-		if there isn't one.
+ * genericmenuitem_get_image:
+ * @item: A #Genericmenuitem
+ * 
+ * Returns the image if there is one.
+ * 
+ * Return value: (transfer none): A pointer to the image of the item or #NULL
+ * 	if there isn't one.
 */
 GtkWidget *
 genericmenuitem_get_image (Genericmenuitem * menu_item)

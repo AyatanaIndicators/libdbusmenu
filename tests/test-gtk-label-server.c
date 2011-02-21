@@ -20,84 +20,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <glib.h>
-
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-#include <dbus/dbus-glib-bindings.h>
+#include <gio/gio.h>
 
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 
 #include <json-glib/json-glib.h>
-
-static void
-menuitem_click(DbusmenuMenuitem * mi, guint32 time, gpointer user_data)
-{
-	g_debug("Clicked on: %d @ %d", dbusmenu_menuitem_get_id(mi), time);
-	return;
-}
-
-static void
-set_props (DbusmenuMenuitem * mi, JsonObject * node)
-{
-	if (node == NULL) return;
-
-	GList * members = NULL;
-	for (members = json_object_get_members(node); members != NULL; members = g_list_next(members)) {
-		const gchar * member = members->data;
-
-		if (!g_strcmp0(member, "id")) { continue; }
-		if (!g_strcmp0(member, "submenu")) { continue; }
-
-		JsonNode * lnode = json_object_get_member(node, member);
-		if (JSON_NODE_TYPE(lnode) != JSON_NODE_VALUE) { continue; }
-
-		GValue value = {0};
-		json_node_get_value(lnode, &value);
-		dbusmenu_menuitem_property_set_value(mi, member, &value);
-		g_value_unset(&value);
-	}
-
-	return;
-}
-
-static DbusmenuMenuitem *
-layout2menuitem (JsonNode * inlayout)
-{
-	if (inlayout == NULL) return NULL;
-	if (JSON_NODE_TYPE(inlayout) != JSON_NODE_OBJECT) return NULL;
-
-	JsonObject * layout = json_node_get_object(inlayout);
-
-	DbusmenuMenuitem * local = NULL;
-	if (json_object_has_member(layout, "id")) {
-		JsonNode * node = json_object_get_member(layout, "id");
-		g_return_val_if_fail(JSON_NODE_TYPE(node) == JSON_NODE_VALUE, NULL);
-		local = dbusmenu_menuitem_new_with_id(json_node_get_int(node));
-	} else {
-		local = dbusmenu_menuitem_new();
-	}
-	g_signal_connect(G_OBJECT(local), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(menuitem_click), NULL);
-
-	set_props(local, layout);
-	
-	if (json_object_has_member(layout, "submenu")) {
-		JsonNode * node = json_object_get_member(layout, "submenu");
-		g_return_val_if_fail(JSON_NODE_TYPE(node) == JSON_NODE_ARRAY, local);
-		JsonArray * array = json_node_get_array(node);
-		guint count;
-		for (count = 0; count < json_array_get_length(array); count++) {
-			DbusmenuMenuitem * child = layout2menuitem(json_array_get_element(array, count));
-			if (child != NULL) {
-				dbusmenu_menuitem_child_append(local, child);
-			}
-		}
-	}
-
-	/* g_debug("Layout to menu return: 0x%X", (unsigned int)local); */
-	return local;
-}
+#include "json-loader.h"
 
 static JsonArray * root_array = NULL;
 static guint layouton = 0;
@@ -114,10 +43,29 @@ timer_func (gpointer data)
 	}
 	g_debug("Updating to Layout %d", layouton);
 
-	dbusmenu_server_set_root(server, layout2menuitem(json_array_get_element(root_array, layouton)));
+	dbusmenu_server_set_root(server, dbusmenu_json_build_from_node(json_array_get_element(root_array, layouton)));
 	layouton++;
 
 	return TRUE;
+}
+
+static void
+on_bus (GDBusConnection * connection, const gchar * name, gpointer user_data)
+{
+	server = dbusmenu_server_new("/org/test");
+
+	timer_func(NULL);
+	g_timeout_add_seconds(5, timer_func, NULL);
+
+	return;
+}
+
+static void
+name_lost (GDBusConnection * connection, const gchar * name, gpointer user_data)
+{
+	g_error("Unable to get name '%s' on DBus", name);
+	g_main_loop_quit(mainloop);
+	return;
 }
 
 int
@@ -140,26 +88,15 @@ main (int argc, char ** argv)
 	root_array = json_node_get_array(root_node);
 	g_debug("%d layouts in test description '%s'", json_array_get_length(root_array), argv[1]);
 
-	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
 
-	DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
-	guint nameret = 0;
-
-	if (!org_freedesktop_DBus_request_name(bus_proxy, "glib.label.test", 0, &nameret, &error)) {
-		g_error("Unable to call to request name");
-		return 1;
-	}
-
-	if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-		g_error("Unable to get name");
-		return 1;
-	}
-
-	server = dbusmenu_server_new("/org/test");
-
-	timer_func(NULL);
-	g_timeout_add_seconds(5, timer_func, NULL);
+	g_bus_own_name(G_BUS_TYPE_SESSION,
+	               "glib.label.test",
+	               G_BUS_NAME_OWNER_FLAGS_NONE,
+	               on_bus,
+	               NULL,
+	               name_lost,
+	               NULL,
+	               NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);

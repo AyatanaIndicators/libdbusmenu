@@ -49,6 +49,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED         "child-moved"
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID         (g_signal_lookup(DBUSMENU_MENUITEM_SIGNAL_REALIZED, DBUSMENU_TYPE_MENUITEM))
+#define DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER        "show-to-user"
+#define DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW       "about-to-show"
 
 #define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
 #define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
@@ -58,7 +60,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_STATE          "toggle-state"
-#define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "child-display"
+#define DBUSMENU_MENUITEM_PROP_SHORTCUT              "shortcut"
+#define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "children-display"
 
 #define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
 #define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
@@ -69,7 +72,14 @@ G_BEGIN_DECLS
 
 #define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
 
+#define DBUSMENU_MENUITEM_SHORTCUT_CONTROL           "Control"
+#define DBUSMENU_MENUITEM_SHORTCUT_ALT               "Alt"
+#define DBUSMENU_MENUITEM_SHORTCUT_SHIFT             "Shift"
+#define DBUSMENU_MENUITEM_SHORTCUT_SUPER             "Super"
+
 #define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
+
+typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
 
 /**
  * DbusmenuMenuitem:
@@ -85,6 +95,9 @@ typedef struct _DbusmenuMenuitem      DbusmenuMenuitem;
 struct _DbusmenuMenuitem
 {
 	GObject parent;
+
+	/*< Private >*/
+	DbusmenuMenuitemPrivate * priv;
 };
 
 /**
@@ -98,14 +111,15 @@ struct _DbusmenuMenuitem
 typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpointer user_data);
 
 /**
- * dbusmenu_menuitem_buildxml_slot_t:
+ * dbusmenu_menuitem_buildvariant_slot_t:
  * @mi: (in): Menu item that should be built from
- * @stringarray: (inout) (transfer none) (array) (element-type utf8): An array of strings that can be combined into an XML file.
  * 
  * This is the function that is called to represent this menu item
- * as an XML fragment.  Should call it's own children.
+ * as a variant.  Should call it's own children.
+ *
+ * Return value: (transfer full) A variant representing this item and it's children
  */
-typedef void (*dbusmenu_menuitem_buildxml_slot_t) (DbusmenuMenuitem * mi, GPtrArray* stringarray);
+typedef GVariant * (*dbusmenu_menuitem_buildvariant_slot_t) (DbusmenuMenuitem * mi, gchar ** properties);
 
 /**
  * DbusmenuMenuitemClass:
@@ -115,13 +129,18 @@ typedef void (*dbusmenu_menuitem_buildxml_slot_t) (DbusmenuMenuitem * mi, GPtrAr
  * @child_removed: Slot for #DbusmenuMenuitem::child-removed.
  * @child_moved: Slot for #DbusmenuMenuitem::child-moved.
  * @realized: Slot for #DbusmenuMenuitem::realized.
+ * @about_to_show: Slot for #DbusmenuMenuitem::about-to-show.
  * @buildxml: Virtual function that appends the strings required to represent this menu item in the menu XML file.
  * @handle_event: This function is to override how events are handled by subclasses.  Look at #dbusmenu_menuitem_handle_event for lots of good information.
  * @send_about_to_show: Virtual function that notifies server that the client is about to show a menu.
+ * @show_to_user: Slot for #DbusmenuMenuitem::show-to-user.
+ *
  * @reserved1: Reserved for future use.
  * @reserved2: Reserved for future use.
  * @reserved3: Reserved for future use.
  * @reserved4: Reserved for future use.
+ * @reserved5: Reserved for future use.
+ * @reserved6: Reserved for future use.
  */
 typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
 struct _DbusmenuMenuitemClass
@@ -129,7 +148,7 @@ struct _DbusmenuMenuitemClass
 	GObjectClass parent_class;
 
 	/* Signals */
-	void (*property_changed) (gchar * property, GValue * value);
+	void (*property_changed) (gchar * property, GVariant * value);
 	void (*item_activated) (guint timestamp);
 	void (*child_added) (DbusmenuMenuitem * child, guint position);
 	void (*child_removed) (DbusmenuMenuitem * child);
@@ -137,14 +156,20 @@ struct _DbusmenuMenuitemClass
 	void (*realized) (void);
 
 	/* Virtual functions */
-	dbusmenu_menuitem_buildxml_slot_t buildxml;
-	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
-	void (*send_about_to_show) (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
+	dbusmenu_menuitem_buildvariant_slot_t buildvariant;
+	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
+	void (*send_about_to_show) (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
+	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
+	gboolean (*about_to_show) (void);
+
+	/*< Private >*/
 	void (*reserved1) (void);
-	/* void (*reserved2) (void); */
-	/* void (*reserved3) (void); */
-	/* void (*reserved4) (void); -- realized, realloc when bumping lib version */
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 GType dbusmenu_menuitem_get_type (void);
@@ -167,11 +192,11 @@ DbusmenuMenuitem * dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, gint id)
 DbusmenuMenuitem * dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id);
 
 gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value);
-gboolean dbusmenu_menuitem_property_set_value (DbusmenuMenuitem * mi, const gchar * property, const GValue * value);
+gboolean dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * property, GVariant * value);
 gboolean dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value);
 gboolean dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value);
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
-const GValue * dbusmenu_menuitem_property_get_value (DbusmenuMenuitem * mi, const gchar * property);
+GVariant * dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property);
 gint dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
@@ -183,8 +208,10 @@ void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
 gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
-void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, const GValue * value, guint timestamp);
-void dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
+void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
+void dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
+
+void dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp);
 
 /**
  * SECTION:menuitem

@@ -46,11 +46,14 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE  "item-property-updated"
 #define DBUSMENU_SERVER_SIGNAL_ID_UPDATE       "item-updated"
 #define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED  "layout-updated"
+#define DBUSMENU_SERVER_SIGNAL_ITEM_ACTIVATION "item-activation-requested"
 #define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE   DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED
 
 #define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
 #define DBUSMENU_SERVER_PROP_VERSION           "version"
+
+typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 
 /**
 	DbusmenuServerClass:
@@ -58,10 +61,14 @@ G_BEGIN_DECLS
 	@id_prop_update: Slot for #DbusmenuServer::id-prop-update.
 	@id_update: Slot for #DbusmenuServer::id-update.
 	@layout_updated: Slot for #DbusmenuServer::layout-update.
-	@dbusmenu_server_reserved1: Reserved for future use.
-	@dbusmenu_server_reserved2: Reserved for future use.
-	@dbusmenu_server_reserved3: Reserved for future use.
-	@dbusmenu_server_reserved4: Reserved for future use.
+	@item_activation_requested: Slot for #DbusmenuServer::item-activation-requested.
+
+	@reserved1: Reserved for future use.
+	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
+	@reserved5: Reserved for future use.
+	@reserved6: Reserved for future use.
 
 	The class implementing the virtual functions for #DbusmenuServer.
 */
@@ -73,12 +80,15 @@ struct _DbusmenuServerClass {
 	void (*id_prop_update)(gint id, gchar * property, gchar * value);
 	void (*id_update)(gint id);
 	void (*layout_updated)(gint revision);
+	void (*item_activation)(gint id, guint timestamp);
 
-	/* Reserved */
-	void (*dbusmenu_server_reserved1)(void);
-	void (*dbusmenu_server_reserved2)(void);
-	void (*dbusmenu_server_reserved3)(void);
-	void (*dbusmenu_server_reserved4)(void);
+	/*< Private >*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
 };
 
 /**
@@ -91,6 +101,9 @@ struct _DbusmenuServerClass {
 typedef struct _DbusmenuServer      DbusmenuServer;
 struct _DbusmenuServer {
 	GObject parent;
+
+	/*< Private >*/
+	DbusmenuServerPrivate * priv;
 };
 
 GType               dbusmenu_server_get_type   (void);

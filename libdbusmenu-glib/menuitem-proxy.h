@@ -42,17 +42,28 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_MENUITEM_PROXY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_MENUITEM_PROXY))
 #define DBUSMENU_MENUITEM_PROXY_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_MENUITEM_PROXY, DbusmenuMenuitemProxyClass))
 
-typedef struct _DbusmenuMenuitemProxy      DbusmenuMenuitemProxy;
-typedef struct _DbusmenuMenuitemProxyClass DbusmenuMenuitemProxyClass;
+typedef struct _DbusmenuMenuitemProxy        DbusmenuMenuitemProxy;
+typedef struct _DbusmenuMenuitemProxyClass   DbusmenuMenuitemProxyClass;
+typedef struct _DbusmenuMenuitemProxyPrivate DbusmenuMenuitemProxyPrivate;
 
 /**
 	DbusmenuMenuitemProxyClass:
 	@parent_class: The Class of #DbusmeneMenuitem
+	@reserved1: Reserved for future use.
+	@reserved2: Reserved for future use.
+	@reserved3: Reserved for future use.
+	@reserved4: Reserved for future use.
 
 	Functions and signal slots for #DbusmenuMenuitemProxy.
 */
 struct _DbusmenuMenuitemProxyClass {
 	DbusmenuMenuitemClass parent_class;
+
+	/*< Private >*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
 };
 
 /**
@@ -63,6 +74,9 @@ struct _DbusmenuMenuitemProxyClass {
 */
 struct _DbusmenuMenuitemProxy {
 	DbusmenuMenuitem parent;
+
+	/*< Private >*/
+	DbusmenuMenuitemProxyPrivate * priv;
 };
 
 GType dbusmenu_menuitem_proxy_get_type (void);
