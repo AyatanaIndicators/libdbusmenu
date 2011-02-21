@@ -78,7 +78,7 @@ dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar *
 
 /**
  * dbusmenu_menuitem_property_get_image:
- * @menuitem: The #DbusmenuMenuite to look for the property on
+ * @menuitem: The #DbusmenuMenuitem to look for the property on
  * @property: The name of the property to look for.
  * 
  * This function looks on the menu item for a property by the
