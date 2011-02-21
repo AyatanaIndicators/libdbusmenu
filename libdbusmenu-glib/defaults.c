@@ -40,6 +40,12 @@ struct _DbusmenuDefaultsPrivate {
 	GHashTable * types;
 };
 
+typedef struct _DefaultEntry DefaultEntry;
+struct _DefaultEntry {
+	GVariantType * type;
+	GVariant * value;
+};
+
 #define DBUSMENU_DEFAULTS_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_DEFAULTS_TYPE, DbusmenuDefaultsPrivate))
 
@@ -47,6 +53,9 @@ static void dbusmenu_defaults_class_init (DbusmenuDefaultsClass *klass);
 static void dbusmenu_defaults_init       (DbusmenuDefaults *self);
 static void dbusmenu_defaults_dispose    (GObject *object);
 static void dbusmenu_defaults_finalize   (GObject *object);
+
+static DefaultEntry * entry_create (GVariantType * type, GVariant * variant);
+static void entry_destroy (gpointer entry);
 
 G_DEFINE_TYPE (DbusmenuDefaults, dbusmenu_defaults, G_TYPE_OBJECT);
 
@@ -95,6 +104,44 @@ dbusmenu_defaults_finalize (GObject *object)
 {
 
 	G_OBJECT_CLASS (dbusmenu_defaults_parent_class)->finalize (object);
+	return;
+}
+
+/* Create a new entry based on the info provided */
+static DefaultEntry *
+entry_create (GVariantType * type, GVariant * variant)
+{
+	DefaultEntry * defentry = g_new0(DefaultEntry, 1);
+
+	if (type != NULL) {
+		defentry->type = g_variant_type_copy(type);
+	}
+
+	if (variant != NULL) {
+		defentry->value = variant;
+		g_variant_ref_sink(variant);
+	}
+
+	return defentry;
+}
+
+/* Destroy an entry */
+static void
+entry_destroy (gpointer entry)
+{
+	DefaultEntry * defentry = (DefaultEntry *)entry;
+
+	if (defentry->type != NULL) {
+		g_variant_type_free(defentry->type);
+		defentry->type = NULL;
+	}
+
+	if (defentry->value != NULL) {
+		g_variant_unref(defentry->value);
+		defentry->value = NULL;
+	}
+
+	g_free(defentry);
 	return;
 }
 
