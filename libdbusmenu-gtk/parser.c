@@ -93,7 +93,7 @@ static void           menuitem_notify_cb       (GtkWidget *         widget,
  * between the objects.  It also stores the dbusmenu items as a cache
  * on the GTK items so that they'll be reused if necissary.
  * 
- * Return value: (transfer none): A dbusmenu item representing the menu structure
+ * Return value: (transfer full): A dbusmenu item representing the menu structure
  */
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
