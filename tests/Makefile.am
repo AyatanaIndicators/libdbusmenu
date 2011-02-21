@@ -3,6 +3,7 @@ DBUS_RUNNER=dbus-test-runner
 
 CLEANFILES=
 DISTCLEANFILES=
+EXTRA_DIST = 
 
 TESTS = \
 	test-glib-objects-test \
@@ -477,12 +478,6 @@ test-gtk-shortcut: test-gtk-shortcut-client test-gtk-shortcut-server Makefile.am
 	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test-gtk-shortcut-python: test-gtk-shortcut-server Makefile.am
-	@echo "#!/bin/bash" > $@
-	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
-	@chmod +x $@
-
 test_gtk_shortcut_server_SOURCES = \
 	test-gtk-shortcut-server.c
 
@@ -512,6 +507,19 @@ test_gtk_shortcut_client_LDADD = \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
+
+#########################
+# Test GTK Shortcut Python
+#########################
+
+test-gtk-shortcut-python: test-gtk-shortcut-server test-gtk-shortcut-client.py Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+EXTRA_DIST += test-gtk-shortcut-client.py
+CLEANFILES += test-gtk-shortcut-client.pyc
 
 #########################
 # Test GTK Reorder
@@ -607,7 +615,7 @@ jsondir = $(datadir)/${PACKAGE}/json/
 json_DATA = \
 	test-gtk-label.json
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	$(examples_DATA) \
 	run-xvfb.sh \
 	$(json_DATA) \
