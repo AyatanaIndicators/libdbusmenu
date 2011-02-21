@@ -32,7 +32,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "genericmenuitem.h"
 
-/**
+/*
 	GenericmenuitemPrivate:
 	@check_type: What type of check we have, or none at all.
 	@state: What the state of our check is.
