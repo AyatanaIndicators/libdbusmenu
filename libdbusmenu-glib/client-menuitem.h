@@ -35,10 +35,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
-/**
- * DBUSMENU_TYPE_CLIENT_MENUITEM:
- * Macro to get the #GType value for #DbusmenuClientMenuitem object
- */
 #define DBUSMENU_TYPE_CLIENT_MENUITEM            (dbusmenu_client_menuitem_get_type ())
 #define DBUSMENU_CLIENT_MENUITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), DBUSMENU_TYPE_CLIENT_MENUITEM, DbusmenuClientMenuitem))
 #define DBUSMENU_CLIENT_MENUITEM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), DBUSMENU_TYPE_CLIENT_MENUITEM, DbusmenuClientMenuitemClass))

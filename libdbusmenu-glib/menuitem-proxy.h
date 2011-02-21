@@ -68,7 +68,6 @@ struct _DbusmenuMenuitemProxyClass {
 
 /**
 	DbusmenuMenuitemProxy:
-	@parent: The instance of #DbusmenuMenuitem
 
 	Public instance data for a #DbusmenuMenuitemProxy.
 */
