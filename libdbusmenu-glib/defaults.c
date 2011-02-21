@@ -100,3 +100,60 @@ dbusmenu_defaults_ref_default (void)
 
 	return default_defaults;
 }
+
+/**
+ * dbusmenu_defaults_default_set:
+ * @default: The #DbusmenuDefaults object to add to
+ * @type: (allow-none): The #DbusmenuMenuitem type for this default if #NULL will default to #DBUSMENU_CLIENT_TYPE_DEFAULT
+ * @property: Property name for the default
+ * @prop_type: (allow-none): Type of the property for runtime checking.  To disable checking set to #NULL.
+ * @value: (allow-none): Default value for @property.  #NULL if by default it is unset, but you want type checking from @prop_type.
+ *
+ * Sets up an entry in the defaults database for a given @property
+ * and menuitem type @type.  @prop_type and @value can both be #NULL
+ * but both of them can not.
+ */
+void
+dbusmenu_defaults_default_set (DbusmenuDefaults * defaults, const gchar * type, const gchar * property, const GVariantType * prop_type, GVariant * value)
+{
+
+	return;
+}
+
+/**
+ * dbusmenu_defaults_default_get:
+ * @defaults: The default database to use
+ * @type: (allow-none): The #DbusmenuMenuitem type for this default if #NULL will default to #DBUSMENU_CLIENT_TYPE_DEFAULT
+ * @property: Property name to lookup
+ *
+ * Gets an entry in the database for a give @property and @type.
+ *
+ * Return value: (transfer none): Returns a variant that does not
+ * have it's ref count increased.  If you want to keep it, you should
+ * do that.
+ */
+GVariant *
+dbusmenu_defaults_default_get (DbusmenuDefaults * defaults, const gchar * type, const gchar * property)
+{
+
+	return NULL;
+}
+
+/**
+ * dbusmenu_defaults_default_get_type:
+ * @defaults: The default database to use
+ * @type: (allow-none): The #DbusmenuMenuitem type for this default if #NULL will default to #DBUSMENU_CLIENT_TYPE_DEFAULT
+ * @property: Property name to lookup
+ *
+ * Gets the type for an entry in the database for a give @property and @type.
+ *
+ * Return value: (transfer none): Returns a type for the given
+ * @property value.
+ */
+GVariantType *
+dbusmenu_defaults_default_get_type (DbusmenuDefaults * defaults, const gchar * type, const gchar * property)
+{
+
+	return NULL;
+}
+

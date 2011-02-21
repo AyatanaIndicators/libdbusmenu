@@ -69,6 +69,17 @@ struct _DbusmenuDefaults {
 
 GType                 dbusmenu_defaults_get_type             (void);
 DbusmenuDefaults *    dbusmenu_defaults_ref_default          (void);
+void                  dbusmenu_defaults_default_set          (DbusmenuDefaults * defaults,
+                                                              const gchar * type,
+                                                              const gchar * property,
+                                                              const GVariantType * prop_type,
+                                                              GVariant * value);
+GVariant *            dbusmenu_defaults_default_get          (DbusmenuDefaults * defaults,
+                                                              const gchar * type,
+                                                              const gchar * property);
+GVariantType *        dbusmenu_defaults_default_get_type     (DbusmenuDefaults * defaults,
+                                                              const gchar * type,
+                                                              const gchar * property);
 
 G_END_DECLS
 
