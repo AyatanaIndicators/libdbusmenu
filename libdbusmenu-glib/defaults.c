@@ -32,8 +32,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "defaults.h"
 
-typedef struct _DbusmenuDefaultsPrivate DbusmenuDefaultsPrivate;
-
 struct _DbusmenuDefaultsPrivate {
 	GHashTable * types;
 };
@@ -81,4 +79,24 @@ dbusmenu_defaults_finalize (GObject *object)
 
 	G_OBJECT_CLASS (dbusmenu_defaults_parent_class)->finalize (object);
 	return;
+}
+
+static DbusmenuDefaults * default_defaults = NULL;
+
+/**
+ * dbusmenu_defaults_ref_default:
+ *
+ * Get a reference to the default instance.  If it doesn't exist this
+ * function will create it.
+ *
+ * Return value: (transfer full): A reference to the defaults
+ */
+DbusmenuDefaults *
+dbusmenu_defaults_ref_default (void)
+{
+	if (default_defaults == NULL) {
+		default_defaults = DBUSMENU_DEFAULTS(g_object_new(DBUSMENU_TYPE_DEFAULTS, NULL));
+	}
+
+	return default_defaults;
 }
