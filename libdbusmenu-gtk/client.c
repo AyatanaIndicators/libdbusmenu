@@ -619,7 +619,7 @@ move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint ol
 /**
  * dbusmenu_gtkclient_new:
  * @dbus_name: Name of the #DbusmenuServer on DBus
- * @dbus_name: Name of the object on the #DbusmenuServer
+ * @dbus_object: Name of the object on the #DbusmenuServer
  * 
  * Creates a new #DbusmenuGtkClient object and creates a #DbusmenuClient
  * that connects across DBus to a #DbusmenuServer.
