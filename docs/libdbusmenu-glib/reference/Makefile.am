@@ -48,6 +48,7 @@ CFILE_GLOB=$(top_srcdir)/libdbusmenu-glib/*.c
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES= \
+	dbus-menu-clean.xml.h \
 	client-menuitem.h \
 	menuitem-marshal.h \
 	server-marshal.h \
