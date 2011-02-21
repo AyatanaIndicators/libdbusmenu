@@ -400,7 +400,7 @@ build_client (DbusmenuGtkMenu * self)
 /**
  * dbusmenu_gtkmenu_new:
  * @dbus_name: Name of the #DbusmenuServer on DBus
- * @dbus_name: Name of the object on the #DbusmenuServer
+ * @dbus_object: Name of the object on the #DbusmenuServer
  * 
  * Creates a new #DbusmenuGtkMenu object and creates a #DbusmenuClient
  * that connects across DBus to a #DbusmenuServer.
