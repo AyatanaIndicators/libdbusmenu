@@ -1,0 +1,76 @@
+<SECTION>
+<FILE>client</FILE>
+<TITLE>DbusmenuGtkClient</TITLE>
+DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED
+DbusmenuGtkClientClass
+dbusmenu_gtkclient_new
+dbusmenu_gtkclient_menuitem_get
+dbusmenu_gtkclient_menuitem_get_submenu
+dbusmenu_gtkclient_set_accel_group
+dbusmenu_gtkclient_get_accel_group
+dbusmenu_gtkclient_newitem_base
+<SUBSECTION Standard>
+DBUSMENU_GTKCLIENT
+DBUSMENU_IS_GTKCLIENT
+DBUSMENU_GTKCLIENT_CLASS
+DBUSMENU_IS_GTKCLIENT_CLASS
+DBUSMENU_GTKCLIENT_GET_CLASS
+<SUBSECTION Private>
+DBUSMENU_GTKCLIENT_TYPE
+dbusmenu_gtkclient_get_type
+DbusmenuGtkClientPrivate
+</SECTION>
+
+<SECTION>
+<FILE>serializablemenuitem</FILE>
+<TITLE>DbusmenuGtkSerializableMenuItem</TITLE>
+DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM
+DbusmenuGtkSerializableMenuItemClass
+dbusmenu_gtk_serializable_menu_item_build_menuitem
+dbusmenu_gtk_serializable_menu_item_register_to_client
+dbusmenu_gtk_serializable_menu_item_set_menuitem
+<SUBSECTION Standard>
+DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM
+DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM
+DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_CLASS
+DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM_CLASS
+DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_CLASS
+<SUBSECTION Private>
+DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM
+dbusmenu_gtk_serializable_menu_item_get_type
+DbusmenuGtkSerializableMenuItemPrivate
+</SECTION>
+
+<SECTION>
+<FILE>menu</FILE>
+<TITLE>DbusmenuGtkMenu</TITLE>
+DbusmenuGtkMenuClass
+dbusmenu_gtkmenu_new
+dbusmenu_gtkmenu_get_client
+<SUBSECTION Standard>
+DBUSMENU_GTKMENU
+DBUSMENU_IS_GTKMENU
+DBUSMENU_GTKMENU_CLASS
+DBUSMENU_IS_GTKMENU_CLASS
+DBUSMENU_GTKMENU_GET_CLASS
+<SUBSECTION Private>
+dbusmenu_gtkmenu_get_type
+DBUSMENU_GTKMENU_TYPE
+DbusmenuGtkMenuPrivate
+</SECTION>
+
+<SECTION>
+<FILE>menuitem</FILE>
+dbusmenu_menuitem_property_set_image
+dbusmenu_menuitem_property_get_image
+dbusmenu_menuitem_property_set_shortcut
+dbusmenu_menuitem_property_set_shortcut_string
+dbusmenu_menuitem_property_set_shortcut_menuitem
+dbusmenu_menuitem_property_get_shortcut
+</SECTION>
+
+<SECTION>
+<FILE>parser</FILE>
+dbusmenu_gtk_parse_menu_structure
+</SECTION>
+
