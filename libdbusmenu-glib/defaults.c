@@ -34,8 +34,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 typedef struct _DbusmenuDefaultsPrivate DbusmenuDefaultsPrivate;
 
-struct _DbusmenuDefaultsPrivate
-{
+struct _DbusmenuDefaultsPrivate {
+	GHashTable * types;
 };
 
 #define DBUSMENU_DEFAULTS_GET_PRIVATE(o) \
@@ -51,27 +51,34 @@ G_DEFINE_TYPE (DbusmenuDefaults, dbusmenu_defaults, G_TYPE_OBJECT);
 static void
 dbusmenu_defaults_class_init (DbusmenuDefaultsClass *klass)
 {
-GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-g_type_class_add_private (klass, sizeof (DbusmenuDefaultsPrivate));
+	g_type_class_add_private (klass, sizeof (DbusmenuDefaultsPrivate));
 
-object_class->dispose = dbusmenu_defaults_dispose;
-object_class->finalize = dbusmenu_defaults_finalize;
+	object_class->dispose = dbusmenu_defaults_dispose;
+	object_class->finalize = dbusmenu_defaults_finalize;
+	return;
 }
 
 static void
 dbusmenu_defaults_init (DbusmenuDefaults *self)
 {
+
+	return;
 }
 
 static void
 dbusmenu_defaults_dispose (GObject *object)
 {
-G_OBJECT_CLASS (dbusmenu_defaults_parent_class)->dispose (object);
+
+	G_OBJECT_CLASS (dbusmenu_defaults_parent_class)->dispose (object);
+	return;
 }
 
 static void
 dbusmenu_defaults_finalize (GObject *object)
 {
-G_OBJECT_CLASS (dbusmenu_defaults_parent_class)->finalize (object);
+
+	G_OBJECT_CLASS (dbusmenu_defaults_parent_class)->finalize (object);
+	return;
 }
