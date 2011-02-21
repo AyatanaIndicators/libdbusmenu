@@ -25,10 +25,12 @@ dbusmenu_client_send_about_to_show
 DBUSMENU_CLIENT
 DBUSMENU_IS_CLIENT
 DBUSMENU_TYPE_CLIENT
-dbusmenu_client_get_type
 DBUSMENU_CLIENT_CLASS
 DBUSMENU_IS_CLIENT_CLASS
 DBUSMENU_CLIENT_GET_CLASS
+<SUBSECTION Private>
+DbusmenuClientPrivate
+dbusmenu_client_get_type
 </SECTION>
 
 <SECTION>
@@ -66,6 +68,7 @@ DBUSMENU_MENUITEM_SHORTCUT_SHIFT
 DBUSMENU_MENUITEM_SHORTCUT_SUPER
 DbusmenuMenuitem
 dbusmenu_menuitem_about_to_show_cb
+dbusmenu_menuitem_buildvariant_slot_t
 DbusmenuMenuitemClass
 dbusmenu_menuitem_new
 dbusmenu_menuitem_new_with_id
@@ -103,10 +106,12 @@ dbusmenu_menuitem_show_to_user
 DBUSMENU_MENUITEM
 DBUSMENU_IS_MENUITEM
 DBUSMENU_TYPE_MENUITEM
-dbusmenu_menuitem_get_type
 DBUSMENU_MENUITEM_CLASS
 DBUSMENU_IS_MENUITEM_CLASS
 DBUSMENU_MENUITEM_GET_CLASS
+<SUBSECTION Private>
+DbusmenuMenuitemPrivate
+dbusmenu_menuitem_get_type
 </SECTION>
 
 <SECTION>
@@ -128,10 +133,12 @@ dbusmenu_server_set_root
 DBUSMENU_SERVER
 DBUSMENU_IS_SERVER
 DBUSMENU_TYPE_SERVER
-dbusmenu_server_get_type
 DBUSMENU_SERVER_CLASS
 DBUSMENU_IS_SERVER_CLASS
 DBUSMENU_SERVER_GET_CLASS
+<SUBSECTION Private>
+DbusmenuServerPrivate
+dbusmenu_server_get_type
 </SECTION>
 
 <SECTION>
@@ -145,9 +152,11 @@ dbusmenu_menuitem_proxy_get_wrapped
 DBUSMENU_MENUITEM_PROXY
 DBUSMENU_IS_MENUITEM_PROXY
 DBUSMENU_TYPE_MENUITEM_PROXY
-dbusmenu_menuitem_proxy_get_type
 DBUSMENU_MENUITEM_PROXY_CLASS
 DBUSMENU_IS_MENUITEM_PROXY_CLASS
 DBUSMENU_MENUITEM_PROXY_GET_CLASS
+<SUBSECTION Private>
+DbusmenuMenuitemProxyPrivate
+dbusmenu_menuitem_proxy_get_type
 </SECTION>
 
