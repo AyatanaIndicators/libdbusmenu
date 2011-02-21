@@ -30,7 +30,11 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include <glib/gi18n.h>
+
 #include "defaults.h"
+#include "menuitem.h"
+#include "client.h"
 
 struct _DbusmenuDefaultsPrivate {
 	GHashTable * types;
@@ -61,6 +65,19 @@ dbusmenu_defaults_class_init (DbusmenuDefaultsClass *klass)
 static void
 dbusmenu_defaults_init (DbusmenuDefaults *self)
 {
+
+	/* Standard defaults */
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_VISIBLE,        G_VARIANT_TYPE_BOOLEAN,   g_variant_new_boolean(TRUE)); 
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_ENABLED,        G_VARIANT_TYPE_BOOLEAN,   g_variant_new_boolean(TRUE)); 
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_LABEL,          G_VARIANT_TYPE_STRING,    g_variant_new_string(_("Label Empty"))); 
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_ICON_NAME,      G_VARIANT_TYPE_STRING,    NULL); 
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE,    G_VARIANT_TYPE_STRING,    NULL); 
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,   G_VARIANT_TYPE_INT32,     NULL); 
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_SHORTCUT,       G_VARIANT_TYPE_ARRAY,     NULL); 
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY,  G_VARIANT_TYPE_STRING,    NULL); 
+
+	/* Separator defaults */
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_SEPARATOR,  DBUSMENU_MENUITEM_PROP_VISIBLE,        G_VARIANT_TYPE_BOOLEAN,   g_variant_new_boolean(TRUE)); 
 
 	return;
 }
@@ -103,7 +120,7 @@ dbusmenu_defaults_ref_default (void)
 
 /**
  * dbusmenu_defaults_default_set:
- * @default: The #DbusmenuDefaults object to add to
+ * @defaults: The #DbusmenuDefaults object to add to
  * @type: (allow-none): The #DbusmenuMenuitem type for this default if #NULL will default to #DBUSMENU_CLIENT_TYPE_DEFAULT
  * @property: Property name for the default
  * @prop_type: (allow-none): Type of the property for runtime checking.  To disable checking set to #NULL.
