@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.3.97, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.3.98, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.3.97, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.3.98, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -42,11 +42,9 @@ GNOME_DOC_INIT
 ###########################
 
 GLIB_REQUIRED_VERSION=2.26
-XML_REQUIRED_VERSION=2.6
 
 PKG_CHECK_MODULES(DBUSMENUGLIB, glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                gio-2.0 >= $GLIB_REQUIRED_VERSION
-                                libxml-2.0 >= $XML_REQUIRED_VERSION)
+                                gio-2.0 >= $GLIB_REQUIRED_VERSION)
 
 AC_SUBST(DBUSMENUGLIB_CFLAGS)
 AC_SUBST(DBUSMENUGLIB_LIBS)
@@ -65,16 +63,14 @@ AC_ARG_WITH([gtk],
   [with_gtk=2])
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                                         glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         libxml-2.0 >= $XML_REQUIRED_VERSION)
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION)
          AC_SUBST(DBUSMENUGTK_CFLAGS)
          AC_SUBST(DBUSMENUGTK_LIBS)
          AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
         ],
       [test "x$with_gtk" = x2],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                         glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                         libxml-2.0 >= $XML_REQUIRED_VERSION)
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION)
          AC_SUBST(DBUSMENUGTK_CFLAGS)
          AC_SUBST(DBUSMENUGTK_LIBS)
         ],
@@ -136,7 +132,7 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 ###########################
 
 LIBDBUSMENU_CURRENT=3
-LIBDBUSMENU_REVISION=5
+LIBDBUSMENU_REVISION=6
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
