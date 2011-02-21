@@ -54,7 +54,7 @@ static void dbusmenu_defaults_init       (DbusmenuDefaults *self);
 static void dbusmenu_defaults_dispose    (GObject *object);
 static void dbusmenu_defaults_finalize   (GObject *object);
 
-static DefaultEntry * entry_create (GVariantType * type, GVariant * variant);
+static DefaultEntry * entry_create (const GVariantType * type, GVariant * variant);
 static void entry_destroy (gpointer entry);
 
 G_DEFINE_TYPE (DbusmenuDefaults, dbusmenu_defaults, G_TYPE_OBJECT);
@@ -76,7 +76,7 @@ dbusmenu_defaults_init (DbusmenuDefaults *self)
 {
 	self->priv = DBUSMENU_DEFAULTS_GET_PRIVATE(self); 
 
-	self->priv->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, entry_destroy);
+	self->priv->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, (GDestroyNotify)g_hash_table_destroy);
 
 	/* Standard defaults */
 	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_VISIBLE,        G_VARIANT_TYPE_BOOLEAN,   g_variant_new_boolean(TRUE)); 
@@ -118,7 +118,7 @@ dbusmenu_defaults_finalize (GObject *object)
 
 /* Create a new entry based on the info provided */
 static DefaultEntry *
-entry_create (GVariantType * type, GVariant * variant)
+entry_create (const GVariantType * type, GVariant * variant)
 {
 	DefaultEntry * defentry = g_new0(DefaultEntry, 1);
 
@@ -189,6 +189,26 @@ dbusmenu_defaults_ref_default (void)
 void
 dbusmenu_defaults_default_set (DbusmenuDefaults * defaults, const gchar * type, const gchar * property, const GVariantType * prop_type, GVariant * value)
 {
+	g_return_if_fail(DBUSMENU_IS_DEFAULTS(defaults));
+	g_return_if_fail(property != NULL);
+	g_return_if_fail(prop_type != NULL || value != NULL);
+
+	if (type == NULL) {
+		type = DBUSMENU_CLIENT_TYPES_DEFAULT;
+	}
+
+	GHashTable * prop_table = (GHashTable *)g_hash_table_lookup(defaults->priv->types, type);
+
+	/* We've never had a default for this type, so we need
+	   to create a table for it. */
+	if (prop_table == NULL) {
+		prop_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, entry_destroy);
+
+		g_hash_table_insert(prop_table, g_strdup(property), entry_create(prop_type, value));
+		g_hash_table_insert(defaults->priv->types, g_strdup(type), prop_table);
+	} else {
+		g_hash_table_replace(prop_table, g_strdup(property), entry_create(prop_type, value));
+	}
 
 	return;
 }
