@@ -16,6 +16,7 @@ TESTS = \
 	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-shortcut \
+	test-gtk-shortcut-python \
 	test-gtk-reorder \
 	test-gtk-submenu \
 	test-gtk-parser-test \
@@ -474,6 +475,12 @@ test-gtk-shortcut: test-gtk-shortcut-client test-gtk-shortcut-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test-gtk-shortcut-python: test-gtk-shortcut-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 test_gtk_shortcut_server_SOURCES = \
