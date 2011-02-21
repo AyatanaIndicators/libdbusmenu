@@ -517,7 +517,7 @@ test_gtk_shortcut_client_LDADD = \
 test-gtk-shortcut-python: test-gtk-shortcut-server test-gtk-shortcut-client.py Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task $(srcdir)/test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 EXTRA_DIST += test-gtk-shortcut-client.py
