@@ -55,7 +55,6 @@ DBUSMENU_MENUITEM_ICON_NAME_BLANK
 DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU
 DbusmenuMenuitem
 dbusmenu_menuitem_about_to_show_cb
-dbusmenu_menuitem_buildxml_slot_t
 DbusmenuMenuitemClass
 dbusmenu_menuitem_new
 dbusmenu_menuitem_new_with_id
@@ -72,13 +71,13 @@ dbusmenu_menuitem_child_reorder
 dbusmenu_menuitem_child_find
 dbusmenu_menuitem_find_id
 dbusmenu_menuitem_property_set
-dbusmenu_menuitem_property_set_value
 dbusmenu_menuitem_property_set_bool
 dbusmenu_menuitem_property_set_int
+dbusmenu_menuitem_property_set_variant
 dbusmenu_menuitem_property_get
-dbusmenu_menuitem_property_get_value
 dbusmenu_menuitem_property_get_bool
 dbusmenu_menuitem_property_get_int
+dbusmenu_menuitem_property_get_variant
 dbusmenu_menuitem_property_exist
 dbusmenu_menuitem_properties_list
 dbusmenu_menuitem_properties_copy
@@ -120,22 +119,6 @@ dbusmenu_server_get_type
 DBUSMENU_SERVER_CLASS
 DBUSMENU_IS_SERVER_CLASS
 DBUSMENU_SERVER_GET_CLASS
-</SECTION>
-
-<SECTION>
-<FILE>client-menuitem</FILE>
-<TITLE>DbusmenuClientMenuitem</TITLE>
-DBUSMENU_CLIENT_MENUITEM_TYPE
-DbusmenuClientMenuitem
-DbusmenuClientMenuitemClass
-dbusmenu_client_menuitem_new
-<SUBSECTION Standard>
-DBUSMENU_CLIENT_MENUITEM
-DBUSMENU_IS_CLIENT_MENUITEM
-dbusmenu_client_menuitem_get_type
-DBUSMENU_CLIENT_MENUITEM_CLASS
-DBUSMENU_IS_CLIENT_MENUITEM_CLASS
-DBUSMENU_CLIENT_MENUITEM_GET_CLASS
 </SECTION>
 
 <SECTION>
