@@ -17,7 +17,8 @@ TESTS = \
 	test-gtk-shortcut \
 	test-gtk-reorder \
 	test-gtk-submenu \
-	test-gtk-parser-test
+	test-gtk-parser-test \
+	test-glib-simple-items.py
 
 check_PROGRAMS = \
 	glib-server-nomenu \
@@ -47,6 +48,9 @@ check_PROGRAMS = \
 	test-gtk-parser
 
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
+
+# for the GI tests, prefer/use the typelibs from the local build tree
+TESTS_ENVIRONMENT = env GI_TYPELIB_PATH=$(top_builddir)/libdbusmenu-glib:$(top_builddir)/libdbusmenu-gtk:$(GI_TYPELIB_PATH)
 
 ######################
 # JSON Loader lib
@@ -623,7 +627,7 @@ distclean-local:
 	-rm -rf $(builddir)/mago.results
 
 DISTCLEANFILES = \
-	$(TESTS) \
+	$(filter-out %.py, $(TESTS)) \
 	$(OBJECT_XML_REPORT) \
 	$(GTK_OBJECT_XML_REPORT)
 
