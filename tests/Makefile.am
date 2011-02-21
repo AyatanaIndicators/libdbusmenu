@@ -367,6 +367,8 @@ test_glib_simple_items_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+EXTRA_DIST += test-glib-simple-items.py
+
 ######################
 # Test GTK Object
 ######################
