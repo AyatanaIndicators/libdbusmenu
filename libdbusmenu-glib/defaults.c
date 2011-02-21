@@ -228,8 +228,26 @@ dbusmenu_defaults_default_set (DbusmenuDefaults * defaults, const gchar * type, 
 GVariant *
 dbusmenu_defaults_default_get (DbusmenuDefaults * defaults, const gchar * type, const gchar * property)
 {
+	g_return_val_if_fail(DBUSMENU_IS_DEFAULTS(defaults), NULL);
+	g_return_val_if_fail(property != NULL, NULL);
 
-	return NULL;
+	if (type == NULL) {
+		type = DBUSMENU_CLIENT_TYPES_DEFAULT;
+	}
+
+	GHashTable * prop_table = (GHashTable *)g_hash_table_lookup(defaults->priv->types, type);
+
+	if (prop_table == NULL) {
+		return NULL;
+	}
+
+	DefaultEntry * entry = (DefaultEntry *)g_hash_table_lookup(prop_table, property);
+
+	if (entry == NULL) {
+		return NULL;
+	}
+
+	return entry->value;
 }
 
 /**
@@ -246,7 +264,25 @@ dbusmenu_defaults_default_get (DbusmenuDefaults * defaults, const gchar * type, 
 GVariantType *
 dbusmenu_defaults_default_get_type (DbusmenuDefaults * defaults, const gchar * type, const gchar * property)
 {
+	g_return_val_if_fail(DBUSMENU_IS_DEFAULTS(defaults), NULL);
+	g_return_val_if_fail(property != NULL, NULL);
 
-	return NULL;
+	if (type == NULL) {
+		type = DBUSMENU_CLIENT_TYPES_DEFAULT;
+	}
+
+	GHashTable * prop_table = (GHashTable *)g_hash_table_lookup(defaults->priv->types, type);
+
+	if (prop_table == NULL) {
+		return NULL;
+	}
+
+	DefaultEntry * entry = (DefaultEntry *)g_hash_table_lookup(prop_table, property);
+
+	if (entry == NULL) {
+		return NULL;
+	}
+
+	return entry->type;
 }
 
