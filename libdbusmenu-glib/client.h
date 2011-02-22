@@ -145,7 +145,7 @@ gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * cli
                                                         const gchar * type,
                                                         DbusmenuClientTypeHandler newfunc,
                                                         gpointer user_data,
-                                                        DbusmenuClientTypeDestroyHandler destory_func);
+                                                        DbusmenuClientTypeDestroyHandler destroy_func);
 void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         gint id,
                                                         const gchar * name,
