@@ -112,14 +112,15 @@ struct _DbusmenuMenuitem
 typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpointer user_data);
 
 /**
- * dbusmenu_menuitem_buildxml_slot_t:
+ * dbusmenu_menuitem_buildvariant_slot_t:
  * @mi: (in): Menu item that should be built from
- * @stringarray: (inout) (transfer none) (array) (element-type utf8): An array of strings that can be combined into an XML file.
  * 
  * This is the function that is called to represent this menu item
- * as an XML fragment.  Should call it's own children.
+ * as a variant.  Should call it's own children.
+ *
+ * Return value: (transfer full) A variant representing this item and it's children
  */
-typedef void (*dbusmenu_menuitem_buildxml_slot_t) (DbusmenuMenuitem * mi, GPtrArray* stringarray);
+typedef GVariant * (*dbusmenu_menuitem_buildvariant_slot_t) (DbusmenuMenuitem * mi, gchar ** properties);
 
 /**
  * DbusmenuMenuitemClass:
@@ -157,8 +158,8 @@ struct _DbusmenuMenuitemClass
 	void (*realized) (void);
 
 	/* Virtual functions */
-	dbusmenu_menuitem_buildxml_slot_t buildxml;
-	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp);
+	dbusmenu_menuitem_buildvariant_slot_t buildvariant;
+	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
 	void (*send_about_to_show) (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
@@ -210,7 +211,7 @@ void dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root);
 gboolean dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi);
 
 void dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data);
-void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp);
+void dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
 void dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 void dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp);

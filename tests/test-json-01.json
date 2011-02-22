@@ -5,30 +5,22 @@
       {
         "id": 5,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'File',
-        "visible": true,
         "submenu": [
             {
               "id": 6,
-              "enabled": true,
               "label": 'Quit',
-              "shortcut": [['Control', 'q']],
-              "visible": true
+              "shortcut": [['Control', 'q']]
             },
             {
               "id": 7,
-              "enabled": true,
               "label": 'Close all',
-              "shortcut": [['Control', 'Shift', 'w']],
-              "visible": true
+              "shortcut": [['Control', 'Shift', 'w']]
             },
             {
               "id": 8,
-              "enabled": true,
               "label": 'Close',
-              "shortcut": [['Control', 'w']],
-              "visible": true
+              "shortcut": [['Control', 'w']]
             },
             {
               "id": 9,
@@ -36,22 +28,16 @@
             },
             {
               "id": 10,
-              "enabled": true,
-              "label": 'Send by Email...',
-              "visible": true
+              "label": 'Send by Email...'
             },
             {
               "id": 11,
-              "enabled": true,
               "label": 'Print...',
-              "shortcut": [['Control', 'p']],
-              "visible": true
+              "shortcut": [['Control', 'p']]
             },
             {
               "id": 12,
-              "enabled": true,
-              "label": 'Page Setup',
-              "visible": true
+              "label": 'Page Setup'
             },
             {
               "id": 13,
@@ -59,35 +45,25 @@
             },
             {
               "id": 14,
-              "enabled": true,
-              "label": 'Revert',
-              "visible": true
+              "label": 'Revert'
             },
             {
               "id": 15,
-              "enabled": true,
-              "label": 'Save as Template...',
-              "visible": true
+              "label": 'Save as Template...'
             },
             {
               "id": 16,
-              "enabled": true,
-              "label": 'Save a Copy...',
-              "visible": true
+              "label": 'Save a Copy...'
             },
             {
               "id": 17,
-              "enabled": true,
               "label": 'Save As...',
-              "shortcut": [['Control', 'Shift', 's']],
-              "visible": true
+              "shortcut": [['Control', 'Shift', 's']]
             },
             {
               "id": 18,
-              "enabled": true,
               "label": 'Save',
-              "shortcut": [['Control', 's']],
-              "visible": true
+              "shortcut": [['Control', 's']]
             },
             {
               "id": 19,
@@ -96,15 +72,11 @@
             {
               "id": 20,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Open Recent',
-              "visible": true,
               "submenu": [
                   {
                     "id": 21,
-                    "enabled": true,
-                    "label": 'Document History',
-                    "visible": true
+                    "label": 'Document History'
                   },
                   {
                     "id": 22,
@@ -112,168 +84,118 @@
                   },
                   {
                     "id": 23,
-                    "enabled": true,
                     "label": 'giggity.jpg',
-                    "shortcut": [['Control', '2']],
-                    "visible": true
+                    "shortcut": [['Control', '2']]
                   },
                   {
                     "id": 24,
-                    "enabled": true,
                     "label": 'Icon Height.svg',
-                    "shortcut": [['Control', '1']],
-                    "visible": true
+                    "shortcut": [['Control', '1']]
                   }
               ]
             },
             {
               "id": 25,
-              "enabled": true,
-              "label": 'Open Location...',
-              "visible": true
+              "label": 'Open Location...'
             },
             {
               "id": 26,
-              "enabled": true,
               "label": 'Open as Layers...',
-              "shortcut": [['Control', 'Alt', 'o']],
-              "visible": true
+              "shortcut": [['Control', 'Alt', 'o']]
             },
             {
               "id": 27,
-              "enabled": true,
               "label": 'Open...',
-              "shortcut": [['Control', 'o']],
-              "visible": true
+              "shortcut": [['Control', 'o']]
             },
             {
               "id": 28,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Create',
-              "visible": true,
               "submenu": [
                   {
                     "id": 29,
                     "children-display": 'submenu',
-                    "enabled": true,
                     "label": 'Web Page Themes',
-                    "visible": true,
                     "submenu": [
                         {
                           "id": 30,
                           "children-display": 'submenu',
-                          "enabled": true,
                           "label": 'Classic.Gimp.Org',
-                          "visible": true,
                           "submenu": [
                               {
                                 "id": 31,
-                                "enabled": true,
-                                "label": 'Tube Sub-Sub-Button Label...',
-                                "visible": true
+                                "label": 'Tube Sub-Sub-Button Label...'
                               },
                               {
                                 "id": 32,
-                                "enabled": true,
-                                "label": 'Tube Sub-Button Label...',
-                                "visible": true
+                                "label": 'Tube Sub-Button Label...'
                               },
                               {
                                 "id": 33,
-                                "enabled": true,
-                                "label": 'Tube Button Label...',
-                                "visible": true
+                                "label": 'Tube Button Label...'
                               },
                               {
                                 "id": 34,
-                                "enabled": true,
-                                "label": 'Small Header...',
-                                "visible": true
+                                "label": 'Small Header...'
                               },
                               {
                                 "id": 35,
-                                "enabled": true,
-                                "label": 'General Tube Labels...',
-                                "visible": true
+                                "label": 'General Tube Labels...'
                               },
                               {
                                 "id": 36,
-                                "enabled": true,
-                                "label": 'Big Header...',
-                                "visible": true
+                                "label": 'Big Header...'
                               }
                           ]
                         },
                         {
                           "id": 37,
                           "children-display": 'submenu',
-                          "enabled": true,
                           "label": 'Beveled Pattern',
-                          "visible": true,
                           "submenu": [
                               {
                                 "id": 38,
-                                "enabled": true,
-                                "label": 'Hrule...',
-                                "visible": true
+                                "label": 'Hrule...'
                               },
                               {
                                 "id": 39,
-                                "enabled": true,
-                                "label": 'Heading...',
-                                "visible": true
+                                "label": 'Heading...'
                               },
                               {
                                 "id": 40,
-                                "enabled": true,
-                                "label": 'Button...',
-                                "visible": true
+                                "label": 'Button...'
                               },
                               {
                                 "id": 41,
-                                "enabled": true,
-                                "label": 'Bullet...',
-                                "visible": true
+                                "label": 'Bullet...'
                               },
                               {
                                 "id": 42,
-                                "enabled": true,
-                                "label": 'Arrow...',
-                                "visible": true
+                                "label": 'Arrow...'
                               }
                           ]
                         },
                         {
                           "id": 43,
                           "children-display": 'submenu',
-                          "enabled": true,
                           "label": 'Alien Glow',
-                          "visible": true,
                           "submenu": [
                               {
                                 "id": 44,
-                                "enabled": true,
-                                "label": 'Hrule...',
-                                "visible": true
+                                "label": 'Hrule...'
                               },
                               {
                                 "id": 45,
-                                "enabled": true,
-                                "label": 'Button...',
-                                "visible": true
+                                "label": 'Button...'
                               },
                               {
                                 "id": 46,
-                                "enabled": true,
-                                "label": 'Bullet...',
-                                "visible": true
+                                "label": 'Bullet...'
                               },
                               {
                                 "id": 47,
-                                "enabled": true,
-                                "label": 'Arrow...',
-                                "visible": true
+                                "label": 'Arrow...'
                               }
                           ]
                         }
@@ -282,255 +204,173 @@
                   {
                     "id": 48,
                     "children-display": 'submenu',
-                    "enabled": true,
                     "label": 'Patterns',
-                    "visible": true,
                     "submenu": [
                         {
                           "id": 49,
-                          "enabled": true,
-                          "label": 'Truchet...',
-                          "visible": true
+                          "label": 'Truchet...'
                         },
                         {
                           "id": 50,
-                          "enabled": true,
-                          "label": 'Swirly...',
-                          "visible": true
+                          "label": 'Swirly...'
                         },
                         {
                           "id": 51,
-                          "enabled": true,
-                          "label": 'Swirl-Tile...',
-                          "visible": true
+                          "label": 'Swirl-Tile...'
                         },
                         {
                           "id": 52,
-                          "enabled": true,
-                          "label": 'Render Map...',
-                          "visible": true
+                          "label": 'Render Map...'
                         },
                         {
                           "id": 53,
-                          "enabled": true,
-                          "label": 'Land...',
-                          "visible": true
+                          "label": 'Land...'
                         },
                         {
                           "id": 54,
-                          "enabled": true,
-                          "label": 'Flatland...',
-                          "visible": true
+                          "label": 'Flatland...'
                         },
                         {
                           "id": 55,
-                          "enabled": true,
-                          "label": 'Camouflage...',
-                          "visible": true
+                          "label": 'Camouflage...'
                         },
                         {
                           "id": 56,
-                          "enabled": true,
-                          "label": '3D Truchet...',
-                          "visible": true
+                          "label": '3D Truchet...'
                         }
                     ]
                   },
                   {
                     "id": 57,
                     "children-display": 'submenu',
-                    "enabled": true,
                     "label": 'Logos',
-                    "visible": true,
                     "submenu": [
                         {
                           "id": 58,
-                          "enabled": true,
-                          "label": 'Web Title Header...',
-                          "visible": true
+                          "label": 'Web Title Header...'
                         },
                         {
                           "id": 59,
-                          "enabled": true,
-                          "label": 'Textured...',
-                          "visible": true
+                          "label": 'Textured...'
                         },
                         {
                           "id": 60,
-                          "enabled": true,
-                          "label": 'Text Circle...',
-                          "visible": true
+                          "label": 'Text Circle...'
                         },
                         {
                           "id": 61,
-                          "enabled": true,
-                          "label": 'Starscape...',
-                          "visible": true
+                          "label": 'Starscape...'
                         },
                         {
                           "id": 62,
-                          "enabled": true,
-                          "label": 'Speed Text...',
-                          "visible": true
+                          "label": 'Speed Text...'
                         },
                         {
                           "id": 63,
-                          "enabled": true,
-                          "label": 'SOTA Chrome...',
-                          "visible": true
+                          "label": 'SOTA Chrome...'
                         },
                         {
                           "id": 64,
-                          "enabled": true,
-                          "label": 'Particle Trace...',
-                          "visible": true
+                          "label": 'Particle Trace...'
                         },
                         {
                           "id": 65,
-                          "enabled": true,
-                          "label": 'Newsprint Text...',
-                          "visible": true
+                          "label": 'Newsprint Text...'
                         },
                         {
                           "id": 66,
-                          "enabled": true,
-                          "label": 'Neon...',
-                          "visible": true
+                          "label": 'Neon...'
                         },
                         {
                           "id": 67,
-                          "enabled": true,
-                          "label": 'Imigre-26...',
-                          "visible": true
+                          "label": 'Imigre-26...'
                         },
                         {
                           "id": 68,
-                          "enabled": true,
-                          "label": 'Gradient Bevel...',
-                          "visible": true
+                          "label": 'Gradient Bevel...'
                         },
                         {
                           "id": 69,
-                          "enabled": true,
-                          "label": 'Glowing Hot...',
-                          "visible": true
+                          "label": 'Glowing Hot...'
                         },
                         {
                           "id": 70,
-                          "enabled": true,
-                          "label": 'Glossy...',
-                          "visible": true
+                          "label": 'Glossy...'
                         },
                         {
                           "id": 71,
-                          "enabled": true,
-                          "label": 'Frosty...',
-                          "visible": true
+                          "label": 'Frosty...'
                         },
                         {
                           "id": 72,
-                          "enabled": true,
-                          "label": 'Crystal...',
-                          "visible": true
+                          "label": 'Crystal...'
                         },
                         {
                           "id": 73,
-                          "enabled": true,
-                          "label": 'Cool Metal...',
-                          "visible": true
+                          "label": 'Cool Metal...'
                         },
                         {
                           "id": 74,
-                          "enabled": true,
-                          "label": 'Comic Book...',
-                          "visible": true
+                          "label": 'Comic Book...'
                         },
                         {
                           "id": 75,
-                          "enabled": true,
-                          "label": 'Chrome...',
-                          "visible": true
+                          "label": 'Chrome...'
                         },
                         {
                           "id": 76,
-                          "enabled": true,
-                          "label": 'Chip Away...',
-                          "visible": true
+                          "label": 'Chip Away...'
                         },
                         {
                           "id": 77,
-                          "enabled": true,
-                          "label": 'Chalk...',
-                          "visible": true
+                          "label": 'Chalk...'
                         },
                         {
                           "id": 78,
-                          "enabled": true,
-                          "label": 'Carved...',
-                          "visible": true
+                          "label": 'Carved...'
                         },
                         {
                           "id": 79,
-                          "enabled": true,
-                          "label": 'Bovination...',
-                          "visible": true
+                          "label": 'Bovination...'
                         },
                         {
                           "id": 80,
-                          "enabled": true,
-                          "label": 'Blended...',
-                          "visible": true
+                          "label": 'Blended...'
                         },
                         {
                           "id": 81,
-                          "enabled": true,
-                          "label": 'Basic I...',
-                          "visible": true
+                          "label": 'Basic I...'
                         },
                         {
                           "id": 82,
-                          "enabled": true,
-                          "label": 'Basic II...',
-                          "visible": true
+                          "label": 'Basic II...'
                         },
                         {
                           "id": 83,
-                          "enabled": true,
-                          "label": 'Alien Neon...',
-                          "visible": true
+                          "label": 'Alien Neon...'
                         },
                         {
                           "id": 84,
-                          "enabled": true,
-                          "label": 'Alien Glow...',
-                          "visible": true
+                          "label": 'Alien Glow...'
                         },
                         {
                           "id": 85,
-                          "enabled": true,
-                          "label": '3D Outline...',
-                          "visible": true
+                          "label": '3D Outline...'
                         }
                     ]
                   },
                   {
                     "id": 86,
                     "children-display": 'submenu',
-                    "enabled": true,
                     "label": 'Buttons',
-                    "visible": true,
                     "submenu": [
                         {
                           "id": 87,
-                          "enabled": true,
-                          "label": 'Simple Beveled Button...',
-                          "visible": true
+                          "label": 'Simple Beveled Button...'
                         },
                         {
                           "id": 88,
-                          "enabled": true,
-                          "label": 'Round Button...',
-                          "visible": true
+                          "label": 'Round Button...'
                         }
                     ]
                   },
@@ -541,72 +381,53 @@
                   {
                     "id": 90,
                     "children-display": 'submenu',
-                    "enabled": true,
                     "label": 'xscanimage',
-                    "visible": true,
                     "submenu": [
                         {
                           "id": 91,
                           "enabled": false,
-                          "label": 'Device dialog...',
-                          "visible": true
+                          "label": 'Device dialog...'
                         }
                     ]
                   },
                   {
                     "id": 92,
-                    "enabled": true,
-                    "label": 'Screenshot...',
-                    "visible": true
+                    "label": 'Screenshot...'
                   },
                   {
                     "id": 93,
-                    "enabled": true,
                     "label": 'From Clipboard',
-                    "shortcut": [['Control', 'Shift', 'v']],
-                    "visible": true
+                    "shortcut": [['Control', 'Shift', 'v']]
                   }
               ]
             },
             {
               "id": 94,
-              "enabled": true,
               "label": 'New...',
-              "shortcut": [['Control', 'n']],
-              "visible": true
+              "shortcut": [['Control', 'n']]
             }
         ]
       },
       {
         "id": 95,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Edit',
-        "visible": true,
         "submenu": [
             {
               "id": 96,
-              "enabled": true,
-              "label": 'Units',
-              "visible": true
+              "label": 'Units'
             },
             {
               "id": 97,
-              "enabled": true,
-              "label": 'Modules',
-              "visible": true
+              "label": 'Modules'
             },
             {
               "id": 98,
-              "enabled": true,
-              "label": 'Keyboard Shortcuts',
-              "visible": true
+              "label": 'Keyboard Shortcuts'
             },
             {
               "id": 99,
-              "enabled": true,
-              "label": 'Preferences',
-              "visible": true
+              "label": 'Preferences'
             },
             {
               "id": 100,
@@ -615,42 +436,32 @@
             {
               "id": 101,
               "enabled": false,
-              "label": 'Stroke Path...',
-              "visible": true
+              "label": 'Stroke Path...'
             },
             {
               "id": 102,
               "enabled": false,
-              "label": 'Stroke Selection...',
-              "visible": true
+              "label": 'Stroke Selection...'
             },
             {
               "id": 103,
-              "enabled": true,
               "label": 'Fill with Pattern',
-              "shortcut": [['Control', 'semicolon']],
-              "visible": true
+              "shortcut": [['Control', 'semicolon']]
             },
             {
               "id": 104,
-              "enabled": true,
               "label": 'Fill with BG Color',
-              "shortcut": [['Control', 'period']],
-              "visible": true
+              "shortcut": [['Control', 'period']]
             },
             {
               "id": 105,
-              "enabled": true,
               "label": 'Fill with FG Color',
-              "shortcut": [['Control', 'comma']],
-              "visible": true
+              "shortcut": [['Control', 'comma']]
             },
             {
               "id": 106,
-              "enabled": true,
               "label": 'Clear',
-              "shortcut": [['Delete']],
-              "visible": true
+              "shortcut": [['Delete']]
             },
             {
               "id": 107,
@@ -659,103 +470,73 @@
             {
               "id": 108,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Buffer',
-              "visible": true,
               "submenu": [
                   {
                     "id": 109,
-                    "enabled": true,
-                    "label": 'Paste Named...',
-                    "visible": true
+                    "label": 'Paste Named...'
                   },
                   {
                     "id": 110,
-                    "enabled": true,
-                    "label": 'Copy Visible Named...',
-                    "visible": true
+                    "label": 'Copy Visible Named...'
                   },
                   {
                     "id": 111,
-                    "enabled": true,
-                    "label": 'Copy Named...',
-                    "visible": true
+                    "label": 'Copy Named...'
                   },
                   {
                     "id": 112,
-                    "enabled": true,
-                    "label": 'Cut Named...',
-                    "visible": true
+                    "label": 'Cut Named...'
                   }
               ]
             },
             {
               "id": 113,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Paste as',
-              "visible": true,
               "submenu": [
                   {
                     "id": 114,
-                    "enabled": true,
-                    "label": 'New Pattern...',
-                    "visible": true
+                    "label": 'New Pattern...'
                   },
                   {
                     "id": 115,
-                    "enabled": true,
-                    "label": 'New Brush...',
-                    "visible": true
+                    "label": 'New Brush...'
                   },
                   {
                     "id": 116,
-                    "enabled": true,
-                    "label": 'New Layer',
-                    "visible": true
+                    "label": 'New Layer'
                   },
                   {
                     "id": 117,
-                    "enabled": true,
                     "label": 'New Image',
-                    "shortcut": [['Control', 'Shift', 'v']],
-                    "visible": true
+                    "shortcut": [['Control', 'Shift', 'v']]
                   }
               ]
             },
             {
               "id": 118,
-              "enabled": true,
-              "label": 'Paste Into',
-              "visible": true
+              "label": 'Paste Into'
             },
             {
               "id": 119,
-              "enabled": true,
               "label": 'Paste',
-              "shortcut": [['Control', 'v']],
-              "visible": true
+              "shortcut": [['Control', 'v']]
             },
             {
               "id": 120,
-              "enabled": true,
               "label": 'Copy Visible',
-              "shortcut": [['Control', 'Shift', 'c']],
-              "visible": true
+              "shortcut": [['Control', 'Shift', 'c']]
             },
             {
               "id": 121,
-              "enabled": true,
               "label": 'Copy',
-              "shortcut": [['Control', 'c']],
-              "visible": true
+              "shortcut": [['Control', 'c']]
             },
             {
               "id": 122,
-              "enabled": true,
               "label": 'Cut',
-              "shortcut": [['Control', 'x']],
-              "visible": true
+              "shortcut": [['Control', 'x']]
             },
             {
               "id": 123,
@@ -763,59 +544,47 @@
             },
             {
               "id": 124,
-              "enabled": true,
-              "label": 'Undo History',
-              "visible": true
+              "label": 'Undo History'
             },
             {
               "id": 3,
               "enabled": false,
-              "label": '_Fade...',
-              "visible": true
+              "label": '_Fade...'
             },
             {
               "id": 2,
               "enabled": false,
               "label": '_Redo',
-              "shortcut": [['Control', 'y']],
-              "visible": true
+              "shortcut": [['Control', 'y']]
             },
             {
               "id": 1,
               "enabled": false,
               "label": '_Undo',
-              "shortcut": [['Control', 'z']],
-              "visible": true
+              "shortcut": [['Control', 'z']]
             }
         ]
       },
       {
         "id": 125,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Select',
-        "visible": true,
         "submenu": [
             {
               "id": 126,
               "enabled": false,
-              "label": 'To Path',
-              "visible": true
+              "label": 'To Path'
             },
             {
               "id": 127,
-              "enabled": true,
-              "label": 'Save to Channel',
-              "visible": true
+              "label": 'Save to Channel'
             },
             {
               "id": 128,
-              "enabled": true,
               "label": 'Toggle Quick Mask',
               "shortcut": [['Shift', 'q']],
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 129,
@@ -823,39 +592,32 @@
             },
             {
               "id": 130,
-              "enabled": true,
-              "label": 'Distort...',
-              "visible": true
+              "label": 'Distort...'
             },
             {
               "id": 131,
               "enabled": false,
-              "label": 'Border...',
-              "visible": true
+              "label": 'Border...'
             },
             {
               "id": 132,
               "enabled": false,
-              "label": 'Grow...',
-              "visible": true
+              "label": 'Grow...'
             },
             {
               "id": 133,
               "enabled": false,
-              "label": 'Shrink...',
-              "visible": true
+              "label": 'Shrink...'
             },
             {
               "id": 134,
               "enabled": false,
-              "label": 'Sharpen',
-              "visible": true
+              "label": 'Sharpen'
             },
             {
               "id": 135,
               "enabled": false,
-              "label": 'Feather...',
-              "visible": true
+              "label": 'Feather...'
             },
             {
               "id": 136,
@@ -863,106 +625,81 @@
             },
             {
               "id": 137,
-              "enabled": true,
-              "label": 'Selection Editor',
-              "visible": true
+              "label": 'Selection Editor'
             },
             {
               "id": 138,
               "enabled": false,
               "label": 'From Path',
-              "shortcut": [['Shift', 'v']],
-              "visible": true
+              "shortcut": [['Shift', 'v']]
             },
             {
               "id": 139,
-              "enabled": true,
               "label": 'By Color',
-              "shortcut": [['Shift', 'o']],
-              "visible": true
+              "shortcut": [['Shift', 'o']]
             },
             {
               "id": 140,
               "enabled": false,
               "label": 'Float',
-              "shortcut": [['Control', 'Shift', 'l']],
-              "visible": true
+              "shortcut": [['Control', 'Shift', 'l']]
             },
             {
               "id": 141,
-              "enabled": true,
               "label": 'Invert',
-              "shortcut": [['Control', 'i']],
-              "visible": true
+              "shortcut": [['Control', 'i']]
             },
             {
               "id": 142,
               "enabled": false,
               "label": 'None',
-              "shortcut": [['Control', 'Shift', 'a']],
-              "visible": true
+              "shortcut": [['Control', 'Shift', 'a']]
             },
             {
               "id": 143,
-              "enabled": true,
               "label": 'All',
-              "shortcut": [['Control', 'a']],
-              "visible": true
+              "shortcut": [['Control', 'a']]
             }
         ]
       },
       {
         "id": 144,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'View',
-        "visible": true,
         "submenu": [
             {
               "id": 145,
-              "enabled": true,
               "label": 'Show Statusbar',
               "toggle-state": 1,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 146,
-              "enabled": true,
               "label": 'Show Scrollbars',
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 147,
-              "enabled": true,
               "label": 'Show Rulers',
               "shortcut": [['Control', 'Shift', 'r']],
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 148,
-              "enabled": true,
               "label": 'Show Menubar',
               "toggle-state": 1,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 149,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Padding Color',
-              "visible": true,
               "submenu": [
                   {
                     "id": 150,
-                    "enabled": true,
-                    "label": 'As in Preferences',
-                    "visible": true
+                    "label": 'As in Preferences'
                   },
                   {
                     "id": 151,
@@ -970,27 +707,19 @@
                   },
                   {
                     "id": 152,
-                    "enabled": true,
-                    "label": 'Select Custom Color...',
-                    "visible": true
+                    "label": 'Select Custom Color...'
                   },
                   {
                     "id": 153,
-                    "enabled": true,
-                    "label": 'Dark Check Color',
-                    "visible": true
+                    "label": 'Dark Check Color'
                   },
                   {
                     "id": 154,
-                    "enabled": true,
-                    "label": 'Light Check Color',
-                    "visible": true
+                    "label": 'Light Check Color'
                   },
                   {
                     "id": 155,
-                    "enabled": true,
-                    "label": 'From Theme',
-                    "visible": true
+                    "label": 'From Theme'
                   }
               ]
             },
@@ -1000,35 +729,27 @@
             },
             {
               "id": 157,
-              "enabled": true,
               "label": 'Snap to Active Path',
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 158,
-              "enabled": true,
               "label": 'Snap to Canvas Edges',
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 159,
-              "enabled": true,
               "label": 'Snap to Grid',
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 160,
-              "enabled": true,
               "label": 'Snap to Guides',
               "toggle-state": 1,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 161,
@@ -1036,45 +757,35 @@
             },
             {
               "id": 162,
-              "enabled": true,
               "label": 'Show Sample Points',
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 163,
-              "enabled": true,
               "label": 'Show Grid',
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 164,
-              "enabled": true,
               "label": 'Show Guides',
               "shortcut": [['Control', 'Shift', 't']],
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 165,
-              "enabled": true,
               "label": 'Show Layer Boundary',
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 166,
-              "enabled": true,
               "label": 'Show Selection',
               "shortcut": [['Control', 't']],
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 167,
@@ -1082,15 +793,11 @@
             },
             {
               "id": 168,
-              "enabled": true,
-              "label": 'Display Filters...',
-              "visible": true
+              "label": 'Display Filters...'
             },
             {
               "id": 169,
-              "enabled": true,
-              "label": 'Navigation Window',
-              "visible": true
+              "label": 'Navigation Window'
             },
             {
               "id": 170,
@@ -1099,27 +806,21 @@
             {
               "id": 171,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Fullscreen',
               "shortcut": [['F11']],
               "toggle-state": 0,
               "toggle-type": 'checkmark',
-              "visible": true,
               "submenu": [
                   {
                     "id": 172,
-                    "enabled": true,
-                    "label": 'Open Display...',
-                    "visible": true
+                    "label": 'Open Display...'
                   }
               ]
             },
             {
               "id": 173,
-              "enabled": true,
               "label": 'Shrink Wrap',
-              "shortcut": [['Control', 'e']],
-              "visible": true
+              "shortcut": [['Control', 'e']]
             },
             {
               "id": 174,
@@ -1128,17 +829,13 @@
             {
               "id": 175,
               "children-display": 'submenu',
-              "enabled": true,
               "label": '_Zoom (67%)',
-              "visible": true,
               "submenu": [
                   {
                     "id": 176,
-                    "enabled": true,
                     "label": 'Othe_r (67%)...',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 177,
@@ -1146,76 +843,58 @@
                   },
                   {
                     "id": 178,
-                    "enabled": true,
                     "label": '1:16  (6.25%)',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 179,
-                    "enabled": true,
                     "label": '1:8  (12.5%)',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 180,
-                    "enabled": true,
                     "label": '1:4  (25%)',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 181,
-                    "enabled": true,
                     "label": '1:2  (50%)',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 182,
-                    "enabled": true,
                     "label": '1:1  (100%)',
                     "shortcut": [['1']],
                     "toggle-state": 1,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 183,
-                    "enabled": true,
                     "label": '2:1  (200%)',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 184,
-                    "enabled": true,
                     "label": '4:1  (400%)',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 185,
-                    "enabled": true,
                     "label": '8:1  (800%)',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 186,
-                    "enabled": true,
                     "label": '16:1  (1600%)',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 187,
@@ -1223,106 +902,76 @@
                   },
                   {
                     "id": 188,
-                    "enabled": true,
-                    "label": 'Fill Window',
-                    "visible": true
+                    "label": 'Fill Window'
                   },
                   {
                     "id": 189,
-                    "enabled": true,
                     "label": 'Fit Image in Window',
-                    "shortcut": [['Control', 'Shift', 'e']],
-                    "visible": true
+                    "shortcut": [['Control', 'Shift', 'e']]
                   },
                   {
                     "id": 190,
-                    "enabled": true,
                     "label": 'Zoom In',
-                    "shortcut": [['plus']],
-                    "visible": true
+                    "shortcut": [['plus']]
                   },
                   {
                     "id": 191,
-                    "enabled": true,
                     "label": 'Zoom Out',
-                    "shortcut": [['minus']],
-                    "visible": true
+                    "shortcut": [['minus']]
                   },
                   {
                     "id": 4,
-                    "enabled": true,
                     "label": 'Re_vert Zoom (67%)',
-                    "shortcut": [['grave']],
-                    "visible": true
+                    "shortcut": [['grave']]
                   }
               ]
             },
             {
               "id": 192,
-              "enabled": true,
               "label": 'Dot for Dot',
               "toggle-state": 1,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 193,
-              "enabled": true,
-              "label": 'New View',
-              "visible": true
+              "label": 'New View'
             }
         ]
       },
       {
         "id": 194,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Image',
-        "visible": true,
         "submenu": [
             {
               "id": 195,
-              "enabled": true,
               "label": 'Image Properties',
-              "shortcut": [['Alt', 'Return']],
-              "visible": true
+              "shortcut": [['Alt', 'Return']]
             },
             {
               "id": 196,
-              "enabled": true,
-              "label": 'Configure Grid...',
-              "visible": true
+              "label": 'Configure Grid...'
             },
             {
               "id": 197,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Guides',
-              "visible": true,
               "submenu": [
                   {
                     "id": 198,
-                    "enabled": true,
-                    "label": 'Remove all Guides',
-                    "visible": true
+                    "label": 'Remove all Guides'
                   },
                   {
                     "id": 199,
-                    "enabled": true,
-                    "label": 'New Guides from Selection',
-                    "visible": true
+                    "label": 'New Guides from Selection'
                   },
                   {
                     "id": 200,
-                    "enabled": true,
-                    "label": 'New Guide...',
-                    "visible": true
+                    "label": 'New Guide...'
                   },
                   {
                     "id": 201,
-                    "enabled": true,
-                    "label": 'New Guide (by Percent)...',
-                    "visible": true
+                    "label": 'New Guide (by Percent)...'
                   }
               ]
             },
@@ -1332,22 +981,16 @@
             },
             {
               "id": 203,
-              "enabled": true,
-              "label": 'Align Visible Layers...',
-              "visible": true
+              "label": 'Align Visible Layers...'
             },
             {
               "id": 204,
-              "enabled": true,
-              "label": 'Flatten Image',
-              "visible": true
+              "label": 'Flatten Image'
             },
             {
               "id": 205,
-              "enabled": true,
               "label": 'Merge Visible Layers...',
-              "shortcut": [['Control', 'm']],
-              "visible": true
+              "shortcut": [['Control', 'm']]
             },
             {
               "id": 206,
@@ -1355,21 +998,16 @@
             },
             {
               "id": 207,
-              "enabled": true,
-              "label": 'Zealous Crop',
-              "visible": true
+              "label": 'Zealous Crop'
             },
             {
               "id": 208,
-              "enabled": true,
-              "label": 'Autocrop Image',
-              "visible": true
+              "label": 'Autocrop Image'
             },
             {
               "id": 209,
               "enabled": false,
-              "label": 'Crop to Selection',
-              "visible": true
+              "label": 'Crop to Selection'
             },
             {
               "id": 210,
@@ -1377,33 +1015,24 @@
             },
             {
               "id": 211,
-              "enabled": true,
-              "label": 'Scale Image...',
-              "visible": true
+              "label": 'Scale Image...'
             },
             {
               "id": 212,
-              "enabled": true,
-              "label": 'Print Size...',
-              "visible": true
+              "label": 'Print Size...'
             },
             {
               "id": 213,
               "enabled": false,
-              "label": 'Fit Canvas to Selection',
-              "visible": true
+              "label": 'Fit Canvas to Selection'
             },
             {
               "id": 214,
-              "enabled": true,
-              "label": 'Fit Canvas to Layers',
-              "visible": true
+              "label": 'Fit Canvas to Layers'
             },
             {
               "id": 215,
-              "enabled": true,
-              "label": 'Canvas Size...',
-              "visible": true
+              "label": 'Canvas Size...'
             },
             {
               "id": 216,
@@ -1412,15 +1041,11 @@
             {
               "id": 217,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Transform',
-              "visible": true,
               "submenu": [
                   {
                     "id": 218,
-                    "enabled": true,
-                    "label": 'Guillotine',
-                    "visible": true
+                    "label": 'Guillotine'
                   },
                   {
                     "id": 219,
@@ -1428,21 +1053,15 @@
                   },
                   {
                     "id": 220,
-                    "enabled": true,
-                    "label": 'Rotate 180?',
-                    "visible": true
+                    "label": 'Rotate 180?'
                   },
                   {
                     "id": 221,
-                    "enabled": true,
-                    "label": 'Rotate 90? counter-clockwise',
-                    "visible": true
+                    "label": 'Rotate 90? counter-clockwise'
                   },
                   {
                     "id": 222,
-                    "enabled": true,
-                    "label": 'Rotate 90? clockwise',
-                    "visible": true
+                    "label": 'Rotate 90? clockwise'
                   },
                   {
                     "id": 223,
@@ -1450,36 +1069,26 @@
                   },
                   {
                     "id": 224,
-                    "enabled": true,
-                    "label": 'Flip Vertically',
-                    "visible": true
+                    "label": 'Flip Vertically'
                   },
                   {
                     "id": 225,
-                    "enabled": true,
-                    "label": 'Flip Horizontally',
-                    "visible": true
+                    "label": 'Flip Horizontally'
                   }
               ]
             },
             {
               "id": 226,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Mode',
-              "visible": true,
               "submenu": [
                   {
                     "id": 227,
-                    "enabled": true,
-                    "label": 'Convert to Color Profile...',
-                    "visible": true
+                    "label": 'Convert to Color Profile...'
                   },
                   {
                     "id": 228,
-                    "enabled": true,
-                    "label": 'Assign Color Profile...',
-                    "visible": true
+                    "label": 'Assign Color Profile...'
                   },
                   {
                     "id": 229,
@@ -1487,75 +1096,56 @@
                   },
                   {
                     "id": 230,
-                    "enabled": true,
                     "label": 'Indexed...',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 231,
-                    "enabled": true,
                     "label": 'Grayscale',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 232,
-                    "enabled": true,
                     "label": 'RGB',
                     "toggle-state": 1,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   }
               ]
             },
             {
               "id": 233,
-              "enabled": true,
               "label": 'Duplicate',
-              "shortcut": [['Control', 'd']],
-              "visible": true
+              "shortcut": [['Control', 'd']]
             }
         ]
       },
       {
         "id": 234,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Layer',
-        "visible": true,
         "submenu": [
             {
               "id": 235,
-              "enabled": true,
-              "label": 'Autocrop Layer',
-              "visible": true
+              "label": 'Autocrop Layer'
             },
             {
               "id": 236,
               "enabled": false,
-              "label": 'Crop to Selection',
-              "visible": true
+              "label": 'Crop to Selection'
             },
             {
               "id": 237,
-              "enabled": true,
-              "label": 'Scale Layer...',
-              "visible": true
+              "label": 'Scale Layer...'
             },
             {
               "id": 238,
-              "enabled": true,
-              "label": 'Layer to Image Size',
-              "visible": true
+              "label": 'Layer to Image Size'
             },
             {
               "id": 239,
-              "enabled": true,
-              "label": 'Layer Boundary Size...',
-              "visible": true
+              "label": 'Layer Boundary Size...'
             },
             {
               "id": 240,
@@ -1564,16 +1154,12 @@
             {
               "id": 241,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Transform',
-              "visible": true,
               "submenu": [
                   {
                     "id": 242,
-                    "enabled": true,
                     "label": 'Offset...',
-                    "shortcut": [['Control', 'Shift', 'o']],
-                    "visible": true
+                    "shortcut": [['Control', 'Shift', 'o']]
                   },
                   {
                     "id": 243,
@@ -1581,27 +1167,19 @@
                   },
                   {
                     "id": 244,
-                    "enabled": true,
-                    "label": 'Arbitrary Rotation...',
-                    "visible": true
+                    "label": 'Arbitrary Rotation...'
                   },
                   {
                     "id": 245,
-                    "enabled": true,
-                    "label": 'Rotate 180?',
-                    "visible": true
+                    "label": 'Rotate 180?'
                   },
                   {
                     "id": 246,
-                    "enabled": true,
-                    "label": 'Rotate 90? counter-clockwise',
-                    "visible": true
+                    "label": 'Rotate 90? counter-clockwise'
                   },
                   {
                     "id": 247,
-                    "enabled": true,
-                    "label": 'Rotate 90? clockwise',
-                    "visible": true
+                    "label": 'Rotate 90? clockwise'
                   },
                   {
                     "id": 248,
@@ -1609,48 +1187,34 @@
                   },
                   {
                     "id": 249,
-                    "enabled": true,
-                    "label": 'Flip Vertically',
-                    "visible": true
+                    "label": 'Flip Vertically'
                   },
                   {
                     "id": 250,
-                    "enabled": true,
-                    "label": 'Flip Horizontally',
-                    "visible": true
+                    "label": 'Flip Horizontally'
                   }
               ]
             },
             {
               "id": 251,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Transparency',
-              "visible": true,
               "submenu": [
                   {
                     "id": 252,
-                    "enabled": true,
-                    "label": 'Intersect with Selection',
-                    "visible": true
+                    "label": 'Intersect with Selection'
                   },
                   {
                     "id": 253,
-                    "enabled": true,
-                    "label": 'Subtract from Selection',
-                    "visible": true
+                    "label": 'Subtract from Selection'
                   },
                   {
                     "id": 254,
-                    "enabled": true,
-                    "label": 'Add to Selection',
-                    "visible": true
+                    "label": 'Add to Selection'
                   },
                   {
                     "id": 255,
-                    "enabled": true,
-                    "label": 'Alpha to Selection',
-                    "visible": true
+                    "label": 'Alpha to Selection'
                   },
                   {
                     "id": 256,
@@ -1658,66 +1222,51 @@
                   },
                   {
                     "id": 257,
-                    "enabled": true,
-                    "label": 'Threshold Alpha...',
-                    "visible": true
+                    "label": 'Threshold Alpha...'
                   },
                   {
                     "id": 258,
-                    "enabled": true,
-                    "label": 'Semi-Flatten',
-                    "visible": true
+                    "label": 'Semi-Flatten'
                   },
                   {
                     "id": 259,
-                    "enabled": true,
-                    "label": 'Color to Alpha...',
-                    "visible": true
+                    "label": 'Color to Alpha...'
                   },
                   {
                     "id": 260,
-                    "enabled": true,
-                    "label": 'Remove Alpha Channel',
-                    "visible": true
+                    "label": 'Remove Alpha Channel'
                   },
                   {
                     "id": 261,
                     "enabled": false,
-                    "label": 'Add Alpha Channel',
-                    "visible": true
+                    "label": 'Add Alpha Channel'
                   }
               ]
             },
             {
               "id": 262,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Mask',
-              "visible": true,
               "submenu": [
                   {
                     "id": 263,
                     "enabled": false,
-                    "label": 'Intersect with Selection',
-                    "visible": true
+                    "label": 'Intersect with Selection'
                   },
                   {
                     "id": 264,
                     "enabled": false,
-                    "label": 'Subtract from Selection',
-                    "visible": true
+                    "label": 'Subtract from Selection'
                   },
                   {
                     "id": 265,
                     "enabled": false,
-                    "label": 'Add to Selection',
-                    "visible": true
+                    "label": 'Add to Selection'
                   },
                   {
                     "id": 266,
                     "enabled": false,
-                    "label": 'Mask to Selection',
-                    "visible": true
+                    "label": 'Mask to Selection'
                   },
                   {
                     "id": 267,
@@ -1728,24 +1277,21 @@
                     "enabled": false,
                     "label": 'Disable Layer Mask',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 269,
                     "enabled": false,
                     "label": 'Edit Layer Mask',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 270,
                     "enabled": false,
                     "label": 'Show Layer Mask',
                     "toggle-state": 0,
-                    "toggle-type": 'checkmark',
-                    "visible": true
+                    "toggle-type": 'checkmark'
                   },
                   {
                     "id": 271,
@@ -1754,35 +1300,27 @@
                   {
                     "id": 272,
                     "enabled": false,
-                    "label": 'Delete Layer Mask',
-                    "visible": true
+                    "label": 'Delete Layer Mask'
                   },
                   {
                     "id": 273,
                     "enabled": false,
-                    "label": 'Apply Layer Mask',
-                    "visible": true
+                    "label": 'Apply Layer Mask'
                   },
                   {
                     "id": 274,
-                    "enabled": true,
-                    "label": 'Add Layer Mask...',
-                    "visible": true
+                    "label": 'Add Layer Mask...'
                   }
               ]
             },
             {
               "id": 275,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Stack',
-              "visible": true,
               "submenu": [
                   {
                     "id": 276,
-                    "enabled": true,
-                    "label": 'Reverse Layer Order',
-                    "visible": true
+                    "label": 'Reverse Layer Order'
                   },
                   {
                     "id": 277,
@@ -1791,26 +1329,22 @@
                   {
                     "id": 278,
                     "enabled": false,
-                    "label": 'Layer to Bottom',
-                    "visible": true
+                    "label": 'Layer to Bottom'
                   },
                   {
                     "id": 279,
                     "enabled": false,
-                    "label": 'Layer to Top',
-                    "visible": true
+                    "label": 'Layer to Top'
                   },
                   {
                     "id": 280,
                     "enabled": false,
-                    "label": 'Lower Layer',
-                    "visible": true
+                    "label": 'Lower Layer'
                   },
                   {
                     "id": 281,
                     "enabled": false,
-                    "label": 'Raise Layer',
-                    "visible": true
+                    "label": 'Raise Layer'
                   },
                   {
                     "id": 282,
@@ -1820,29 +1354,25 @@
                     "id": 283,
                     "enabled": false,
                     "label": 'Select Bottom Layer',
-                    "shortcut": [['End']],
-                    "visible": true
+                    "shortcut": [['End']]
                   },
                   {
                     "id": 284,
                     "enabled": false,
                     "label": 'Select Top Layer',
-                    "shortcut": [['Home']],
-                    "visible": true
+                    "shortcut": [['Home']]
                   },
                   {
                     "id": 285,
                     "enabled": false,
                     "label": 'Select Next Layer',
-                    "shortcut": [['Page_Down']],
-                    "visible": true
+                    "shortcut": [['Page_Down']]
                   },
                   {
                     "id": 286,
                     "enabled": false,
                     "label": 'Select Previous Layer',
-                    "shortcut": [['Page_Up']],
-                    "visible": true
+                    "shortcut": [['Page_Up']]
                   }
               ]
             },
@@ -1854,94 +1384,70 @@
                   {
                     "id": 288,
                     "enabled": false,
-                    "label": 'Empty',
-                    "visible": true
+                    "label": 'Empty'
                   }
               ]
             },
             {
               "id": 289,
-              "enabled": true,
-              "label": 'Delete Layer',
-              "visible": true
+              "label": 'Delete Layer'
             },
             {
               "id": 290,
               "enabled": false,
-              "label": 'Merge Down',
-              "visible": true
+              "label": 'Merge Down'
             },
             {
               "id": 291,
               "enabled": false,
               "label": 'Anchor Layer',
-              "shortcut": [['Control', 'h']],
-              "visible": true
+              "shortcut": [['Control', 'h']]
             },
             {
               "id": 292,
-              "enabled": true,
               "label": 'Duplicate Layer',
-              "shortcut": [['Control', 'Shift', 'd']],
-              "visible": true
+              "shortcut": [['Control', 'Shift', 'd']]
             },
             {
               "id": 293,
-              "enabled": true,
-              "label": 'New from Visible',
-              "visible": true
+              "label": 'New from Visible'
             },
             {
               "id": 294,
-              "enabled": true,
               "label": 'New Layer...',
-              "shortcut": [['Control', 'Shift', 'n']],
-              "visible": true
+              "shortcut": [['Control', 'Shift', 'n']]
             }
         ]
       },
       {
         "id": 295,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Colors',
-        "visible": true,
         "submenu": [
             {
               "id": 296,
-              "enabled": true,
-              "label": 'Retinex...',
-              "visible": true
+              "label": 'Retinex...'
             },
             {
               "id": 297,
-              "enabled": true,
-              "label": 'Maximum RGB...',
-              "visible": true
+              "label": 'Maximum RGB...'
             },
             {
               "id": 298,
               "enabled": false,
-              "label": 'Hot...',
-              "visible": true
+              "label": 'Hot...'
             },
             {
               "id": 299,
-              "enabled": true,
-              "label": 'Filter Pack...',
-              "visible": true
+              "label": 'Filter Pack...'
             },
             {
               "id": 300,
-              "enabled": true,
-              "label": 'Color to Alpha...',
-              "visible": true
+              "label": 'Color to Alpha...'
             },
             {
               "id": 301,
-              "enabled": true,
-              "label": 'Colorify...',
-              "visible": true
+              "label": 'Colorify...'
             },
             {
               "id": 302,
@@ -1950,78 +1456,54 @@
             {
               "id": 303,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Info',
-              "visible": true,
               "submenu": [
                   {
                     "id": 304,
-                    "enabled": true,
-                    "label": 'Smooth Palette...',
-                    "visible": true
+                    "label": 'Smooth Palette...'
                   },
                   {
                     "id": 305,
-                    "enabled": true,
-                    "label": 'Colorcube Analysis...',
-                    "visible": true
+                    "label": 'Colorcube Analysis...'
                   },
                   {
                     "id": 306,
-                    "enabled": true,
-                    "label": 'Border Average...',
-                    "visible": true
+                    "label": 'Border Average...'
                   },
                   {
                     "id": 307,
-                    "enabled": true,
-                    "label": 'Histogram',
-                    "visible": true
+                    "label": 'Histogram'
                   }
               ]
             },
             {
               "id": 308,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Map',
-              "visible": true,
               "submenu": [
                   {
                     "id": 309,
-                    "enabled": true,
-                    "label": 'Sample Colorize...',
-                    "visible": true
+                    "label": 'Sample Colorize...'
                   },
                   {
                     "id": 310,
-                    "enabled": true,
-                    "label": 'Rotate Colors...',
-                    "visible": true
+                    "label": 'Rotate Colors...'
                   },
                   {
                     "id": 311,
-                    "enabled": true,
-                    "label": 'Palette Map',
-                    "visible": true
+                    "label": 'Palette Map'
                   },
                   {
                     "id": 312,
-                    "enabled": true,
-                    "label": 'Gradient Map',
-                    "visible": true
+                    "label": 'Gradient Map'
                   },
                   {
                     "id": 313,
-                    "enabled": true,
-                    "label": 'Color Exchange...',
-                    "visible": true
+                    "label": 'Color Exchange...'
                   },
                   {
                     "id": 314,
-                    "enabled": true,
-                    "label": 'Alien Map...',
-                    "visible": true
+                    "label": 'Alien Map...'
                   },
                   {
                     "id": 315,
@@ -2030,92 +1512,68 @@
                   {
                     "id": 316,
                     "enabled": false,
-                    "label": 'Set Colormap...',
-                    "visible": true
+                    "label": 'Set Colormap...'
                   },
                   {
                     "id": 317,
                     "enabled": false,
-                    "label": 'Rearrange Colormap...',
-                    "visible": true
+                    "label": 'Rearrange Colormap...'
                   }
               ]
             },
             {
               "id": 318,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Components',
-              "visible": true,
               "submenu": [
                   {
                     "id": 319,
                     "enabled": false,
-                    "label": 'Recompose',
-                    "visible": true
+                    "label": 'Recompose'
                   },
                   {
                     "id": 320,
-                    "enabled": true,
-                    "label": 'Decompose...',
-                    "visible": true
+                    "label": 'Decompose...'
                   },
                   {
                     "id": 321,
                     "enabled": false,
-                    "label": 'Compose...',
-                    "visible": true
+                    "label": 'Compose...'
                   },
                   {
                     "id": 322,
-                    "enabled": true,
-                    "label": 'Channel Mixer...',
-                    "visible": true
+                    "label": 'Channel Mixer...'
                   }
               ]
             },
             {
               "id": 323,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Auto',
-              "visible": true,
               "submenu": [
                   {
                     "id": 324,
-                    "enabled": true,
-                    "label": 'Stretch HSV',
-                    "visible": true
+                    "label": 'Stretch HSV'
                   },
                   {
                     "id": 325,
-                    "enabled": true,
-                    "label": 'Stretch Contrast',
-                    "visible": true
+                    "label": 'Stretch Contrast'
                   },
                   {
                     "id": 326,
-                    "enabled": true,
-                    "label": 'Normalize',
-                    "visible": true
+                    "label": 'Normalize'
                   },
                   {
                     "id": 327,
-                    "enabled": true,
-                    "label": 'Color Enhance',
-                    "visible": true
+                    "label": 'Color Enhance'
                   },
                   {
                     "id": 328,
-                    "enabled": true,
-                    "label": 'White Balance',
-                    "visible": true
+                    "label": 'White Balance'
                   },
                   {
                     "id": 329,
-                    "enabled": true,
-                    "label": 'Equalize',
-                    "visible": true
+                    "label": 'Equalize'
                   }
               ]
             },
@@ -2125,11 +1583,9 @@
             },
             {
               "id": 331,
-              "enabled": true,
               "label": 'Use GEGL',
               "toggle-state": 0,
-              "toggle-type": 'checkmark',
-              "visible": true
+              "toggle-type": 'checkmark'
             },
             {
               "id": 332,
@@ -2137,15 +1593,11 @@
             },
             {
               "id": 333,
-              "enabled": true,
-              "label": 'Value Invert',
-              "visible": true
+              "label": 'Value Invert'
             },
             {
               "id": 334,
-              "enabled": true,
-              "label": 'Invert',
-              "visible": true
+              "label": 'Invert'
             },
             {
               "id": 335,
@@ -2153,87 +1605,61 @@
             },
             {
               "id": 336,
-              "enabled": true,
-              "label": 'Desaturate...',
-              "visible": true
+              "label": 'Desaturate...'
             },
             {
               "id": 337,
-              "enabled": true,
-              "label": 'Posterize...',
-              "visible": true
+              "label": 'Posterize...'
             },
             {
               "id": 338,
-              "enabled": true,
-              "label": 'Curves...',
-              "visible": true
+              "label": 'Curves...'
             },
             {
               "id": 339,
-              "enabled": true,
-              "label": 'Levels...',
-              "visible": true
+              "label": 'Levels...'
             },
             {
               "id": 340,
-              "enabled": true,
-              "label": 'Threshold...',
-              "visible": true
+              "label": 'Threshold...'
             },
             {
               "id": 341,
-              "enabled": true,
-              "label": 'Brightness-Contrast...',
-              "visible": true
+              "label": 'Brightness-Contrast...'
             },
             {
               "id": 342,
-              "enabled": true,
-              "label": 'Colorize...',
-              "visible": true
+              "label": 'Colorize...'
             },
             {
               "id": 343,
-              "enabled": true,
-              "label": 'Hue-Saturation...',
-              "visible": true
+              "label": 'Hue-Saturation...'
             },
             {
               "id": 344,
-              "enabled": true,
-              "label": 'Color Balance...',
-              "visible": true
+              "label": 'Color Balance...'
             }
         ]
       },
       {
         "id": 345,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Tools',
-        "visible": true,
         "submenu": [
             {
               "id": 346,
-              "enabled": true,
               "label": 'Swap Colors',
-              "shortcut": [['x']],
-              "visible": true
+              "shortcut": [['x']]
             },
             {
               "id": 347,
-              "enabled": true,
               "label": 'Default Colors',
-              "shortcut": [['d']],
-              "visible": true
+              "shortcut": [['d']]
             },
             {
               "id": 348,
-              "enabled": true,
               "label": 'Toolbox',
-              "shortcut": [['Control', 'b']],
-              "visible": true
+              "shortcut": [['Control', 'b']]
             },
             {
               "id": 349,
@@ -2241,326 +1667,232 @@
             },
             {
               "id": 350,
-              "enabled": true,
-              "label": 'GEGL Operation...',
-              "visible": true
+              "label": 'GEGL Operation...'
             },
             {
               "id": 351,
-              "enabled": true,
               "label": 'Text',
-              "shortcut": [['t']],
-              "visible": true
+              "shortcut": [['t']]
             },
             {
               "id": 352,
-              "enabled": true,
               "label": 'Measure',
-              "shortcut": [['Shift', 'm']],
-              "visible": true
+              "shortcut": [['Shift', 'm']]
             },
             {
               "id": 353,
-              "enabled": true,
               "label": 'Zoom',
-              "shortcut": [['z']],
-              "visible": true
+              "shortcut": [['z']]
             },
             {
               "id": 354,
-              "enabled": true,
               "label": 'Color Picker',
-              "shortcut": [['o']],
-              "visible": true
+              "shortcut": [['o']]
             },
             {
               "id": 355,
-              "enabled": true,
               "label": 'Paths',
-              "shortcut": [['b']],
-              "visible": true
+              "shortcut": [['b']]
             },
             {
               "id": 356,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Color Tools',
-              "visible": true,
               "submenu": [
                   {
                     "id": 357,
-                    "enabled": true,
-                    "label": 'Desaturate...',
-                    "visible": true
+                    "label": 'Desaturate...'
                   },
                   {
                     "id": 358,
-                    "enabled": true,
-                    "label": 'Posterize...',
-                    "visible": true
+                    "label": 'Posterize...'
                   },
                   {
                     "id": 359,
-                    "enabled": true,
-                    "label": 'Curves...',
-                    "visible": true
+                    "label": 'Curves...'
                   },
                   {
                     "id": 360,
-                    "enabled": true,
-                    "label": 'Levels...',
-                    "visible": true
+                    "label": 'Levels...'
                   },
                   {
                     "id": 361,
-                    "enabled": true,
-                    "label": 'Threshold...',
-                    "visible": true
+                    "label": 'Threshold...'
                   },
                   {
                     "id": 362,
-                    "enabled": true,
-                    "label": 'Brightness-Contrast...',
-                    "visible": true
+                    "label": 'Brightness-Contrast...'
                   },
                   {
                     "id": 363,
-                    "enabled": true,
-                    "label": 'Colorize...',
-                    "visible": true
+                    "label": 'Colorize...'
                   },
                   {
                     "id": 364,
-                    "enabled": true,
-                    "label": 'Hue-Saturation...',
-                    "visible": true
+                    "label": 'Hue-Saturation...'
                   },
                   {
                     "id": 365,
-                    "enabled": true,
-                    "label": 'Color Balance...',
-                    "visible": true
+                    "label": 'Color Balance...'
                   }
               ]
             },
             {
               "id": 366,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Transform Tools',
-              "visible": true,
               "submenu": [
                   {
                     "id": 367,
-                    "enabled": true,
                     "label": 'Flip',
-                    "shortcut": [['Shift', 'f']],
-                    "visible": true
+                    "shortcut": [['Shift', 'f']]
                   },
                   {
                     "id": 368,
-                    "enabled": true,
                     "label": 'Perspective',
-                    "shortcut": [['Shift', 'p']],
-                    "visible": true
+                    "shortcut": [['Shift', 'p']]
                   },
                   {
                     "id": 369,
-                    "enabled": true,
                     "label": 'Shear',
-                    "shortcut": [['Shift', 's']],
-                    "visible": true
+                    "shortcut": [['Shift', 's']]
                   },
                   {
                     "id": 370,
-                    "enabled": true,
                     "label": 'Scale',
-                    "shortcut": [['Shift', 't']],
-                    "visible": true
+                    "shortcut": [['Shift', 't']]
                   },
                   {
                     "id": 371,
-                    "enabled": true,
                     "label": 'Rotate',
-                    "shortcut": [['Shift', 'r']],
-                    "visible": true
+                    "shortcut": [['Shift', 'r']]
                   },
                   {
                     "id": 372,
-                    "enabled": true,
                     "label": 'Crop',
-                    "shortcut": [['Shift', 'c']],
-                    "visible": true
+                    "shortcut": [['Shift', 'c']]
                   },
                   {
                     "id": 373,
-                    "enabled": true,
                     "label": 'Move',
-                    "shortcut": [['m']],
-                    "visible": true
+                    "shortcut": [['m']]
                   },
                   {
                     "id": 374,
-                    "enabled": true,
                     "label": 'Align',
-                    "shortcut": [['q']],
-                    "visible": true
+                    "shortcut": [['q']]
                   }
               ]
             },
             {
               "id": 375,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Paint Tools',
-              "visible": true,
               "submenu": [
                   {
                     "id": 376,
-                    "enabled": true,
                     "label": 'Dodge / Burn',
-                    "shortcut": [['Shift', 'd']],
-                    "visible": true
+                    "shortcut": [['Shift', 'd']]
                   },
                   {
                     "id": 377,
-                    "enabled": true,
                     "label": 'Smudge',
-                    "shortcut": [['s']],
-                    "visible": true
+                    "shortcut": [['s']]
                   },
                   {
                     "id": 378,
-                    "enabled": true,
                     "label": 'Blur / Sharpen',
-                    "shortcut": [['Shift', 'u']],
-                    "visible": true
+                    "shortcut": [['Shift', 'u']]
                   },
                   {
                     "id": 379,
-                    "enabled": true,
-                    "label": 'Perspective Clone',
-                    "visible": true
+                    "label": 'Perspective Clone'
                   },
                   {
                     "id": 380,
-                    "enabled": true,
                     "label": 'Heal',
-                    "shortcut": [['h']],
-                    "visible": true
+                    "shortcut": [['h']]
                   },
                   {
                     "id": 381,
-                    "enabled": true,
                     "label": 'Clone',
-                    "shortcut": [['c']],
-                    "visible": true
+                    "shortcut": [['c']]
                   },
                   {
                     "id": 382,
-                    "enabled": true,
                     "label": 'Ink',
-                    "shortcut": [['k']],
-                    "visible": true
+                    "shortcut": [['k']]
                   },
                   {
                     "id": 383,
-                    "enabled": true,
                     "label": 'Airbrush',
-                    "shortcut": [['a']],
-                    "visible": true
+                    "shortcut": [['a']]
                   },
                   {
                     "id": 384,
-                    "enabled": true,
                     "label": 'Eraser',
-                    "shortcut": [['Shift', 'e']],
-                    "visible": true
+                    "shortcut": [['Shift', 'e']]
                   },
                   {
                     "id": 385,
-                    "enabled": true,
                     "label": 'Paintbrush',
-                    "shortcut": [['p']],
-                    "visible": true
+                    "shortcut": [['p']]
                   },
                   {
                     "id": 386,
-                    "enabled": true,
                     "label": 'Pencil',
-                    "shortcut": [['n']],
-                    "visible": true
+                    "shortcut": [['n']]
                   },
                   {
                     "id": 387,
-                    "enabled": true,
                     "label": 'Blend',
-                    "shortcut": [['l']],
-                    "visible": true
+                    "shortcut": [['l']]
                   },
                   {
                     "id": 388,
-                    "enabled": true,
                     "label": 'Bucket Fill',
-                    "shortcut": [['Shift', 'b']],
-                    "visible": true
+                    "shortcut": [['Shift', 'b']]
                   }
               ]
             },
             {
               "id": 389,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Selection Tools',
-              "visible": true,
               "submenu": [
                   {
                     "id": 390,
-                    "enabled": true,
                     "label": 'Intelligent Scissors',
-                    "shortcut": [['i']],
-                    "visible": true
+                    "shortcut": [['i']]
                   },
                   {
                     "id": 391,
-                    "enabled": true,
                     "label": 'By Color Select',
-                    "shortcut": [['Shift', 'o']],
-                    "visible": true
+                    "shortcut": [['Shift', 'o']]
                   },
                   {
                     "id": 392,
-                    "enabled": true,
                     "label": 'Fuzzy Select',
-                    "shortcut": [['u']],
-                    "visible": true
+                    "shortcut": [['u']]
                   },
                   {
                     "id": 393,
-                    "enabled": true,
-                    "label": 'Foreground Select',
-                    "visible": true
+                    "label": 'Foreground Select'
                   },
                   {
                     "id": 394,
-                    "enabled": true,
                     "label": 'Free Select',
-                    "shortcut": [['f']],
-                    "visible": true
+                    "shortcut": [['f']]
                   },
                   {
                     "id": 395,
-                    "enabled": true,
                     "label": 'Ellipse Select',
-                    "shortcut": [['e']],
-                    "visible": true
+                    "shortcut": [['e']]
                   },
                   {
                     "id": 396,
-                    "enabled": true,
                     "label": 'Rectangle Select',
-                    "shortcut": [['r']],
-                    "visible": true
+                    "shortcut": [['r']]
                   }
               ]
             }
@@ -2569,49 +1901,35 @@
       {
         "id": 397,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Filters',
-        "visible": true,
         "submenu": [
             {
               "id": 398,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Script-Fu',
-              "visible": true,
               "submenu": [
                   {
                     "id": 399,
-                    "enabled": true,
-                    "label": 'Start Server...',
-                    "visible": true
+                    "label": 'Start Server...'
                   },
                   {
                     "id": 400,
-                    "enabled": true,
-                    "label": 'Refresh Scripts',
-                    "visible": true
+                    "label": 'Refresh Scripts'
                   },
                   {
                     "id": 401,
-                    "enabled": true,
-                    "label": 'Console',
-                    "visible": true
+                    "label": 'Console'
                   }
               ]
             },
             {
               "id": 402,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Python-Fu',
-              "visible": true,
               "submenu": [
                   {
                     "id": 403,
-                    "enabled": true,
-                    "label": 'Console',
-                    "visible": true
+                    "label": 'Console'
                   }
               ]
             },
@@ -2622,123 +1940,83 @@
             {
               "id": 405,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Alpha to Logo',
-              "visible": true,
               "submenu": [
                   {
                     "id": 406,
-                    "enabled": true,
-                    "label": 'Textured...',
-                    "visible": true
+                    "label": 'Textured...'
                   },
                   {
                     "id": 407,
-                    "enabled": true,
-                    "label": 'Particle Trace...',
-                    "visible": true
+                    "label": 'Particle Trace...'
                   },
                   {
                     "id": 408,
-                    "enabled": true,
-                    "label": 'Neon...',
-                    "visible": true
+                    "label": 'Neon...'
                   },
                   {
                     "id": 409,
-                    "enabled": true,
-                    "label": 'Gradient Bevel...',
-                    "visible": true
+                    "label": 'Gradient Bevel...'
                   },
                   {
                     "id": 410,
-                    "enabled": true,
-                    "label": 'Glowing Hot...',
-                    "visible": true
+                    "label": 'Glowing Hot...'
                   },
                   {
                     "id": 411,
-                    "enabled": true,
-                    "label": 'Glossy...',
-                    "visible": true
+                    "label": 'Glossy...'
                   },
                   {
                     "id": 412,
-                    "enabled": true,
-                    "label": 'Frosty...',
-                    "visible": true
+                    "label": 'Frosty...'
                   },
                   {
                     "id": 413,
-                    "enabled": true,
-                    "label": 'Cool Metal...',
-                    "visible": true
+                    "label": 'Cool Metal...'
                   },
                   {
                     "id": 414,
-                    "enabled": true,
-                    "label": 'Comic Book...',
-                    "visible": true
+                    "label": 'Comic Book...'
                   },
                   {
                     "id": 415,
-                    "enabled": true,
-                    "label": 'Chrome...',
-                    "visible": true
+                    "label": 'Chrome...'
                   },
                   {
                     "id": 416,
-                    "enabled": true,
-                    "label": 'Chip Away...',
-                    "visible": true
+                    "label": 'Chip Away...'
                   },
                   {
                     "id": 417,
-                    "enabled": true,
-                    "label": 'Chalk...',
-                    "visible": true
+                    "label": 'Chalk...'
                   },
                   {
                     "id": 418,
-                    "enabled": true,
-                    "label": 'Bovination...',
-                    "visible": true
+                    "label": 'Bovination...'
                   },
                   {
                     "id": 419,
-                    "enabled": true,
-                    "label": 'Blended...',
-                    "visible": true
+                    "label": 'Blended...'
                   },
                   {
                     "id": 420,
-                    "enabled": true,
-                    "label": 'Basic I...',
-                    "visible": true
+                    "label": 'Basic I...'
                   },
                   {
                     "id": 421,
-                    "enabled": true,
-                    "label": 'Basic II...',
-                    "visible": true
+                    "label": 'Basic II...'
                   },
                   {
                     "id": 422,
-                    "enabled": true,
-                    "label": 'Alien Neon...',
-                    "visible": true
+                    "label": 'Alien Neon...'
                   },
                   {
                     "id": 423,
-                    "enabled": true,
-                    "label": 'Alien Glow...',
-                    "visible": true
+                    "label": 'Alien Glow...'
                   },
                   {
                     "id": 424,
-                    "enabled": true,
-                    "label": '3D Outline...',
-                    "visible": true
+                    "label": '3D Outline...'
                   }
               ]
             },
@@ -2749,33 +2027,23 @@
             {
               "id": 426,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Animation',
-              "visible": true,
               "submenu": [
                   {
                     "id": 427,
-                    "enabled": true,
-                    "label": 'Unoptimize',
-                    "visible": true
+                    "label": 'Unoptimize'
                   },
                   {
                     "id": 428,
-                    "enabled": true,
-                    "label": 'Playback...',
-                    "visible": true
+                    "label": 'Playback...'
                   },
                   {
                     "id": 429,
-                    "enabled": true,
-                    "label": 'Optimize (for GIF)',
-                    "visible": true
+                    "label": 'Optimize (for GIF)'
                   },
                   {
                     "id": 430,
-                    "enabled": true,
-                    "label": 'Optimize (Difference)',
-                    "visible": true
+                    "label": 'Optimize (Difference)'
                   },
                   {
                     "id": 431,
@@ -2783,111 +2051,77 @@
                   },
                   {
                     "id": 432,
-                    "enabled": true,
-                    "label": 'Waves...',
-                    "visible": true
+                    "label": 'Waves...'
                   },
                   {
                     "id": 433,
-                    "enabled": true,
-                    "label": 'Spinning Globe...',
-                    "visible": true
+                    "label": 'Spinning Globe...'
                   },
                   {
                     "id": 434,
-                    "enabled": true,
-                    "label": 'Rippling...',
-                    "visible": true
+                    "label": 'Rippling...'
                   },
                   {
                     "id": 435,
-                    "enabled": true,
-                    "label": 'Burn-In...',
-                    "visible": true
+                    "label": 'Burn-In...'
                   },
                   {
                     "id": 436,
-                    "enabled": true,
-                    "label": 'Blend...',
-                    "visible": true
+                    "label": 'Blend...'
                   }
               ]
             },
             {
               "id": 437,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Web',
-              "visible": true,
               "submenu": [
                   {
                     "id": 438,
-                    "enabled": true,
-                    "label": 'Slice...',
-                    "visible": true
+                    "label": 'Slice...'
                   },
                   {
                     "id": 439,
-                    "enabled": true,
-                    "label": 'Semi-Flatten',
-                    "visible": true
+                    "label": 'Semi-Flatten'
                   },
                   {
                     "id": 440,
-                    "enabled": true,
-                    "label": 'Image Map...',
-                    "visible": true
+                    "label": 'Image Map...'
                   }
               ]
             },
             {
               "id": 441,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Render',
-              "visible": true,
               "submenu": [
                   {
                     "id": 442,
-                    "enabled": true,
-                    "label": 'Spyrogimp...',
-                    "visible": true
+                    "label": 'Spyrogimp...'
                   },
                   {
                     "id": 443,
-                    "enabled": true,
-                    "label": 'Sphere Designer...',
-                    "visible": true
+                    "label": 'Sphere Designer...'
                   },
                   {
                     "id": 444,
-                    "enabled": true,
-                    "label": 'Line Nova...',
-                    "visible": true
+                    "label": 'Line Nova...'
                   },
                   {
                     "id": 445,
-                    "enabled": true,
-                    "label": 'Lava...',
-                    "visible": true
+                    "label": 'Lava...'
                   },
                   {
                     "id": 446,
-                    "enabled": true,
-                    "label": 'Gfig...',
-                    "visible": true
+                    "label": 'Gfig...'
                   },
                   {
                     "id": 447,
-                    "enabled": true,
-                    "label": 'Fractal Explorer...',
-                    "visible": true
+                    "label": 'Fractal Explorer...'
                   },
                   {
                     "id": 448,
-                    "enabled": true,
-                    "label": 'Circuit...',
-                    "visible": true
+                    "label": 'Circuit...'
                   },
                   {
                     "id": 449,
@@ -2896,111 +2130,77 @@
                   {
                     "id": 450,
                     "children-display": 'submenu',
-                    "enabled": true,
                     "label": 'Pattern',
-                    "visible": true,
                     "submenu": [
                         {
                           "id": 451,
-                          "enabled": true,
-                          "label": 'Sinus...',
-                          "visible": true
+                          "label": 'Sinus...'
                         },
                         {
                           "id": 452,
-                          "enabled": true,
-                          "label": 'Qbist...',
-                          "visible": true
+                          "label": 'Qbist...'
                         },
                         {
                           "id": 453,
-                          "enabled": true,
-                          "label": 'Maze...',
-                          "visible": true
+                          "label": 'Maze...'
                         },
                         {
                           "id": 454,
-                          "enabled": true,
-                          "label": 'Jigsaw...',
-                          "visible": true
+                          "label": 'Jigsaw...'
                         },
                         {
                           "id": 455,
-                          "enabled": true,
-                          "label": 'Grid...',
-                          "visible": true
+                          "label": 'Grid...'
                         },
                         {
                           "id": 456,
-                          "enabled": true,
-                          "label": 'Diffraction Patterns...',
-                          "visible": true
+                          "label": 'Diffraction Patterns...'
                         },
                         {
                           "id": 457,
-                          "enabled": true,
-                          "label": 'CML Explorer...',
-                          "visible": true
+                          "label": 'CML Explorer...'
                         },
                         {
                           "id": 458,
-                          "enabled": true,
-                          "label": 'Checkerboard...',
-                          "visible": true
+                          "label": 'Checkerboard...'
                         }
                     ]
                   },
                   {
                     "id": 459,
                     "children-display": 'submenu',
-                    "enabled": true,
                     "label": 'Nature',
-                    "visible": true,
                     "submenu": [
                         {
                           "id": 460,
-                          "enabled": true,
-                          "label": 'IFS Fractal...',
-                          "visible": true
+                          "label": 'IFS Fractal...'
                         },
                         {
                           "id": 461,
-                          "enabled": true,
-                          "label": 'Flame...',
-                          "visible": true
+                          "label": 'Flame...'
                         }
                     ]
                   },
                   {
                     "id": 462,
                     "children-display": 'submenu',
-                    "enabled": true,
                     "label": 'Clouds',
-                    "visible": true,
                     "submenu": [
                         {
                           "id": 463,
-                          "enabled": true,
-                          "label": 'Solid Noise...',
-                          "visible": true
+                          "label": 'Solid Noise...'
                         },
                         {
                           "id": 464,
-                          "enabled": true,
-                          "label": 'Plasma...',
-                          "visible": true
+                          "label": 'Plasma...'
                         },
                         {
                           "id": 465,
-                          "enabled": true,
-                          "label": 'Fog...',
-                          "visible": true
+                          "label": 'Fog...'
                         },
                         {
                           "id": 466,
-                          "enabled": true,
-                          "label": 'Difference Clouds...',
-                          "visible": true
+                          "label": 'Difference Clouds...'
                         }
                     ]
                   }
@@ -3009,360 +2209,252 @@
             {
               "id": 467,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Map',
-              "visible": true,
               "submenu": [
                   {
                     "id": 468,
-                    "enabled": true,
-                    "label": 'Warp...',
-                    "visible": true
+                    "label": 'Warp...'
                   },
                   {
                     "id": 469,
-                    "enabled": true,
-                    "label": 'Tile...',
-                    "visible": true
+                    "label": 'Tile...'
                   },
                   {
                     "id": 470,
-                    "enabled": true,
-                    "label": 'Small Tiles...',
-                    "visible": true
+                    "label": 'Small Tiles...'
                   },
                   {
                     "id": 471,
-                    "enabled": true,
-                    "label": 'Paper Tile...',
-                    "visible": true
+                    "label": 'Paper Tile...'
                   },
                   {
                     "id": 472,
-                    "enabled": true,
-                    "label": 'Map Object...',
-                    "visible": true
+                    "label": 'Map Object...'
                   },
                   {
                     "id": 473,
-                    "enabled": true,
-                    "label": 'Make Seamless',
-                    "visible": true
+                    "label": 'Make Seamless'
                   },
                   {
                     "id": 474,
-                    "enabled": true,
-                    "label": 'Illusion...',
-                    "visible": true
+                    "label": 'Illusion...'
                   },
                   {
                     "id": 475,
-                    "enabled": true,
-                    "label": 'Fractal Trace...',
-                    "visible": true
+                    "label": 'Fractal Trace...'
                   },
                   {
                     "id": 476,
-                    "enabled": true,
-                    "label": 'Displace...',
-                    "visible": true
+                    "label": 'Displace...'
                   },
                   {
                     "id": 477,
-                    "enabled": true,
-                    "label": 'Bump Map...',
-                    "visible": true
+                    "label": 'Bump Map...'
                   }
               ]
             },
             {
               "id": 478,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Decor',
-              "visible": true,
               "submenu": [
                   {
                     "id": 479,
                     "enabled": false,
-                    "label": 'Stencil Chrome...',
-                    "visible": true
+                    "label": 'Stencil Chrome...'
                   },
                   {
                     "id": 480,
                     "enabled": false,
-                    "label": 'Stencil Carve...',
-                    "visible": true
+                    "label": 'Stencil Carve...'
                   },
                   {
                     "id": 481,
                     "enabled": false,
-                    "label": 'Slide...',
-                    "visible": true
+                    "label": 'Slide...'
                   },
                   {
                     "id": 482,
                     "enabled": false,
-                    "label": 'Round Corners...',
-                    "visible": true
+                    "label": 'Round Corners...'
                   },
                   {
                     "id": 483,
-                    "enabled": true,
-                    "label": 'Old Photo...',
-                    "visible": true
+                    "label": 'Old Photo...'
                   },
                   {
                     "id": 484,
-                    "enabled": true,
-                    "label": 'Fuzzy Border...',
-                    "visible": true
+                    "label": 'Fuzzy Border...'
                   },
                   {
                     "id": 485,
-                    "enabled": true,
-                    "label": 'Coffee Stain...',
-                    "visible": true
+                    "label": 'Coffee Stain...'
                   },
                   {
                     "id": 486,
-                    "enabled": true,
-                    "label": 'Add Border...',
-                    "visible": true
+                    "label": 'Add Border...'
                   },
                   {
                     "id": 487,
-                    "enabled": true,
-                    "label": 'Add Bevel...',
-                    "visible": true
+                    "label": 'Add Bevel...'
                   }
               ]
             },
             {
               "id": 488,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Artistic',
-              "visible": true,
               "submenu": [
                   {
                     "id": 489,
-                    "enabled": true,
-                    "label": 'Weave...',
-                    "visible": true
+                    "label": 'Weave...'
                   },
                   {
                     "id": 490,
-                    "enabled": true,
-                    "label": 'Van Gogh (LIC)...',
-                    "visible": true
+                    "label": 'Van Gogh (LIC)...'
                   },
                   {
                     "id": 491,
-                    "enabled": true,
-                    "label": 'Softglow...',
-                    "visible": true
+                    "label": 'Softglow...'
                   },
                   {
                     "id": 492,
-                    "enabled": true,
-                    "label": 'Predator...',
-                    "visible": true
+                    "label": 'Predator...'
                   },
                   {
                     "id": 493,
-                    "enabled": true,
-                    "label": 'Photocopy...',
-                    "visible": true
+                    "label": 'Photocopy...'
                   },
                   {
                     "id": 494,
-                    "enabled": true,
-                    "label": 'Oilify...',
-                    "visible": true
+                    "label": 'Oilify...'
                   },
                   {
                     "id": 495,
-                    "enabled": true,
-                    "label": 'GIMPressionist...',
-                    "visible": true
+                    "label": 'GIMPressionist...'
                   },
                   {
                     "id": 496,
-                    "enabled": true,
-                    "label": 'Cubism...',
-                    "visible": true
+                    "label": 'Cubism...'
                   },
                   {
                     "id": 497,
-                    "enabled": true,
-                    "label": 'Clothify...',
-                    "visible": true
+                    "label": 'Clothify...'
                   },
                   {
                     "id": 498,
-                    "enabled": true,
-                    "label": 'Cartoon...',
-                    "visible": true
+                    "label": 'Cartoon...'
                   },
                   {
                     "id": 499,
-                    "enabled": true,
-                    "label": 'Apply Canvas...',
-                    "visible": true
+                    "label": 'Apply Canvas...'
                   }
               ]
             },
             {
               "id": 500,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Combine',
-              "visible": true,
               "submenu": [
                   {
                     "id": 501,
-                    "enabled": true,
-                    "label": 'Filmstrip...',
-                    "visible": true
+                    "label": 'Filmstrip...'
                   },
                   {
                     "id": 502,
-                    "enabled": true,
-                    "label": 'Depth Merge...',
-                    "visible": true
+                    "label": 'Depth Merge...'
                   }
               ]
             },
             {
               "id": 503,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Generic',
-              "visible": true,
               "submenu": [
                   {
                     "id": 504,
-                    "enabled": true,
-                    "label": 'Erode',
-                    "visible": true
+                    "label": 'Erode'
                   },
                   {
                     "id": 505,
-                    "enabled": true,
-                    "label": 'Dilate',
-                    "visible": true
+                    "label": 'Dilate'
                   },
                   {
                     "id": 506,
-                    "enabled": true,
-                    "label": 'Convolution Matrix...',
-                    "visible": true
+                    "label": 'Convolution Matrix...'
                   }
               ]
             },
             {
               "id": 507,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Edge-Detect',
-              "visible": true,
               "submenu": [
                   {
                     "id": 508,
-                    "enabled": true,
-                    "label": 'Sobel...',
-                    "visible": true
+                    "label": 'Sobel...'
                   },
                   {
                     "id": 509,
-                    "enabled": true,
-                    "label": 'Neon...',
-                    "visible": true
+                    "label": 'Neon...'
                   },
                   {
                     "id": 510,
-                    "enabled": true,
-                    "label": 'Laplace',
-                    "visible": true
+                    "label": 'Laplace'
                   },
                   {
                     "id": 511,
-                    "enabled": true,
-                    "label": 'Edge...',
-                    "visible": true
+                    "label": 'Edge...'
                   },
                   {
                     "id": 512,
-                    "enabled": true,
-                    "label": 'Difference of Gaussians...',
-                    "visible": true
+                    "label": 'Difference of Gaussians...'
                   }
               ]
             },
             {
               "id": 513,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Noise',
-              "visible": true,
               "submenu": [
                   {
                     "id": 514,
-                    "enabled": true,
-                    "label": 'Spread...',
-                    "visible": true
+                    "label": 'Spread...'
                   },
                   {
                     "id": 515,
-                    "enabled": true,
-                    "label": 'Slur...',
-                    "visible": true
+                    "label": 'Slur...'
                   },
                   {
                     "id": 516,
-                    "enabled": true,
-                    "label": 'RGB Noise...',
-                    "visible": true
+                    "label": 'RGB Noise...'
                   },
                   {
                     "id": 517,
-                    "enabled": true,
-                    "label": 'Pick...',
-                    "visible": true
+                    "label": 'Pick...'
                   },
                   {
                     "id": 518,
-                    "enabled": true,
-                    "label": 'Hurl...',
-                    "visible": true
+                    "label": 'Hurl...'
                   },
                   {
                     "id": 519,
-                    "enabled": true,
-                    "label": 'HSV Noise...',
-                    "visible": true
+                    "label": 'HSV Noise...'
                   }
               ]
             },
             {
               "id": 520,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Light and Shadow',
-              "visible": true,
               "submenu": [
                   {
                     "id": 521,
-                    "enabled": true,
-                    "label": 'Glass Tile...',
-                    "visible": true
+                    "label": 'Glass Tile...'
                   },
                   {
                     "id": 522,
-                    "enabled": true,
-                    "label": 'Apply Lens...',
-                    "visible": true
+                    "label": 'Apply Lens...'
                   },
                   {
                     "id": 523,
@@ -3370,21 +2462,15 @@
                   },
                   {
                     "id": 524,
-                    "enabled": true,
-                    "label": 'Xach-Effect...',
-                    "visible": true
+                    "label": 'Xach-Effect...'
                   },
                   {
                     "id": 525,
-                    "enabled": true,
-                    "label": 'Perspective...',
-                    "visible": true
+                    "label": 'Perspective...'
                   },
                   {
                     "id": 526,
-                    "enabled": true,
-                    "label": 'Drop Shadow...',
-                    "visible": true
+                    "label": 'Drop Shadow...'
                   },
                   {
                     "id": 527,
@@ -3392,252 +2478,173 @@
                   },
                   {
                     "id": 528,
-                    "enabled": true,
-                    "label": 'Supernova...',
-                    "visible": true
+                    "label": 'Supernova...'
                   },
                   {
                     "id": 529,
-                    "enabled": true,
-                    "label": 'Sparkle...',
-                    "visible": true
+                    "label": 'Sparkle...'
                   },
                   {
                     "id": 530,
-                    "enabled": true,
-                    "label": 'Lighting Effects...',
-                    "visible": true
+                    "label": 'Lighting Effects...'
                   },
                   {
                     "id": 531,
-                    "enabled": true,
-                    "label": 'Lens Flare...',
-                    "visible": true
+                    "label": 'Lens Flare...'
                   },
                   {
                     "id": 532,
-                    "enabled": true,
-                    "label": 'Gradient Flare...',
-                    "visible": true
+                    "label": 'Gradient Flare...'
                   }
               ]
             },
             {
               "id": 533,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Distorts',
-              "visible": true,
               "submenu": [
                   {
                     "id": 534,
-                    "enabled": true,
-                    "label": 'Wind...',
-                    "visible": true
+                    "label": 'Wind...'
                   },
                   {
                     "id": 535,
-                    "enabled": true,
-                    "label": 'Whirl and Pinch...',
-                    "visible": true
+                    "label": 'Whirl and Pinch...'
                   },
                   {
                     "id": 536,
-                    "enabled": true,
-                    "label": 'Waves...',
-                    "visible": true
+                    "label": 'Waves...'
                   },
                   {
                     "id": 537,
-                    "enabled": true,
-                    "label": 'Video...',
-                    "visible": true
+                    "label": 'Video...'
                   },
                   {
                     "id": 538,
-                    "enabled": true,
-                    "label": 'Value Propagate...',
-                    "visible": true
+                    "label": 'Value Propagate...'
                   },
                   {
                     "id": 539,
-                    "enabled": true,
-                    "label": 'Shift...',
-                    "visible": true
+                    "label": 'Shift...'
                   },
                   {
                     "id": 540,
-                    "enabled": true,
-                    "label": 'Ripple...',
-                    "visible": true
+                    "label": 'Ripple...'
                   },
                   {
                     "id": 541,
-                    "enabled": true,
-                    "label": 'Polar Coordinates...',
-                    "visible": true
+                    "label": 'Polar Coordinates...'
                   },
                   {
                     "id": 542,
-                    "enabled": true,
-                    "label": 'Pagecurl...',
-                    "visible": true
+                    "label": 'Pagecurl...'
                   },
                   {
                     "id": 543,
-                    "enabled": true,
-                    "label": 'Newsprint...',
-                    "visible": true
+                    "label": 'Newsprint...'
                   },
                   {
                     "id": 544,
-                    "enabled": true,
-                    "label": 'Mosaic...',
-                    "visible": true
+                    "label": 'Mosaic...'
                   },
                   {
                     "id": 545,
-                    "enabled": true,
-                    "label": 'Lens Distortion...',
-                    "visible": true
+                    "label": 'Lens Distortion...'
                   },
                   {
                     "id": 546,
-                    "enabled": true,
-                    "label": 'IWarp...',
-                    "visible": true
+                    "label": 'IWarp...'
                   },
                   {
                     "id": 547,
-                    "enabled": true,
-                    "label": 'Erase Every Other Row...',
-                    "visible": true
+                    "label": 'Erase Every Other Row...'
                   },
                   {
                     "id": 548,
-                    "enabled": true,
-                    "label": 'Engrave...',
-                    "visible": true
+                    "label": 'Engrave...'
                   },
                   {
                     "id": 549,
-                    "enabled": true,
-                    "label": 'Emboss...',
-                    "visible": true
+                    "label": 'Emboss...'
                   },
                   {
                     "id": 550,
-                    "enabled": true,
-                    "label": 'Curve Bend...',
-                    "visible": true
+                    "label": 'Curve Bend...'
                   },
                   {
                     "id": 551,
-                    "enabled": true,
-                    "label": 'Blinds...',
-                    "visible": true
+                    "label": 'Blinds...'
                   }
               ]
             },
             {
               "id": 552,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Enhance',
-              "visible": true,
               "submenu": [
                   {
                     "id": 553,
-                    "enabled": true,
-                    "label": 'Unsharp Mask...',
-                    "visible": true
+                    "label": 'Unsharp Mask...'
                   },
                   {
                     "id": 554,
-                    "enabled": true,
-                    "label": 'Sharpen...',
-                    "visible": true
+                    "label": 'Sharpen...'
                   },
                   {
                     "id": 555,
-                    "enabled": true,
-                    "label": 'Red Eye Removal...',
-                    "visible": true
+                    "label": 'Red Eye Removal...'
                   },
                   {
                     "id": 556,
                     "enabled": false,
-                    "label": 'NL Filter...',
-                    "visible": true
+                    "label": 'NL Filter...'
                   },
                   {
                     "id": 557,
-                    "enabled": true,
-                    "label": 'Destripe...',
-                    "visible": true
+                    "label": 'Destripe...'
                   },
                   {
                     "id": 558,
-                    "enabled": true,
-                    "label": 'Despeckle...',
-                    "visible": true
+                    "label": 'Despeckle...'
                   },
                   {
                     "id": 559,
-                    "enabled": true,
-                    "label": 'Deinterlace...',
-                    "visible": true
+                    "label": 'Deinterlace...'
                   },
                   {
                     "id": 560,
-                    "enabled": true,
-                    "label": 'Antialias',
-                    "visible": true
+                    "label": 'Antialias'
                   }
               ]
             },
             {
               "id": 561,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Blur',
-              "visible": true,
               "submenu": [
                   {
                     "id": 562,
-                    "enabled": true,
-                    "label": 'Tileable Blur...',
-                    "visible": true
+                    "label": 'Tileable Blur...'
                   },
                   {
                     "id": 563,
-                    "enabled": true,
-                    "label": 'Selective Gaussian Blur...',
-                    "visible": true
+                    "label": 'Selective Gaussian Blur...'
                   },
                   {
                     "id": 564,
-                    "enabled": true,
-                    "label": 'Pixelize...',
-                    "visible": true
+                    "label": 'Pixelize...'
                   },
                   {
                     "id": 565,
-                    "enabled": true,
-                    "label": 'Motion Blur...',
-                    "visible": true
+                    "label": 'Motion Blur...'
                   },
                   {
                     "id": 566,
-                    "enabled": true,
-                    "label": 'Gaussian Blur...',
-                    "visible": true
+                    "label": 'Gaussian Blur...'
                   },
                   {
                     "id": 567,
-                    "enabled": true,
-                    "label": 'Blur',
-                    "visible": true
+                    "label": 'Blur'
                   }
               ]
             },
@@ -3647,9 +2654,7 @@
             },
             {
               "id": 569,
-              "enabled": true,
-              "label": 'Reset all Filters',
-              "visible": true
+              "label": 'Reset all Filters'
             },
             {
               "id": 570,
@@ -3657,13 +2662,11 @@
               "enabled": false,
               "label": 'Re-Show Last',
               "shortcut": [['Control', 'Shift', 'f']],
-              "visible": true,
               "submenu": [
                   {
                     "id": 571,
                     "enabled": false,
-                    "label": 'Empty',
-                    "visible": true
+                    "label": 'Empty'
                   }
               ]
             },
@@ -3671,24 +2674,19 @@
               "id": 572,
               "enabled": false,
               "label": 'Repeat Last',
-              "shortcut": [['Control', 'f']],
-              "visible": true
+              "shortcut": [['Control', 'f']]
             }
         ]
       },
       {
         "id": 573,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Windows',
-        "visible": true,
         "submenu": [
             {
               "id": 574,
-              "enabled": true,
               "label": 'Toolbox',
-              "shortcut": [['Control', 'b']],
-              "visible": true
+              "shortcut": [['Control', 'b']]
             },
             {
               "id": 575,
@@ -3697,39 +2695,27 @@
             {
               "id": 576,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Dockable Dialogs',
-              "visible": true,
               "submenu": [
                   {
                     "id": 577,
-                    "enabled": true,
-                    "label": 'Error Console',
-                    "visible": true
+                    "label": 'Error Console'
                   },
                   {
                     "id": 578,
-                    "enabled": true,
-                    "label": 'Tools',
-                    "visible": true
+                    "label": 'Tools'
                   },
                   {
                     "id": 579,
-                    "enabled": true,
-                    "label": 'Templates',
-                    "visible": true
+                    "label": 'Templates'
                   },
                   {
                     "id": 580,
-                    "enabled": true,
-                    "label": 'Document History',
-                    "visible": true
+                    "label": 'Document History'
                   },
                   {
                     "id": 581,
-                    "enabled": true,
-                    "label": 'Images',
-                    "visible": true
+                    "label": 'Images'
                   },
                   {
                     "id": 582,
@@ -3737,48 +2723,34 @@
                   },
                   {
                     "id": 583,
-                    "enabled": true,
-                    "label": 'Buffers',
-                    "visible": true
+                    "label": 'Buffers'
                   },
                   {
                     "id": 584,
-                    "enabled": true,
-                    "label": 'Fonts',
-                    "visible": true
+                    "label": 'Fonts'
                   },
                   {
                     "id": 585,
-                    "enabled": true,
-                    "label": 'Palettes',
-                    "visible": true
+                    "label": 'Palettes'
                   },
                   {
                     "id": 586,
-                    "enabled": true,
                     "label": 'Gradients',
-                    "shortcut": [['Control', 'g']],
-                    "visible": true
+                    "shortcut": [['Control', 'g']]
                   },
                   {
                     "id": 587,
-                    "enabled": true,
                     "label": 'Patterns',
-                    "shortcut": [['Control', 'Shift', 'p']],
-                    "visible": true
+                    "shortcut": [['Control', 'Shift', 'p']]
                   },
                   {
                     "id": 588,
-                    "enabled": true,
                     "label": 'Brushes',
-                    "shortcut": [['Control', 'Shift', 'b']],
-                    "visible": true
+                    "shortcut": [['Control', 'Shift', 'b']]
                   },
                   {
                     "id": 589,
-                    "enabled": true,
-                    "label": 'Colors',
-                    "visible": true
+                    "label": 'Colors'
                   },
                   {
                     "id": 590,
@@ -3786,64 +2758,44 @@
                   },
                   {
                     "id": 591,
-                    "enabled": true,
-                    "label": 'Sample Points',
-                    "visible": true
+                    "label": 'Sample Points'
                   },
                   {
                     "id": 592,
-                    "enabled": true,
-                    "label": 'Pointer',
-                    "visible": true
+                    "label": 'Pointer'
                   },
                   {
                     "id": 593,
-                    "enabled": true,
-                    "label": 'Undo History',
-                    "visible": true
+                    "label": 'Undo History'
                   },
                   {
                     "id": 594,
-                    "enabled": true,
-                    "label": 'Navigation',
-                    "visible": true
+                    "label": 'Navigation'
                   },
                   {
                     "id": 595,
-                    "enabled": true,
-                    "label": 'Selection Editor',
-                    "visible": true
+                    "label": 'Selection Editor'
                   },
                   {
                     "id": 596,
-                    "enabled": true,
-                    "label": 'Histogram',
-                    "visible": true
+                    "label": 'Histogram'
                   },
                   {
                     "id": 597,
-                    "enabled": true,
-                    "label": 'Colormap',
-                    "visible": true
+                    "label": 'Colormap'
                   },
                   {
                     "id": 598,
-                    "enabled": true,
-                    "label": 'Paths',
-                    "visible": true
+                    "label": 'Paths'
                   },
                   {
                     "id": 599,
-                    "enabled": true,
-                    "label": 'Channels',
-                    "visible": true
+                    "label": 'Channels'
                   },
                   {
                     "id": 600,
-                    "enabled": true,
                     "label": 'Layers',
-                    "shortcut": [['Control', 'l']],
-                    "visible": true
+                    "shortcut": [['Control', 'l']]
                   },
                   {
                     "id": 601,
@@ -3851,30 +2803,23 @@
                   },
                   {
                     "id": 602,
-                    "enabled": true,
-                    "label": 'Device Status',
-                    "visible": true
+                    "label": 'Device Status'
                   },
                   {
                     "id": 603,
-                    "enabled": true,
-                    "label": 'Tool Options',
-                    "visible": true
+                    "label": 'Tool Options'
                   }
               ]
             },
             {
               "id": 604,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'Recently Closed Docks',
-              "visible": true,
               "submenu": [
                   {
                     "id": 605,
                     "enabled": false,
-                    "label": 'Empty',
-                    "visible": true
+                    "label": 'Empty'
                   }
               ]
             }
@@ -3883,91 +2828,63 @@
       {
         "id": 606,
         "children-display": 'submenu',
-        "enabled": true,
         "label": 'Help',
-        "visible": true,
         "submenu": [
             {
               "id": 607,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'User Manual',
-              "visible": true,
               "submenu": [
                   {
                     "id": 608,
-                    "enabled": true,
-                    "label": 'Working with Digital Camera Photos',
-                    "visible": true
+                    "label": 'Working with Digital Camera Photos'
                   },
                   {
                     "id": 609,
-                    "enabled": true,
-                    "label": 'Using Paths',
-                    "visible": true
+                    "label": 'Using Paths'
                   },
                   {
                     "id": 610,
-                    "enabled": true,
-                    "label": 'Preparing your Images for the Web',
-                    "visible": true
+                    "label": 'Preparing your Images for the Web'
                   },
                   {
                     "id": 611,
-                    "enabled": true,
-                    "label": 'How to Use Dialogs',
-                    "visible": true
+                    "label": 'How to Use Dialogs'
                   },
                   {
                     "id": 612,
-                    "enabled": true,
-                    "label": 'Drawing Simple Objects',
-                    "visible": true
+                    "label": 'Drawing Simple Objects'
                   },
                   {
                     "id": 613,
-                    "enabled": true,
-                    "label": 'Create, Open and Save Files',
-                    "visible": true
+                    "label": 'Create, Open and Save Files'
                   },
                   {
                     "id": 614,
-                    "enabled": true,
-                    "label": 'Basic Concepts',
-                    "visible": true
+                    "label": 'Basic Concepts'
                   }
               ]
             },
             {
               "id": 615,
               "children-display": 'submenu',
-              "enabled": true,
               "label": 'GIMP Online',
-              "visible": true,
               "submenu": [
                   {
                     "id": 616,
-                    "enabled": true,
-                    "label": 'User Manual Web Site',
-                    "visible": true
+                    "label": 'User Manual Web Site'
                   },
                   {
                     "id": 617,
-                    "enabled": true,
-                    "label": 'Plug-in Registry',
-                    "visible": true
+                    "label": 'Plug-in Registry'
                   },
                   {
                     "id": 618,
-                    "enabled": true,
-                    "label": 'Main Web Site',
-                    "visible": true
+                    "label": 'Main Web Site'
                   },
                   {
                     "id": 619,
-                    "enabled": true,
-                    "label": 'Developer Web Site',
-                    "visible": true
+                    "label": 'Developer Web Site'
                   }
               ]
             },
@@ -3977,15 +2894,11 @@
             },
             {
               "id": 621,
-              "enabled": true,
-              "label": 'Procedure Browser',
-              "visible": true
+              "label": 'Procedure Browser'
             },
             {
               "id": 622,
-              "enabled": true,
-              "label": 'Plug-In Browser',
-              "visible": true
+              "label": 'Plug-In Browser'
             },
             {
               "id": 623,
@@ -3993,29 +2906,21 @@
             },
             {
               "id": 624,
-              "enabled": true,
-              "label": 'About',
-              "visible": true
+              "label": 'About'
             },
             {
               "id": 625,
-              "enabled": true,
-              "label": 'Tip of the Day',
-              "visible": true
+              "label": 'Tip of the Day'
             },
             {
               "id": 626,
-              "enabled": true,
               "label": 'Context Help',
-              "shortcut": [['Shift', 'F1']],
-              "visible": true
+              "shortcut": [['Shift', 'F1']]
             },
             {
               "id": 627,
-              "enabled": true,
               "label": 'Help',
-              "shortcut": [['F1']],
-              "visible": true
+              "shortcut": [['F1']]
             }
         ]
       }

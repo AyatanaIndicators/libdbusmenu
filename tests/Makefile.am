@@ -2,6 +2,8 @@
 DBUS_RUNNER=dbus-test-runner
 
 CLEANFILES=
+DISTCLEANFILES=
+EXTRA_DIST = 
 
 TESTS = \
 	test-glib-objects-test \
@@ -15,9 +17,11 @@ TESTS = \
 	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-shortcut \
+	test-gtk-shortcut-python \
 	test-gtk-reorder \
 	test-gtk-submenu \
-	test-gtk-parser-test
+	test-gtk-parser-test \
+	test-glib-simple-items.py
 
 check_PROGRAMS = \
 	glib-server-nomenu \
@@ -47,6 +51,9 @@ check_PROGRAMS = \
 	test-gtk-parser
 
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
+
+# for the GI tests, prefer/use the typelibs from the local build tree
+TESTS_ENVIRONMENT = env GI_TYPELIB_PATH=$(top_builddir)/libdbusmenu-glib:$(top_builddir)/libdbusmenu-gtk:$(GI_TYPELIB_PATH)
 
 ######################
 # JSON Loader lib
@@ -260,6 +267,8 @@ test_glib_objects_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+DISTCLEANFILES += $(OBJECT_XML_REPORT)
+
 ######################
 # Test Glib Properties
 ######################
@@ -358,6 +367,8 @@ test_glib_simple_items_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+EXTRA_DIST += test-glib-simple-items.py
+
 ######################
 # Test GTK Object
 ######################
@@ -385,6 +396,8 @@ test_gtk_objects_LDADD = \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
+
+DISTCLEANFILES += $(GTK_OBJECT_XML_REPORT)
 
 ######################
 # Test GTK Parser
@@ -414,6 +427,7 @@ test_gtk_parser_LDADD = \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
+DISTCLEANFILES += $(GTK_PARSER_XML_REPORT)
 
 #########################
 # Test GTK Label
@@ -495,6 +509,19 @@ test_gtk_shortcut_client_LDADD = \
 	../libdbusmenu-gtk/libdbusmenu-gtk.la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
+
+#########################
+# Test GTK Shortcut Python
+#########################
+
+test-gtk-shortcut-python: test-gtk-shortcut-server test-gtk-shortcut-client.py Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task $(srcdir)/test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+EXTRA_DIST += test-gtk-shortcut-client.py
+CLEANFILES += test-gtk-shortcut-client.pyc
 
 #########################
 # Test GTK Reorder
@@ -590,7 +617,7 @@ jsondir = $(datadir)/${PACKAGE}/json/
 json_DATA = \
 	test-gtk-label.json
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	$(examples_DATA) \
 	run-xvfb.sh \
 	$(json_DATA) \
@@ -622,8 +649,6 @@ CLEANFILES += \
 distclean-local:
 	-rm -rf $(builddir)/mago.results
 
-DISTCLEANFILES = \
-	$(TESTS) \
-	$(OBJECT_XML_REPORT) \
-	$(GTK_OBJECT_XML_REPORT)
+DISTCLEANFILES += \
+	$(filter-out %.py, $(TESTS))
 

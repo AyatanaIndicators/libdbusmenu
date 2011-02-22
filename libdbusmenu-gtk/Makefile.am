@@ -78,27 +78,27 @@ if INTROSPECTION_TEN
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 	--warn-all \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
-	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
+	$(addprefix --c-include=libdbusmenu-gtk/, $(libdbusmenu_gtkinclude_HEADERS)) \
 	--symbol-prefix=dbusmenu \
 	--identifier-prefix=DbusmenuGtk
 else
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 	--warn-all \
 	--add-include-path=$(top_builddir)/libdbusmenu-glib \
-	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
+	$(addprefix --c-include=libdbusmenu-gtk/, $(libdbusmenu_gtkinclude_HEADERS))
 endif
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_builddir)/libdbusmenu-glib
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(libdbusmenu_gtkinclude_HEADERS)
+introspection_sources = $(filter-out genericmenuitem.%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
 
 DbusmenuGtk$(VER)-0.4.gir: libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_INCLUDES = \
 	GObject-2.0 \
 	$(GTKGIR) \
-	Dbusmenu-Glib-0.4 
+	Dbusmenu-0.4 
 DbusmenuGtk_0_4_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
 DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
@@ -141,7 +141,7 @@ DbusmenuGtk$(VER)-0.4.vapi: DbusmenuGtk$(VER)-0.4.tmp.gir Makefile.am
 		--pkg gdk-pixbuf-2.0 \
 		--pkg $(GTKVALA) \
 		--pkg atk \
-		--pkg Dbusmenu-Glib-0.4 \
+		--pkg Dbusmenu-0.4 \
 		--vapidir=$(top_builddir)/libdbusmenu-glib \
 		$<
 

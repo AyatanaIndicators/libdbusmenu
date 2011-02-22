@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "menuitem-marshal.h"
 #include "menuitem-private.h"
+#include "defaults.h"
 
 #ifdef MASSIVEDEBUGGING
 #define LABEL(x)  dbusmenu_menuitem_property_get(DBUSMENU_MENUITEM(x), DBUSMENU_MENUITEM_PROP_LABEL)
@@ -59,6 +60,7 @@ struct _DbusmenuMenuitemPrivate
 	GHashTable * properties;
 	gboolean root;
 	gboolean realized;
+	DbusmenuDefaults * defaults;
 };
 
 /* Signals */
@@ -96,7 +98,7 @@ static void set_property (GObject * obj, guint id, const GValue * value, GParamS
 static void get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec);
 static void g_value_transform_STRING_BOOLEAN (const GValue * in, GValue * out);
 static void g_value_transform_STRING_INT (const GValue * in, GValue * out);
-static void handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp);
+static void handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
 static void send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
 
 /* GObject stuff */
@@ -330,6 +332,8 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 
 	priv->root = FALSE;
 	priv->realized = FALSE;
+
+	priv->defaults = dbusmenu_defaults_ref_default();
 	
 	return;
 }
@@ -345,6 +349,11 @@ dbusmenu_menuitem_dispose (GObject *object)
 	}
 	g_list_free(priv->children);
 	priv->children = NULL;
+
+	if (priv->defaults != NULL) {
+		g_object_unref(priv->defaults);
+		priv->defaults = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_parent_class)->dispose (object);
 	return;
@@ -443,15 +452,28 @@ send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gp
 	return;
 }
 
+/* A helper function to get the type of the menuitem, this might
+   be a candidate for optimization in the future. */
+static const gchar *
+menuitem_get_type (DbusmenuMenuitem * mi)
+{
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, DBUSMENU_MENUITEM_PROP_TYPE);
+	if (currentval != NULL) {
+		return g_variant_get_string(currentval, NULL);
+	}
+	return NULL;
+}
+
 /* Public interface */
 
 /**
-	dbusmenu_menuitem_new:
-
-	Create a new #DbusmenuMenuitem with all default values.
-
-	Return value: A newly allocated #DbusmenuMenuitem.
-*/
+ * dbusmenu_menuitem_new:
+ * 
+ * Create a new #DbusmenuMenuitem with all default values.
+ * 
+ * Return value: A newly allocated #DbusmenuMenuitem.
+ */
 DbusmenuMenuitem *
 dbusmenu_menuitem_new (void)
 {
@@ -459,13 +481,13 @@ dbusmenu_menuitem_new (void)
 }
 
 /**
-	dbusmenu_menuitem_new_with_id:
-	@id: ID to use for this menuitem
-
-	This creates a blank #DbusmenuMenuitem with a specific ID.
-
-	Return value: A newly allocated #DbusmenuMenuitem.
-*/
+ * dbusmenu_menuitem_new_with_id:
+ * @id: ID to use for this menuitem
+ * 
+ * This creates a blank #DbusmenuMenuitem with a specific ID.
+ * 
+ * Return value: A newly allocated #DbusmenuMenuitem.
+ */
 DbusmenuMenuitem *
 dbusmenu_menuitem_new_with_id (gint id)
 {
@@ -475,13 +497,13 @@ dbusmenu_menuitem_new_with_id (gint id)
 }
 
 /**
-	dbusmenu_menuitem_get_id:
-	@mi: The #DbusmenuMenuitem to query.
-
-	Gets the unique ID for @mi.
-
-	Return value: The ID of the @mi.
-*/
+ * dbusmenu_menuitem_get_id:
+ * @mi: The #DbusmenuMenuitem to query.
+ * 
+ * Gets the unique ID for @mi.
+ * 
+ * Return value: The ID of the @mi.
+ */
 gint
 dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 {
@@ -498,17 +520,17 @@ dbusmenu_menuitem_get_id (DbusmenuMenuitem * mi)
 }
 
 /**
-	dbusmenu_menuitem_realized:
-	@mi: #DbusmenuMenuitem to check on
-
-	This function returns whether the menuitem has been realized or
-	not.  This is significant mostly in client implementations that
-	can use this additional state to see if the second layers of
-	the implementation have been built yet.
-
-	Return value: Returns whether or not the menu item has been realized
-		yet or not.
-*/
+ * dbusmenu_menuitem_realized:
+ * @mi: #DbusmenuMenuitem to check on
+ * 
+ * This function returns whether the menuitem has been realized or
+ * not.  This is significant mostly in client implementations that
+ * can use this additional state to see if the second layers of
+ * the implementation have been built yet.
+ * 
+ * Return value: Returns whether or not the menu item has been realized
+ * 	yet or not.
+ */
 gboolean
 dbusmenu_menuitem_realized (DbusmenuMenuitem * mi)
 {
@@ -518,12 +540,12 @@ dbusmenu_menuitem_realized (DbusmenuMenuitem * mi)
 }
 
 /**
-	dbusmenu_menuitem_set_realized:
-	@mi: #DbusmenuMenuitem to realize
-
-	Sets the internal variable tracking whether it's been realized and
-	signals the DbusmenuMenuitem::realized event.
-*/
+ * dbusmenu_menuitem_set_realized:
+ * @mi: #DbusmenuMenuitem to realize
+ * 
+ * Sets the internal variable tracking whether it's been realized and
+ * signals the DbusmenuMenuitem::realized event.
+ */
 void
 dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi)
 {
@@ -538,15 +560,15 @@ dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi)
 }
 
 /**
-	dbusmenu_menuitem_get_children:
-	@mi: The #DbusmenuMenuitem to query.
-
-	Returns simply the list of children that this menu item
-	has.  The list is valid until another child related function
-	is called, where it might be changed.
-
-	Return value: A #GList of pointers to #DbusmenuMenuitem objects.
-*/
+ * dbusmenu_menuitem_get_children:
+ * @mi: The #DbusmenuMenuitem to query.
+ * 
+ * Returns simply the list of children that this menu item
+ * has.  The list is valid until another child related function
+ * is called, where it might be changed.
+ * 
+ * Return value: (transfer none): A #GList of pointers to #DbusmenuMenuitem objects.
+ */
 GList *
 dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 {
@@ -565,22 +587,22 @@ take_children_signal (gpointer data, gpointer user_data)
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(user_data), LABEL(user_data), ID(data), LABEL(data));
 	#endif
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
-	g_object_unref(G_OBJECT(data));
 	return;
 }
 
 /**
-	dbusmenu_menuitem_take_children:
-	@mi: The #DbusmenMenuitem to take the children from.
-
-	While the name sounds devious that's exactly what this function
-	does.  It takes the list of children from the @mi and clears the
-	internal list.  The calling function is now in charge of the ref's
-	on the children it has taken.  A lot of responsibility involved
-	in taking children.
-
-	Return value: A #GList of pointers to #DbusmenuMenuitem objects.
-*/
+ * dbusmenu_menuitem_take_children:
+ * @mi: The #DbusmenMenuitem to take the children from.
+ * 
+ * While the name sounds devious that's exactly what this function
+ * does.  It takes the list of children from the @mi and clears the
+ * internal list.  The calling function is now in charge of the ref's
+ * on the children it has taken.  A lot of responsibility involved
+ * in taking children.
+ * 
+ * Return value: (transfer full) (element-type Dbusmenu.Menuitem):
+ *    A #GList of pointers to #DbusmenuMenuitem objects.
+ */
 GList *
 dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 {
@@ -597,16 +619,16 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 }
 
 /**
-	dbusmenu_menuitem_get_position:
-	@mi: The #DbusmenuMenuitem to find the position of
-	@parent: The #DbusmenuMenuitem who's children contain @mi
-
-	This function returns the position of the menu item @mi
-	in the children of @parent.  It will return zero if the
-	menu item can't be found.
-
-	Return value: The position of @mi in the children of @parent.
-*/
+ * dbusmenu_menuitem_get_position:
+ * @mi: The #DbusmenuMenuitem to find the position of
+ * @parent: The #DbusmenuMenuitem who's children contain @mi
+ * 
+ * This function returns the position of the menu item @mi
+ * in the children of @parent.  It will return zero if the
+ * menu item can't be found.
+ * 
+ * Return value: The position of @mi in the children of @parent.
+ */
 guint
 dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
 {
@@ -636,15 +658,15 @@ dbusmenu_menuitem_get_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent
 }
 
 /**
-	dbusmenu_menuitem_get_position_realized:
-	@mi: The #DbusmenuMenuitem to find the position of
-	@parent: The #DbusmenuMenuitem who's children contain @mi
-
-	This function is very similar to #dbusmenu_menuitem_get_position
-	except that it only counts in the children that have been realized.
-
-	Return value: The position of @mi in the realized children of @parent.
-*/
+ * dbusmenu_menuitem_get_position_realized:
+ * @mi: The #DbusmenuMenuitem to find the position of
+ * @parent: The #DbusmenuMenuitem who's children contain @mi
+ * 
+ * This function is very similar to #dbusmenu_menuitem_get_position
+ * except that it only counts in the children that have been realized.
+ * 
+ * Return value: The position of @mi in the realized children of @parent.
+ */
 guint
 dbusmenu_menuitem_get_position_realized (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
 {
@@ -680,15 +702,15 @@ dbusmenu_menuitem_get_position_realized (DbusmenuMenuitem * mi, DbusmenuMenuitem
 }
 
 /**
-	dbusmenu_menuitem_child_append:
-	@mi: The #DbusmenuMenuitem which will become a new parent
-	@child: The #DbusmenMenuitem that will be a child
-
-	This function adds @child to the list of children on @mi at
-	the end of that list.
-
-	Return value: Whether the child has been added successfully.
-*/
+ * dbusmenu_menuitem_child_append:
+ * @mi: The #DbusmenuMenuitem which will become a new parent
+ * @child: The #DbusmenMenuitem that will be a child
+ * 
+ * This function adds @child to the list of children on @mi at
+ * the end of that list.
+ * 
+ * Return value: Whether the child has been added successfully.
+ */
 gboolean
 dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
@@ -712,15 +734,15 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 }
 
 /**
-	dbusmenu_menuitem_child_prepend:
-	@mi: The #DbusmenuMenuitem which will become a new parent
-	@child: The #DbusmenMenuitem that will be a child
-
-	This function adds @child to the list of children on @mi at
-	the beginning of that list.
-
-	Return value: Whether the child has been added successfully.
-*/
+ * dbusmenu_menuitem_child_prepend:
+ * @mi: The #DbusmenuMenuitem which will become a new parent
+ * @child: The #DbusmenMenuitem that will be a child
+ * 
+ * This function adds @child to the list of children on @mi at
+ * the beginning of that list.
+ * 
+ * Return value: Whether the child has been added successfully.
+ */
 gboolean
 dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
@@ -744,16 +766,16 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 }
 
 /**
-	dbusmenu_menuitem_child_delete:
-	@mi: The #DbusmenuMenuitem which has @child as a child
-	@child: The child #DbusmenuMenuitem that you want to no longer
-	    be a child of @mi.
-	
-	This function removes @child from the children list of @mi.  It does
-	not call #g_object_unref on @child.
-
-	Return value: If we were able to delete @child.
-*/
+ * dbusmenu_menuitem_child_delete:
+ * @mi: The #DbusmenuMenuitem which has @child as a child
+ * @child: The child #DbusmenuMenuitem that you want to no longer
+ *     be a child of @mi.
+ * 
+ * This function removes @child from the children list of @mi.  It does
+ * not call #g_object_unref on @child.
+ * 
+ * Return value: If we were able to delete @child.
+ */
 gboolean
 dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 {
@@ -776,17 +798,17 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 }
 
 /**
-	dbusmenu_menuitem_child_add_position:
-	@mi: The #DbusmenuMenuitem that we're adding the child @child to.
-	@child: The #DbusmenuMenuitem to make a child of @mi.
-	@position: Where in @mi object's list of chidren @child should be placed.
-
-	Puts @child in the list of children for @mi at the location
-	specified in @position.  If there is not enough entires available
-	then @child will be placed at the end of the list.
-
-	Return value: Whether @child was added successfully.
-*/
+ * dbusmenu_menuitem_child_add_position:
+ * @mi: The #DbusmenuMenuitem that we're adding the child @child to.
+ * @child: The #DbusmenuMenuitem to make a child of @mi.
+ * @position: Where in @mi object's list of chidren @child should be placed.
+ * 
+ * Puts @child in the list of children for @mi at the location
+ * specified in @position.  If there is not enough entires available
+ * then @child will be placed at the end of the list.
+ * 
+ * Return value: Whether @child was added successfully.
+ */
 gboolean
 dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position)
 {
@@ -810,17 +832,17 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 }
 
 /**
-	dbusmenu_menuitem_child_reorder:
-	@base: The #DbusmenuMenuitem that has children needing realignment
-	@child: The #DbusmenuMenuitem that is a child needing to be moved
-	@position: The position in the list to place it in
-
-	This function moves a child on the list of children.  It is
-	for a child that is already in the list, but simply needs a 
-	new location.
-
-	Return value: Whether the move was successful.
-*/
+ * dbusmenu_menuitem_child_reorder:
+ * @mi: The #DbusmenuMenuitem that has children needing realignment
+ * @child: The #DbusmenuMenuitem that is a child needing to be moved
+ * @position: The position in the list to place it in
+ * 
+ * This function moves a child on the list of children.  It is
+ * for a child that is already in the list, but simply needs a 
+ * new location.
+ * 
+ * Return value: Whether the move was successful.
+ */
 gboolean
 dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position)
 {
@@ -850,16 +872,16 @@ dbusmenu_menuitem_child_reorder(DbusmenuMenuitem * mi, DbusmenuMenuitem * child,
 }
 
 /**
-	dbusmenu_menuitem_child_find:
-	@mi: The #DbusmenuMenuitem who's children to look on
-	@id: The ID of the child that we're looking for.
-
-	Search the children of @mi to find one with the ID of @id.
-	If it doesn't exist then we return #NULL.
-
-	Return value: The menu item with the ID @id or #NULL if it
-	   can't be found.
-*/
+ * dbusmenu_menuitem_child_find:
+ * @mi: The #DbusmenuMenuitem who's children to look on
+ * @id: The ID of the child that we're looking for.
+ * 
+ * Search the children of @mi to find one with the ID of @id.
+ * If it doesn't exist then we return #NULL.
+ * 
+ * Return value: (transfer none): The menu item with the ID @id or #NULL if it
+ *    can't be found.
+ */
 DbusmenuMenuitem *
 dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, gint id)
 {
@@ -903,18 +925,18 @@ find_id_helper (gpointer in_mi, gpointer in_find_id)
 }
 
 /**
-	dbusmenu_menuitem_find_id:
-	@mi: #DbusmenuMenuitem at the top of the tree to search
-	@id: ID of the #DbusmenuMenuitem to search for
-
-	This function searchs the whole tree of children that
-	are attached to @mi.  This could be quite a few nodes, all
-	the way down the tree.  It is a depth first search.
-
-	Return value: The #DbusmenuMenuitem with the ID of @id
-		or #NULL if there isn't such a menu item in the tree
-		represented by @mi.
-*/
+ * dbusmenu_menuitem_find_id:
+ * @mi: #DbusmenuMenuitem at the top of the tree to search
+ * @id: ID of the #DbusmenuMenuitem to search for
+ * 
+ * This function searchs the whole tree of children that
+ * are attached to @mi.  This could be quite a few nodes, all
+ * the way down the tree.  It is a depth first search.
+ * 
+ * Return value: (transfer none): The #DbusmenuMenuitem with the ID of @id
+ * 	or #NULL if there isn't such a menu item in the tree
+ * 	represented by @mi.
+ */
 DbusmenuMenuitem *
 dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 {
@@ -931,20 +953,20 @@ dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 }
 
 /**
-	dbusmenu_menuitem_property_set:
-	@mi: The #DbusmenuMenuitem to set the property on.
-	@property: Name of the property to set.
-	@value: The value of the property.
-
-	Takes the pair of @property and @value and places them as a
-	property on @mi.  If a property already exists by that name,
-	then the value is set to the new value.  If not, the property
-	is added.  If the value is changed or the property was previously
-	unset then the signal #DbusmenuMenuitem::prop-changed will be
-	emitted by this function.
-
-	Return value:  A boolean representing if the property value was set.
-*/
+ * dbusmenu_menuitem_property_set:
+ * @mi: The #DbusmenuMenuitem to set the property on.
+ * @property: Name of the property to set.
+ * @value: The value of the property.
+ * 
+ * Takes the pair of @property and @value and places them as a
+ * property on @mi.  If a property already exists by that name,
+ * then the value is set to the new value.  If not, the property
+ * is added.  If the value is changed or the property was previously
+ * unset then the signal #DbusmenuMenuitem::prop-changed will be
+ * emitted by this function.
+ * 
+ * Return value:  A boolean representing if the property value was set.
+ */
 gboolean
 dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value)
 {
@@ -956,20 +978,20 @@ dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, c
 }
 
 /**
-	dbusmenu_menuitem_property_set_bool:
-	@mi: The #DbusmenuMenuitem to set the property on.
-	@property: Name of the property to set.
-	@value: The value of the property.
-
-	Takes a boolean @value and sets it on @property as a
-	property on @mi.  If a property already exists by that name,
-	then the value is set to the new value.  If not, the property
-	is added.  If the value is changed or the property was previously
-	unset then the signal #DbusmenuMenuitem::prop-changed will be
-	emitted by this function.
-
-	Return value:  A boolean representing if the property value was set.
-*/
+ * dbusmenu_menuitem_property_set_bool:
+ * @mi: The #DbusmenuMenuitem to set the property on.
+ * @property: Name of the property to set.
+ * @value: The value of the property.
+ * 
+ * Takes a boolean @value and sets it on @property as a
+ * property on @mi.  If a property already exists by that name,
+ * then the value is set to the new value.  If not, the property
+ * is added.  If the value is changed or the property was previously
+ * unset then the signal #DbusmenuMenuitem::prop-changed will be
+ * emitted by this function.
+ * 
+ * Return value:  A boolean representing if the property value was set.
+ */
 gboolean
 dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value)
 {
@@ -978,20 +1000,20 @@ dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * proper
 }
 
 /**
-	dbusmenu_menuitem_property_set_int:
-	@mi: The #DbusmenuMenuitem to set the property on.
-	@property: Name of the property to set.
-	@value: The value of the property.
-
-	Takes a boolean @value and sets it on @property as a
-	property on @mi.  If a property already exists by that name,
-	then the value is set to the new value.  If not, the property
-	is added.  If the value is changed or the property was previously
-	unset then the signal #DbusmenuMenuitem::prop-changed will be
-	emitted by this function.
-
-	Return value:  A boolean representing if the property value was set.
-*/
+ * dbusmenu_menuitem_property_set_int:
+ * @mi: The #DbusmenuMenuitem to set the property on.
+ * @property: Name of the property to set.
+ * @value: The value of the property.
+ * 
+ * Takes a boolean @value and sets it on @property as a
+ * property on @mi.  If a property already exists by that name,
+ * then the value is set to the new value.  If not, the property
+ * is added.  If the value is changed or the property was previously
+ * unset then the signal #DbusmenuMenuitem::prop-changed will be
+ * emitted by this function.
+ * 
+ * Return value:  A boolean representing if the property value was set.
+ */
 gboolean
 dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value)
 {
@@ -1000,20 +1022,20 @@ dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * propert
 }
 
 /**
-	dbusmenu_menuitem_property_set_variant:
-	@mi: The #DbusmenuMenuitem to set the property on.
-	@property: Name of the property to set.
-	@value: The value of the property.
-
-	Takes the pair of @property and @value and places them as a
-	property on @mi.  If a property already exists by that name,
-	then the value is set to the new value.  If not, the property
-	is added.  If the value is changed or the property was previously
-	unset then the signal #DbusmenuMenuitem::prop-changed will be
-	emitted by this function.
-
-	Return value:  A boolean representing if the property value was set.
-*/
+ * dbusmenu_menuitem_property_set_variant:
+ * @mi: The #DbusmenuMenuitem to set the property on.
+ * @property: Name of the property to set.
+ * @value: The value of the property.
+ * 
+ * Takes the pair of @property and @value and places them as a
+ * property on @mi.  If a property already exists by that name,
+ * then the value is set to the new value.  If not, the property
+ * is added.  If the value is changed or the property was previously
+ * unset then the signal #DbusmenuMenuitem::prop-changed will be
+ * emitted by this function.
+ * 
+ * Return value:  A boolean representing if the property value was set.
+ */
 gboolean
 dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * property, GVariant * value)
 {
@@ -1022,17 +1044,49 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
+	const gchar * type = menuitem_get_type(mi);
+
+	/* Check the expected type to see if we want to have a warning */
+	GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
+	if (default_type != NULL) {
+		/* If we have an expected type we should check to see if
+		   the value we've been given is of the same type and generate
+		   a warning if it isn't */
+		if (!g_variant_is_of_type(value, default_type)) {
+			g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
+		}
+	}
+
+	/* Check the defaults database to see if we have a default
+	   for this property. */
+	GVariant * default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
+	if (default_value != NULL) {
+		/* Now see if we're setting this to the same value as the
+		   default.  If we are then we just want to swallow this variant
+		   and make the function behave like we're clearing it. */
+		if (g_variant_equal(default_value, value)) {
+			g_variant_ref_sink(value);
+			g_variant_unref(value);
+			value = NULL;
+		}
+	}
+
 	gboolean replaced = FALSE;
 	gpointer currentval = g_hash_table_lookup(priv->properties, property);
 
 	if (value != NULL) {
-		gchar * lprop = g_strdup(property);
-		g_variant_ref(value);
-
+		/* NOTE: We're only marking this as replaced if this is true
+		   but we're actually replacing it no matter.  This is so that
+		   the variant passed in sticks around which the caller may
+		   expect.  They shouldn't, but it's low cost to remove bugs. */
 		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
-			g_hash_table_replace(priv->properties, lprop, value);
 			replaced = TRUE;
 		}
+
+		gchar * lprop = g_strdup(property);
+		g_variant_ref_sink(value);
+
+		g_hash_table_replace(priv->properties, lprop, value);
 	} else {
 		if (currentval != NULL) {
 			g_hash_table_remove(priv->properties, property);
@@ -1045,25 +1099,33 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	   table.  But the fact that there was a value is
 	   the imporant part. */
 	if (currentval == NULL || replaced) {
-		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, value, TRUE);
+		GVariant * signalval = value;
+
+		if (signalval == NULL) {
+			/* Might also be NULL, but if it is we're definitely
+			   clearing this thing. */
+			signalval = default_value;
+		}
+
+		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, signalval, TRUE);
 	}
 
 	return TRUE;
 }
 
 /**
-	dbusmenu_menuitem_property_get:
-	@mi: The #DbusmenuMenuitem to look for the property on.
-	@property: The property to grab.
-
-	Look up a property on @mi and return the value of it if
-	it exits.  #NULL will be returned if the property doesn't
-	exist.
-
-	Return value: A string with the value of the property
-		that shouldn't be free'd.  Or #NULL if the property
-		is not set or is not a string.
-*/
+ * dbusmenu_menuitem_property_get:
+ * @mi: The #DbusmenuMenuitem to look for the property on.
+ * @property: The property to grab.
+ * 
+ * Look up a property on @mi and return the value of it if
+ * it exits.  #NULL will be returned if the property doesn't
+ * exist.
+ * 
+ * Return value: (transfer none): A string with the value of the property
+ * 	that shouldn't be free'd.  Or #NULL if the property
+ * 	is not set or is not a string.
+ */
 const gchar *
 dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
 {
@@ -1074,16 +1136,16 @@ dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
 }
 
 /**
-	dbusmenu_menuitem_property_get_variant:
-	@mi: The #DbusmenuMenuitem to look for the property on.
-	@property: The property to grab.
-
-	Look up a property on @mi and return the value of it if
-	it exits.  #NULL will be returned if the property doesn't
-	exist.
-
-	Return value: A GVariant for the property.
-*/
+ * dbusmenu_menuitem_property_get_variant:
+ * @mi: The #DbusmenuMenuitem to look for the property on.
+ * @property: The property to grab.
+ * 
+ * Look up a property on @mi and return the value of it if
+ * it exits.  #NULL will be returned if the property doesn't
+ * exist.
+ * 
+ * Return value: (transfer none): A GVariant for the property.
+ */
 GVariant *
 dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property)
 {
@@ -1092,19 +1154,25 @@ dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
-	return (GVariant *)g_hash_table_lookup(priv->properties, property);
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, property);
+
+	if (currentval == NULL) {
+		currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
+	}
+
+	return currentval;
 }
 
 /**
-	dbusmenu_menuitem_property_get_bool:
-	@mi: The #DbusmenuMenuitem to look for the property on.
-	@property: The property to grab.
-
-	Look up a property on @mi and return the value of it if
-	it exits.  Returns #FALSE if the property doesn't exist.
-
-	Return value: The value of the property or #FALSE.
-*/
+ * dbusmenu_menuitem_property_get_bool:
+ * @mi: The #DbusmenuMenuitem to look for the property on.
+ * @property: The property to grab.
+ * 
+ * Look up a property on @mi and return the value of it if
+ * it exits.  Returns #FALSE if the property doesn't exist.
+ * 
+ * Return value: The value of the property or #FALSE.
+ */
 gboolean
 dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property)
 {
@@ -1130,15 +1198,15 @@ dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * proper
 }
 
 /**
-	dbusmenu_menuitem_property_get_int:
-	@mi: The #DbusmenuMenuitem to look for the property on.
-	@property: The property to grab.
-
-	Look up a property on @mi and return the value of it if
-	it exits.  Returns zero if the property doesn't exist.
-
-	Return value: The value of the property or zero.
-*/
+ * dbusmenu_menuitem_property_get_int:
+ * @mi: The #DbusmenuMenuitem to look for the property on.
+ * @property: The property to grab.
+ * 
+ * Look up a property on @mi and return the value of it if
+ * it exits.  Returns zero if the property doesn't exist.
+ * 
+ * Return value: The value of the property or zero.
+ */
 gint
 dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property)
 {
@@ -1160,15 +1228,15 @@ dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * propert
 
 
 /**
-	dbusmenu_menuitem_property_exit:
-	@mi: The #DbusmenuMenuitem to look for the property on.
-	@property: The property to look for.
-
-	Checkes to see if a particular property exists on @mi and 
-	returns #TRUE if so.
-
-	Return value: A boolean checking to see if the property is available
-*/
+ * dbusmenu_menuitem_property_exit:
+ * @mi: The #DbusmenuMenuitem to look for the property on.
+ * @property: The property to look for.
+ * 
+ * Checkes to see if a particular property exists on @mi and 
+ * returns #TRUE if so.
+ * 
+ * Return value: A boolean checking to see if the property is available
+ */
 gboolean
 dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
 {
@@ -1183,12 +1251,12 @@ dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
 }
 
 /**
-	dbusmenu_menuitem_property_remove:
-	@mi: The #DbusmenuMenuitem to remove the property on.
-	@property: The property to look for.
-
-	Removes a property from the menuitem.
-*/
+ * dbusmenu_menuitem_property_remove:
+ * @mi: The #DbusmenuMenuitem to remove the property on.
+ * @property: The property to look for.
+ * 
+ * Removes a property from the menuitem.
+ */
 void
 dbusmenu_menuitem_property_remove (DbusmenuMenuitem * mi, const gchar * property)
 {
@@ -1203,15 +1271,16 @@ dbusmenu_menuitem_property_remove (DbusmenuMenuitem * mi, const gchar * property
 }
 
 /**
-	dbusmenu_menuitem_properties_list:
-	@mi: #DbusmenuMenuitem to list the properties on
-
-	This functiong gets a list of the names of all the properties
-	that are set on this menu item.  This data on the list is owned
-	by the menuitem but the list is not and should be freed using
-	g_list_free() when the calling function is done with it.
-
-	Return value: A list of strings or NULL if there are none.
+ * dbusmenu_menuitem_properties_list:
+ * @mi: #DbusmenuMenuitem to list the properties on
+ * 
+ * This functiong gets a list of the names of all the properties
+ * that are set on this menu item.  This data on the list is owned
+ * by the menuitem but the list is not and should be freed using
+ * g_list_free() when the calling function is done with it.
+ * 
+ * Return value: (transfer container): A list of strings or NULL if there are
+ *     none.
 */
 GList *
 dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi)
@@ -1231,24 +1300,24 @@ copy_helper (gpointer in_key, gpointer in_value, gpointer in_data)
 	GHashTable * table = (GHashTable *)in_data;
 	gchar * key = (gchar *)in_key;
 	GVariant * value = (GVariant *)in_value;
-	g_variant_ref(value);
+	g_variant_ref_sink(value);
 	g_hash_table_insert(table, g_strdup(key), value);
 	return;
 }
 
 /**
-	dbusmenu_menuitem_properties_copy:
-	@mi: #DbusmenuMenuitem that we're interested in the properties of
-
-	This function takes the properties of a #DbusmenuMenuitem
-	and puts them into a #GHashTable that is referenced by the
-	key of a string and has the value of a string.  The hash
-	table may not have any entries if there aren't any or there
-	is an error in processing.  It is the caller's responsibility
-	to destroy the created #GHashTable.
-
-	Return value: A brand new #GHashTable that contains all of the
-		properties that are on this #DbusmenuMenuitem @mi.
+ * dbusmenu_menuitem_properties_copy:
+ * @mi: #DbusmenuMenuitem that we're interested in the properties of
+ * 
+ * This function takes the properties of a #DbusmenuMenuitem
+ * and puts them into a #GHashTable that is referenced by the
+ * key of a string and has the value of a string.  The hash
+ * table may not have any entries if there aren't any or there
+ * is an error in processing.  It is the caller's responsibility
+ * to destroy the created #GHashTable.
+ * 
+ * Return value: (transfer full): A brand new #GHashTable that contains all of
+ *    theroperties that are on this #DbusmenuMenuitem @mi.
 */
 GHashTable *
 dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
@@ -1268,21 +1337,23 @@ dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi)
 static void
 variant_helper (gpointer in_key, gpointer in_value, gpointer user_data)
 {
-	g_variant_builder_add((GVariantBuilder *)user_data, "{sv}", in_key, in_value);
+	GVariant * value = g_variant_new_dict_entry(g_variant_new_string((gchar *)in_key),
+	                                            g_variant_new_variant((GVariant *)in_value));
+	g_variant_builder_add_value((GVariantBuilder *)user_data, value);
 	return;
 }
 
 /**
-	dbusmenu_menuitem_properties_variant:
-	@mi: #DbusmenuMenuitem to get properties from
-
-	Grabs the properties of the menuitem as a GVariant with the
-	type "a{sv}".
-
-	Return Value: A GVariant of type "a{sv}" or NULL on error.
-*/
+ * dbusmenu_menuitem_properties_variant:
+ * @mi: #DbusmenuMenuitem to get properties from
+ * 
+ * Grabs the properties of the menuitem as a GVariant with the
+ * type "a{sv}".
+ * 
+ * Return Value: (transfer full): A GVariant of type "a{sv}" or NULL on error.
+ */
 GVariant *
-dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
+dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** properties)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
@@ -1292,7 +1363,7 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
 
 	if (g_hash_table_size(priv->properties) > 0) {
 		GVariantBuilder builder;
-		g_variant_builder_init(&builder, g_variant_type_new("a{sv}"));
+		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
 		g_hash_table_foreach(priv->properties, variant_helper, &builder);
 
@@ -1303,15 +1374,15 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi)
 }
 
 /**
-	dbusmenu_menuitem_set_root:
-	@mi: #DbusmenuMenuitem to set whether it's root
-	@root: Whether @mi is a root node or not
-
-	This function sets the internal value of whether this is a
-	root node or not.
-
-	Return value: None
-*/
+ * dbusmenu_menuitem_set_root:
+ * @mi: #DbusmenuMenuitem to set whether it's root
+ * @root: Whether @mi is a root node or not
+ * 
+ * This function sets the internal value of whether this is a
+ * root node or not.
+ * 
+ * Return value: None
+ */
 void
 dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root)
 {
@@ -1322,14 +1393,14 @@ dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root)
 }
 
 /**
-	dbusmenu_menuitem_get_root:
-	@mi: #DbusmenuMenuitem to see whether it's root
-
-	This function returns the internal value of whether this is a
-	root node or not.
-
-	Return value: #TRUE if this is a root node
-*/
+ * dbusmenu_menuitem_get_root:
+ * @mi: #DbusmenuMenuitem to see whether it's root
+ * 
+ * This function returns the internal value of whether this is a
+ * root node or not.
+ * 
+ * Return value: #TRUE if this is a root node
+ */
 gboolean
 dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 {
@@ -1340,38 +1411,62 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
 
 
 /**
-	dbusmenu_menuitem_buildxml:
-	@mi: #DbusmenuMenuitem to represent in XML
-	@array: (element-type utf8): A list of string that will be turned into an XML file
-
-	This function will add strings to the array @array.  It will put
-	at least one entry if this menu item has no children.  If it has
-	children it will put two for this entry, one representing the
-	start tag and one that is a closing tag.  It will allow it's
-	children to place their own tags in the array in between those two.
+ * dbusmenu_menuitem_buildvariant:
+ * @mi: #DbusmenuMenuitem to represent in a variant
+ * @properties: (element-type utf8): A list of string that will be put into
+ *      a variant
+ * 
+ * This function will put at least one entry if this menu item has no children.
+ * If it has children it will put two for this entry, one representing the
+ * start tag and one that is a closing tag.  It will allow it's
+ * children to place their own tags in the array in between those two.
+ *
+ * Return value: (transfer full): Variant representing @properties
 */
-void
-dbusmenu_menuitem_buildxml (DbusmenuMenuitem * mi, GPtrArray * array)
+GVariant *
+dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties, gint recurse)
 {
-	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 
 	gint id = 0;
 	if (!dbusmenu_menuitem_get_root(mi)) {
 		id = dbusmenu_menuitem_get_id(mi);
 	}
 
-	GList * children = dbusmenu_menuitem_get_children(mi);
-	if (children == NULL) {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\"/>", id));
+	/* This is the tuple that'll build up being a representation of
+	   this entry */
+	GVariantBuilder tupleb;
+	g_variant_builder_init(&tupleb, G_VARIANT_TYPE_TUPLE);
+
+	/* Add our ID */
+	g_variant_builder_add_value(&tupleb, g_variant_new_int32(id));
+
+	/* Figure out the properties */
+	GVariant * props = dbusmenu_menuitem_properties_variant(mi, properties);
+	if (props != NULL) {
+		g_variant_builder_add_value(&tupleb, props);
 	} else {
-		g_ptr_array_add(array, g_strdup_printf("<menu id=\"%d\">", id));
-		for ( ; children != NULL; children = children->next) {
-			dbusmenu_menuitem_buildxml(DBUSMENU_MENUITEM(children->data), array);
-		}
-		g_ptr_array_add(array, g_strdup("</menu>"));
+		g_variant_builder_add_value(&tupleb, g_variant_parse(G_VARIANT_TYPE("a{sv}"), "[ ]", NULL, NULL, NULL));
 	}
 
-	return;
+	/* Pillage the children */
+	GList * children = dbusmenu_menuitem_get_children(mi);
+	if (children == NULL && recurse != 0) {
+		g_variant_builder_add_value(&tupleb, g_variant_new_array(G_VARIANT_TYPE_VARIANT, NULL, 0));
+	} else {
+		GVariantBuilder childrenbuilder;
+		g_variant_builder_init(&childrenbuilder, G_VARIANT_TYPE_ARRAY);
+
+		for ( ; children != NULL; children = children->next) {
+			GVariant * child = dbusmenu_menuitem_build_variant(DBUSMENU_MENUITEM(children->data), properties, recurse - 1);
+
+			g_variant_builder_add_value(&childrenbuilder, g_variant_new_variant(child));
+		}
+
+		g_variant_builder_add_value(&tupleb, g_variant_builder_end(&childrenbuilder));
+	}
+
+	return g_variant_builder_end(&tupleb);
 }
 
 typedef struct {
@@ -1387,15 +1482,15 @@ foreach_helper (gpointer data, gpointer user_data)
 }
 
 /**
-	dbusmenu_menuitem_foreach:
-	@mi: The #DbusmenItem to start from
-	@func: Function to call on every node in the tree
-	@data: (closure): User data to pass to the function
-
-	This calls the function @func on this menu item and all
-	of the children of this item.  And their children.  And
-	their children.  And... you get the point.  It will get
-	called on the whole tree.
+ * dbusmenu_menuitem_foreach:
+ * @mi: The #DbusmenItem to start from
+ * @func: Function to call on every node in the tree
+ * @data: (closure): User data to pass to the function
+ * 
+ * This calls the function @func on this menu item and all
+ * of the children of this item.  And their children.  And
+ * their children.  And... you get the point.  It will get
+ * called on the whole tree.
 */
 void
 dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem * mi, gpointer data), gpointer data)
@@ -1411,23 +1506,23 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 }
 
 /**
-	dbusmenu_menuitem_handle_event:
-	@mi: The #DbusmenuMenuitem to send the signal on.
-	@name: The name of the signal
-	@variant: A value that could be set for the event
-	@timestamp: The timestamp of when the event happened
-
-	This function is called to create an event.  It is likely
-	to be overrided by subclasses.  The default menu item
-	will respond to the activate signal and do:
-
-	Emits the #DbusmenuMenuitem::item-activate signal on this
-	menu item.  Called by server objects when they get the
-	appropriate DBus signals from the client.
-
-	If you subclass this function you should really think
-	about calling the parent function unless you have a good
-	reason not to.
+ * dbusmenu_menuitem_handle_event:
+ * @mi: The #DbusmenuMenuitem to send the signal on.
+ * @name: The name of the signal
+ * @variant: A value that could be set for the event
+ * @timestamp: The timestamp of when the event happened
+ * 
+ * This function is called to create an event.  It is likely
+ * to be overrided by subclasses.  The default menu item
+ * will respond to the activate signal and do:
+ * 
+ * Emits the #DbusmenuMenuitem::item-activate signal on this
+ * menu item.  Called by server objects when they get the
+ * appropriate DBus signals from the client.
+ * 
+ * If you subclass this function you should really think
+ * about calling the parent function unless you have a good
+ * reason not to.
 */
 void
 dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp)
@@ -1448,16 +1543,16 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 }
 
 /**
-	dbusmenu_menuitem_send_about_to_show:
-	@mi: The #DbusmenuMenuitem to send the signal on.
-	@cb: Callback to call when the call has returned.
-	@cb_data: (closure): Data to pass to the callback.
-
-	This function is used to send the even that the submenu
-	of this item is about to be shown.  Callers to this event
-	should delay showing the menu until their callback is
-	called if possible.
-*/
+ * dbusmenu_menuitem_send_about_to_show:
+ * @mi: The #DbusmenuMenuitem to send the signal on.
+ * @cb: Callback to call when the call has returned.
+ * @cb_data: (closure): Data to pass to the callback.
+ * 
+ * This function is used to send the even that the submenu
+ * of this item is about to be shown.  Callers to this event
+ * should delay showing the menu until their callback is
+ * called if possible.
+ */
 void
 dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data)
 {
@@ -1477,14 +1572,14 @@ dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (Dbusmen
 }
 
 /**
-	dbusmenu_menuitem_show_to_user:
-	@mi: #DbusmenuMenuitem to show
-	@timestamp: The time that the user requested it to be shown
-
-	Signals that this menu item should be shown to the user.  If this is
-	server side the server will then take it and send it over the
-	bus.
-*/
+ * dbusmenu_menuitem_show_to_user:
+ * @mi: #DbusmenuMenuitem to show
+ * @timestamp: The time that the user requested it to be shown
+ * 
+ * Signals that this menu item should be shown to the user.  If this is
+ * server side the server will then take it and send it over the
+ * bus.
+ */
 void
 dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp)
 {
@@ -1493,4 +1588,27 @@ dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp)
 	g_signal_emit(G_OBJECT(mi), signals[SHOW_TO_USER], 0, timestamp, TRUE);
 
 	return;
+}
+
+/* Checks to see if the value of this property is unique or just the
+   default value. */
+gboolean
+dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * property)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, property);
+	if (currentval != NULL) {
+		/* If we're storing it locally, then it shouldn't be a default */
+		return FALSE;
+	}
+
+	currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
+	if (currentval != NULL) {
+		return TRUE;
+	}
+
+	g_warn_if_reached();
+	return FALSE;
 }

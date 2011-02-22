@@ -227,3 +227,4 @@ libdbusmenu-gtk/libdbusmenu_gtk_la-parser.lo
 test-gtk-parser
 test-gtk-parser-test
 test-gtk-parser.xml
+libdbusmenu-glib/libdbusmenu_glib_la-defaults.lo
