@@ -1,4 +1,4 @@
-libdbusmenu (0.3.98-0ubuntu2~ppa1) UNRELASED; urgency=low
+libdbusmenu (0.3.98-0ubuntu2~ppa1) natty; urgency=low
 
   * Upstream Merge
     * Only send the requested properties and request fewer
@@ -8,7 +8,7 @@ libdbusmenu (0.3.98-0ubuntu2~ppa1) UNRELASED; urgency=low
     * Add a property for text direction.
     * Add a property for needing attention.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 21 Feb 2011 22:30:06 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Feb 2011 22:40:36 -0600
 
 libdbusmenu (0.3.98-0ubuntu1) natty; urgency=low
 
