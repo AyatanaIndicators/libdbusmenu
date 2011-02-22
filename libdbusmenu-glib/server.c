@@ -1706,10 +1706,11 @@ dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
 		to keep them.
 */
 const GStrv
-dbusmenu_server_get_icon_paths (DbusmenuServer *       server)
+dbusmenu_server_get_icon_paths (DbusmenuServer * server)
 {
-
-	return NULL;
+	g_return_val_if_fail(DBUSMENU_IS_SERVER(server), NULL);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	return priv->icon_dirs;
 }
 
 /**
