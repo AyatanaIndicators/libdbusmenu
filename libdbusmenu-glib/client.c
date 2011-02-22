@@ -79,6 +79,7 @@ struct _DbusmenuClientPrivate
 	GCancellable * menuproxy_cancel;
 
 	GCancellable * layoutcall;
+	GVariant * layout_props;
 
 	gint current_revision;
 	gint my_revision;
@@ -316,6 +317,13 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->layoutcall = NULL;
 
+	gchar * layout_props[3];
+	layout_props[0] = DBUSMENU_MENUITEM_PROP_TYPE;
+	layout_props[1] = DBUSMENU_MENUITEM_PROP_LABEL;
+	layout_props[2] = NULL;
+	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, 2);
+	g_variant_ref_sink(priv->layout_props);
+
 	priv->current_revision = 0;
 	priv->my_revision = 0;
 
@@ -378,6 +386,11 @@ dbusmenu_client_dispose (GObject *object)
 		g_cancellable_cancel(priv->layoutcall);
 		g_object_unref(priv->layoutcall);
 		priv->layoutcall = NULL;
+	}
+
+	if (priv->layout_props != NULL) {
+		g_variant_unref(priv->layout_props);
+		priv->layout_props = NULL;
 	}
 
 	/* Bring down the menu proxy, ensure we're not
@@ -1473,6 +1486,21 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 			parse_layout_update(childmi, client);
 		}
 
+		/* Apply known properties sent in the structure to the
+		   menu item.  Sometimes they may just be copies */
+		if (childmi != NULL) {
+			GVariantIter iter;
+			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
+			gchar * prop;
+			GVariant * value;
+
+			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+				dbusmenu_menuitem_property_set_variant(childmi, prop, value);
+				g_free(prop);
+				g_variant_unref(value);
+			}
+		}
+
 		position++;
 	}
 
@@ -1662,7 +1690,7 @@ update_layout (DbusmenuClient * client)
 	
 	g_variant_builder_add_value(&tupleb, g_variant_new_int32(0)); // root
 	g_variant_builder_add_value(&tupleb, g_variant_new_int32(-1)); // recurse
-	g_variant_builder_add_value(&tupleb, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0)); // props
+	g_variant_builder_add_value(&tupleb, priv->layout_props); // props
 
 	GVariant * args = g_variant_builder_end(&tupleb);
 	// g_debug("Args (type: %s): %s", g_variant_get_type_string(args), g_variant_print(args, TRUE));
