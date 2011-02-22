@@ -1274,13 +1274,40 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** prop
 
 	GVariant * final_variant = NULL;
 
-	if (g_hash_table_size(priv->properties) > 0) {
+	if (properties == NULL && g_hash_table_size(priv->properties) > 0) {
 		GVariantBuilder builder;
 		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
 		g_hash_table_foreach(priv->properties, variant_helper, &builder);
 
 		final_variant = g_variant_builder_end(&builder);
+	}
+
+	if (properties != NULL) {
+		GVariantBuilder builder;
+		gboolean builder_init = FALSE;
+		int i = 0; const gchar * prop;
+
+		for (prop = properties[i]; prop != NULL; prop = properties[++i]) {
+			GVariant * propvalue = dbusmenu_menuitem_property_get_variant(mi, prop);
+
+			if (propvalue == NULL) {
+				continue;
+			}
+
+			if (!builder_init) {
+				builder_init = TRUE;
+				g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+			}
+
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string((gchar *)prop),
+			                                           g_variant_new_variant((GVariant *)propvalue));
+			g_variant_builder_add_value(&builder, dict);
+		}
+
+		if (builder_init) {
+			final_variant = g_variant_builder_end(&builder);
+		}
 	}
 
 	return final_variant;
