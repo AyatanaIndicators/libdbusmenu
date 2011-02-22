@@ -1022,10 +1022,11 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
 	const gchar * type = menuitem_get_type(mi);
+	GVariant * default_value = NULL;
 	if (type != NULL) {
 		/* Check the defaults database to see if we have a default
 		   for this property. */
-		GVariant * default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
+		default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
 		if (default_value != NULL) {
 			/* If we have a default we might also have an expected type */
 			GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
@@ -1073,7 +1074,15 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	   table.  But the fact that there was a value is
 	   the imporant part. */
 	if (currentval == NULL || replaced) {
-		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, value, TRUE);
+		GVariant * signalval = value;
+
+		if (signalval == NULL) {
+			/* Might also be NULL, but if it is we're definitely
+			   clearing this thing. */
+			signalval = default_value;
+		}
+
+		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, signalval, TRUE);
 	}
 
 	return TRUE;
