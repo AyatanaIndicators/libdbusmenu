@@ -1,3 +1,10 @@
+libdbusmenu (0.3.98-0ubuntu3) natty; urgency=low
+
+  * debian/control:
+    - Use new libgtk-3-dev build-depends
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 22 Feb 2011 16:16:44 +1100
+
 libdbusmenu (0.3.98-0ubuntu2) natty; urgency=low
 
   * libdbusmenu-glib/{client,menuitem,server}.c
