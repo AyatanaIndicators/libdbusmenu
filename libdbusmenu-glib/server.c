@@ -1038,7 +1038,9 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 
 	/* If so, we need to swap the value */
 	if (prop != NULL) {
-		g_variant_unref(prop->variant);
+		if (prop->variant != NULL) {
+			g_variant_unref(prop->variant);
+		}
 		prop->variant = variant;
 	} else {
 	/* else we need to add it */
