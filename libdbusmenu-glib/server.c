@@ -754,6 +754,16 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
 	} else if (g_strcmp0(property, "text-direction") == 0) {
 		return g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction));
+	} else if (g_strcmp0(property, "icon-theme-path") == 0) {
+		GVariant * dirs = NULL;
+
+		if (priv->icon_dirs != NULL) {
+			dirs = g_variant_new_strv((const gchar * const *)priv->icon_dirs, -1);
+		} else {
+			dirs = g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0);
+		}
+
+		return dirs;
 	} else {
 		g_warning("Unknown property '%s'", property);
 	}
