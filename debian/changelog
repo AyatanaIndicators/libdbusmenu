@@ -1,3 +1,10 @@
+libdbusmenu (0.3.98-0ubuntu2) natty; urgency=low
+
+  * libdbusmenu-glib/{client,menuitem,server}.c
+    * Be more selective on unref
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 22 Feb 2011 09:23:38 -0500
+
 libdbusmenu (0.3.98-0ubuntu1) natty; urgency=low
 
   * New upstream release.
