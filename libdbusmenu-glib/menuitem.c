@@ -1054,13 +1054,18 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	gpointer currentval = g_hash_table_lookup(priv->properties, property);
 
 	if (value != NULL) {
+		/* NOTE: We're only marking this as replaced if this is true
+		   but we're actually replacing it no matter.  This is so that
+		   the variant passed in sticks around which the caller may
+		   expect.  They shouldn't, but it's low cost to remove bugs. */
+		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
+			replaced = TRUE;
+		}
+
 		gchar * lprop = g_strdup(property);
 		g_variant_ref_sink(value);
 
-		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
-			g_hash_table_replace(priv->properties, lprop, value);
-			replaced = TRUE;
-		}
+		g_hash_table_replace(priv->properties, lprop, value);
 	} else {
 		if (currentval != NULL) {
 			g_hash_table_remove(priv->properties, property);
