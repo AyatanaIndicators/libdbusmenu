@@ -85,7 +85,8 @@ enum {
 	PROP_ROOT_NODE,
 	PROP_VERSION,
 	PROP_TEXT_DIRECTION,
-	PROP_STATUS
+	PROP_STATUS,
+	PROP_ICON_THEME_DIRS
 };
 
 /* Errors */
@@ -1723,7 +1724,41 @@ dbusmenu_server_get_icon_paths (DbusmenuServer * server)
 void
 dbusmenu_server_set_icon_paths (DbusmenuServer * server, GStrv icon_paths)
 {
+	g_return_if_fail(DBUSMENU_IS_SERVER(server));
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
+	if (priv->icon_dirs != NULL) {
+		g_strfreev(priv->icon_dirs);
+		priv->icon_dirs = NULL;
+	}
+
+	if (icon_paths != NULL) {
+		priv->icon_dirs = g_strdupv(icon_paths);
+	}
+
+	if (priv->bus != NULL && priv->dbusobject != NULL) {
+		GVariantBuilder params;
+		g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+		g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
+		GVariant * items = NULL;
+		if (priv->icon_dirs != NULL) {
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("icon-theme-path"), g_variant_new_strv((const gchar * const *)priv->icon_dirs, -1));
+			items = g_variant_new_array(NULL, &dict, 1);
+		} else {
+			items = g_variant_new_array(G_VARIANT_TYPE("{sv}"), NULL, 0);
+		}
+		g_variant_builder_add_value(&params, items);
+		g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
+		GVariant * vparams = g_variant_builder_end(&params);
+
+		g_dbus_connection_emit_signal(priv->bus,
+		                              NULL,
+		                              priv->dbusobject,
+		                              "org.freedesktop.DBus.Properties",
+		                              "PropertiesChanged",
+		                              vparams,
+		                              NULL);
+	}
 
 	return;
 }
