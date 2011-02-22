@@ -656,7 +656,7 @@ layout_update_signal (DbusmenuServer * server)
 
 typedef struct _prop_idle_item_t prop_idle_item_t;
 struct _prop_idle_item_t {
-	gint id;
+	DbusmenuMenuitem * mi;
 	GArray * array;
 };
 
@@ -686,6 +686,7 @@ prop_array_teardown (GArray * prop_array)
 			}
 		}
 
+		g_object_unref(G_OBJECT(iitem->mi));
 		g_array_free(iitem->array, TRUE);
 	}
 
@@ -718,6 +719,12 @@ menuitem_property_idle (gpointer user_data)
 
 	for (i = 0; i < priv->prop_array->len; i++) {
 		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
+
+		/* if it's not exposed we're going to block it's properties
+		   from getting into the dbus message */
+		if (dbusmenu_menuitem_exposed(iitem->mi) == FALSE) {
+			continue;
+		}
 
 		GVariantBuilder dictbuilder;
 		gboolean dictinit = FALSE;
@@ -756,7 +763,7 @@ menuitem_property_idle (gpointer user_data)
 			GVariantBuilder tuplebuilder;
 			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(dbusmenu_menuitem_get_id(iitem->mi)));
 			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&dictbuilder));
 
 			if (!item_init) {
@@ -773,7 +780,7 @@ menuitem_property_idle (gpointer user_data)
 			GVariantBuilder tuplebuilder;
 			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(dbusmenu_menuitem_get_id(iitem->mi)));
 			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&removedictbuilder));
 
 			if (!removeitem_init) {
@@ -786,9 +793,11 @@ menuitem_property_idle (gpointer user_data)
 	}
 
 	GVariant * megadata[2];
+	gboolean gotsomething = FALSE;
 
 	if (item_init) {
 		megadata[0] = g_variant_builder_end(&itembuilder);
+		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
 		megadata[0] = g_variant_parse(G_VARIANT_TYPE("a(ia{sv})"), "[ ]", NULL, NULL, &error);
@@ -801,6 +810,7 @@ menuitem_property_idle (gpointer user_data)
 
 	if (removeitem_init) {
 		megadata[1] = g_variant_builder_end(&removeitembuilder);
+		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
 		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ia(s))"), "[ ]", NULL, NULL, &error);
@@ -811,7 +821,7 @@ menuitem_property_idle (gpointer user_data)
 		}
 	}
 
-	if (priv->dbusobject != NULL && priv->bus != NULL) {
+	if (gotsomething && priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
 		                              NULL,
 		                              priv->dbusobject,
@@ -854,7 +864,7 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	prop_idle_item_t * item = NULL;
 	for (i = 0; i < priv->prop_array->len; i++) {
 		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
-		if (iitem->id == item_id) {
+		if (iitem->mi == mi) {
 			item = iitem;
 			break;
 		}
@@ -864,7 +874,8 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	/* If not, we'll need to build ourselves one */
 	if (item == NULL) {
 		prop_idle_item_t myitem;
-		myitem.id = item_id;
+		myitem.mi = mi;
+		g_object_ref(G_OBJECT(mi));
 		myitem.array = g_array_new(FALSE, FALSE, sizeof(prop_idle_prop_t));
 
 		g_array_append_val(priv->prop_array, myitem);
