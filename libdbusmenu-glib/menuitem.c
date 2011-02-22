@@ -1566,10 +1566,23 @@ dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp)
 
 /* Checks to see if the value of this property is unique or just the
    default value. */
-/* TODO: Implement this */
 gboolean
 dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * property)
 {
-	/* No defaults system yet */
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, property);
+	if (currentval != NULL) {
+		/* If we're storing it locally, then it shouldn't be a default */
+		return FALSE;
+	}
+
+	currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
+	if (currentval != NULL) {
+		return TRUE;
+	}
+
+	g_warn_if_reached();
 	return FALSE;
 }
