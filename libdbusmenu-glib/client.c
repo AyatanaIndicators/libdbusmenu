@@ -50,6 +50,7 @@ enum {
 	PROP_0,
 	PROP_DBUSOBJECT,
 	PROP_DBUSNAME,
+	PROP_STATUS,
 	PROP_TEXT_DIRECTION
 };
 
@@ -95,6 +96,7 @@ struct _DbusmenuClientPrivate
 	gint delayed_idle;
 
 	DbusmenuTextDirection text_direction;
+	DbusmenuStatus status;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -280,6 +282,11 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                              "Name of the DBus client we're connecting to.",
 	                                              NULL,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_STATUS,
+	                                 g_param_spec_enum(DBUSMENU_CLIENT_PROP_STATUS, "Status of viewing the menus",
+	                                              "Whether the menus should be given special visuals",
+	                                              DBUSMENU_TYPE_STATUS, DBUSMENU_STATUS_NORMAL,
+	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property (object_class, PROP_TEXT_DIRECTION,
 	                                 g_param_spec_enum(DBUSMENU_CLIENT_PROP_TEXT_DIRECTION, "Direction text values have",
 	                                              "Signals which direction the default text direction is for the menus",
@@ -347,6 +354,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->delayed_property_listeners = g_array_new(FALSE, FALSE, sizeof(properties_listener_t));
 
 	priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
+	priv->status = DBUSMENU_STATUS_NORMAL;
 
 	return;
 }
@@ -496,6 +504,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_DBUSOBJECT:
 		g_value_set_string(value, priv->dbus_object);
+		break;
+	case PROP_STATUS:
+		g_value_set_enum(value, priv->status);
 		break;
 	case PROP_TEXT_DIRECTION:
 		g_value_set_enum(value, priv->text_direction);
@@ -1049,6 +1060,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
 	DbusmenuTextDirection olddir = priv->text_direction;
+	DbusmenuStatus oldstatus = priv->status;
 
 	/* Invalidate first */
 	gchar * invalid;
@@ -1056,6 +1068,9 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	for (invalid = invalidated[i]; invalid != NULL; invalid = invalidated[++i]) {
 		if (g_strcmp0(invalid, "text-direction") == 0) {
 			priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
+		}
+		if (g_strcmp0(invalid, "status") == 0) {
+			priv->status = DBUSMENU_STATUS_NORMAL;
 		}
 	}
 
@@ -1072,6 +1087,14 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 			priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
 		}
+		if (g_strcmp0(key, "status") == 0) {
+			GVariant * str = value;
+			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
+				str = g_variant_get_variant(str);
+			}
+
+			priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(str, NULL));
+		}
 
 		g_variant_unref(value);
 		g_free(key);
@@ -1079,6 +1102,10 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 	if (olddir != priv->text_direction) {
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_TEXT_DIRECTION);
+	}
+
+	if (oldstatus != priv->status) {
+		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
 	}
 
 	return;
@@ -1949,3 +1976,25 @@ dbusmenu_client_get_text_direction (DbusmenuClient * client)
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 	return priv->text_direction;
 }
+
+/**
+	dbusmenu_client_get_status:
+	@client: #DbusmenuClient to check the status on
+
+	Gets the recommended current status that the server
+	is exporting for the menus.  In situtations where the
+	value is #DBUSMENU_STATUS_NOTICE it is recommended that
+	the client show the menus to the user an a more noticible
+	way.
+
+	Return value: Status being exported.
+*/
+DbusmenuStatus
+dbusmenu_client_get_status (DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), DBUSMENU_STATUS_NORMAL);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	return priv->status;
+}
+
+

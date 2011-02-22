@@ -58,6 +58,7 @@ struct _DbusmenuServerPrivate
 	guint dbus_registration;
 
 	DbusmenuTextDirection text_direction;
+	DbusmenuStatus status;
 
 	GArray * prop_array;
 	guint property_idle;
@@ -82,7 +83,8 @@ enum {
 	PROP_DBUS_OBJECT,
 	PROP_ROOT_NODE,
 	PROP_VERSION,
-	PROP_TEXT_DIRECTION
+	PROP_TEXT_DIRECTION,
+	PROP_STATUS
 };
 
 /* Errors */
@@ -300,6 +302,11 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                              "The object that represents this set of menus on DBus",
 	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
 	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_STATUS,
+	                                 g_param_spec_enum(DBUSMENU_SERVER_PROP_STATUS, "Status of viewing the menus",
+	                                              "Exports over DBus whether the menus should be given special visuals",
+	                                              DBUSMENU_TYPE_STATUS, DBUSMENU_STATUS_NORMAL,
+	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
 		GError * error = NULL;
@@ -360,6 +367,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->dbus_registration = 0;
 
 	default_text_direction(self);
+	priv->status = DBUSMENU_STATUS_NORMAL;
 
 	return;
 }
@@ -509,6 +517,31 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 
 		break;
 	}
+	case PROP_STATUS: {
+		DbusmenuStatus instatus = g_value_get_enum(value);
+
+		/* If the value has changed we need to signal that on DBus */
+		if (priv->status != instatus && priv->bus != NULL && priv->dbusobject != NULL) {
+			GVariantBuilder params;
+			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
+			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
+			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
+			GVariant * vparams = g_variant_builder_end(&params);
+
+			g_dbus_connection_emit_signal(priv->bus,
+			                              NULL,
+			                              priv->dbusobject,
+			                              "org.freedesktop.DBus.Properties",
+			                              "PropertiesChanged",
+			                              vparams,
+			                              NULL);
+		}
+
+		priv->status = instatus;
+		break;
+	}
 	default:
 		g_return_if_reached();
 		break;
@@ -534,6 +567,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_TEXT_DIRECTION:
 		g_value_set_enum(value, priv->text_direction);
+		break;
+	case PROP_STATUS:
+		g_value_set_enum(value, priv->status);
 		break;
 	default:
 		g_return_if_reached();
@@ -1617,3 +1653,46 @@ dbusmenu_server_set_text_direction (DbusmenuServer * server, DbusmenuTextDirecti
 	return;
 }
 
+/**
+	dbusmenu_server_get_status:
+	@server: The #DbusmenuServer to get the status from
+
+	Gets the current statust hat the server is sending out over
+	DBus.
+
+	Return value: The current status the server is sending
+*/
+DbusmenuStatus
+dbusmenu_server_get_status (DbusmenuServer * server)
+{
+	g_return_val_if_fail(DBUSMENU_IS_SERVER(server), DBUSMENU_STATUS_NORMAL);
+
+	GValue val = {0};
+	g_value_init(&val, DBUSMENU_TYPE_STATUS);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_STATUS, &val);
+
+	DbusmenuStatus retval = g_value_get_enum(&val);
+	g_value_unset(&val);
+
+	return retval;
+}
+
+/**
+	dbusmenu_server_set_status:
+	@server: The #DbusmenuServer to set the status on
+
+	Changes the status of the server.
+*/
+void
+dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
+{
+	g_return_if_fail(DBUSMENU_IS_SERVER(server));
+
+	GValue val = {0};
+	g_value_init(&val, DBUSMENU_TYPE_STATUS);
+	g_value_set_enum(&val, status);
+	g_object_set_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_STATUS, &val);
+	g_value_unset(&val);
+
+	return;
+}

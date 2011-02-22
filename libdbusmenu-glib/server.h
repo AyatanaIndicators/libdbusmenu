@@ -54,6 +54,7 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
 #define DBUSMENU_SERVER_PROP_VERSION           "version"
 #define DBUSMENU_SERVER_PROP_TEXT_DIRECTION    "text-direction"
+#define DBUSMENU_SERVER_PROP_STATUS            "status"
 
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 
@@ -115,6 +116,9 @@ void                    dbusmenu_server_set_root            (DbusmenuServer *   
 DbusmenuTextDirection   dbusmenu_server_get_text_direction  (DbusmenuServer *       server);
 void                    dbusmenu_server_set_text_direction  (DbusmenuServer *       server,
                                                              DbusmenuTextDirection  dir);
+DbusmenuStatus          dbusmenu_server_get_status          (DbusmenuServer *       server);
+void                    dbusmenu_server_set_status          (DbusmenuServer *       server,
+                                                             DbusmenuStatus         status);
 
 /**
 	SECIONT:server
