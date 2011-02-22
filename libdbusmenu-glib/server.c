@@ -59,6 +59,7 @@ struct _DbusmenuServerPrivate
 
 	DbusmenuTextDirection text_direction;
 	DbusmenuStatus status;
+	GStrv icon_dirs;
 
 	GArray * prop_array;
 	guint property_idle;
@@ -368,6 +369,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 
 	default_text_direction(self);
 	priv->status = DBUSMENU_STATUS_NORMAL;
+	priv->icon_dirs = NULL;
 
 	return;
 }
@@ -425,6 +427,13 @@ dbusmenu_server_dispose (GObject *object)
 static void
 dbusmenu_server_finalize (GObject *object)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(object);
+
+	if (priv->icon_dirs != NULL) {
+		g_strfreev(priv->icon_dirs);
+		priv->icon_dirs = NULL;
+	}
+
 	G_OBJECT_CLASS (dbusmenu_server_parent_class)->finalize (object);
 	return;
 }
