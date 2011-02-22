@@ -439,7 +439,12 @@ send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gp
 static const gchar *
 menuitem_get_type (DbusmenuMenuitem * mi)
 {
-	return dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_TYPE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, DBUSMENU_MENUITEM_PROP_TYPE);
+	if (currentval != NULL) {
+		return g_variant_get_string(currentval, NULL);
+	}
+	return NULL;
 }
 
 /* Public interface */
