@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <glib-object.h>
 
 #include "menuitem.h"
+#include "types.h"
 
 G_BEGIN_DECLS
 
@@ -48,9 +49,11 @@ G_BEGIN_DECLS
 #define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
 #define DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE   "item-activate"
 #define DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT    "event-result"
+#define DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED    "text-direction-changed"
 
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
+#define DBUSMENU_CLIENT_PROP_TEXT_DIRECTION "text-direction"
 
 #define DBUSMENU_CLIENT_TYPES_DEFAULT      "standard"
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
@@ -155,6 +158,7 @@ void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
                                                         gint id,
                                                         void (*cb) (gpointer user_data),
                                                         gpointer cb_data);
+DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
 
 /**
 	SECTION:client

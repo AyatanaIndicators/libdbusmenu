@@ -39,6 +39,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "server-marshal.h"
 #include "client-marshal.h"
 #include "dbus-menu-clean.xml.h"
+#include "enum-types.h"
 
 /* How many property requests should we queue before
    sending the message on dbus */
@@ -48,7 +49,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 enum {
 	PROP_0,
 	PROP_DBUSOBJECT,
-	PROP_DBUSNAME
+	PROP_DBUSNAME,
+	PROP_TEXT_DIRECTION
 };
 
 /* Signals */
@@ -91,6 +93,8 @@ struct _DbusmenuClientPrivate
 	GArray * delayed_property_list;
 	GArray * delayed_property_listeners;
 	gint delayed_idle;
+
+	DbusmenuTextDirection text_direction;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -158,6 +162,7 @@ static void get_properties_globber (DbusmenuClient * client, gint id, const gcha
 static GQuark error_domain (void);
 static void item_activated (GDBusProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
 static void menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data);
+static void menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv invalidated, gpointer user_data);
 static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data);
 static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
 static void type_handler_destroy (gpointer user_data);
@@ -275,6 +280,11 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                              "Name of the DBus client we're connecting to.",
 	                                              NULL,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_TEXT_DIRECTION,
+	                                 g_param_spec_enum(DBUSMENU_CLIENT_PROP_TEXT_DIRECTION, "Direction text values have",
+	                                              "Signals which direction the default text direction is for the menus",
+	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
+	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
 		GError * error = NULL;
@@ -335,6 +345,8 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->delayed_idle = 0;
 	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
 	priv->delayed_property_listeners = g_array_new(FALSE, FALSE, sizeof(properties_listener_t));
+
+	priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
 
 	return;
 }
@@ -484,6 +496,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_DBUSOBJECT:
 		g_value_set_string(value, priv->dbus_object);
+		break;
+	case PROP_TEXT_DIRECTION:
+		g_value_set_enum(value, priv->text_direction);
 		break;
 	default:
 		g_warning("Unknown property %d.", id);
@@ -996,6 +1011,19 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		priv->menuproxy_cancel = NULL;
 	}
 
+	/* Check the text direction if available */
+	GVariant * textdir = g_dbus_proxy_get_cached_property(priv->menuproxy, "text-direction");
+	if (textdir != NULL) {
+		GVariant * str = textdir;
+		if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
+			str = g_variant_get_variant(str);
+		}
+
+		priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
+
+		g_variant_unref(textdir);
+	}
+
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != 0) {
 		g_bus_unwatch_name(priv->dbusproxy);
@@ -1004,11 +1032,53 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 
 	g_signal_connect(priv->menuproxy, "g-signal",             G_CALLBACK(menuproxy_signal_cb),       client);
 	g_signal_connect(priv->menuproxy, "notify::g-name-owner", G_CALLBACK(menuproxy_name_changed_cb), client);
+	g_signal_connect(priv->menuproxy, "g-properties-changed", G_CALLBACK(menuproxy_prop_changed_cb), client);
 
 	gchar * name_owner = g_dbus_proxy_get_name_owner(priv->menuproxy);
 	if (name_owner != NULL) {
 		update_layout(client);
 		g_free(name_owner);
+	}
+
+	return;
+}
+
+/* Handle the properites changing */
+static void
+menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv invalidated, gpointer user_data)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
+	DbusmenuTextDirection olddir = priv->text_direction;
+
+	/* Invalidate first */
+	gchar * invalid;
+	gint i = 0;
+	for (invalid = invalidated[i]; invalid != NULL; invalid = invalidated[++i]) {
+		if (g_strcmp0(invalid, "text-direction") == 0) {
+			priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
+		}
+	}
+
+	/* Check updates */
+	GVariantIter iters;
+	gchar * key; GVariant * value;
+	g_variant_iter_init(&iters, properties);
+	while (g_variant_iter_next(&iters, "{sv}", &key, &value)) {
+		if (g_strcmp0(key, "text-direction") == 0) {
+			GVariant * str = value;
+			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
+				str = g_variant_get_variant(str);
+			}
+
+			priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
+		}
+
+		g_variant_unref(value);
+		g_free(key);
+	}
+
+	if (olddir != priv->text_direction) {
+		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_TEXT_DIRECTION);
 	}
 
 	return;
@@ -1862,3 +1932,20 @@ dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * ty
 	return TRUE;
 }
 
+/**
+	dbusmenu_client_get_text_direction:
+	@client: #DbusmenuClient to check the text direction on
+
+	Gets the text direction that the server is exporting.  If
+	the server is not exporting a direction then the value
+	#DBUSMENU_TEXT_DIRECTION_NONE will be returned.
+
+	Return value: Text direction being exported.
+*/
+DbusmenuTextDirection
+dbusmenu_client_get_text_direction (DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), DBUSMENU_TEXT_DIRECTION_NONE);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	return priv->text_direction;
+}

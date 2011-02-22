@@ -171,6 +171,14 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</dox:d>
 		</property>
 
+		<property name="text-direction" type="s" access="read">
+			<dox:d>
+			Represents the way the text direction of the application.  This
+			allows the server to handle mismatches intelligently.  For left-
+			to-right the string is "ltr" for right-to-left it is "rtl".
+			</dox:d>
+		</property>
+
 <!-- Functions -->
 
 		<method name="GetLayout">
