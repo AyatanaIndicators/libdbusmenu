@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "menuitem.h"
 #include "menuitem-marshal.h"
 #include "menuitem-private.h"
+#include "defaults.h"
 
 #ifdef MASSIVEDEBUGGING
 #define LABEL(x)  dbusmenu_menuitem_property_get(DBUSMENU_MENUITEM(x), DBUSMENU_MENUITEM_PROP_LABEL)
@@ -59,6 +60,7 @@ struct _DbusmenuMenuitemPrivate
 	GHashTable * properties;
 	gboolean root;
 	gboolean realized;
+	DbusmenuDefaults * defaults;
 };
 
 /* Signals */
@@ -312,6 +314,8 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 
 	priv->root = FALSE;
 	priv->realized = FALSE;
+
+	priv->defaults = dbusmenu_defaults_ref_default();
 	
 	return;
 }
@@ -327,6 +331,11 @@ dbusmenu_menuitem_dispose (GObject *object)
 	}
 	g_list_free(priv->children);
 	priv->children = NULL;
+
+	if (priv->defaults != NULL) {
+		g_object_unref(priv->defaults);
+		priv->defaults = NULL;
+	}
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_parent_class)->dispose (object);
 	return;
@@ -423,6 +432,19 @@ send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gp
 	}
 
 	return;
+}
+
+/* A helper function to get the type of the menuitem, this might
+   be a candidate for optimization in the future. */
+static const gchar *
+menuitem_get_type (DbusmenuMenuitem * mi)
+{
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, DBUSMENU_MENUITEM_PROP_TYPE);
+	if (currentval != NULL) {
+		return g_variant_get_string(currentval, NULL);
+	}
+	return NULL;
 }
 
 /* Public interface */
@@ -1004,17 +1026,49 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
+	const gchar * type = menuitem_get_type(mi);
+
+	/* Check the expected type to see if we want to have a warning */
+	GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
+	if (default_type != NULL) {
+		/* If we have an expected type we should check to see if
+		   the value we've been given is of the same type and generate
+		   a warning if it isn't */
+		if (!g_variant_is_of_type(value, default_type)) {
+			g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
+		}
+	}
+
+	/* Check the defaults database to see if we have a default
+	   for this property. */
+	GVariant * default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
+	if (default_value != NULL) {
+		/* Now see if we're setting this to the same value as the
+		   default.  If we are then we just want to swallow this variant
+		   and make the function behave like we're clearing it. */
+		if (g_variant_equal(default_value, value)) {
+			g_variant_ref_sink(value);
+			g_variant_unref(value);
+			value = NULL;
+		}
+	}
+
 	gboolean replaced = FALSE;
 	gpointer currentval = g_hash_table_lookup(priv->properties, property);
 
 	if (value != NULL) {
+		/* NOTE: We're only marking this as replaced if this is true
+		   but we're actually replacing it no matter.  This is so that
+		   the variant passed in sticks around which the caller may
+		   expect.  They shouldn't, but it's low cost to remove bugs. */
+		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
+			replaced = TRUE;
+		}
+
 		gchar * lprop = g_strdup(property);
 		g_variant_ref_sink(value);
 
-		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
-			g_hash_table_replace(priv->properties, lprop, value);
-			replaced = TRUE;
-		}
+		g_hash_table_replace(priv->properties, lprop, value);
 	} else {
 		if (currentval != NULL) {
 			g_hash_table_remove(priv->properties, property);
@@ -1027,7 +1081,15 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	   table.  But the fact that there was a value is
 	   the imporant part. */
 	if (currentval == NULL || replaced) {
-		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, value, TRUE);
+		GVariant * signalval = value;
+
+		if (signalval == NULL) {
+			/* Might also be NULL, but if it is we're definitely
+			   clearing this thing. */
+			signalval = default_value;
+		}
+
+		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, signalval, TRUE);
 	}
 
 	return TRUE;
@@ -1074,7 +1136,13 @@ dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
-	return (GVariant *)g_hash_table_lookup(priv->properties, property);
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, property);
+
+	if (currentval == NULL) {
+		currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
+	}
+
+	return currentval;
 }
 
 /**
@@ -1503,10 +1571,23 @@ dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp)
 
 /* Checks to see if the value of this property is unique or just the
    default value. */
-/* TODO: Implement this */
 gboolean
 dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * property)
 {
-	/* No defaults system yet */
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, property);
+	if (currentval != NULL) {
+		/* If we're storing it locally, then it shouldn't be a default */
+		return FALSE;
+	}
+
+	currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
+	if (currentval != NULL) {
+		return TRUE;
+	}
+
+	g_warn_if_reached();
 	return FALSE;
 }
