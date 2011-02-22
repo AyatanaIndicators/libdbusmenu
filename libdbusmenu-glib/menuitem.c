@@ -261,7 +261,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                          G_STRUCT_OFFSET(DbusmenuMenuitemClass, event),
 	                                          NULL, NULL,
 	                                          _dbusmenu_menuitem_marshal_VOID__STRING_VARIANT_UINT,
-	                                          G_TYPE_BOOLEAN, 3, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT);
+	                                          G_TYPE_NONE, 3, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
