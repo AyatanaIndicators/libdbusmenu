@@ -1685,3 +1685,18 @@ dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
 
 	return;
 }
+
+const GStrv
+dbusmenu_server_get_icon_paths (DbusmenuServer *       server)
+{
+
+	return NULL;
+}
+
+void
+dbusmenu_server_set_icon_paths (DbusmenuServer * server, GStrv icon_paths)
+{
+
+
+	return;
+}
