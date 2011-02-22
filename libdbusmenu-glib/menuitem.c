@@ -1133,7 +1133,13 @@ dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 
-	return (GVariant *)g_hash_table_lookup(priv->properties, property);
+	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, property);
+
+	if (currentval == NULL) {
+		currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
+	}
+
+	return currentval;
 }
 
 /**
