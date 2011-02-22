@@ -1686,6 +1686,16 @@ dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
 	return;
 }
 
+/**
+	dbusmenu_server_get_icon_paths:
+	@server: The #DbusmenuServer to get the icon paths from
+
+	Gets the stored and exported icon paths from the server.
+
+	Return value: A NULL-terminated list of icon paths with
+		memory managed by the server.  Duplicate if you want
+		to keep them.
+*/
 const GStrv
 dbusmenu_server_get_icon_paths (DbusmenuServer *       server)
 {
@@ -1693,6 +1703,13 @@ dbusmenu_server_get_icon_paths (DbusmenuServer *       server)
 	return NULL;
 }
 
+/**
+	dbusmenu_server_set_icon_paths:
+	@server: The #DbusmenuServer to set the icon paths on
+
+	Sets the icon paths for the server.  This will replace previously
+	set icon theme paths.
+*/
 void
 dbusmenu_server_set_icon_paths (DbusmenuServer * server, GStrv icon_paths)
 {
