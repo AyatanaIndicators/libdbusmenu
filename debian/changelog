@@ -1,4 +1,4 @@
-libdbusmenu (0.3.98-0ubuntu2~ppa5) UNRELEASED; urgency=low
+libdbusmenu (0.3.98-0ubuntu2~ppa5) natty; urgency=low
 
   * Upstream merge
     * Handle the case of a single NULL entry as well.
@@ -8,7 +8,7 @@ libdbusmenu (0.3.98-0ubuntu2~ppa5) UNRELEASED; urgency=low
     * When requesting new layouts get 'enabled' and 'visible'
       as well
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 23 Feb 2011 13:30:01 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Feb 2011 13:36:34 -0600
 
 libdbusmenu (0.3.98-0ubuntu2~ppa4) natty; urgency=low
 
