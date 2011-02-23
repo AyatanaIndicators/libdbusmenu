@@ -1492,10 +1492,22 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 		   menu item.  Sometimes they may just be copies */
 		if (childmi != NULL) {
 			GVariantIter iter;
-			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
 			gchar * prop;
 			GVariant * value;
 
+			/* Set the type first as it can manage the behavior of
+			   all other properties. */
+			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
+			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+				if (g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TYPE) == 0) {
+					dbusmenu_menuitem_property_set_variant(childmi, prop, value);
+				}
+				g_free(prop);
+				g_variant_unref(value);
+			}
+
+			/* Now go through and do all the properties. */
+			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
 			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
 				dbusmenu_menuitem_property_set_variant(childmi, prop, value);
 				g_free(prop);
