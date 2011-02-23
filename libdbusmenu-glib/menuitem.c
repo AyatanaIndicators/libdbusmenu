@@ -1045,31 +1045,34 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	g_return_val_if_fail(property != NULL, FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	GVariant * default_value = NULL;
 
-	const gchar * type = menuitem_get_type(mi);
+	if (value != NULL) {
+		const gchar * type = menuitem_get_type(mi);
 
-	/* Check the expected type to see if we want to have a warning */
-	GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
-	if (default_type != NULL) {
-		/* If we have an expected type we should check to see if
-		   the value we've been given is of the same type and generate
-		   a warning if it isn't */
-		if (!g_variant_is_of_type(value, default_type)) {
-			g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
+		/* Check the expected type to see if we want to have a warning */
+		GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
+		if (default_type != NULL) {
+			/* If we have an expected type we should check to see if
+			   the value we've been given is of the same type and generate
+			   a warning if it isn't */
+			if (!g_variant_is_of_type(value, default_type)) {
+				g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
+			}
 		}
-	}
 
-	/* Check the defaults database to see if we have a default
-	   for this property. */
-	GVariant * default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
-	if (default_value != NULL) {
-		/* Now see if we're setting this to the same value as the
-		   default.  If we are then we just want to swallow this variant
-		   and make the function behave like we're clearing it. */
-		if (g_variant_equal(default_value, value)) {
-			g_variant_ref_sink(value);
-			g_variant_unref(value);
-			value = NULL;
+		/* Check the defaults database to see if we have a default
+		   for this property. */
+		default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
+		if (default_value != NULL) {
+			/* Now see if we're setting this to the same value as the
+			   default.  If we are then we just want to swallow this variant
+			   and make the function behave like we're clearing it. */
+			if (g_variant_equal(default_value, value)) {
+				g_variant_ref_sink(value);
+				g_variant_unref(value);
+				value = NULL;
+			}
 		}
 	}
 
