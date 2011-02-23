@@ -334,11 +334,13 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->layoutcall = NULL;
 
-	gchar * layout_props[3];
+	gchar * layout_props[5];
 	layout_props[0] = DBUSMENU_MENUITEM_PROP_TYPE;
 	layout_props[1] = DBUSMENU_MENUITEM_PROP_LABEL;
-	layout_props[2] = NULL;
-	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, 2);
+	layout_props[2] = DBUSMENU_MENUITEM_PROP_VISIBLE;
+	layout_props[3] = DBUSMENU_MENUITEM_PROP_ENABLED;
+	layout_props[4] = NULL;
+	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, 4);
 	g_variant_ref_sink(priv->layout_props);
 
 	priv->current_revision = 0;
@@ -1587,10 +1589,22 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 		   menu item.  Sometimes they may just be copies */
 		if (childmi != NULL) {
 			GVariantIter iter;
-			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
 			gchar * prop;
 			GVariant * value;
 
+			/* Set the type first as it can manage the behavior of
+			   all other properties. */
+			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
+			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+				if (g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TYPE) == 0) {
+					dbusmenu_menuitem_property_set_variant(childmi, prop, value);
+				}
+				g_free(prop);
+				g_variant_unref(value);
+			}
+
+			/* Now go through and do all the properties. */
+			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
 			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
 				dbusmenu_menuitem_property_set_variant(childmi, prop, value);
 				g_free(prop);
