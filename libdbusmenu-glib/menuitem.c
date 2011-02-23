@@ -74,6 +74,7 @@ enum {
 	REALIZED,
 	SHOW_TO_USER,
 	ABOUT_TO_SHOW,
+	EVENT,
 	LAST_SIGNAL
 };
 
@@ -247,6 +248,23 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                          NULL, NULL,
 	                                          _dbusmenu_menuitem_marshal_VOID__VOID,
 	                                          G_TYPE_BOOLEAN, 0, G_TYPE_NONE);
+	/**
+		DbusmenuMenuitem::event:
+		@arg0: The #DbusmenuMenuitem object.
+		@arg1: Name of the event
+		@arg2: Information passed along with the event
+		@arg3: X11 timestamp of when the event happened
+
+		Emitted when an event is passed through.  The event is signalled
+		after handle_event is called.
+	*/
+	signals[EVENT] =             g_signal_new(DBUSMENU_MENUITEM_SIGNAL_EVENT,
+	                                          G_TYPE_FROM_CLASS(klass),
+	                                          G_SIGNAL_RUN_LAST,
+	                                          G_STRUCT_OFFSET(DbusmenuMenuitemClass, event),
+	                                          g_signal_accumulator_true_handled, NULL,
+	                                          _dbusmenu_menuitem_marshal_BOOLEAN__STRING_VARIANT_UINT,
+	                                          G_TYPE_BOOLEAN, 3, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
@@ -1546,9 +1564,13 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 	#endif
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
-	if (class->handle_event != NULL) {
+	gboolean handled = FALSE;
+	g_signal_emit(G_OBJECT(mi), EVENT, g_quark_from_string(name), name, variant, timestamp, &handled);
+
+	if (!handled && class->handle_event != NULL) {
 		return class->handle_event(mi, name, variant, timestamp);
 	}
+
 	return;
 }
 

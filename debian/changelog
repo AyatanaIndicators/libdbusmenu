@@ -1,3 +1,10 @@
+libdbusmenu (0.3.98-0ubuntu2~ppa3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Add a signal on the menuitem for generic event support
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Feb 2011 09:46:09 -0600
+
 libdbusmenu (0.3.98-0ubuntu2~ppa2) natty; urgency=low
 
   * Upstream Merge
