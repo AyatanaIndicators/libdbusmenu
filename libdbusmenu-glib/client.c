@@ -317,11 +317,13 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->layoutcall = NULL;
 
-	gchar * layout_props[3];
+	gchar * layout_props[5];
 	layout_props[0] = DBUSMENU_MENUITEM_PROP_TYPE;
 	layout_props[1] = DBUSMENU_MENUITEM_PROP_LABEL;
-	layout_props[2] = NULL;
-	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, 2);
+	layout_props[2] = DBUSMENU_MENUITEM_PROP_VISIBLE;
+	layout_props[3] = DBUSMENU_MENUITEM_PROP_ENABLED;
+	layout_props[4] = NULL;
+	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, 4);
 	g_variant_ref_sink(priv->layout_props);
 
 	priv->current_revision = 0;
