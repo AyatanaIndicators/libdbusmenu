@@ -1433,7 +1433,7 @@ dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** propertie
 
 	/* Pillage the children */
 	GList * children = dbusmenu_menuitem_get_children(mi);
-	if (children == NULL && recurse != 0) {
+	if (children == NULL || recurse == 0) {
 		g_variant_builder_add_value(&tupleb, g_variant_new_array(G_VARIANT_TYPE_VARIANT, NULL, 0));
 	} else {
 		GVariantBuilder childrenbuilder;
