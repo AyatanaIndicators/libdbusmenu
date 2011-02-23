@@ -261,9 +261,9 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                          G_TYPE_FROM_CLASS(klass),
 	                                          G_SIGNAL_RUN_LAST,
 	                                          G_STRUCT_OFFSET(DbusmenuMenuitemClass, event),
-	                                          NULL, NULL,
-	                                          _dbusmenu_menuitem_marshal_VOID__STRING_VARIANT_UINT,
-	                                          G_TYPE_NONE, 3, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT);
+	                                          g_signal_accumulator_true_handled, NULL,
+	                                          _dbusmenu_menuitem_marshal_BOOLEAN__STRING_VARIANT_UINT,
+	                                          G_TYPE_BOOLEAN, 3, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
@@ -1533,11 +1533,12 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 	#endif
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
-	if (class->handle_event != NULL) {
+	gboolean handled = FALSE;
+	g_signal_emit(G_OBJECT(mi), EVENT, g_quark_from_string(name), name, variant, timestamp, &handled);
+
+	if (!handled && class->handle_event != NULL) {
 		return class->handle_event(mi, name, variant, timestamp);
 	}
-
-	g_signal_emit(G_OBJECT(mi), EVENT, g_quark_from_string(name), name, variant, timestamp, TRUE);
 
 	return;
 }
