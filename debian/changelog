@@ -1,11 +1,11 @@
-libdbusmenu (0.3.98-0ubuntu2~ppa3) UNRELEASED; urgency=low
+libdbusmenu (0.3.98-0ubuntu2~ppa3) natty; urgency=low
 
   * Upstream Merge
     * Add a signal on the menuitem for generic event support
     * Memory handling fixes in the parser
     * Fix dbus-menu.xml to have more consistent signatures.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 23 Feb 2011 09:48:16 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Feb 2011 10:09:31 -0600
 
 libdbusmenu (0.3.98-0ubuntu2~ppa2) natty; urgency=low
 
