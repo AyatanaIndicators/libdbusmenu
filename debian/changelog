@@ -1,4 +1,4 @@
-libdbusmenu (0.3.98-0ubuntu4) UNRELEASED; urgency=low
+libdbusmenu (0.3.98-0ubuntu4) natty; urgency=low
 
   * Merged from trunk (rev 220) 
     - Cleaning up cleaning up so we don't unref twice and crash
