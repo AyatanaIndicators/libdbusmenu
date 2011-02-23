@@ -1363,7 +1363,7 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** prop
 
 	GVariant * final_variant = NULL;
 
-	if (properties == NULL && g_hash_table_size(priv->properties) > 0) {
+	if ((properties == NULL || properties[0] == NULL) && g_hash_table_size(priv->properties) > 0) {
 		GVariantBuilder builder;
 		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
