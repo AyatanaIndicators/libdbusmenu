@@ -1710,17 +1710,17 @@ update_layout (DbusmenuClient * client)
 
 /* Public API */
 /**
-	dbusmenu_client_new:
-	@name: The DBus name for the server to connect to
-	@object: The object on the server to monitor
-
-	This function creates a new client that connects to a specific
-	server on DBus.  That server is at a specific location sharing
-	a known object.  The interface is assumed by the code to be 
-	the DBus menu interface.  The newly created client will start
-	sending out events as it syncs up with the server.
-
-	Return value: A brand new #DbusmenuClient
+ * dbusmenu_client_new:
+ * @name: The DBus name for the server to connect to
+ * @object: The object on the server to monitor
+ * 
+ * This function creates a new client that connects to a specific
+ * server on DBus.  That server is at a specific location sharing
+ * a known object.  The interface is assumed by the code to be 
+ * the DBus menu interface.  The newly created client will start
+ * sending out events as it syncs up with the server.
+ * 
+ * Return value: A brand new #DbusmenuClient
 */
 DbusmenuClient *
 dbusmenu_client_new (const gchar * name, const gchar * object)
@@ -1734,21 +1734,21 @@ dbusmenu_client_new (const gchar * name, const gchar * object)
 }
 
 /**
-	dbusmenu_client_get_root:
-	@client: The #DbusmenuClient to get the root node from
-
-	Grabs the root node for the specified client @client.  This
-	function may block.  It will block if there is currently a
-	call to update the layout, it will block on that layout 
-	updated and then return the newly updated layout.  Chances
-	are that this update is in the queue for the mainloop as
-	it would have been requested some time ago, but in theory
-	it could block longer.
-
-	Return value: A #DbusmenuMenuitem representing the root of
-		menu on the server.  If there is no server or there is
-		an error receiving its layout it'll return #NULL.
-*/
+ * dbusmenu_client_get_root:
+ * @client: The #DbusmenuClient to get the root node from
+ * 
+ * Grabs the root node for the specified client @client.  This
+ * function may block.  It will block if there is currently a
+ * call to update the layout, it will block on that layout 
+ * updated and then return the newly updated layout.  Chances
+ * are that this update is in the queue for the mainloop as
+ * it would have been requested some time ago, but in theory
+ * it could block longer.
+ * 
+ * Return value: (transfer none): A #DbusmenuMenuitem representing the root of
+ * 	menu on the server.  If there is no server or there is
+ * 	an error receiving its layout it'll return #NULL.
+ */
 DbusmenuMenuitem *
 dbusmenu_client_get_root (DbusmenuClient * client)
 {
@@ -1777,25 +1777,25 @@ type_handler_destroy (gpointer user_data)
 }
 
 /**
-	dbusmenu_client_add_type_handler:
-	@client: Client where we're getting types coming in
-	@type: A text string that will be matched with the 'type'
-	    property on incoming menu items
-	@newfunc: The function that will be executed with those new
-	    items when they come in.
-
-	This function connects into the type handling of the #DbusmenuClient.
-	Every new menuitem that comes in immediately gets asked for it's
-	properties.  When we get those properties we check the 'type'
-	property and look to see if it matches a handler that is known
-	by the client.  If so, the @newfunc function is executed on that
-	#DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
-	signal is sent.
-
-	In the future the known types will be sent to the server so that it
-	can make choices about the menu item types availble.
-
-	Return value: If registering the new type was successful.
+ * dbusmenu_client_add_type_handler:
+ * @client: Client where we're getting types coming in
+ * @type: A text string that will be matched with the 'type'
+ *     property on incoming menu items
+ * @newfunc: The function that will be executed with those new
+ *     items when they come in.
+ * 
+ * This function connects into the type handling of the #DbusmenuClient.
+ * Every new menuitem that comes in immediately gets asked for it's
+ * properties.  When we get those properties we check the 'type'
+ * property and look to see if it matches a handler that is known
+ * by the client.  If so, the @newfunc function is executed on that
+ * #DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
+ * signal is sent.
+ * 
+ * In the future the known types will be sent to the server so that it
+ * can make choices about the menu item types availble.
+ * 
+ * Return value: If registering the new type was successful.
 */
 gboolean
 dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc)
@@ -1804,29 +1804,29 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
 }
 
 /**
-	dbusmenu_client_add_type_handler_full:
-	@client: Client where we're getting types coming in
-	@type: A text string that will be matched with the 'type'
-	    property on incoming menu items
-	@newfunc: The function that will be executed with those new
-	    items when they come in.
-	@user_data: Data passed to @newfunc when it is called
-	@destroy_func: A function that is called when the type handler is
-		removed (usually on client destruction) which will free
-		the resources in @user_data.
-
-	This function connects into the type handling of the #DbusmenuClient.
-	Every new menuitem that comes in immediately gets asked for it's
-	properties.  When we get those properties we check the 'type'
-	property and look to see if it matches a handler that is known
-	by the client.  If so, the @newfunc function is executed on that
-	#DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
-	signal is sent.
-
-	In the future the known types will be sent to the server so that it
-	can make choices about the menu item types availble.
-
-	Return value: If registering the new type was successful.
+ * dbusmenu_client_add_type_handler_full:
+ * @client: Client where we're getting types coming in
+ * @type: A text string that will be matched with the 'type'
+ *     property on incoming menu items
+ * @newfunc: The function that will be executed with those new
+ *     items when they come in.
+ * @user_data: Data passed to @newfunc when it is called
+ * @destroy_func: A function that is called when the type handler is
+ * 	removed (usually on client destruction) which will free
+ * 	the resources in @user_data.
+ * 
+ * This function connects into the type handling of the #DbusmenuClient.
+ * Every new menuitem that comes in immediately gets asked for it's
+ * properties.  When we get those properties we check the 'type'
+ * property and look to see if it matches a handler that is known
+ * by the client.  If so, the @newfunc function is executed on that
+ * #DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
+ * signal is sent.
+ * 
+ * In the future the known types will be sent to the server so that it
+ * can make choices about the menu item types availble.
+ * 
+ * Return value: If registering the new type was successful.
 */
 gboolean
 dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, DbusmenuClientTypeDestroyHandler destroy_func)

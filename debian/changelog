@@ -1,3 +1,14 @@
+libdbusmenu (0.3.98-0ubuntu4) UNRELEASED; urgency=low
+
+  * Merged from trunk (rev 220) 
+    - Cleaning up cleaning up so we don't unref twice and crash
+    - Fixing the signatures to make them more consistent
+    - Adding defaults to translatable files
+    - Support a set of defaults and not sending them over the bus.
+    - Fixing annotations and adding tests with python.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 23 Feb 2011 11:34:57 -0500
+
 libdbusmenu (0.3.98-0ubuntu3) natty; urgency=low
 
   * debian/control:

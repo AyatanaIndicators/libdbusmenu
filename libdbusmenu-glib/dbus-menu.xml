@@ -308,8 +308,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 			the ID of the item with a hashtable of names and values for those
 			properties.
 			</dox:d>
-			<arg type="a(ia(sv))" name="props" direction="out" />
-			<arg type="a(ia(s))"  name="props_removed" direction="out" />
+			<arg type="a(ia{sv})" name="updatedProps" direction="out" />
+			<arg type="a(ias)"  name="removedProps" direction="out" />
 		</signal>
 		<signal name="LayoutUpdated">
 			<dox:d>
