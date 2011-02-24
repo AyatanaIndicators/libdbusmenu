@@ -85,16 +85,16 @@ static void           menuitem_notify_cb       (GtkWidget *         widget,
                                                 gpointer            data);
 
 /**
-	dbusmenu_gtk_parse_menu_structure:
-	@widget: A #GtkMenuItem or #GtkMenuShell to turn into a #DbusmenuMenuitem
-
-	Goes through the GTK structures and turns them into the appropraite
-	Dbusmenu structures along with setting up all the relationships
-	between the objects.  It also stores the dbusmenu items as a cache
-	on the GTK items so that they'll be reused if necissary.
-
-	Return value: A dbusmenu item representing the menu structure
-*/
+ * dbusmenu_gtk_parse_menu_structure:
+ * @widget: A #GtkMenuItem or #GtkMenuShell to turn into a #DbusmenuMenuitem
+ * 
+ * Goes through the GTK structures and turns them into the appropraite
+ * Dbusmenu structures along with setting up all the relationships
+ * between the objects.  It also stores the dbusmenu items as a cache
+ * on the GTK items so that they'll be reused if necissary.
+ * 
+ * Return value: (transfer full): A dbusmenu item representing the menu structure
+ */
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 {
@@ -109,43 +109,56 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
   return recurse.parent;
 }
 
-/* Called when the dbusmenu item that we're keeping around
-   is finalized */
 static void
-dbusmenu_cache_freed (gpointer data, GObject * obj)
+parse_data_free (gpointer data)
 {
-	/* If the dbusmenu item is killed we don't need to remove
-	   the weak ref as well. */
-	g_object_steal_data(G_OBJECT(data), CACHED_MENUITEM);
-
-	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
+	ParserData *pdata = (ParserData *)data;
 
 	if (pdata != NULL && pdata->label != NULL) {
-		g_signal_handlers_disconnect_by_func(pdata->label, G_CALLBACK(label_notify_cb), obj);
+		g_signal_handlers_disconnect_matched(pdata->label, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(label_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->label), (gpointer*)&pdata->label);
 	}
 
 	if (pdata != NULL && pdata->action != NULL) {
-		g_signal_handlers_disconnect_by_func(pdata->action, G_CALLBACK(action_notify_cb), obj);
+		g_signal_handlers_disconnect_matched(pdata->action, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(action_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->action), (gpointer*)&pdata->action);
 	}
 
 	if (pdata != NULL && pdata->widget != NULL) {
-		g_signal_handlers_disconnect_by_func(pdata->widget, G_CALLBACK(widget_notify_cb), obj);
+		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->widget), (gpointer*)&pdata->widget);
 	}
 
 	if (pdata != NULL && pdata->shell != NULL) {
-		g_signal_handlers_disconnect_by_func(pdata->shell, G_CALLBACK(child_added_cb), obj);
+		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(child_added_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
 	}
 
 	if (pdata != NULL && pdata->image != NULL) {
-		g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), obj);
+		g_signal_handlers_disconnect_matched(pdata->image, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(image_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
 	}
 
+	g_free(pdata);
+
 	return;
+}
+
+/* Called when the dbusmenu item that we're keeping around
+   is finalized */
+static void
+dbusmenu_item_freed (gpointer data, GObject * obj)
+{
+	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
+
+	if (pdata != NULL && pdata->widget != NULL) {
+		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
+	}
 }
 
 /* Called if we replace the cache on the object with a new
@@ -198,10 +211,13 @@ new_menuitem (GtkWidget * widget)
 	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
 
 	ParserData *pdata = g_new0 (ParserData, 1);
-	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, g_free);
+	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
 
 	g_object_set_data_full(G_OBJECT(widget), CACHED_MENUITEM, item, object_cache_freed);
-	g_object_weak_ref(G_OBJECT(item), dbusmenu_cache_freed, widget);
+	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
+
+	pdata->widget = widget;
+	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
 
 	return item;
 }
@@ -237,16 +253,16 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
 		if (recurse->parent == NULL) {
 			recurse->parent = new_menuitem(widget);
+
+			ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(recurse->parent), PARSER_DATA);
+
+			pdata->shell = widget;
+			g_signal_connect (G_OBJECT (widget),
+				          "child-added",
+				          G_CALLBACK (child_added_cb),
+				          recurse->parent);
+			g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->shell);
 		}
-
-		ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(recurse->parent), PARSER_DATA);
-
-		pdata->shell = widget;
-		g_signal_connect (G_OBJECT (widget),
-			          "child-added",
-			          G_CALLBACK (child_added_cb),
-			          recurse->parent);
-		g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->shell);
 
 		gtk_container_foreach (GTK_CONTAINER (widget),
 		                       (GtkCallback)parse_menu_structure_helper,
@@ -472,12 +488,10 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
                                            sensitive);
 
-      pdata->widget = widget;
       g_signal_connect (widget,
                         "notify",
                         G_CALLBACK (widget_notify_cb),
                         mi);
-      g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
 
       return mi;
     }
