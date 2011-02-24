@@ -62,6 +62,7 @@ struct _DbusmenuMenuitemPrivate
 	gboolean realized;
 	DbusmenuDefaults * defaults;
 	gboolean exposed;
+	DbusmenuMenuitem * parent;
 };
 
 /* Signals */
@@ -339,6 +340,11 @@ dbusmenu_menuitem_dispose (GObject *object)
 		priv->defaults = NULL;
 	}
 
+	if (priv->parent) {
+		g_object_remove_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+		priv->parent = NULL;
+	}
+
 	G_OBJECT_CLASS (dbusmenu_menuitem_parent_class)->dispose (object);
 	return;
 }
@@ -565,11 +571,12 @@ dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 /* For all the taken children we need to signal
    that they were removed */
 static void
-take_children_signal (gpointer data, gpointer user_data)
+take_children_helper (gpointer data, gpointer user_data)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(user_data), LABEL(user_data), ID(data), LABEL(data));
 	#endif
+	dbusmenu_menuitem_unparent(DBUSMENU_MENUITEM(data));
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
 	return;
 }
@@ -595,7 +602,7 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	GList * children = priv->children;
 	priv->children = NULL;
-	g_list_foreach(children, take_children_signal, mi);
+	g_list_foreach(children, take_children_helper, mi);
 
 	dbusmenu_menuitem_property_remove(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
 	
@@ -704,6 +711,10 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
 
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
+
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
 	}
@@ -735,6 +746,10 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
 
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
@@ -768,6 +783,7 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_remove(priv->children, child);
+	dbusmenu_menuitem_unparent(child);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(mi), LABEL(mi), ID(child), LABEL(child));
 	#endif
@@ -801,6 +817,10 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
 
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
@@ -934,6 +954,84 @@ dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 	find_id_t find_id = {mi: NULL, id: id};
 	find_id_helper(mi, &find_id);
 	return find_id.mi;
+}
+
+/**
+ * dbusmenu_menuitem_set_parent:
+ * @mi: The #DbusmenuMenuitem for which to set the parent
+ * @parent: The new parent #DbusmenuMenuitem
+ *
+ * Sets the parent of @mi to @parent. If @mi already
+ * has a parent, then this call will fail. The parent will
+ * be set automatically when using the usual methods to add a
+ * child menuitem, so this function should not normally be 
+ * called directly 
+ *
+ * Return value: Whether the parent was set successfully
+ */
+gboolean
+dbusmenu_menuitem_set_parent (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	if (priv->parent != NULL) {
+		g_warning ("Menu item already has a parent");
+		return FALSE;
+	}
+
+	priv->parent = parent;
+	g_object_add_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+
+	return TRUE;
+}
+
+/**
+ * dbusmenu_menuitem_unparent:
+ * @mi: The #DbusmenuMenuitem to unparent
+ *
+ * Unparents the menu item @mi. If @mi doesn't have a
+ * parent, then this call will fail. The menuitem will
+ * be unparented automatically when using the usual methods
+ * to delete a child menuitem, so this function should not
+ * normally be called directly 
+ *
+ * Return value: Whether the menu item was unparented successfully
+ */
+gboolean
+dbusmenu_menuitem_unparent (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	if (priv->parent == NULL) {
+		g_warning("Menu item doesn't have a parent");
+		return FALSE;
+	}
+
+	g_object_remove_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+	priv->parent = NULL;
+
+	return TRUE;
+}
+
+/**
+ * dbusmenu_menuitem_get_parent:
+ * @mi: The #DbusmenuMenuitem for which to inspect the parent
+ *
+ * This function looks up the parent of @mi
+ *
+ * Return value: The parent of this menu item
+ */
+DbusmenuMenuitem *
+dbusmenu_menuitem_get_parent (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	return priv->parent;
 }
 
 /**

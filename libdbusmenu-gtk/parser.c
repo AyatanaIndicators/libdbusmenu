@@ -321,10 +321,6 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
 			/* Oops, let's tell our parents about us */
 			if (peek == NULL) {
-				/* TODO: Should we set a weak ref on the parent? */
-				g_object_set_data (G_OBJECT (thisitem),
-				                   "dbusmenu-parent",
-				                   recurse->parent);
 				gint pos = get_child_position (widget);
 				if (pos >= 0)
 					dbusmenu_menuitem_child_add_position (recurse->parent,
@@ -813,7 +809,7 @@ widget_notify_cb (GtkWidget  *widget,
                                                 G_CALLBACK (widget_notify_cb),
                                                 child);
 
-          DbusmenuMenuitem *parent = g_object_get_data (G_OBJECT (child), "dbusmenu-parent");
+          DbusmenuMenuitem *parent = dbusmenu_menuitem_get_parent (child);
 
           if (DBUSMENU_IS_MENUITEM (parent) && DBUSMENU_IS_MENUITEM (child))
             {

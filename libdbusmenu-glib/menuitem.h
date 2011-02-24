@@ -379,6 +379,10 @@ gboolean dbusmenu_menuitem_child_reorder (DbusmenuMenuitem * mi, DbusmenuMenuite
 DbusmenuMenuitem * dbusmenu_menuitem_child_find (DbusmenuMenuitem * mi, gint id);
 DbusmenuMenuitem * dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id);
 
+gboolean dbusmenu_menuitem_set_parent (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent);
+gboolean dbusmenu_menuitem_unparent (DbusmenuMenuitem *mi);
+DbusmenuMenuitem * dbusmenu_menuitem_get_parent (DbusmenuMenuitem * mi);
+
 gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * property, const gchar * value);
 gboolean dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * property, GVariant * value);
 gboolean dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value);
