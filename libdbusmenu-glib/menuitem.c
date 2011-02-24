@@ -781,6 +781,11 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
+	if (dbusmenu_menuitem_get_parent(child) != mi) {
+		g_warning("Trying to remove a child that doesn't believe we're it's parent.");
+		return FALSE;
+	}
+
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_remove(priv->children, child);
 	dbusmenu_menuitem_unparent(child);
