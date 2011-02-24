@@ -44,16 +44,66 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_SERVER))
 #define DBUSMENU_SERVER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_SERVER, DbusmenuServerClass))
 
+/**
+ * DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE:
+ *
+ * String to attach to signal #DbusmenuServer::item-property-updated
+ */
 #define DBUSMENU_SERVER_SIGNAL_ID_PROP_UPDATE  "item-property-updated"
+/**
+ * DBUSMENU_SERVER_SIGNAL_ID_UPDATE:
+ *
+ * String to attach to signal #DbusmenuServer::item-updated
+ */
 #define DBUSMENU_SERVER_SIGNAL_ID_UPDATE       "item-updated"
+/**
+ * DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED:
+ *
+ * String to attach to signal #DbusmenuServer::layout-updated
+ */
 #define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED  "layout-updated"
+/**
+ * DBUSMENU_SERVER_SIGNAL_ITEM_ACTIVATION:
+ *
+ * String to attach to signal #DbusmenuServer::item-activation-requested
+ */
 #define DBUSMENU_SERVER_SIGNAL_ITEM_ACTIVATION "item-activation-requested"
+/**
+ * DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE:
+ *
+ * String to attach to signal #DbusmenuServer::layout-updated
+ */
 #define DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE   DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATED
 
+/**
+ * DBUSMENU_SERVER_PROP_DBUS_OBJECT:
+ *
+ * String to access property #DbusmenuServer:dbus-object
+ */
 #define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
+/**
+ * DBUSMENU_SERVER_PROP_ROOT_NODE:
+ *
+ * String to access property #DbusmenuServer:root-node
+ */
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
+/**
+ * DBUSMENU_SERVER_PROP_VERSION:
+ *
+ * String to access property #DbusmenuServer:version
+ */
 #define DBUSMENU_SERVER_PROP_VERSION           "version"
+/**
+ * DBUSMENU_SERVER_PROP_TEXT_DIRECTION:
+ *
+ * String to access property #DbusmenuServer:text-direction
+ */
 #define DBUSMENU_SERVER_PROP_TEXT_DIRECTION    "text-direction"
+/**
+ * DBUSMENU_SERVER_PROP_STATUS:
+ *
+ * String to access property #DbusmenuServer:status
+ */
 #define DBUSMENU_SERVER_PROP_STATUS            "status"
 
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
@@ -64,8 +114,7 @@ typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 	@id_prop_update: Slot for #DbusmenuServer::id-prop-update.
 	@id_update: Slot for #DbusmenuServer::id-update.
 	@layout_updated: Slot for #DbusmenuServer::layout-update.
-	@item_activation_requested: Slot for #DbusmenuServer::item-activation-requested.
-
+	@item_activation: Slot for #DbusmenuServer::item-activation-requested.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
@@ -96,7 +145,6 @@ struct _DbusmenuServerClass {
 
 /**
 	DbusmenuServer:
-	@parent: #GObject
 
 	A server which represents a sharing of a set of
 	#DbusmenuMenuitems across DBus to a #DbusmenuClient.
@@ -111,7 +159,7 @@ struct _DbusmenuServer {
 
 GType                   dbusmenu_server_get_type            (void);
 DbusmenuServer *        dbusmenu_server_new                 (const gchar *          object);
-void                    dbusmenu_server_set_root            (DbusmenuServer *       server,
+void                    dbusmenu_server_set_root            (DbusmenuServer *       self,
                                                              DbusmenuMenuitem *     root);
 DbusmenuTextDirection   dbusmenu_server_get_text_direction  (DbusmenuServer *       server);
 void                    dbusmenu_server_set_text_direction  (DbusmenuServer *       server,
@@ -121,7 +169,7 @@ void                    dbusmenu_server_set_status          (DbusmenuServer *   
                                                              DbusmenuStatus         status);
 
 /**
-	SECIONT:server
+	SECTION:server
 	@short_description: The server signals changed and
 		updates on a tree of #DbusmenuMenuitem objecs.
 	@stability: Unstable

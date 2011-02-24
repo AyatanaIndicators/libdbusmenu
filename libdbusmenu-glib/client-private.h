@@ -1,6 +1,6 @@
 /*
-Parse to take a set of GTK Menus and turn them into something that can
-be sent over the wire.
+A library to communicate a menu object set accross DBus and
+track updates and maintain consistency.
 
 Copyright 2011 Canonical Ltd.
 
@@ -26,26 +26,23 @@ License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 */
 
-#ifndef DBUSMENU_GTK_PARSER_H__
-#define DBUSMENU_GTK_PARSER_H__
+#ifndef __DBUSMENU_CLIENT_PRIVATE_H__
+#define __DBUSMENU_CLIENT_PRIVATE_H__
 
-#include <libdbusmenu-glib/menuitem.h>
-#include <gtk/gtk.h>
+#include "client.h"
 
 G_BEGIN_DECLS
 
-DbusmenuMenuitem * dbusmenu_gtk_parse_menu_structure (GtkWidget * widget);
+void                 dbusmenu_client_send_event        (DbusmenuClient * client,
+                                                        gint id,
+                                                        const gchar * name,
+                                                        GVariant * variant,
+                                                        guint timestamp);
+void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
+                                                        gint id,
+                                                        void (*cb) (gpointer user_data),
+                                                        gpointer cb_data);
 
-/**
-	SECTION:parser
-	@short_description: A parser of in-memory GTK menu trees
-	@stability: Unstable
-	@include: libdbusmenu-gtk/parser.h
-
-	The parser will take a GTK menu tree and attach it to a Dbusmenu menu
-	tree.  Along with setting up all the signals for updates and destruction.
-	The returned item would be the root item of the given tree.
-*/
 G_END_DECLS
 
-#endif /* DBUSMENU_GTK_PARSER_H__ */
+#endif

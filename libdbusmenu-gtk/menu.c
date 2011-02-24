@@ -103,7 +103,7 @@ menu_focus_cb(DbusmenuGtkMenu * menu, gpointer userdata)
 	if (priv->client != NULL) {
 		/* TODO: We should stop the display of the menu
 		         until the about to show call returns. */
-		dbusmenu_client_send_about_to_show(DBUSMENU_CLIENT(priv->client), 0, NULL, NULL);
+		dbusmenu_menuitem_send_about_to_show(priv->root, NULL, NULL);
 	}
 	return;
 }

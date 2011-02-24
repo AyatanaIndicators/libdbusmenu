@@ -161,17 +161,10 @@ dbusmenu_item_freed (gpointer data, GObject * obj)
 	}
 }
 
-/* Called if we replace the cache on the object with a new
-   dbusmenu menuitem */
 static void
-object_cache_freed (gpointer data)
+widget_freed (gpointer data, GObject * obj)
 {
-	// TODO: make this have access to both data and obj so we can call these
-	//if (!G_IS_OBJECT(obj)) return;
-	//g_object_weak_unref(G_OBJECT(obj), dbusmenu_cache_freed, data);
-	//dbusmenu_cache_freed(data, obj);
-
-	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), data);
+	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), obj);
 
 	return;
 }
@@ -213,8 +206,8 @@ new_menuitem (GtkWidget * widget)
 	ParserData *pdata = g_new0 (ParserData, 1);
 	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
 
-	g_object_set_data_full(G_OBJECT(widget), CACHED_MENUITEM, item, object_cache_freed);
 	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
+	g_object_weak_ref(G_OBJECT(widget), widget_freed, NULL);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
@@ -310,10 +303,6 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
 			/* Oops, let's tell our parents about us */
 			if (peek == NULL) {
-				/* TODO: Should we set a weak ref on the parent? */
-				g_object_set_data (G_OBJECT (thisitem),
-				                   "dbusmenu-parent",
-				                   recurse->parent);
 				gint pos = get_child_position (widget);
 				if (pos >= 0)
 					dbusmenu_menuitem_child_add_position (recurse->parent,
@@ -764,30 +753,34 @@ widget_notify_cb (GtkWidget  *widget,
                   gpointer    data)
 {
   DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+  GValue prop_value = {0};
+
+  g_value_init (&prop_value, pspec->value_type); 
+  g_object_get_property (G_OBJECT (widget), pspec->name, &prop_value);
 
   if (pspec->name == g_intern_static_string ("sensitive"))
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
-                                           gtk_widget_get_sensitive (widget));
+                                           g_value_get_boolean (&prop_value));
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
+                                      g_value_get_string (&prop_value));
     }
   else if (pspec->name == g_intern_static_string ("visible"))
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                           gtk_widget_get_visible (widget));
+                                           g_value_get_boolean (&prop_value));
     }
   else if (pspec->name == g_intern_static_string ("image") ||
            pspec->name == g_intern_static_string ("always-show-image"))
     {
       GtkWidget *image;
-      image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+      image = GTK_WIDGET (g_value_get_object (&prop_value));
       update_icon (child, GTK_IMAGE (image));
     }
   else if (pspec->name == g_intern_static_string ("parent"))
@@ -796,13 +789,13 @@ widget_notify_cb (GtkWidget  *widget,
         * We probably should have added a 'remove' method to the
         * UbuntuMenuProxy early on, but it's late in the cycle now.
         */
-      if (gtk_widget_get_parent (widget) == NULL)
+      if (GTK_WIDGET (g_value_get_object (&prop_value)) == NULL) 
         {
           g_signal_handlers_disconnect_by_func (widget,
                                                 G_CALLBACK (widget_notify_cb),
                                                 child);
 
-          DbusmenuMenuitem *parent = g_object_get_data (G_OBJECT (child), "dbusmenu-parent");
+          DbusmenuMenuitem *parent = dbusmenu_menuitem_get_parent (child);
 
           if (DBUSMENU_IS_MENUITEM (parent) && DBUSMENU_IS_MENUITEM (child))
             {
@@ -832,7 +825,7 @@ widget_notify_cb (GtkWidget  *widget,
       recurse.parent = item;
 
 	  if (item != NULL) {
-        GtkWidget * menu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
+        GtkWidget * menu = GTK_WIDGET (g_value_get_object (&prop_value));
         parse_menu_structure_helper(menu, &recurse);
       } else {
         /* Note: it would be really odd that we wouldn't have a cached
@@ -841,6 +834,7 @@ widget_notify_cb (GtkWidget  *widget,
         g_object_unref(G_OBJECT(recurse.parent));
       }
     }
+  g_value_unset (&prop_value);
 }
 
 /* A child item was added to a menu we're watching.  Let's try to integrate it. */

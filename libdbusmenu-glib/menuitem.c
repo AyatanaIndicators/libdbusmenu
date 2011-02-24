@@ -62,6 +62,7 @@ struct _DbusmenuMenuitemPrivate
 	gboolean realized;
 	DbusmenuDefaults * defaults;
 	gboolean exposed;
+	DbusmenuMenuitem * parent;
 };
 
 /* Signals */
@@ -357,6 +358,11 @@ dbusmenu_menuitem_dispose (GObject *object)
 		priv->defaults = NULL;
 	}
 
+	if (priv->parent) {
+		g_object_remove_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+		priv->parent = NULL;
+	}
+
 	G_OBJECT_CLASS (dbusmenu_menuitem_parent_class)->dispose (object);
 	return;
 }
@@ -583,11 +589,12 @@ dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 /* For all the taken children we need to signal
    that they were removed */
 static void
-take_children_signal (gpointer data, gpointer user_data)
+take_children_helper (gpointer data, gpointer user_data)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(user_data), LABEL(user_data), ID(data), LABEL(data));
 	#endif
+	dbusmenu_menuitem_unparent(DBUSMENU_MENUITEM(data));
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
 	return;
 }
@@ -613,7 +620,7 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	GList * children = priv->children;
 	priv->children = NULL;
-	g_list_foreach(children, take_children_signal, mi);
+	g_list_foreach(children, take_children_helper, mi);
 
 	dbusmenu_menuitem_property_remove(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
 	
@@ -722,6 +729,10 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
 
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
+
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
 	}
@@ -754,6 +765,10 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
 
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
+
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
 	}
@@ -784,8 +799,14 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
+	if (dbusmenu_menuitem_get_parent(child) != mi) {
+		g_warning("Trying to remove a child that doesn't believe we're it's parent.");
+		return FALSE;
+	}
+
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_remove(priv->children, child);
+	dbusmenu_menuitem_unparent(child);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(mi), LABEL(mi), ID(child), LABEL(child));
 	#endif
@@ -819,6 +840,10 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
 
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
@@ -955,6 +980,84 @@ dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 }
 
 /**
+ * dbusmenu_menuitem_set_parent:
+ * @mi: The #DbusmenuMenuitem for which to set the parent
+ * @parent: The new parent #DbusmenuMenuitem
+ *
+ * Sets the parent of @mi to @parent. If @mi already
+ * has a parent, then this call will fail. The parent will
+ * be set automatically when using the usual methods to add a
+ * child menuitem, so this function should not normally be 
+ * called directly 
+ *
+ * Return value: Whether the parent was set successfully
+ */
+gboolean
+dbusmenu_menuitem_set_parent (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	if (priv->parent != NULL) {
+		g_warning ("Menu item already has a parent");
+		return FALSE;
+	}
+
+	priv->parent = parent;
+	g_object_add_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+
+	return TRUE;
+}
+
+/**
+ * dbusmenu_menuitem_unparent:
+ * @mi: The #DbusmenuMenuitem to unparent
+ *
+ * Unparents the menu item @mi. If @mi doesn't have a
+ * parent, then this call will fail. The menuitem will
+ * be unparented automatically when using the usual methods
+ * to delete a child menuitem, so this function should not
+ * normally be called directly 
+ *
+ * Return value: Whether the menu item was unparented successfully
+ */
+gboolean
+dbusmenu_menuitem_unparent (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	if (priv->parent == NULL) {
+		g_warning("Menu item doesn't have a parent");
+		return FALSE;
+	}
+
+	g_object_remove_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+	priv->parent = NULL;
+
+	return TRUE;
+}
+
+/**
+ * dbusmenu_menuitem_get_parent:
+ * @mi: The #DbusmenuMenuitem for which to inspect the parent
+ *
+ * This function looks up the parent of @mi
+ *
+ * Return value: (transfer none): The parent of this menu item
+ */
+DbusmenuMenuitem *
+dbusmenu_menuitem_get_parent (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	return priv->parent;
+}
+
+/**
  * dbusmenu_menuitem_property_set:
  * @mi: The #DbusmenuMenuitem to set the property on.
  * @property: Name of the property to set.
@@ -1073,33 +1176,6 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 				g_variant_unref(value);
 				value = NULL;
 			}
-		}
-	}
-
-	const gchar * type = menuitem_get_type(mi);
-
-	/* Check the expected type to see if we want to have a warning */
-	GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
-	if (default_type != NULL) {
-		/* If we have an expected type we should check to see if
-		   the value we've been given is of the same type and generate
-		   a warning if it isn't */
-		if (!g_variant_is_of_type(value, default_type)) {
-			g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
-		}
-	}
-
-	/* Check the defaults database to see if we have a default
-	   for this property. */
-	GVariant * default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
-	if (default_value != NULL) {
-		/* Now see if we're setting this to the same value as the
-		   default.  If we are then we just want to swallow this variant
-		   and make the function behave like we're clearing it. */
-		if (g_variant_equal(default_value, value)) {
-			g_variant_ref_sink(value);
-			g_variant_unref(value);
-			value = NULL;
 		}
 	}
 
@@ -1260,7 +1336,7 @@ dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * propert
 
 
 /**
- * dbusmenu_menuitem_property_exit:
+ * dbusmenu_menuitem_property_exist:
  * @mi: The #DbusmenuMenuitem to look for the property on.
  * @property: The property to look for.
  * 
@@ -1595,7 +1671,7 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
 	gboolean handled = FALSE;
-	g_signal_emit(G_OBJECT(mi), EVENT, g_quark_from_string(name), name, variant, timestamp, &handled);
+	g_signal_emit(G_OBJECT(mi), signals[EVENT], g_quark_from_string(name), name, variant, timestamp, &handled);
 
 	if (!handled && class->handle_event != NULL) {
 		return class->handle_event(mi, name, variant, timestamp);
