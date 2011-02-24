@@ -161,6 +161,15 @@ dbusmenu_item_freed (gpointer data, GObject * obj)
 	}
 }
 
+static void
+widget_freed (gpointer data, GObject * obj)
+{
+	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), obj);
+
+	return;
+}
+
+#if 0
 /* Called if we replace the cache on the object with a new
    dbusmenu menuitem */
 static void
@@ -175,6 +184,7 @@ object_cache_freed (gpointer data)
 
 	return;
 }
+#endif
 
 /* Gets the positon of the child with its' parent if it has one.
    Returns -1 if the position is unable to be calculated. */
@@ -213,8 +223,9 @@ new_menuitem (GtkWidget * widget)
 	ParserData *pdata = g_new0 (ParserData, 1);
 	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
 
-	g_object_set_data_full(G_OBJECT(widget), CACHED_MENUITEM, item, object_cache_freed);
+	/* g_object_set_data_full(G_OBJECT(widget), CACHED_MENUITEM, item, object_cache_freed); */
 	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
+	g_object_weak_ref(G_OBJECT(widget), widget_freed, NULL);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
