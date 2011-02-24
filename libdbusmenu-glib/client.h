@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <glib-object.h>
 
 #include "menuitem.h"
+#include "types.h"
 
 G_BEGIN_DECLS
 
@@ -73,6 +74,7 @@ G_BEGIN_DECLS
  * String to attach to signal #DbusmenuClient::event-result
  */
 #define DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT    "event-result"
+#define DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED    "text-direction-changed"
 
 /**
  * DBUSMENU_CLIENT_PROP_DBUS_NAME:
@@ -86,6 +88,7 @@ G_BEGIN_DECLS
  * String to access property #DbusmenuClient:dbus-object
  */
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
+#define DBUSMENU_CLIENT_PROP_TEXT_DIRECTION "text-direction"
 
 /**
  * DBUSMENU_CLIENT_TYPES_DEFAULT:
@@ -203,6 +206,7 @@ gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * cli
                                                         DbusmenuClientTypeHandler newfunc,
                                                         gpointer user_data,
                                                         DbusmenuClientTypeDestroyHandler destroy_func);
+DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
 
 /**
 	SECTION:client
