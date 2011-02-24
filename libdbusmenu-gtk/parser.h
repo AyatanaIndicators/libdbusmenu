@@ -32,6 +32,20 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <libdbusmenu-glib/menuitem.h>
 #include <gtk/gtk.h>
 
+G_BEGIN_DECLS
+
 DbusmenuMenuitem * dbusmenu_gtk_parse_menu_structure (GtkWidget * widget);
+
+/**
+	SECTION:parser
+	@short_description: A parser of in-memory GTK menu trees
+	@stability: Unstable
+	@include: libdbusmenu-gtk/parser.h
+
+	The parser will take a GTK menu tree and attach it to a Dbusmenu menu
+	tree.  Along with setting up all the signals for updates and destruction.
+	The returned item would be the root item of the given tree.
+*/
+G_END_DECLS
 
 #endif /* DBUSMENU_GTK_PARSER_H__ */

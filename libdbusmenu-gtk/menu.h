@@ -45,15 +45,18 @@ G_BEGIN_DECLS
 typedef struct _DbusmenuGtkMenuPrivate DbusmenuGtkMenuPrivate;
 
 /**
-	DbusmenuGtkMenuClass:
-	@parent_class: #GtkMenuClass
-	@reserved1: Reserved for future use.
-	@reserved2: Reserved for future use.
-	@reserved3: Reserved for future use.
-	@reserved4: Reserved for future use.
-	@reserved5: Reserved for future use.
-	@reserved6: Reserved for future use.
-*/
+ * DbusmenuGtkMenuClass:
+ * @parent_class: #GtkMenuClass
+ * @reserved1: Reserved for future use.
+ * @reserved2: Reserved for future use.
+ * @reserved3: Reserved for future use.
+ * @reserved4: Reserved for future use.
+ * @reserved5: Reserved for future use.
+ * @reserved6: Reserved for future use.
+ *
+ * All of the subclassable functions and signal slots for a
+ * #DbusmenuGtkMenu.
+ */
 typedef struct _DbusmenuGtkMenuClass DbusmenuGtkMenuClass;
 struct _DbusmenuGtkMenuClass {
 	GtkMenuClass parent_class;
@@ -68,9 +71,11 @@ struct _DbusmenuGtkMenuClass {
 };
 
 /**
-	DbusmenuGtkMenu:
-	@parent: #GtkMenu
-*/
+ * DbusmenuGtkMenu:
+ *
+ * A #GtkMenu that is built using an abstract tree built from
+ * a #DbusmenuGtkClient.
+ */
 typedef struct _DbusmenuGtkMenu      DbusmenuGtkMenu;
 struct _DbusmenuGtkMenu {
 	GtkMenu parent;
@@ -84,7 +89,7 @@ DbusmenuGtkMenu * dbusmenu_gtkmenu_new (gchar * dbus_name, gchar * dbus_object);
 DbusmenuGtkClient * dbusmenu_gtkmenu_get_client (DbusmenuGtkMenu * menu);
 
 /**
-	SECTION:gtkmenu
+	SECTION:menu
 	@short_description: A GTK Menu Object that syncronizes over DBus
 	@stability: Unstable
 	@include: libdbusmenu-gtk/menu.h
@@ -105,8 +110,6 @@ DbusmenuGtkClient * dbusmenu_gtkmenu_get_client (DbusmenuGtkMenu * menu);
 	number of entries change, the menus change, if they change thier
 	properties change, they update in the items.  All of this should
 	be handled transparently to the user of this object.
-
-	TODO: Document properties.
 */
 G_END_DECLS
 

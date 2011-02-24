@@ -168,3 +168,46 @@ _dbusmenu_menuitem_marshal_VOID__OBJECT_UINT (GClosure     *closure,
 
 /* VOID:UINT (./menuitem-marshal.list:6) */
 
+/* BOOLEAN:STRING,VARIANT,UINT (./menuitem-marshal.list:7) */
+void
+_dbusmenu_menuitem_marshal_BOOLEAN__STRING_VARIANT_UINT (GClosure     *closure,
+                                                         GValue       *return_value G_GNUC_UNUSED,
+                                                         guint         n_param_values,
+                                                         const GValue *param_values,
+                                                         gpointer      invocation_hint G_GNUC_UNUSED,
+                                                         gpointer      marshal_data)
+{
+  typedef gboolean (*GMarshalFunc_BOOLEAN__STRING_VARIANT_UINT) (gpointer     data1,
+                                                                 gpointer     arg_1,
+                                                                 gpointer     arg_2,
+                                                                 guint        arg_3,
+                                                                 gpointer     data2);
+  register GMarshalFunc_BOOLEAN__STRING_VARIANT_UINT callback;
+  register GCClosure *cc = (GCClosure*) closure;
+  register gpointer data1, data2;
+  gboolean v_return;
+
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 4);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+      data1 = closure->data;
+      data2 = g_value_peek_pointer (param_values + 0);
+    }
+  else
+    {
+      data1 = g_value_peek_pointer (param_values + 0);
+      data2 = closure->data;
+    }
+  callback = (GMarshalFunc_BOOLEAN__STRING_VARIANT_UINT) (marshal_data ? marshal_data : cc->callback);
+
+  v_return = callback (data1,
+                       g_marshal_value_peek_string (param_values + 1),
+                       g_marshal_value_peek_variant (param_values + 2),
+                       g_marshal_value_peek_uint (param_values + 3),
+                       data2);
+
+  g_value_set_boolean (return_value, v_return);
+}
+

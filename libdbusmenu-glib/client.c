@@ -33,12 +33,14 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <gio/gio.h>
 
 #include "client.h"
+#include "client-private.h"
 #include "menuitem.h"
 #include "menuitem-private.h"
 #include "client-menuitem.h"
 #include "server-marshal.h"
 #include "client-marshal.h"
 #include "dbus-menu-clean.xml.h"
+#include "enum-types.h"
 
 /* How many property requests should we queue before
    sending the message on dbus */
@@ -48,7 +50,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 enum {
 	PROP_0,
 	PROP_DBUSOBJECT,
-	PROP_DBUSNAME
+	PROP_DBUSNAME,
+	PROP_STATUS,
+	PROP_TEXT_DIRECTION
 };
 
 /* Signals */
@@ -79,6 +83,7 @@ struct _DbusmenuClientPrivate
 	GCancellable * menuproxy_cancel;
 
 	GCancellable * layoutcall;
+	GVariant * layout_props;
 
 	gint current_revision;
 	gint my_revision;
@@ -90,6 +95,9 @@ struct _DbusmenuClientPrivate
 	GArray * delayed_property_list;
 	GArray * delayed_property_listeners;
 	gint delayed_idle;
+
+	DbusmenuTextDirection text_direction;
+	DbusmenuStatus status;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -157,6 +165,7 @@ static void get_properties_globber (DbusmenuClient * client, gint id, const gcha
 static GQuark error_domain (void);
 static void item_activated (GDBusProxy * proxy, gint id, guint timestamp, DbusmenuClient * client);
 static void menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data);
+static void menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv invalidated, gpointer user_data);
 static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data);
 static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
 static void type_handler_destroy (gpointer user_data);
@@ -274,6 +283,16 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                              "Name of the DBus client we're connecting to.",
 	                                              NULL,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_STATUS,
+	                                 g_param_spec_enum(DBUSMENU_CLIENT_PROP_STATUS, "Status of viewing the menus",
+	                                              "Whether the menus should be given special visuals",
+	                                              DBUSMENU_TYPE_STATUS, DBUSMENU_STATUS_NORMAL,
+	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_TEXT_DIRECTION,
+	                                 g_param_spec_enum(DBUSMENU_CLIENT_PROP_TEXT_DIRECTION, "Direction text values have",
+	                                              "Signals which direction the default text direction is for the menus",
+	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
+	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
 		GError * error = NULL;
@@ -316,6 +335,15 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->layoutcall = NULL;
 
+	gchar * layout_props[5];
+	layout_props[0] = DBUSMENU_MENUITEM_PROP_TYPE;
+	layout_props[1] = DBUSMENU_MENUITEM_PROP_LABEL;
+	layout_props[2] = DBUSMENU_MENUITEM_PROP_VISIBLE;
+	layout_props[3] = DBUSMENU_MENUITEM_PROP_ENABLED;
+	layout_props[4] = NULL;
+	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, 4);
+	g_variant_ref_sink(priv->layout_props);
+
 	priv->current_revision = 0;
 	priv->my_revision = 0;
 
@@ -327,6 +355,9 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->delayed_idle = 0;
 	priv->delayed_property_list = g_array_new(TRUE, FALSE, sizeof(gchar *));
 	priv->delayed_property_listeners = g_array_new(FALSE, FALSE, sizeof(properties_listener_t));
+
+	priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
+	priv->status = DBUSMENU_STATUS_NORMAL;
 
 	return;
 }
@@ -378,6 +409,11 @@ dbusmenu_client_dispose (GObject *object)
 		g_cancellable_cancel(priv->layoutcall);
 		g_object_unref(priv->layoutcall);
 		priv->layoutcall = NULL;
+	}
+
+	if (priv->layout_props != NULL) {
+		g_variant_unref(priv->layout_props);
+		priv->layout_props = NULL;
 	}
 
 	/* Bring down the menu proxy, ensure we're not
@@ -471,6 +507,12 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_DBUSOBJECT:
 		g_value_set_string(value, priv->dbus_object);
+		break;
+	case PROP_STATUS:
+		g_value_set_enum(value, priv->status);
+		break;
+	case PROP_TEXT_DIRECTION:
+		g_value_set_enum(value, priv->text_direction);
 		break;
 	default:
 		g_warning("Unknown property %d.", id);
@@ -983,6 +1025,19 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		priv->menuproxy_cancel = NULL;
 	}
 
+	/* Check the text direction if available */
+	GVariant * textdir = g_dbus_proxy_get_cached_property(priv->menuproxy, "text-direction");
+	if (textdir != NULL) {
+		GVariant * str = textdir;
+		if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
+			str = g_variant_get_variant(str);
+		}
+
+		priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
+
+		g_variant_unref(textdir);
+	}
+
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != 0) {
 		g_bus_unwatch_name(priv->dbusproxy);
@@ -991,11 +1046,69 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 
 	g_signal_connect(priv->menuproxy, "g-signal",             G_CALLBACK(menuproxy_signal_cb),       client);
 	g_signal_connect(priv->menuproxy, "notify::g-name-owner", G_CALLBACK(menuproxy_name_changed_cb), client);
+	g_signal_connect(priv->menuproxy, "g-properties-changed", G_CALLBACK(menuproxy_prop_changed_cb), client);
 
 	gchar * name_owner = g_dbus_proxy_get_name_owner(priv->menuproxy);
 	if (name_owner != NULL) {
 		update_layout(client);
 		g_free(name_owner);
+	}
+
+	return;
+}
+
+/* Handle the properites changing */
+static void
+menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv invalidated, gpointer user_data)
+{
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
+	DbusmenuTextDirection olddir = priv->text_direction;
+	DbusmenuStatus oldstatus = priv->status;
+
+	/* Invalidate first */
+	gchar * invalid;
+	gint i = 0;
+	for (invalid = invalidated[i]; invalid != NULL; invalid = invalidated[++i]) {
+		if (g_strcmp0(invalid, "text-direction") == 0) {
+			priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
+		}
+		if (g_strcmp0(invalid, "status") == 0) {
+			priv->status = DBUSMENU_STATUS_NORMAL;
+		}
+	}
+
+	/* Check updates */
+	GVariantIter iters;
+	gchar * key; GVariant * value;
+	g_variant_iter_init(&iters, properties);
+	while (g_variant_iter_next(&iters, "{sv}", &key, &value)) {
+		if (g_strcmp0(key, "text-direction") == 0) {
+			GVariant * str = value;
+			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
+				str = g_variant_get_variant(str);
+			}
+
+			priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
+		}
+		if (g_strcmp0(key, "status") == 0) {
+			GVariant * str = value;
+			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
+				str = g_variant_get_variant(str);
+			}
+
+			priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(str, NULL));
+		}
+
+		g_variant_unref(value);
+		g_free(key);
+	}
+
+	if (olddir != priv->text_direction) {
+		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_TEXT_DIRECTION);
+	}
+
+	if (oldstatus != priv->status) {
+		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
 	}
 
 	return;
@@ -1473,6 +1586,33 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 			parse_layout_update(childmi, client);
 		}
 
+		/* Apply known properties sent in the structure to the
+		   menu item.  Sometimes they may just be copies */
+		if (childmi != NULL) {
+			GVariantIter iter;
+			gchar * prop;
+			GVariant * value;
+
+			/* Set the type first as it can manage the behavior of
+			   all other properties. */
+			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
+			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+				if (g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TYPE) == 0) {
+					dbusmenu_menuitem_property_set_variant(childmi, prop, value);
+				}
+				g_free(prop);
+				g_variant_unref(value);
+			}
+
+			/* Now go through and do all the properties. */
+			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
+			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+				dbusmenu_menuitem_property_set_variant(childmi, prop, value);
+				g_free(prop);
+				g_variant_unref(value);
+			}
+		}
+
 		position++;
 	}
 
@@ -1662,7 +1802,7 @@ update_layout (DbusmenuClient * client)
 	
 	g_variant_builder_add_value(&tupleb, g_variant_new_int32(0)); // root
 	g_variant_builder_add_value(&tupleb, g_variant_new_int32(-1)); // recurse
-	g_variant_builder_add_value(&tupleb, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0)); // props
+	g_variant_builder_add_value(&tupleb, priv->layout_props); // props
 
 	GVariant * args = g_variant_builder_end(&tupleb);
 	// g_debug("Args (type: %s): %s", g_variant_get_type_string(args), g_variant_print(args, TRUE));
@@ -1682,17 +1822,17 @@ update_layout (DbusmenuClient * client)
 
 /* Public API */
 /**
-	dbusmenu_client_new:
-	@name: The DBus name for the server to connect to
-	@object: The object on the server to monitor
-
-	This function creates a new client that connects to a specific
-	server on DBus.  That server is at a specific location sharing
-	a known object.  The interface is assumed by the code to be 
-	the DBus menu interface.  The newly created client will start
-	sending out events as it syncs up with the server.
-
-	Return value: A brand new #DbusmenuClient
+ * dbusmenu_client_new:
+ * @name: The DBus name for the server to connect to
+ * @object: The object on the server to monitor
+ * 
+ * This function creates a new client that connects to a specific
+ * server on DBus.  That server is at a specific location sharing
+ * a known object.  The interface is assumed by the code to be 
+ * the DBus menu interface.  The newly created client will start
+ * sending out events as it syncs up with the server.
+ * 
+ * Return value: A brand new #DbusmenuClient
 */
 DbusmenuClient *
 dbusmenu_client_new (const gchar * name, const gchar * object)
@@ -1706,21 +1846,21 @@ dbusmenu_client_new (const gchar * name, const gchar * object)
 }
 
 /**
-	dbusmenu_client_get_root:
-	@client: The #DbusmenuClient to get the root node from
-
-	Grabs the root node for the specified client @client.  This
-	function may block.  It will block if there is currently a
-	call to update the layout, it will block on that layout 
-	updated and then return the newly updated layout.  Chances
-	are that this update is in the queue for the mainloop as
-	it would have been requested some time ago, but in theory
-	it could block longer.
-
-	Return value: A #DbusmenuMenuitem representing the root of
-		menu on the server.  If there is no server or there is
-		an error receiving its layout it'll return #NULL.
-*/
+ * dbusmenu_client_get_root:
+ * @client: The #DbusmenuClient to get the root node from
+ * 
+ * Grabs the root node for the specified client @client.  This
+ * function may block.  It will block if there is currently a
+ * call to update the layout, it will block on that layout 
+ * updated and then return the newly updated layout.  Chances
+ * are that this update is in the queue for the mainloop as
+ * it would have been requested some time ago, but in theory
+ * it could block longer.
+ * 
+ * Return value: (transfer none): A #DbusmenuMenuitem representing the root of
+ * 	menu on the server.  If there is no server or there is
+ * 	an error receiving its layout it'll return #NULL.
+ */
 DbusmenuMenuitem *
 dbusmenu_client_get_root (DbusmenuClient * client)
 {
@@ -1749,25 +1889,25 @@ type_handler_destroy (gpointer user_data)
 }
 
 /**
-	dbusmenu_client_add_type_handler:
-	@client: Client where we're getting types coming in
-	@type: A text string that will be matched with the 'type'
-	    property on incoming menu items
-	@newfunc: The function that will be executed with those new
-	    items when they come in.
-
-	This function connects into the type handling of the #DbusmenuClient.
-	Every new menuitem that comes in immediately gets asked for it's
-	properties.  When we get those properties we check the 'type'
-	property and look to see if it matches a handler that is known
-	by the client.  If so, the @newfunc function is executed on that
-	#DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
-	signal is sent.
-
-	In the future the known types will be sent to the server so that it
-	can make choices about the menu item types availble.
-
-	Return value: If registering the new type was successful.
+ * dbusmenu_client_add_type_handler:
+ * @client: Client where we're getting types coming in
+ * @type: A text string that will be matched with the 'type'
+ *     property on incoming menu items
+ * @newfunc: The function that will be executed with those new
+ *     items when they come in.
+ * 
+ * This function connects into the type handling of the #DbusmenuClient.
+ * Every new menuitem that comes in immediately gets asked for it's
+ * properties.  When we get those properties we check the 'type'
+ * property and look to see if it matches a handler that is known
+ * by the client.  If so, the @newfunc function is executed on that
+ * #DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
+ * signal is sent.
+ * 
+ * In the future the known types will be sent to the server so that it
+ * can make choices about the menu item types availble.
+ * 
+ * Return value: If registering the new type was successful.
 */
 gboolean
 dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc)
@@ -1776,29 +1916,29 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
 }
 
 /**
-	dbusmenu_client_add_type_handler_full:
-	@client: Client where we're getting types coming in
-	@type: A text string that will be matched with the 'type'
-	    property on incoming menu items
-	@newfunc: The function that will be executed with those new
-	    items when they come in.
-	@user_data: Data passed to @newfunc when it is called
-	@destroy_func: A function that is called when the type handler is
-		removed (usually on client destruction) which will free
-		the resources in @user_data.
-
-	This function connects into the type handling of the #DbusmenuClient.
-	Every new menuitem that comes in immediately gets asked for it's
-	properties.  When we get those properties we check the 'type'
-	property and look to see if it matches a handler that is known
-	by the client.  If so, the @newfunc function is executed on that
-	#DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
-	signal is sent.
-
-	In the future the known types will be sent to the server so that it
-	can make choices about the menu item types availble.
-
-	Return value: If registering the new type was successful.
+ * dbusmenu_client_add_type_handler_full:
+ * @client: Client where we're getting types coming in
+ * @type: A text string that will be matched with the 'type'
+ *     property on incoming menu items
+ * @newfunc: The function that will be executed with those new
+ *     items when they come in.
+ * @user_data: Data passed to @newfunc when it is called
+ * @destroy_func: A function that is called when the type handler is
+ * 	removed (usually on client destruction) which will free
+ * 	the resources in @user_data.
+ * 
+ * This function connects into the type handling of the #DbusmenuClient.
+ * Every new menuitem that comes in immediately gets asked for it's
+ * properties.  When we get those properties we check the 'type'
+ * property and look to see if it matches a handler that is known
+ * by the client.  If so, the @newfunc function is executed on that
+ * #DbusmenuMenuitem.  If not, then the DbusmenuClient::new-menuitem
+ * signal is sent.
+ * 
+ * In the future the known types will be sent to the server so that it
+ * can make choices about the menu item types availble.
+ * 
+ * Return value: If registering the new type was successful.
 */
 gboolean
 dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, DbusmenuClientTypeDestroyHandler destroy_func)
@@ -1833,4 +1973,43 @@ dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * ty
 	g_hash_table_insert(priv->type_handlers, g_strdup(type), th);
 	return TRUE;
 }
+
+/**
+	dbusmenu_client_get_text_direction:
+	@client: #DbusmenuClient to check the text direction on
+
+	Gets the text direction that the server is exporting.  If
+	the server is not exporting a direction then the value
+	#DBUSMENU_TEXT_DIRECTION_NONE will be returned.
+
+	Return value: Text direction being exported.
+*/
+DbusmenuTextDirection
+dbusmenu_client_get_text_direction (DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), DBUSMENU_TEXT_DIRECTION_NONE);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	return priv->text_direction;
+}
+
+/**
+	dbusmenu_client_get_status:
+	@client: #DbusmenuClient to check the status on
+
+	Gets the recommended current status that the server
+	is exporting for the menus.  In situtations where the
+	value is #DBUSMENU_STATUS_NOTICE it is recommended that
+	the client show the menus to the user an a more noticible
+	way.
+
+	Return value: Status being exported.
+*/
+DbusmenuStatus
+dbusmenu_client_get_status (DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), DBUSMENU_STATUS_NORMAL);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	return priv->status;
+}
+
 

@@ -22,6 +22,9 @@ extern void _dbusmenu_client_marshal_VOID__OBJECT_STRING_VARIANT_UINT_POINTER (G
                                                                                gpointer      invocation_hint,
                                                                                gpointer      marshal_data);
 
+/* VOID:ENUM (./client-marshal.list:3) */
+#define _dbusmenu_client_marshal_VOID__ENUM	g_cclosure_marshal_VOID__ENUM
+
 G_END_DECLS
 
 #endif /* ___dbusmenu_client_marshal_MARSHAL_H__ */

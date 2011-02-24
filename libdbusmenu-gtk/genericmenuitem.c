@@ -32,7 +32,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "genericmenuitem.h"
 
-/**
+/*
 	GenericmenuitemPrivate:
 	@check_type: What type of check we have, or none at all.
 	@state: What the state of our check is.
@@ -278,12 +278,12 @@ activate (GtkMenuItem * menu_item)
 }
 
 /**
-	genericmenuitem_set_check_type:
-	@item: #Genericmenuitem to set the type on
-	@check_type: Which type of check should be displayed
-
-	This function changes the type of the checkmark that
-	appears in the left hand gutter for the menuitem.
+ * genericmenuitem_set_check_type:
+ * @item: #Genericmenuitem to set the type on
+ * @check_type: Which type of check should be displayed
+ * 
+ * This function changes the type of the checkmark that
+ * appears in the left hand gutter for the menuitem.
 */
 void
 genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType check_type)
@@ -317,14 +317,14 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 }
 
 /**
-	genericmenuitem_set_state:
-	@item: #Genericmenuitem to set the type on
-	@check_type: What is the state of the check 
-
-	Sets the state of the check in the menu item.  It does
-	not require, but isn't really useful if the type of
-	check that the menuitem is set to #GENERICMENUITEM_CHECK_TYPE_NONE.
-*/
+ * genericmenuitem_set_state:
+ * @item: #Genericmenuitem to set the type on
+ * @check_type: What is the state of the check 
+ * 
+ * Sets the state of the check in the menu item.  It does
+ * not require, but isn't really useful if the type of
+ * check that the menuitem is set to #GENERICMENUITEM_CHECK_TYPE_NONE.
+ */
 void
 genericmenuitem_set_state (Genericmenuitem * item, GenericmenuitemState state)
 {
@@ -377,11 +377,11 @@ set_image_helper (GtkWidget * widget, gpointer data)
 }
 
 /**
-	genericmenuitem_set_image:
-	@item: A #Genericmenuitem
-	@image: The image to set as the image of @item
-
-	Sets the image of the menu item.
+ * genericmenuitem_set_image:
+ * @item: A #Genericmenuitem
+ * @image: The image to set as the image of @item
+ * 
+ * Sets the image of the menu item.
 */
 void
 genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
@@ -439,13 +439,13 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 }
 
 /**
-	genericmenuitem_get_image:
-	@item: A #Genericmenuitem
-
-	Returns the image if there is one.
-
-	Return value: A pointer to the image of the item or #NULL
-		if there isn't one.
+ * genericmenuitem_get_image:
+ * @item: A #Genericmenuitem
+ * 
+ * Returns the image if there is one.
+ * 
+ * Return value: (transfer none): A pointer to the image of the item or #NULL
+ * 	if there isn't one.
 */
 GtkWidget *
 genericmenuitem_get_image (Genericmenuitem * menu_item)

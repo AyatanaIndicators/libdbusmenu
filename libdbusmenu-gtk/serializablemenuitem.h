@@ -44,6 +44,11 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM))
 #define DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM, DbusmenuGtkSerializableMenuItemClass))
 
+/**
+ * DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM:
+ *
+ * String to access property #DbusmenuGtkSerializableMenuItem:dbusmenu-menuitem
+ */
 #define DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM   "dbusmenu-menuitem"
 
 typedef struct _DbusmenuGtkSerializableMenuItem        DbusmenuGtkSerializableMenuItem;
@@ -62,6 +67,8 @@ typedef struct _DbusmenuGtkSerializableMenuItemPrivate DbusmenuGtkSerializableMe
 	@_dbusmenu_gtk_serializable_menu_item_reserved4: Reserved for future use.
 	@_dbusmenu_gtk_serializable_menu_item_reserved5: Reserved for future use.
 	@_dbusmenu_gtk_serializable_menu_item_reserved6: Reserved for future use.
+
+	Signals and functions for #DbusmenuGtkSerializableMenuItem.
 */
 struct _DbusmenuGtkSerializableMenuItemClass {
 	GtkMenuItemClass parent_class;
@@ -109,6 +116,17 @@ GType dbusmenu_gtk_serializable_menu_item_get_type (void);
 DbusmenuMenuitem *  dbusmenu_gtk_serializable_menu_item_build_menuitem (DbusmenuGtkSerializableMenuItem * smi);
 void                dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client, GType item_type);
 void                dbusmenu_gtk_serializable_menu_item_set_menuitem (DbusmenuGtkSerializableMenuItem * smi, DbusmenuMenuitem * mi);
+
+/**
+	SECTION:serializablemenuitem
+	@short_description: A way to build #GtkMenuItems that can be sent over Dbusmenu
+	@stability: Unstable
+	@include: libdbusmenu-gtk/serializablemenuitem.h
+
+	Menuitems can subclass from this instead of #GtkMenuItem and
+	by providing the appropriate functions Dbusmenu will be able
+	to parse them and send them over the bus.
+*/
 
 G_END_DECLS
 

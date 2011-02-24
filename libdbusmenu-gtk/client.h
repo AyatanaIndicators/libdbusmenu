@@ -41,20 +41,28 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_GTKCLIENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_GTKCLIENT_TYPE))
 #define DBUSMENU_GTKCLIENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_GTKCLIENT_TYPE, DbusmenuGtkClientClass))
 
+/**
+ * DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED:
+ *
+ * String to attach to signal #DbusmenuClient::root-changed
+ */
 #define DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED  DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED
 
 typedef struct _DbusmenuGtkClientPrivate DbusmenuGtkClientPrivate;
 
 /**
-	DbusmenuGtkClientClass:
-	@parent_class: #GtkMenuClass
-	@reserved1: Reserved for future use.
-	@reserved2: Reserved for future use.
-	@reserved3: Reserved for future use.
-	@reserved4: Reserved for future use.
-	@reserved5: Reserved for future use.
-	@reserved6: Reserved for future use.
-*/
+ * DbusmenuGtkClientClass:
+ * @parent_class: #GtkMenuClass
+ * @root_changed: Slot for signal #DbusmenuGtkClient::root-changed
+ * @reserved1: Reserved for future use.
+ * @reserved2: Reserved for future use.
+ * @reserved3: Reserved for future use.
+ * @reserved4: Reserved for future use.
+ * @reserved5: Reserved for future use.
+ * @reserved6: Reserved for future use.
+ *
+ * Functions and signal slots for using a #DbusmenuGtkClient
+ */
 typedef struct _DbusmenuGtkClientClass DbusmenuGtkClientClass;
 struct _DbusmenuGtkClientClass {
 	DbusmenuClientClass parent_class;
@@ -72,9 +80,11 @@ struct _DbusmenuGtkClientClass {
 };
 
 /**
-	DbusmenuGtkClient:
-	@parent: #GtkMenu
-*/
+ * DbusmenuGtkClient:
+ *
+ * A subclass of #DbusmenuClient to add functionality with regarding
+ * building GTK items out of the abstract tree.
+ */
 typedef struct _DbusmenuGtkClient      DbusmenuGtkClient;
 struct _DbusmenuGtkClient {
 	DbusmenuClient parent;
@@ -94,10 +104,10 @@ GtkAccelGroup * dbusmenu_gtkclient_get_accel_group (DbusmenuGtkClient * client);
 void dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * item, GtkMenuItem * gmi, DbusmenuMenuitem * parent);
 
 /**
-	SECTION:gtkmenu
-	@short_description: A GTK Menu Object that syncronizes over DBus
+	SECTION:client
+	@short_description: A subclass of #DbusmenuClient adding GTK level features
 	@stability: Unstable
-	@include: libdbusmenu-gtk/menu.h
+	@include: libdbusmenu-gtk/client.h
 
 	In general, this is just a #GtkMenu, why else would you care?  Oh,
 	because this menu is created by someone else on a server that exists
@@ -115,8 +125,6 @@ void dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuit
 	number of entries change, the menus change, if they change thier
 	properties change, they update in the items.  All of this should
 	be handled transparently to the user of this object.
-
-	TODO: Document properties.
 */
 G_END_DECLS
 
