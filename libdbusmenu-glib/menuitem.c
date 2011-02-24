@@ -261,7 +261,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	*/
 	signals[EVENT] =             g_signal_new(DBUSMENU_MENUITEM_SIGNAL_EVENT,
 	                                          G_TYPE_FROM_CLASS(klass),
-	                                          G_SIGNAL_RUN_LAST,
+	                                          G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
 	                                          G_STRUCT_OFFSET(DbusmenuMenuitemClass, event),
 	                                          g_signal_accumulator_true_handled, NULL,
 	                                          _dbusmenu_menuitem_marshal_BOOLEAN__STRING_VARIANT_UINT,

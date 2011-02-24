@@ -40,11 +40,23 @@ G_BEGIN_DECLS
 GType dbusmenu_text_direction_get_type (void) G_GNUC_CONST;
 const gchar * dbusmenu_text_direction_get_nick (DbusmenuTextDirection value) G_GNUC_CONST;
 DbusmenuTextDirection dbusmenu_text_direction_get_value_from_nick (const gchar * nick) G_GNUC_CONST;
+/**
+	DBUSMENU_TYPE_TEXT_DIRECTION:
+
+	Gets the #GType value for the type associated with the
+	#DbusmenuTextDirection enumerated type.
+*/
 #define DBUSMENU_TYPE_TEXT_DIRECTION (dbusmenu_text_direction_get_type())
 
 GType dbusmenu_status_get_type (void) G_GNUC_CONST;
 const gchar * dbusmenu_status_get_nick (DbusmenuStatus value) G_GNUC_CONST;
 DbusmenuStatus dbusmenu_status_get_value_from_nick (const gchar * nick) G_GNUC_CONST;
+/**
+	DBUSMENU_TYPE_STATUS:
+
+	Gets the #GType value for the type associated with the
+	#DbusmenuStatus enumerated type.
+*/
 #define DBUSMENU_TYPE_STATUS (dbusmenu_status_get_type())
 
 

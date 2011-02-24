@@ -15,6 +15,23 @@
 
 @SET_MAKE@
 
+# Rules for generating enumeration types using glib-mkenums
+#
+# Define:
+# 	glib_enum_h = header template file
+# 	glib_enum_c = source template file
+# 	glib_enum_headers = list of headers to parse
+#
+# before including Makefile.am.enums. You will also need to have
+# the following targets already defined:
+#
+# 	CLEANFILES
+#	DISTCLEANFILES
+#	BUILT_SOURCES
+#	EXTRA_DIST
+#
+# Author: Emmanuele Bassi <ebassi@linux.intel.com>
+
 
 
 VPATH = @srcdir@
@@ -36,12 +53,13 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+DIST_COMMON = $(libdbusmenu_glibinclude_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-glib-0.4.pc.in \
+	$(top_srcdir)/Makefile.am.enum
 @HAVE_INTROSPECTION_TRUE@am__append_1 = Dbusmenu-0.4.gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
 @HAVE_INTROSPECTION_TRUE@	$(vapi_DATA)
 subdir = libdbusmenu-glib
-DIST_COMMON = $(libdbusmenu_glibinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-glib-0.4.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
 	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
@@ -85,6 +103,8 @@ am__DEPENDENCIES_1 =
 libdbusmenu_glib_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libdbusmenu_glib_la_OBJECTS =  \
 	libdbusmenu_glib_la-dbus-menu-clean.xml.lo \
+	libdbusmenu_glib_la-defaults.lo \
+	libdbusmenu_glib_la-enum-types.lo \
 	libdbusmenu_glib_la-menuitem.lo \
 	libdbusmenu_glib_la-menuitem-marshal.lo \
 	libdbusmenu_glib_la-menuitem-proxy.lo \
@@ -173,6 +193,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
@@ -302,15 +323,19 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-CLEANFILES = dbus-menu-clean.xml $(BUILT_SOURCES) $(am__append_2)
-EXTRA_DIST = \
-	clean-namespaces.xslt \
-	dbusmenu-glib-0.4.pc.in \
-	dbus-menu.xml \
-	client-marshal.list \
-	menuitem-marshal.list \
-	server-marshal.list
-
+BUILT_SOURCES = $(glib_enum_h) $(glib_enum_c) dbus-menu-clean.xml.c \
+	dbus-menu-clean.xml.h client-marshal.h client-marshal.c \
+	menuitem-marshal.h menuitem-marshal.c server-marshal.h \
+	server-marshal.c
+CLEANFILES = stamp-enum-types dbus-menu-clean.xml $(BUILT_SOURCES) \
+	$(am__append_2)
+DISTCLEANFILES = $(glib_enum_h) $(glib_enum_c) enum-types.c \
+	enum-types.h
+EXTRA_DIST = clean-namespaces.xslt dbusmenu-glib-0.4.pc.in \
+	dbus-menu.xml client-marshal.list menuitem-marshal.list \
+	server-marshal.list $(enum_tmpl_h) $(enum_tmpl_c)
+enum_tmpl_h = $(glib_enum_h:.h=.h.in)
+enum_tmpl_c = $(glib_enum_c:.c=.c.in)
 lib_LTLIBRARIES = \
 	libdbusmenu-glib.la
 
@@ -320,11 +345,16 @@ libdbusmenu_glibinclude_HEADERS = \
 	menuitem.h \
 	menuitem-proxy.h \
 	server.h \
-	client.h
+	client.h \
+	types.h
 
 libdbusmenu_glib_la_SOURCES = \
 	dbus-menu-clean.xml.h \
 	dbus-menu-clean.xml.c \
+	defaults.h \
+	defaults.c \
+	enum-types.h \
+	enum-types.c \
 	menuitem.h \
 	menuitem.c \
 	menuitem-marshal.h \
@@ -340,6 +370,7 @@ libdbusmenu_glib_la_SOURCES = \
 	client-marshal.c \
 	client-menuitem.h \
 	client-menuitem.c \
+	client-private.h \
 	client.h \
 	client.c
 
@@ -356,31 +387,24 @@ libdbusmenu_glib_la_LIBADD = \
 
 pkgconfig_DATA = dbusmenu-glib-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
-BUILT_SOURCES = \
-	dbus-menu-clean.xml.c \
-	dbus-menu-clean.xml.h \
-	client-marshal.h \
-	client-marshal.c \
-	menuitem-marshal.h \
-	menuitem-marshal.c \
-	server-marshal.h \
-	server-marshal.c
-
+glib_enum_h = enum-types.h
+glib_enum_c = enum-types.c
+glib_enum_headers = $(addprefix $(srcdir)/, $(libdbusmenu_glibinclude_HEADERS))
 INTROSPECTION_GIRS = $(am__append_1)
 @INTROSPECTION_TEN_FALSE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_FALSE@	--warn-all \
 @INTROSPECTION_TEN_FALSE@        --add-include-path=$(srcdir) \
-@INTROSPECTION_TEN_FALSE@        $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources))
+@INTROSPECTION_TEN_FALSE@        $(addprefix --c-include=libdbusmenu-glib/, $(libdbusmenu_glibinclude_HEADERS))
 
 @INTROSPECTION_TEN_TRUE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_TRUE@	--warn-all \
 @INTROSPECTION_TEN_TRUE@        --add-include-path=$(srcdir) \
-@INTROSPECTION_TEN_TRUE@        $(addprefix --c-include=libdbusmenu-glib/, $(introspection_sources)) \
+@INTROSPECTION_TEN_TRUE@        $(addprefix --c-include=libdbusmenu-glib/, $(libdbusmenu_glibinclude_HEADERS)) \
 @INTROSPECTION_TEN_TRUE@        --symbol-prefix=dbusmenu \
 @INTROSPECTION_TEN_TRUE@        --identifier-prefix=Dbusmenu
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
-@HAVE_INTROSPECTION_TRUE@introspection_sources = $(libdbusmenu_glibinclude_HEADERS)
+@HAVE_INTROSPECTION_TRUE@introspection_sources = $(libdbusmenu_glibinclude_HEADERS) $(libdbusmenu_glib_la_SOURCES)
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_0_4_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0
 
@@ -406,7 +430,7 @@ all: $(BUILT_SOURCES)
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/Makefile.am.enum $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -482,6 +506,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-client-menuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-dbus-menu-clean.xml.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-defaults.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-enum-types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-menuitem-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-menuitem-proxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_glib_la-menuitem.Plo@am__quote@
@@ -519,6 +545,22 @@ libdbusmenu_glib_la-dbus-menu-clean.xml.lo: dbus-menu-clean.xml.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbus-menu-clean.xml.c' object='libdbusmenu_glib_la-dbus-menu-clean.xml.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_glib_la-dbus-menu-clean.xml.lo `test -f 'dbus-menu-clean.xml.c' || echo '$(srcdir)/'`dbus-menu-clean.xml.c
+
+libdbusmenu_glib_la-defaults.lo: defaults.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_glib_la-defaults.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_glib_la-defaults.Tpo -c -o libdbusmenu_glib_la-defaults.lo `test -f 'defaults.c' || echo '$(srcdir)/'`defaults.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_glib_la-defaults.Tpo $(DEPDIR)/libdbusmenu_glib_la-defaults.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='defaults.c' object='libdbusmenu_glib_la-defaults.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_glib_la-defaults.lo `test -f 'defaults.c' || echo '$(srcdir)/'`defaults.c
+
+libdbusmenu_glib_la-enum-types.lo: enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_glib_la-enum-types.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_glib_la-enum-types.Tpo -c -o libdbusmenu_glib_la-enum-types.lo `test -f 'enum-types.c' || echo '$(srcdir)/'`enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_glib_la-enum-types.Tpo $(DEPDIR)/libdbusmenu_glib_la-enum-types.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='enum-types.c' object='libdbusmenu_glib_la-enum-types.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_glib_la-enum-types.lo `test -f 'enum-types.c' || echo '$(srcdir)/'`enum-types.c
 
 libdbusmenu_glib_la-menuitem.lo: menuitem.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_glib_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_glib_la-menuitem.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_glib_la-menuitem.Tpo -c -o libdbusmenu_glib_la-menuitem.lo `test -f 'menuitem.c' || echo '$(srcdir)/'`menuitem.c
@@ -803,6 +845,7 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -905,6 +948,26 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 	uninstall-pkgconfigDATA uninstall-typelibDATA \
 	uninstall-vapiDATA
 
+
+stamp-enum-types: $(glib_enum_headers)
+	$(QUIET_GEN)mkdir -p `dirname $(builddir)/$(glib_enum_h)`
+	$(QUIET_GEN)$(GLIB_MKENUMS) \
+		--template $(srcdir)/$(enum_tmpl_h) \
+	$(glib_enum_headers) > xgen-eh \
+	&& (cmp -s xgen-eh $(builddir)/$(glib_enum_h) || cp -f xgen-eh $(builddir)/$(glib_enum_h)) \
+	&& rm -f xgen-eh \
+	&& echo timestamp > $(@F)
+
+$(glib_enum_h): stamp-enum-types
+	@true
+
+$(glib_enum_c): $(glib_enum_h)
+	$(QUIET_GEN)mkdir -p `dirname $(builddir)/$(glib_enum_c)`
+	$(QUIET_GEN)$(GLIB_MKENUMS) \
+		--template $(srcdir)/$(enum_tmpl_c) \
+	$(glib_enum_headers) > xgen-ec \
+	&& cp -f xgen-ec $(builddir)/$(glib_enum_c) \
+	&& rm -f xgen-ec
 
 %.xml.h: %.xml
 	echo "extern const char * $(subst -,_,$(subst .,_,$(basename $(notdir $@))));" > $@
