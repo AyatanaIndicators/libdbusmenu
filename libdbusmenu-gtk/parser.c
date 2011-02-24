@@ -161,17 +161,10 @@ dbusmenu_item_freed (gpointer data, GObject * obj)
 	}
 }
 
-/* Called if we replace the cache on the object with a new
-   dbusmenu menuitem */
 static void
-object_cache_freed (gpointer data)
+widget_freed (gpointer data, GObject * obj)
 {
-	// TODO: make this have access to both data and obj so we can call these
-	//if (!G_IS_OBJECT(obj)) return;
-	//g_object_weak_unref(G_OBJECT(obj), dbusmenu_cache_freed, data);
-	//dbusmenu_cache_freed(data, obj);
-
-	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), data);
+	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), obj);
 
 	return;
 }
@@ -213,8 +206,8 @@ new_menuitem (GtkWidget * widget)
 	ParserData *pdata = g_new0 (ParserData, 1);
 	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
 
-	g_object_set_data_full(G_OBJECT(widget), CACHED_MENUITEM, item, object_cache_freed);
 	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
+	g_object_weak_ref(G_OBJECT(widget), widget_freed, NULL);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
