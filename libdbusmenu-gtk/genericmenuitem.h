@@ -48,7 +48,7 @@ typedef struct _GenericmenuitemPrivate    GenericmenuitemPrivate;
 typedef enum   _GenericmenuitemCheckType  GenericmenuitemCheckType;
 typedef enum   _GenericmenuitemState      GenericmenuitemState;
 
-/**
+/*
 	GenericmenuitemClass:
 	@parent_class: Our parent #GtkCheckMenuItemClass
 */
@@ -56,7 +56,7 @@ struct _GenericmenuitemClass {
 	GtkCheckMenuItemClass parent_class;
 };
 
-/**
+/*
 	Genericmenuitem:
 	@parent: Our parent #GtkCheckMenuItem
 */

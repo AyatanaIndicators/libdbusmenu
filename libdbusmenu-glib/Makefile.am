@@ -41,6 +41,7 @@ libdbusmenu_glib_la_SOURCES = \
 	client-marshal.c \
 	client-menuitem.h \
 	client-menuitem.c \
+	client-private.h \
 	client.h \
 	client.c
 

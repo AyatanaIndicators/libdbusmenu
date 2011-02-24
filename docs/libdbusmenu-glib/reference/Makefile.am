@@ -48,11 +48,12 @@ CFILE_GLOB=$(top_srcdir)/libdbusmenu-glib/*.c
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES= \
+	dbus-menu-clean.xml.h \
+	client-menuitem.h \
+	client-private.h \
 	menuitem-marshal.h \
 	server-marshal.h \
-	menuitem-private.h \
-	dbusmenu-client.h \
-	dbusmenu-server.h
+	menuitem-private.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -88,5 +89,13 @@ EXTRA_DIST += version.xml.in
 #DISTCLEANFILES +=
 
 # Comment this out if you want your docs-status tested during 'make check'
-#TESTS = $(GTKDOC_CHECK)
+TESTS = gtkdoc-in-srcdir
+
+gtkdoc-in-srcdir: Makefile.am
+	@echo "#!/bin/sh" > $@
+	@echo "cd \"$(srcdir)\"" >> $@
+	@echo "$(GTKDOC_CHECK)" >> $@
+	@chmod +x $@
+
+DISTCLEANFILES = gtkdoc-in-srcdir
 

@@ -1213,7 +1213,7 @@ dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * propert
 
 
 /**
- * dbusmenu_menuitem_property_exit:
+ * dbusmenu_menuitem_property_exist:
  * @mi: The #DbusmenuMenuitem to look for the property on.
  * @property: The property to look for.
  * 

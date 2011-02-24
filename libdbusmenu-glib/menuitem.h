@@ -42,47 +42,231 @@ G_BEGIN_DECLS
 #define DBUSMENU_MENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemClass))
 
 
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED:
+ *
+ * String to attach to signal #DbusmenuServer::property-changed
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED    "property-changed"
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED:
+ *
+ * String to attach to signal #DbusmenuServer::item-activated
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED      "item-activated"
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED:
+ *
+ * String to attach to signal #DbusmenuServer::child-added
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED         "child-added"
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED:
+ *
+ * String to attach to signal #DbusmenuServer::child-removed
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED       "child-removed"
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED:
+ *
+ * String to attach to signal #DbusmenuServer::child-moved
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED         "child-moved"
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_REALIZED:
+ *
+ * String to attach to signal #DbusmenuServer::realized
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID:
+ *
+ * ID to attach to signal #DbusmenuServer::realized
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID         (g_signal_lookup(DBUSMENU_MENUITEM_SIGNAL_REALIZED, DBUSMENU_TYPE_MENUITEM))
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER:
+ *
+ * String to attach to signal #DbusmenuServer::show-to-user
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER        "show-to-user"
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW:
+ *
+ * String to attach to signal #DbusmenuServer::about-to-show
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW       "about-to-show"
 
+/**
+ * DBUSMENU_MENUITEM_PROP_TYPE:
+ *
+ * #DbusmenuMenuitem property used to represent what type of menuitem
+ * this object represents.  Type: #G_VARIANT_TYPE_STRING.
+ */
 #define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
+/**
+ * DBUSMENU_MENUITEM_PROP_VISIBLE:
+ *
+ * #DbusmenuMenuitem property used to represent whether the menuitem
+ * should be shown or not.  Type: #G_VARIANT_TYPE_BOOLEAN.
+ */
 #define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
+/**
+ * DBUSMENU_MENUITEM_PROP_ENABLED:
+ *
+ * #DbusmenuMenuitem property used to represent whether the menuitem
+ * is clickable or not.  Type: #G_VARIANT_TYPE_BOOLEAN.
+ */
 #define DBUSMENU_MENUITEM_PROP_ENABLED               "enabled"
+/**
+ * DBUSMENU_MENUITEM_PROP_LABEL:
+ *
+ * #DbusmenuMenuitem property used for the text on the menu item.
+ * Type: #G_VARIANT_TYPE_STRING
+ */
 #define DBUSMENU_MENUITEM_PROP_LABEL                 "label"
+/**
+ * DBUSMENU_MENUITEM_PROP_ICON_NAME:
+ *
+ * #DbusmenuMenuitem property that is the name of the icon under the
+ * Freedesktop.org icon naming spec.  Type: #G_VARIANT_TYPE_STRING
+ */
 #define DBUSMENU_MENUITEM_PROP_ICON_NAME             "icon-name"
+/**
+ * DBUSMENU_MENUITEM_PROP_ICON_DATA:
+ *
+ * #DbusmenuMenuitem property that is the raw data of a custom icon
+ * used in the application.  Type: #G_VARIANT_TYPE_VARIANT
+ *
+ * It is recommended that this is not set directly but instead the
+ * libdbusmenu-gtk library is used with the function dbusmenu_menuitem_property_set_image()
+ */
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
+/**
+ * DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE:
+ *
+ * #DbusmenuMenuitem property that says what type of toggle entry should
+ * be shown in the menu.  Should be either #DBUSMENU_MENUITEM_TOGGLE_CHECK
+ * or #DBUSMENU_MENUITEM_TOGGLE_RADIO.  Type: #G_VARIANT_TYPE_STRING
+ */
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
+/**
+ * DBUSMENU_MENUITEM_PROP_TOGGLE_STATE:
+ *
+ * #DbusmenuMenuitem property that says what state a toggle entry should
+ * be shown as the menu.  Should be either #DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED
+ * #DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED or #DBUSMENU_MENUITEM_TOGGLE_STATUE_UNKNOWN.
+ * Type: #G_VARIANT_TYPE_INT32
+ */
 #define DBUSMENU_MENUITEM_PROP_TOGGLE_STATE          "toggle-state"
+/**
+ * DBUSMENU_MENUITEM_PROP_SHORTCUT:
+ *
+ * #DbusmenuMenuitem property that is the entries that represent a shortcut
+ * to activate the menuitem.  It is an array of arrays of strings.
+ * Type: #G_VARIANT_TYPE_ARRAY
+ *
+ * It is recommended that this is not set directly but instead the
+ * libdbusmenu-gtk library is used with the function dbusmenu_menuitem_property_set_shortcut()
+ */
 #define DBUSMENU_MENUITEM_PROP_SHORTCUT              "shortcut"
+/**
+ * DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY:
+ *
+ * #DbusmenuMenuitem property that tells how the children of this menuitem
+ * should be displayed.  Most likely this will be unset or of the value
+ * #DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU.  Type: #G_VARIANT_TYPE_STRING
+ */
 #define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "children-display"
 
+/**
+ * DBUSMENU_MENUITEM_TOGGLE_CHECK:
+ *
+ * Used to set #DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE to be a standard
+ * check mark item.
+ */
 #define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
+/**
+ * DBUSMENU_MENUITEM_TOGGLE_RADIO:
+ *
+ * Used to set #DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE to be a standard
+ * radio item.
+ */
 #define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
 
+/**
+ * DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED:
+ *
+ * Used to set #DBUSMENU_MENUITEM_PROP_TOGGLE_STATE so that the menu's
+ * toggle item is empty.
+ */
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED     0
+/**
+ * DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED:
+ *
+ * Used to set #DBUSMENU_MENUITEM_PROP_TOGGLE_STATE so that the menu's
+ * toggle item is filled.
+ */
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED       1
+/**
+ * DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN:
+ *
+ * Used to set #DBUSMENU_MENUITEM_PROP_TOGGLE_STATE so that the menu's
+ * toggle item is undecided.
+ */
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       -1
 
+/**
+ * DBUSMENU_MENUITEM_ICON_NAME_BLANK:
+ *
+ * Used to set #DBUSMENU_MENUITEM_PROP_TOGGLE_STATE so that the menu's
+ * toggle item is undecided.
+ */
 #define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
 
+/**
+ * DBUSMENU_MENUITEM_SHORTCUT_CONTROL:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_SHORTCUT to represent the
+ * control key.
+ */
 #define DBUSMENU_MENUITEM_SHORTCUT_CONTROL           "Control"
+/**
+ * DBUSMENU_MENUITEM_SHORTCUT_ALT:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_SHORTCUT to represent the
+ * alternate key.
+ */
 #define DBUSMENU_MENUITEM_SHORTCUT_ALT               "Alt"
+/**
+ * DBUSMENU_MENUITEM_SHORTCUT_SHIFT:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_SHORTCUT to represent the
+ * shift key.
+ */
 #define DBUSMENU_MENUITEM_SHORTCUT_SHIFT             "Shift"
+/**
+ * DBUSMENU_MENUITEM_SHORTCUT_SUPER:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_SHORTCUT to represent the
+ * super key.
+ */
 #define DBUSMENU_MENUITEM_SHORTCUT_SUPER             "Super"
 
+/**
+ * DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY to have the
+ * subitems displayed as a submenu.
+ */
 #define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
 
 typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
 
 /**
  * DbusmenuMenuitem:
+ * @parent: Parent object
+ * @priv: Private data
  * 
  * This is the #GObject based object that represents a menu
  * item.  It gets created the same on both the client and
@@ -113,16 +297,18 @@ typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpoin
 /**
  * dbusmenu_menuitem_buildvariant_slot_t:
  * @mi: (in): Menu item that should be built from
+ * @properties: (allow-none): A list of properties that should be the only ones in the resulting variant structure
  * 
  * This is the function that is called to represent this menu item
  * as a variant.  Should call it's own children.
  *
- * Return value: (transfer full) A variant representing this item and it's children
+ * Return value: (transfer full): A variant representing this item and it's children
  */
 typedef GVariant * (*dbusmenu_menuitem_buildvariant_slot_t) (DbusmenuMenuitem * mi, gchar ** properties);
 
 /**
  * DbusmenuMenuitemClass:
+ * @parent_class: Functions and signals from our parent
  * @property_changed: Slot for #DbusmenuMenuitem::property-changed.
  * @item_activated: Slot for #DbusmenuMenuitem::item-activated.
  * @child_added: Slot for #DbusmenuMenuitem::child-added.
@@ -130,17 +316,19 @@ typedef GVariant * (*dbusmenu_menuitem_buildvariant_slot_t) (DbusmenuMenuitem * 
  * @child_moved: Slot for #DbusmenuMenuitem::child-moved.
  * @realized: Slot for #DbusmenuMenuitem::realized.
  * @about_to_show: Slot for #DbusmenuMenuitem::about-to-show.
- * @buildxml: Virtual function that appends the strings required to represent this menu item in the menu XML file.
+ * @buildvariant: Virtual function that appends the strings required to represent this menu item in the menu variant.
  * @handle_event: This function is to override how events are handled by subclasses.  Look at #dbusmenu_menuitem_handle_event for lots of good information.
  * @send_about_to_show: Virtual function that notifies server that the client is about to show a menu.
  * @show_to_user: Slot for #DbusmenuMenuitem::show-to-user.
- *
  * @reserved1: Reserved for future use.
  * @reserved2: Reserved for future use.
  * @reserved3: Reserved for future use.
  * @reserved4: Reserved for future use.
  * @reserved5: Reserved for future use.
  * @reserved6: Reserved for future use.
+ *
+ * Functions and signals that every menuitem should know something 
+ * about.
  */
 typedef struct _DbusmenuMenuitemClass DbusmenuMenuitemClass;
 struct _DbusmenuMenuitemClass
