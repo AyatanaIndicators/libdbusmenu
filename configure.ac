@@ -21,6 +21,8 @@ AC_CONFIG_MACRO_DIR([m4])
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
+AC_PATH_PROG([GLIB_MKENUMS], [glib-mkenums])
+
 AC_ARG_ENABLE([deprecations],
   [AS_HELP_STRING([--enable-deprecations],
     [allow deprecated API usage @<:@default=yes@:>@])],

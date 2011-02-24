@@ -30,11 +30,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include <glib/gi18n.h>
 #include <gio/gio.h>
 
 #include "menuitem-private.h"
 #include "server.h"
 #include "server-marshal.h"
+#include "enum-types.h"
 
 #include "dbus-menu-clean.xml.h"
 
@@ -54,6 +56,9 @@ struct _DbusmenuServerPrivate
 	GDBusConnection * bus;
 	GCancellable * bus_lookup;
 	guint dbus_registration;
+
+	DbusmenuTextDirection text_direction;
+	DbusmenuStatus status;
 
 	GArray * prop_array;
 	guint property_idle;
@@ -77,7 +82,9 @@ enum {
 	PROP_0,
 	PROP_DBUS_OBJECT,
 	PROP_ROOT_NODE,
-	PROP_VERSION
+	PROP_VERSION,
+	PROP_TEXT_DIRECTION,
+	PROP_STATUS
 };
 
 /* Errors */
@@ -124,6 +131,7 @@ static void       get_property                (GObject * obj,
                                                guint id,
                                                GValue * value,
                                                GParamSpec * pspec);
+static void       default_text_direction      (DbusmenuServer * server);
 static void       register_object             (DbusmenuServer * server);
 static void       bus_got_cb                  (GObject * obj,
                                                GAsyncResult * result,
@@ -289,6 +297,16 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	                                              "The version of the DBusmenu API that we're implementing.",
 	                                              DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER, DBUSMENU_VERSION_NUMBER,
 	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_TEXT_DIRECTION,
+	                                 g_param_spec_enum(DBUSMENU_SERVER_PROP_TEXT_DIRECTION, "The default direction of text",
+	                                              "The object that represents this set of menus on DBus",
+	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
+	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_STATUS,
+	                                 g_param_spec_enum(DBUSMENU_SERVER_PROP_STATUS, "Status of viewing the menus",
+	                                              "Exports over DBus whether the menus should be given special visuals",
+	                                              DBUSMENU_TYPE_STATUS, DBUSMENU_STATUS_NORMAL,
+	                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
 		GError * error = NULL;
@@ -347,6 +365,9 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->bus = NULL;
 	priv->bus_lookup = NULL;
 	priv->dbus_registration = 0;
+
+	default_text_direction(self);
+	priv->status = DBUSMENU_STATUS_NORMAL;
 
 	return;
 }
@@ -463,6 +484,64 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		}
 		layout_update_signal(DBUSMENU_SERVER(obj));
 		break;
+	case PROP_TEXT_DIRECTION: {
+		DbusmenuTextDirection indir = g_value_get_enum(value);
+		DbusmenuTextDirection olddir = priv->text_direction;
+
+		/* If being set to none we need to go back to default, otherwise
+		   we'll set things the way that we've been told */
+		if (indir == DBUSMENU_TEXT_DIRECTION_NONE) {
+			default_text_direction(DBUSMENU_SERVER(obj));
+		} else {
+			priv->text_direction = indir;
+		}
+
+		/* If the value has changed we need to signal that on DBus */
+		if (priv->text_direction != olddir && priv->bus != NULL && priv->dbusobject != NULL) {
+			GVariantBuilder params;
+			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("text-direction"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
+			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
+			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
+			GVariant * vparams = g_variant_builder_end(&params);
+
+			g_dbus_connection_emit_signal(priv->bus,
+			                              NULL,
+			                              priv->dbusobject,
+			                              "org.freedesktop.DBus.Properties",
+			                              "PropertiesChanged",
+			                              vparams,
+			                              NULL);
+		}
+
+		break;
+	}
+	case PROP_STATUS: {
+		DbusmenuStatus instatus = g_value_get_enum(value);
+
+		/* If the value has changed we need to signal that on DBus */
+		if (priv->status != instatus && priv->bus != NULL && priv->dbusobject != NULL) {
+			GVariantBuilder params;
+			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
+			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
+			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
+			GVariant * vparams = g_variant_builder_end(&params);
+
+			g_dbus_connection_emit_signal(priv->bus,
+			                              NULL,
+			                              priv->dbusobject,
+			                              "org.freedesktop.DBus.Properties",
+			                              "PropertiesChanged",
+			                              vparams,
+			                              NULL);
+		}
+
+		priv->status = instatus;
+		break;
+	}
 	default:
 		g_return_if_reached();
 		break;
@@ -486,10 +565,59 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	case PROP_VERSION:
 		g_value_set_uint(value, DBUSMENU_VERSION_NUMBER);
 		break;
+	case PROP_TEXT_DIRECTION:
+		g_value_set_enum(value, priv->text_direction);
+		break;
+	case PROP_STATUS:
+		g_value_set_enum(value, priv->status);
+		break;
 	default:
 		g_return_if_reached();
 		break;
 	}
+
+	return;
+}
+
+/* Determines the default text direction */
+static void
+default_text_direction (DbusmenuServer * server)
+{
+	DbusmenuTextDirection dir = DBUSMENU_TEXT_DIRECTION_NONE;
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	const gchar * env = g_getenv("DBUSMENU_TEXT_DIRECTION");
+	if (env != NULL) {
+		if (g_strcmp0(env, "ltr") == 0) {
+			dir = DBUSMENU_TEXT_DIRECTION_LTR;
+		} else if (g_strcmp0(env, "rtl") == 0) {
+			dir = DBUSMENU_TEXT_DIRECTION_RTL;
+		} else {
+			g_warning("Value of 'DBUSMENU_TEXT_DIRECTION' is '%s' which is not one of 'rtl' or 'ltr'", env);
+		}
+	}
+
+	if (dir == DBUSMENU_TEXT_DIRECTION_NONE) {
+		/* TRANSLATORS: This is the direction of the text and can
+		   either be the value 'ltr' for left-to-right text (English)
+		   or 'rtl' for right-to-left (Arabic). */
+		const gchar * default_dir = C_("default text direction", "ltr");
+
+		if (g_strcmp0(default_dir, "ltr") == 0) {
+			dir = DBUSMENU_TEXT_DIRECTION_LTR;
+		} else if (g_strcmp0(default_dir, "rtl") == 0) {
+			dir = DBUSMENU_TEXT_DIRECTION_RTL;
+		} else {
+			g_warning("Translation has an invalid value '%s' for default text direction.  Defaulting to left-to-right.", default_dir);
+			dir = DBUSMENU_TEXT_DIRECTION_LTR;
+		}
+	}
+
+	/* Shouldn't happen, but incase future patches make a mistake
+	   this'll catch them */
+	g_return_if_fail(dir != DBUSMENU_TEXT_DIRECTION_NONE);
+
+	priv->text_direction = dir;
 
 	return;
 }
@@ -611,9 +739,16 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 	/* None of these should happen */
 	g_return_val_if_fail(g_strcmp0(interface, DBUSMENU_INTERFACE) == 0, NULL);
 	g_return_val_if_fail(g_strcmp0(path, priv->dbusobject) == 0, NULL);
-	g_return_val_if_fail(g_strcmp0(property, "version") == 0, NULL);
 
-	return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
+	if (g_strcmp0(property, "version") == 0) {
+		return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
+	} else if (g_strcmp0(property, "text-direction") == 0) {
+		return g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction));
+	} else {
+		g_warning("Unknown property '%s'", property);
+	}
+
+	return NULL;
 }
 
 /* Handle actually signalling in the idle loop.  This way we collect all
@@ -656,7 +791,7 @@ layout_update_signal (DbusmenuServer * server)
 
 typedef struct _prop_idle_item_t prop_idle_item_t;
 struct _prop_idle_item_t {
-	gint id;
+	DbusmenuMenuitem * mi;
 	GArray * array;
 };
 
@@ -686,6 +821,7 @@ prop_array_teardown (GArray * prop_array)
 			}
 		}
 
+		g_object_unref(G_OBJECT(iitem->mi));
 		g_array_free(iitem->array, TRUE);
 	}
 
@@ -718,6 +854,12 @@ menuitem_property_idle (gpointer user_data)
 
 	for (i = 0; i < priv->prop_array->len; i++) {
 		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
+
+		/* if it's not exposed we're going to block it's properties
+		   from getting into the dbus message */
+		if (dbusmenu_menuitem_exposed(iitem->mi) == FALSE) {
+			continue;
+		}
 
 		GVariantBuilder dictbuilder;
 		gboolean dictinit = FALSE;
@@ -756,7 +898,7 @@ menuitem_property_idle (gpointer user_data)
 			GVariantBuilder tuplebuilder;
 			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(dbusmenu_menuitem_get_id(iitem->mi)));
 			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&dictbuilder));
 
 			if (!item_init) {
@@ -773,7 +915,7 @@ menuitem_property_idle (gpointer user_data)
 			GVariantBuilder tuplebuilder;
 			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(dbusmenu_menuitem_get_id(iitem->mi)));
 			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&removedictbuilder));
 
 			if (!removeitem_init) {
@@ -786,9 +928,11 @@ menuitem_property_idle (gpointer user_data)
 	}
 
 	GVariant * megadata[2];
+	gboolean gotsomething = FALSE;
 
 	if (item_init) {
 		megadata[0] = g_variant_builder_end(&itembuilder);
+		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
 		megadata[0] = g_variant_parse(G_VARIANT_TYPE("a(ia{sv})"), "[ ]", NULL, NULL, &error);
@@ -801,6 +945,7 @@ menuitem_property_idle (gpointer user_data)
 
 	if (removeitem_init) {
 		megadata[1] = g_variant_builder_end(&removeitembuilder);
+		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
 		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ia(s))"), "[ ]", NULL, NULL, &error);
@@ -811,7 +956,7 @@ menuitem_property_idle (gpointer user_data)
 		}
 	}
 
-	if (priv->dbusobject != NULL && priv->bus != NULL) {
+	if (gotsomething && priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
 		                              NULL,
 		                              priv->dbusobject,
@@ -854,7 +999,7 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	prop_idle_item_t * item = NULL;
 	for (i = 0; i < priv->prop_array->len; i++) {
 		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
-		if (iitem->id == item_id) {
+		if (iitem->mi == mi) {
 			item = iitem;
 			break;
 		}
@@ -864,7 +1009,8 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	/* If not, we'll need to build ourselves one */
 	if (item == NULL) {
 		prop_idle_item_t myitem;
-		myitem.id = item_id;
+		myitem.mi = mi;
+		g_object_ref(G_OBJECT(mi));
 		myitem.array = g_array_new(FALSE, FALSE, sizeof(prop_idle_prop_t));
 
 		g_array_append_val(priv->prop_array, myitem);
@@ -1460,5 +1606,95 @@ dbusmenu_server_set_root (DbusmenuServer * self, DbusmenuMenuitem * root)
 	return;
 }
 
+/**
+	dbusmenu_server_get_text_direction:
+	@server: The #DbusmenuServer object to get the text direction from
 
+	Returns the value of the text direction that is being exported
+	over DBus for this server.  It should relate to the direction
+	of the labels and other text fields that are being exported by
+	this server.
 
+	Return value: Text direction exported for this server.
+*/
+DbusmenuTextDirection
+dbusmenu_server_get_text_direction (DbusmenuServer * server)
+{
+	g_return_val_if_fail(DBUSMENU_IS_SERVER(server), DBUSMENU_TEXT_DIRECTION_NONE);
+
+	GValue val = {0};
+	g_value_init(&val, DBUSMENU_TYPE_TEXT_DIRECTION);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_TEXT_DIRECTION, &val);
+
+	DbusmenuTextDirection retval = g_value_get_enum(&val);
+	g_value_unset(&val);
+
+	return retval;
+}
+
+/**
+	dbusmenu_server_set_text_direction:
+	@server: The #DbusmenuServer object to set the text direction on
+
+	Sets the text direction that should be exported over DBus for
+	this server.  If the value is set to #DBUSMENU_TEXT_DIRECTION_NONE
+	the default detection will be used for setting the value and
+	exported over DBus.
+*/
+void
+dbusmenu_server_set_text_direction (DbusmenuServer * server, DbusmenuTextDirection dir)
+{
+	g_return_if_fail(DBUSMENU_IS_SERVER(server));
+	g_return_if_fail(dir == DBUSMENU_TEXT_DIRECTION_NONE || dir == DBUSMENU_TEXT_DIRECTION_LTR || dir == DBUSMENU_TEXT_DIRECTION_RTL);
+
+	GValue newval = {0};
+	g_value_init(&newval, DBUSMENU_TYPE_TEXT_DIRECTION);
+	g_value_set_enum(&newval, dir);
+	g_object_set_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_TEXT_DIRECTION, &newval);
+	g_value_unset(&newval);
+	return;
+}
+
+/**
+	dbusmenu_server_get_status:
+	@server: The #DbusmenuServer to get the status from
+
+	Gets the current statust hat the server is sending out over
+	DBus.
+
+	Return value: The current status the server is sending
+*/
+DbusmenuStatus
+dbusmenu_server_get_status (DbusmenuServer * server)
+{
+	g_return_val_if_fail(DBUSMENU_IS_SERVER(server), DBUSMENU_STATUS_NORMAL);
+
+	GValue val = {0};
+	g_value_init(&val, DBUSMENU_TYPE_STATUS);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_STATUS, &val);
+
+	DbusmenuStatus retval = g_value_get_enum(&val);
+	g_value_unset(&val);
+
+	return retval;
+}
+
+/**
+	dbusmenu_server_set_status:
+	@server: The #DbusmenuServer to set the status on
+
+	Changes the status of the server.
+*/
+void
+dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
+{
+	g_return_if_fail(DBUSMENU_IS_SERVER(server));
+
+	GValue val = {0};
+	g_value_init(&val, DBUSMENU_TYPE_STATUS);
+	g_value_set_enum(&val, status);
+	g_object_set_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_STATUS, &val);
+	g_value_unset(&val);
+
+	return;
+}

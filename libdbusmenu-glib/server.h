@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <glib-object.h>
 
 #include "menuitem.h"
+#include "types.h"
 
 G_BEGIN_DECLS
 
@@ -52,6 +53,8 @@ G_BEGIN_DECLS
 #define DBUSMENU_SERVER_PROP_DBUS_OBJECT       "dbus-object"
 #define DBUSMENU_SERVER_PROP_ROOT_NODE         "root-node"
 #define DBUSMENU_SERVER_PROP_VERSION           "version"
+#define DBUSMENU_SERVER_PROP_TEXT_DIRECTION    "text-direction"
+#define DBUSMENU_SERVER_PROP_STATUS            "status"
 
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;
 
@@ -106,9 +109,16 @@ struct _DbusmenuServer {
 	DbusmenuServerPrivate * priv;
 };
 
-GType               dbusmenu_server_get_type   (void);
-DbusmenuServer *    dbusmenu_server_new        (const gchar * object);
-void                dbusmenu_server_set_root   (DbusmenuServer * server, DbusmenuMenuitem * root);
+GType                   dbusmenu_server_get_type            (void);
+DbusmenuServer *        dbusmenu_server_new                 (const gchar *          object);
+void                    dbusmenu_server_set_root            (DbusmenuServer *       server,
+                                                             DbusmenuMenuitem *     root);
+DbusmenuTextDirection   dbusmenu_server_get_text_direction  (DbusmenuServer *       server);
+void                    dbusmenu_server_set_text_direction  (DbusmenuServer *       server,
+                                                             DbusmenuTextDirection  dir);
+DbusmenuStatus          dbusmenu_server_get_status          (DbusmenuServer *       server);
+void                    dbusmenu_server_set_status          (DbusmenuServer *       server,
+                                                             DbusmenuStatus         status);
 
 /**
 	SECIONT:server

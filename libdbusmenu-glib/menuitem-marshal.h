@@ -39,6 +39,14 @@ extern void _dbusmenu_menuitem_marshal_VOID__OBJECT_UINT (GClosure     *closure,
 /* VOID:UINT (./menuitem-marshal.list:6) */
 #define _dbusmenu_menuitem_marshal_VOID__UINT	g_cclosure_marshal_VOID__UINT
 
+/* BOOLEAN:STRING,VARIANT,UINT (./menuitem-marshal.list:7) */
+extern void _dbusmenu_menuitem_marshal_BOOLEAN__STRING_VARIANT_UINT (GClosure     *closure,
+                                                                     GValue       *return_value,
+                                                                     guint         n_param_values,
+                                                                     const GValue *param_values,
+                                                                     gpointer      invocation_hint,
+                                                                     gpointer      marshal_data);
+
 G_END_DECLS
 
 #endif /* ___dbusmenu_menuitem_marshal_MARSHAL_H__ */
