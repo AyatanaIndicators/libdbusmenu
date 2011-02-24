@@ -96,6 +96,11 @@ G_BEGIN_DECLS
  * String to attach to signal #DbusmenuServer::about-to-show
  */
 #define DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW       "about-to-show"
+/**
+ * DBUSMENU_MENUITEM_SIGNAL_EVENT:
+ *
+ * String to attach to signal #DbusmenuServer::event
+ */
 #define DBUSMENU_MENUITEM_SIGNAL_EVENT               "event"
 
 /**
