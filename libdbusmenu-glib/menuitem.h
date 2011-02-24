@@ -96,6 +96,7 @@ G_BEGIN_DECLS
  * String to attach to signal #DbusmenuServer::about-to-show
  */
 #define DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW       "about-to-show"
+#define DBUSMENU_MENUITEM_SIGNAL_EVENT               "event"
 
 /**
  * DBUSMENU_MENUITEM_PROP_TYPE:
@@ -320,12 +321,12 @@ typedef GVariant * (*dbusmenu_menuitem_buildvariant_slot_t) (DbusmenuMenuitem * 
  * @handle_event: This function is to override how events are handled by subclasses.  Look at #dbusmenu_menuitem_handle_event for lots of good information.
  * @send_about_to_show: Virtual function that notifies server that the client is about to show a menu.
  * @show_to_user: Slot for #DbusmenuMenuitem::show-to-user.
+ * @event: Slot for #DbsumenuMenuitem::event.
  * @reserved1: Reserved for future use.
  * @reserved2: Reserved for future use.
  * @reserved3: Reserved for future use.
  * @reserved4: Reserved for future use.
  * @reserved5: Reserved for future use.
- * @reserved6: Reserved for future use.
  *
  * Functions and signals that every menuitem should know something 
  * about.
@@ -351,13 +352,14 @@ struct _DbusmenuMenuitemClass
 	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
 	gboolean (*about_to_show) (void);
 
+	void (*event) (const gchar * name, GVariant * value, guint timestamp);
+
 	/*< Private >*/
 	void (*reserved1) (void);
 	void (*reserved2) (void);
 	void (*reserved3) (void);
 	void (*reserved4) (void);
 	void (*reserved5) (void);
-	void (*reserved6) (void);
 };
 
 GType dbusmenu_menuitem_get_type (void);
