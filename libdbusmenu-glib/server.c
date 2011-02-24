@@ -744,6 +744,8 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
 	} else if (g_strcmp0(property, "text-direction") == 0) {
 		return g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction));
+	} else if (g_strcmp0(property, "status") == 0) {
+		return g_variant_new_string(dbusmenu_status_get_nick(priv->status));
 	} else {
 		g_warning("Unknown property '%s'", property);
 	}
