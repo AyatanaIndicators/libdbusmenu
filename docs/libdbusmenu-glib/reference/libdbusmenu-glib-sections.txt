@@ -100,6 +100,9 @@ dbusmenu_menuitem_foreach
 dbusmenu_menuitem_handle_event
 dbusmenu_menuitem_send_about_to_show
 dbusmenu_menuitem_show_to_user
+dbusmenu_menuitem_get_parent
+dbusmenu_menuitem_set_parent
+dbusmenu_menuitem_unparent
 <SUBSECTION Standard>
 DBUSMENU_MENUITEM
 DBUSMENU_IS_MENUITEM
