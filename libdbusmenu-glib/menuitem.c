@@ -1028,7 +1028,7 @@ dbusmenu_menuitem_unparent (DbusmenuMenuitem * mi)
  *
  * This function looks up the parent of @mi
  *
- * Return value: The parent of this menu item
+ * Return value: (transfer none): The parent of this menu item
  */
 DbusmenuMenuitem *
 dbusmenu_menuitem_get_parent (DbusmenuMenuitem * mi)
