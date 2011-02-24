@@ -1,3 +1,10 @@
+libdbusmenu (0.3.98-0ubuntu2~ppa6) UNRELEASED; urgency=low
+
+  * Fix
+    * Adding a generated .c file
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Feb 2011 20:44:23 -0600
+
 libdbusmenu (0.3.98-0ubuntu2~ppa5) natty; urgency=low
 
   * Upstream merge
