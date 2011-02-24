@@ -61,6 +61,7 @@ struct _DbusmenuMenuitemPrivate
 	gboolean root;
 	gboolean realized;
 	DbusmenuDefaults * defaults;
+	gboolean exposed;
 };
 
 /* Signals */
@@ -316,6 +317,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 	priv->realized = FALSE;
 
 	priv->defaults = dbusmenu_defaults_ref_default();
+	priv->exposed = FALSE;
 	
 	return;
 }
@@ -1439,6 +1441,8 @@ GVariant *
 dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties, gint recurse)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->exposed = TRUE;
 
 	gint id = 0;
 	if (!dbusmenu_menuitem_get_root(mi)) {
@@ -1620,4 +1624,14 @@ dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * prop
 
 	g_warn_if_reached();
 	return FALSE;
+}
+
+/* Check to see if this menu item has been sent into the bus yet or
+   not.  If no one cares we can give less info */
+gboolean
+dbusmenu_menuitem_exposed (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return priv->exposed;
 }
