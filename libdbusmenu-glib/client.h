@@ -88,6 +88,7 @@ G_BEGIN_DECLS
  * String to access property #DbusmenuClient:dbus-object
  */
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
+#define DBUSMENU_CLIENT_PROP_STATUS        "status"
 #define DBUSMENU_CLIENT_PROP_TEXT_DIRECTION "text-direction"
 
 /**
@@ -207,6 +208,7 @@ gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * cli
                                                         gpointer user_data,
                                                         DbusmenuClientTypeDestroyHandler destroy_func);
 DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
+DbusmenuStatus       dbusmenu_client_get_status        (DbusmenuClient * client);
 
 /**
 	SECTION:client
