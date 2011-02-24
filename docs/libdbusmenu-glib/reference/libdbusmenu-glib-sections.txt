@@ -6,8 +6,11 @@ DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED
 DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM
 DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT
 DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE
+DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED
 DBUSMENU_CLIENT_PROP_DBUS_NAME
 DBUSMENU_CLIENT_PROP_DBUS_OBJECT
+DBUSMENU_CLIENT_PROP_STATUS
+DBUSMENU_CLIENT_PROP_TEXT_DIRECTION
 DBUSMENU_CLIENT_TYPES_DEFAULT
 DBUSMENU_CLIENT_TYPES_SEPARATOR
 DBUSMENU_CLIENT_TYPES_IMAGE
@@ -17,6 +20,8 @@ DbusmenuClientTypeHandler
 DbusmenuClientTypeDestroyHandler
 dbusmenu_client_new
 dbusmenu_client_get_root
+dbusmenu_client_get_status
+dbusmenu_client_get_text_direction
 dbusmenu_client_add_type_handler
 dbusmenu_client_add_type_handler_full
 <SUBSECTION Standard>
@@ -122,11 +127,17 @@ DBUSMENU_SERVER_SIGNAL_LAYOUT_UPDATE
 DBUSMENU_SERVER_SIGNAL_ITEM_ACTIVATION
 DBUSMENU_SERVER_PROP_DBUS_OBJECT
 DBUSMENU_SERVER_PROP_ROOT_NODE
+DBUSMENU_SERVER_PROP_STATUS
+DBUSMENU_SERVER_PROP_TEXT_DIRECTION
 DBUSMENU_SERVER_PROP_VERSION
 DbusmenuServer
 DbusmenuServerClass
 dbusmenu_server_new
+dbusmenu_server_get_status
+dbusmenu_server_get_text_direction
 dbusmenu_server_set_root
+dbusmenu_server_set_status
+dbusmenu_server_set_text_direction
 <SUBSECTION Standard>
 DBUSMENU_SERVER
 DBUSMENU_IS_SERVER
@@ -156,5 +167,23 @@ DBUSMENU_MENUITEM_PROXY_GET_CLASS
 <SUBSECTION Private>
 DbusmenuMenuitemProxyPrivate
 dbusmenu_menuitem_proxy_get_type
+</SECTION>
+
+<SECTION>
+<FILE>types</FILE>
+<TITLE>Types</TITLE>
+DBUSMENU_TYPE_STATUS
+DBUSMENU_TYPE_TEXT_DIRECTION
+DbusmenuStatus
+DbusmenuTextDirection
+dbusmenu_status_get_nick
+dbusmenu_status_get_type
+dbusmenu_status_get_value_from_nick
+dbusmenu_text_direction_get_nick
+dbusmenu_text_direction_get_type
+dbusmenu_text_direction_get_value_from_nick
+<SUBSECTION Private>
+DbusmenuServerPrivate
+dbusmenu_server_get_type
 </SECTION>
 

@@ -51,6 +51,7 @@ IGNORE_HFILES= \
 	dbus-menu-clean.xml.h \
 	client-menuitem.h \
 	client-private.h \
+	defaults.h \
 	menuitem-marshal.h \
 	server-marshal.h \
 	menuitem-private.h

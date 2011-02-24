@@ -59,6 +59,17 @@ typedef enum { /*< prefix=DBUSMENU_STATUS >*/
 	DBUSMENU_STATUS_NOTICE    /*< nick=notice >*/
 } DbusmenuStatus;
 
+/**
+	SECTION:types
+	@short_description: Types that are used by both client and
+		server.
+	@stability: Unstable
+	@include: libdbusmenu-glib/types.h
+
+	Enums that are used to describe states of the server across the
+	bus.  They are sent over dbus using their nicks but then turned
+	back into enums by the client.
+*/
 G_END_DECLS
 
 #endif /* __DBUSMENU_TYPES_H__ */

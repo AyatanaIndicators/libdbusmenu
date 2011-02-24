@@ -93,7 +93,17 @@ G_BEGIN_DECLS
  * String to access property #DbusmenuServer:version
  */
 #define DBUSMENU_SERVER_PROP_VERSION           "version"
+/**
+ * DBUSMENU_SERVER_PROP_TEXT_DIRECTION:
+ *
+ * String to access property #DbusmenuServer:text-direction
+ */
 #define DBUSMENU_SERVER_PROP_TEXT_DIRECTION    "text-direction"
+/**
+ * DBUSMENU_SERVER_PROP_STATUS:
+ *
+ * String to access property #DbusmenuServer:status
+ */
 #define DBUSMENU_SERVER_PROP_STATUS            "status"
 
 typedef struct _DbusmenuServerPrivate DbusmenuServerPrivate;

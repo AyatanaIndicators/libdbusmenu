@@ -74,6 +74,11 @@ G_BEGIN_DECLS
  * String to attach to signal #DbusmenuClient::event-result
  */
 #define DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT    "event-result"
+/**
+ * DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED:
+ *
+ * String to attach to signal #DbusmenuClient::text-direction-changed
+ */
 #define DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED    "text-direction-changed"
 
 /**
@@ -88,7 +93,17 @@ G_BEGIN_DECLS
  * String to access property #DbusmenuClient:dbus-object
  */
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
+/**
+ * DBUSMENU_CLIENT_PROP_STATUS:
+ *
+ * String to access property #DbusmenuClient:status
+ */
 #define DBUSMENU_CLIENT_PROP_STATUS        "status"
+/**
+ * DBUSMENU_CLIENT_PROP_TEXT_DIRECTION:
+ *
+ * String to access property #DbusmenuClient:text-direction
+ */
 #define DBUSMENU_CLIENT_PROP_TEXT_DIRECTION "text-direction"
 
 /**

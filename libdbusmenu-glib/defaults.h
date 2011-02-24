@@ -45,7 +45,7 @@ typedef struct _DbusmenuDefaults        DbusmenuDefaults;
 typedef struct _DbusmenuDefaultsClass   DbusmenuDefaultsClass;
 typedef struct _DbusmenuDefaultsPrivate DbusmenuDefaultsPrivate;
 
-/**
+/*
  * DbusmenuDefaultsClass:
  *
  * All of the signals and functions for #DbusmenuDefaults
@@ -54,7 +54,7 @@ struct _DbusmenuDefaultsClass {
 	GObjectClass parent_class;
 };
 
-/**
+/*
  * DbusmenuDefaults:
  *
  * A singleton to hold all of the defaults for the menuitems

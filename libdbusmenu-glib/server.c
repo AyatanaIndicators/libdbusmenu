@@ -1635,6 +1635,7 @@ dbusmenu_server_get_text_direction (DbusmenuServer * server)
 /**
 	dbusmenu_server_set_text_direction:
 	@server: The #DbusmenuServer object to set the text direction on
+	@dir: Direction of the text
 
 	Sets the text direction that should be exported over DBus for
 	this server.  If the value is set to #DBUSMENU_TEXT_DIRECTION_NONE
@@ -1682,6 +1683,7 @@ dbusmenu_server_get_status (DbusmenuServer * server)
 /**
 	dbusmenu_server_set_status:
 	@server: The #DbusmenuServer to set the status on
+	@status: Status value to set on the server
 
 	Changes the status of the server.
 */
