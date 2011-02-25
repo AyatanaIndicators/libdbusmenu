@@ -19,6 +19,7 @@ libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-glib/
 
 
 EXPORTED_OBJECTS = \
+	enum-types.h \
 	menuitem.h \
 	menuitem-proxy.h \
 	server.h \
