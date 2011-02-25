@@ -1670,11 +1670,22 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 	#endif
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
+	/* We need to keep a ref to the variant because the signal
+	   handler will drop the floating ref and then we'll be up
+	   a creek if we don't have our own later. */
+	if (variant != NULL) {
+		g_variant_ref_sink(variant);
+	}
+
 	gboolean handled = FALSE;
 	g_signal_emit(G_OBJECT(mi), signals[EVENT], g_quark_from_string(name), name, variant, timestamp, &handled);
 
 	if (!handled && class->handle_event != NULL) {
-		return class->handle_event(mi, name, variant, timestamp);
+		class->handle_event(mi, name, variant, timestamp);
+	}
+
+	if (variant != NULL) {
+		g_variant_unref(variant);
 	}
 
 	return;
