@@ -156,7 +156,7 @@ entry_destroy (gpointer entry)
 
 static DbusmenuDefaults * default_defaults = NULL;
 
-/**
+/*
  * dbusmenu_defaults_ref_default:
  *
  * Get a reference to the default instance.  If it doesn't exist this
@@ -177,7 +177,7 @@ dbusmenu_defaults_ref_default (void)
 	return default_defaults;
 }
 
-/**
+/*
  * dbusmenu_defaults_default_set:
  * @defaults: The #DbusmenuDefaults object to add to
  * @type: (allow-none): The #DbusmenuMenuitem type for this default if #NULL will default to #DBUSMENU_CLIENT_TYPE_DEFAULT
@@ -216,7 +216,7 @@ dbusmenu_defaults_default_set (DbusmenuDefaults * defaults, const gchar * type, 
 	return;
 }
 
-/**
+/*
  * dbusmenu_defaults_default_get:
  * @defaults: The default database to use
  * @type: (allow-none): The #DbusmenuMenuitem type for this default if #NULL will default to #DBUSMENU_CLIENT_TYPE_DEFAULT
@@ -253,7 +253,7 @@ dbusmenu_defaults_default_get (DbusmenuDefaults * defaults, const gchar * type, 
 	return entry->value;
 }
 
-/**
+/*
  * dbusmenu_defaults_default_get_type:
  * @defaults: The default database to use
  * @type: (allow-none): The #DbusmenuMenuitem type for this default if #NULL will default to #DBUSMENU_CLIENT_TYPE_DEFAULT

@@ -40,7 +40,8 @@ TESTS = test-glib-objects-test test-glib-events test-glib-layout \
 	test-glib-properties test-glib-proxy \
 	test-glib-simple-items$(EXEEXT) test-glib-submenu test-json \
 	test-gtk-objects-test test-gtk-label test-gtk-shortcut \
-	test-gtk-reorder test-gtk-submenu test-gtk-parser-test
+	test-gtk-shortcut-python test-gtk-reorder test-gtk-submenu \
+	test-gtk-parser-test test-glib-simple-items.py
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-objects$(EXEEXT) test-glib-events-client$(EXEEXT) \
 	test-glib-events-server$(EXEEXT) \
@@ -492,6 +493,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
@@ -622,11 +624,35 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 DBUS_RUNNER = dbus-test-runner
-CLEANFILES = test-json-01.output.json \
+CLEANFILES = test-json-01.output.json test-gtk-shortcut-client.pyc \
 	dbusmenu-gtk/mago_tests/dbusmenu.pyc
 DISTCLEANFILES = $(OBJECT_XML_REPORT) $(GTK_OBJECT_XML_REPORT) \
-	$(GTK_PARSER_XML_REPORT) $(TESTS)
+	$(GTK_PARSER_XML_REPORT) $(filter-out %.py, $(TESTS))
+EXTRA_DIST = test-glib-simple-items.py test-gtk-shortcut-client.py \
+	$(examples_DATA) run-xvfb.sh $(json_DATA) test-gtk-objects.jpg \
+	dbusmenu-gtk/dbusMenuTest dbusmenu-gtk/mago_tests/dbusmenu.xml \
+	dbusmenu-gtk/mago_tests/dbusmenu.py \
+	dbusmenu-gtk/mago_tests/data/blank_label_2levels.json \
+	dbusmenu-gtk/mago_tests/data/blank_label.json \
+	dbusmenu-gtk/mago_tests/data/blank_submenus.json \
+	dbusmenu-gtk/mago_tests/data/dynamic.json \
+	dbusmenu-gtk/mago_tests/data/long_label.json \
+	dbusmenu-gtk/mago_tests/data/no_id.json \
+	dbusmenu-gtk/mago_tests/data/no_label.json \
+	dbusmenu-gtk/mago_tests/data/sameid_submenus_diff_sizes.json \
+	dbusmenu-gtk/mago_tests/data/sameid_submenus.json \
+	dbusmenu-gtk/mago_tests/data/sameid_top_and_submenus.json \
+	dbusmenu-gtk/mago_tests/data/sameid_topmenu.json \
+	dbusmenu-gtk/mago_tests/data/several_submenus.json \
+	dbusmenu-gtk/mago_tests/data/several_submenus_recursive.json \
+	dbusmenu-gtk/mago_tests/data/several_submenus_utf8.json \
+	dbusmenu-gtk/mago_tests/data/static.json \
+	dbusmenu-gtk/mago_tests/data/test-gtk-label.json \
+	test-json-01.json
 XVFB_RUN = ". $(srcdir)/run-xvfb.sh"
+
+# for the GI tests, prefer/use the typelibs from the local build tree
+TESTS_ENVIRONMENT = env GI_TYPELIB_PATH=$(top_builddir)/libdbusmenu-glib:$(top_builddir)/libdbusmenu-gtk:$(GI_TYPELIB_PATH)
 
 ######################
 # JSON Loader lib
@@ -1024,32 +1050,6 @@ examples_DATA = \
 jsondir = $(datadir)/${PACKAGE}/json/
 json_DATA = \
 	test-gtk-label.json
-
-EXTRA_DIST = \
-	$(examples_DATA) \
-	run-xvfb.sh \
-	$(json_DATA) \
-	test-gtk-objects.jpg \
-	dbusmenu-gtk/dbusMenuTest \
-	dbusmenu-gtk/mago_tests/dbusmenu.xml \
-	dbusmenu-gtk/mago_tests/dbusmenu.py \
-	dbusmenu-gtk/mago_tests/data/blank_label_2levels.json \
-	dbusmenu-gtk/mago_tests/data/blank_label.json \
-	dbusmenu-gtk/mago_tests/data/blank_submenus.json \
-	dbusmenu-gtk/mago_tests/data/dynamic.json \
-	dbusmenu-gtk/mago_tests/data/long_label.json \
-	dbusmenu-gtk/mago_tests/data/no_id.json \
-	dbusmenu-gtk/mago_tests/data/no_label.json \
-	dbusmenu-gtk/mago_tests/data/sameid_submenus_diff_sizes.json \
-	dbusmenu-gtk/mago_tests/data/sameid_submenus.json \
-	dbusmenu-gtk/mago_tests/data/sameid_top_and_submenus.json \
-	dbusmenu-gtk/mago_tests/data/sameid_topmenu.json \
-	dbusmenu-gtk/mago_tests/data/several_submenus.json \
-	dbusmenu-gtk/mago_tests/data/several_submenus_recursive.json \
-	dbusmenu-gtk/mago_tests/data/several_submenus_utf8.json \
-	dbusmenu-gtk/mago_tests/data/static.json \
-	dbusmenu-gtk/mago_tests/data/test-gtk-label.json \
-	test-json-01.json
 
 all: all-am
 
@@ -2161,6 +2161,16 @@ test-gtk-shortcut: test-gtk-shortcut-client test-gtk-shortcut-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+#########################
+# Test GTK Shortcut Python
+#########################
+
+test-gtk-shortcut-python: test-gtk-shortcut-server test-gtk-shortcut-client.py Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task $(srcdir)/test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 #########################

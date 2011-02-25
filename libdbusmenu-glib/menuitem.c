@@ -61,6 +61,8 @@ struct _DbusmenuMenuitemPrivate
 	gboolean root;
 	gboolean realized;
 	DbusmenuDefaults * defaults;
+	gboolean exposed;
+	DbusmenuMenuitem * parent;
 };
 
 /* Signals */
@@ -73,6 +75,7 @@ enum {
 	REALIZED,
 	SHOW_TO_USER,
 	ABOUT_TO_SHOW,
+	EVENT,
 	LAST_SIGNAL
 };
 
@@ -246,6 +249,23 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	                                          NULL, NULL,
 	                                          _dbusmenu_menuitem_marshal_VOID__VOID,
 	                                          G_TYPE_BOOLEAN, 0, G_TYPE_NONE);
+	/**
+		DbusmenuMenuitem::event:
+		@arg0: The #DbusmenuMenuitem object.
+		@arg1: Name of the event
+		@arg2: Information passed along with the event
+		@arg3: X11 timestamp of when the event happened
+
+		Emitted when an event is passed through.  The event is signalled
+		after handle_event is called.
+	*/
+	signals[EVENT] =             g_signal_new(DBUSMENU_MENUITEM_SIGNAL_EVENT,
+	                                          G_TYPE_FROM_CLASS(klass),
+	                                          G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+	                                          G_STRUCT_OFFSET(DbusmenuMenuitemClass, event),
+	                                          g_signal_accumulator_true_handled, NULL,
+	                                          _dbusmenu_menuitem_marshal_BOOLEAN__STRING_VARIANT_UINT,
+	                                          G_TYPE_BOOLEAN, 3, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT);
 
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
@@ -316,6 +336,7 @@ dbusmenu_menuitem_init (DbusmenuMenuitem *self)
 	priv->realized = FALSE;
 
 	priv->defaults = dbusmenu_defaults_ref_default();
+	priv->exposed = FALSE;
 	
 	return;
 }
@@ -335,6 +356,11 @@ dbusmenu_menuitem_dispose (GObject *object)
 	if (priv->defaults != NULL) {
 		g_object_unref(priv->defaults);
 		priv->defaults = NULL;
+	}
+
+	if (priv->parent) {
+		g_object_remove_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+		priv->parent = NULL;
 	}
 
 	G_OBJECT_CLASS (dbusmenu_menuitem_parent_class)->dispose (object);
@@ -563,11 +589,12 @@ dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
 /* For all the taken children we need to signal
    that they were removed */
 static void
-take_children_signal (gpointer data, gpointer user_data)
+take_children_helper (gpointer data, gpointer user_data)
 {
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(user_data), LABEL(user_data), ID(data), LABEL(data));
 	#endif
+	dbusmenu_menuitem_unparent(DBUSMENU_MENUITEM(data));
 	g_signal_emit(G_OBJECT(user_data), signals[CHILD_REMOVED], 0, DBUSMENU_MENUITEM(data), TRUE);
 	return;
 }
@@ -593,7 +620,7 @@ dbusmenu_menuitem_take_children (DbusmenuMenuitem * mi)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	GList * children = priv->children;
 	priv->children = NULL;
-	g_list_foreach(children, take_children_signal, mi);
+	g_list_foreach(children, take_children_helper, mi);
 
 	dbusmenu_menuitem_property_remove(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY);
 	
@@ -702,6 +729,10 @@ dbusmenu_menuitem_child_append (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
 
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
+
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
 	}
@@ -734,6 +765,10 @@ dbusmenu_menuitem_child_prepend (DbusmenuMenuitem * mi, DbusmenuMenuitem * child
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
 
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
+
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
 	}
@@ -764,8 +799,14 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
+	if (dbusmenu_menuitem_get_parent(child) != mi) {
+		g_warning("Trying to remove a child that doesn't believe we're it's parent.");
+		return FALSE;
+	}
+
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	priv->children = g_list_remove(priv->children, child);
+	dbusmenu_menuitem_unparent(child);
 	#ifdef MASSIVEDEBUGGING
 	g_debug("Menuitem %d (%s) signalling child removed %d (%s)", ID(mi), LABEL(mi), ID(child), LABEL(child));
 	#endif
@@ -799,6 +840,10 @@ dbusmenu_menuitem_child_add_position (DbusmenuMenuitem * mi, DbusmenuMenuitem * 
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	g_return_val_if_fail(g_list_find(priv->children, child) == NULL, FALSE);
+
+	if (!dbusmenu_menuitem_set_parent(child, mi)) {
+		return FALSE;
+	}
 
 	if (priv->children == NULL && !dbusmenu_menuitem_property_exist(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU);
@@ -935,6 +980,84 @@ dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 }
 
 /**
+ * dbusmenu_menuitem_set_parent:
+ * @mi: The #DbusmenuMenuitem for which to set the parent
+ * @parent: The new parent #DbusmenuMenuitem
+ *
+ * Sets the parent of @mi to @parent. If @mi already
+ * has a parent, then this call will fail. The parent will
+ * be set automatically when using the usual methods to add a
+ * child menuitem, so this function should not normally be 
+ * called directly 
+ *
+ * Return value: Whether the parent was set successfully
+ */
+gboolean
+dbusmenu_menuitem_set_parent (DbusmenuMenuitem * mi, DbusmenuMenuitem * parent)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	if (priv->parent != NULL) {
+		g_warning ("Menu item already has a parent");
+		return FALSE;
+	}
+
+	priv->parent = parent;
+	g_object_add_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+
+	return TRUE;
+}
+
+/**
+ * dbusmenu_menuitem_unparent:
+ * @mi: The #DbusmenuMenuitem to unparent
+ *
+ * Unparents the menu item @mi. If @mi doesn't have a
+ * parent, then this call will fail. The menuitem will
+ * be unparented automatically when using the usual methods
+ * to delete a child menuitem, so this function should not
+ * normally be called directly 
+ *
+ * Return value: Whether the menu item was unparented successfully
+ */
+gboolean
+dbusmenu_menuitem_unparent (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	if (priv->parent == NULL) {
+		g_warning("Menu item doesn't have a parent");
+		return FALSE;
+	}
+
+	g_object_remove_weak_pointer(G_OBJECT(priv->parent), (gpointer *)&priv->parent);
+	priv->parent = NULL;
+
+	return TRUE;
+}
+
+/**
+ * dbusmenu_menuitem_get_parent:
+ * @mi: The #DbusmenuMenuitem for which to inspect the parent
+ *
+ * This function looks up the parent of @mi
+ *
+ * Return value: (transfer none): The parent of this menu item
+ */
+DbusmenuMenuitem *
+dbusmenu_menuitem_get_parent (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+
+	return priv->parent;
+}
+
+/**
  * dbusmenu_menuitem_property_set:
  * @mi: The #DbusmenuMenuitem to set the property on.
  * @property: Name of the property to set.
@@ -1025,31 +1148,34 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	g_return_val_if_fail(property != NULL, FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	GVariant * default_value = NULL;
 
-	const gchar * type = menuitem_get_type(mi);
+	if (value != NULL) {
+		const gchar * type = menuitem_get_type(mi);
 
-	/* Check the expected type to see if we want to have a warning */
-	GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
-	if (default_type != NULL) {
-		/* If we have an expected type we should check to see if
-		   the value we've been given is of the same type and generate
-		   a warning if it isn't */
-		if (!g_variant_is_of_type(value, default_type)) {
-			g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
+		/* Check the expected type to see if we want to have a warning */
+		GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
+		if (default_type != NULL) {
+			/* If we have an expected type we should check to see if
+			   the value we've been given is of the same type and generate
+			   a warning if it isn't */
+			if (!g_variant_is_of_type(value, default_type)) {
+				g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
+			}
 		}
-	}
 
-	/* Check the defaults database to see if we have a default
-	   for this property. */
-	GVariant * default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
-	if (default_value != NULL) {
-		/* Now see if we're setting this to the same value as the
-		   default.  If we are then we just want to swallow this variant
-		   and make the function behave like we're clearing it. */
-		if (g_variant_equal(default_value, value)) {
-			g_variant_ref_sink(value);
-			g_variant_unref(value);
-			value = NULL;
+		/* Check the defaults database to see if we have a default
+		   for this property. */
+		default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
+		if (default_value != NULL) {
+			/* Now see if we're setting this to the same value as the
+			   default.  If we are then we just want to swallow this variant
+			   and make the function behave like we're clearing it. */
+			if (g_variant_equal(default_value, value)) {
+				g_variant_ref_sink(value);
+				g_variant_unref(value);
+				value = NULL;
+			}
 		}
 	}
 
@@ -1210,7 +1336,7 @@ dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * propert
 
 
 /**
- * dbusmenu_menuitem_property_exit:
+ * dbusmenu_menuitem_property_exist:
  * @mi: The #DbusmenuMenuitem to look for the property on.
  * @property: The property to look for.
  * 
@@ -1343,7 +1469,7 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** prop
 
 	GVariant * final_variant = NULL;
 
-	if (properties == NULL && g_hash_table_size(priv->properties) > 0) {
+	if ((properties == NULL || properties[0] == NULL) && g_hash_table_size(priv->properties) > 0) {
 		GVariantBuilder builder;
 		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
@@ -1436,6 +1562,8 @@ GVariant *
 dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** properties, gint recurse)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	priv->exposed = TRUE;
 
 	gint id = 0;
 	if (!dbusmenu_menuitem_get_root(mi)) {
@@ -1460,7 +1588,7 @@ dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** propertie
 
 	/* Pillage the children */
 	GList * children = dbusmenu_menuitem_get_children(mi);
-	if (children == NULL && recurse != 0) {
+	if (children == NULL || recurse == 0) {
 		g_variant_builder_add_value(&tupleb, g_variant_new_array(G_VARIANT_TYPE_VARIANT, NULL, 0));
 	} else {
 		GVariantBuilder childrenbuilder;
@@ -1542,9 +1670,13 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 	#endif
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
-	if (class->handle_event != NULL) {
+	gboolean handled = FALSE;
+	g_signal_emit(G_OBJECT(mi), signals[EVENT], g_quark_from_string(name), name, variant, timestamp, &handled);
+
+	if (!handled && class->handle_event != NULL) {
 		return class->handle_event(mi, name, variant, timestamp);
 	}
+
 	return;
 }
 
@@ -1617,4 +1749,14 @@ dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * prop
 
 	g_warn_if_reached();
 	return FALSE;
+}
+
+/* Check to see if this menu item has been sent into the bus yet or
+   not.  If no one cares we can give less info */
+gboolean
+dbusmenu_menuitem_exposed (DbusmenuMenuitem * mi)
+{
+	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
+	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+	return priv->exposed;
 }

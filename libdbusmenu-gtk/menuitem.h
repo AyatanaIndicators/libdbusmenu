@@ -45,6 +45,17 @@ gboolean dbusmenu_menuitem_property_set_shortcut_string (DbusmenuMenuitem * menu
 gboolean dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, const GtkMenuItem * gmi);
 void dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifier);
 
+/**
+	SECTION:menuitem
+	@short_description: Helpers for #DbusmenuMenuitem properties that require a GTK dependency
+	@stability: Unstable
+	@include: libdbusmenu-gtk/menuitem.h
+
+	Some property helpers can't be done without picking up a GTK+
+	dependency.  So those sit in libdbusmenu-gtk but have very similar
+	prototypes to the code in libdbusmenu-glib so your code will
+	look consistent, just with the extra depedency.
+*/
 G_END_DECLS
 
 #endif

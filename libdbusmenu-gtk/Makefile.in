@@ -191,6 +191,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
@@ -385,17 +386,17 @@ INTROSPECTION_GIRS = $(am__append_1)
 @INTROSPECTION_TEN_FALSE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_FALSE@	--warn-all \
 @INTROSPECTION_TEN_FALSE@	--add-include-path=$(top_builddir)/libdbusmenu-glib \
-@INTROSPECTION_TEN_FALSE@	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources))
+@INTROSPECTION_TEN_FALSE@	$(addprefix --c-include=libdbusmenu-gtk/, $(libdbusmenu_gtkinclude_HEADERS))
 
 @INTROSPECTION_TEN_TRUE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_TRUE@	--warn-all \
 @INTROSPECTION_TEN_TRUE@	--add-include-path=$(top_builddir)/libdbusmenu-glib \
-@INTROSPECTION_TEN_TRUE@	$(addprefix --c-include=libdbusmenu-gtk/, $(introspection_sources)) \
+@INTROSPECTION_TEN_TRUE@	$(addprefix --c-include=libdbusmenu-gtk/, $(libdbusmenu_gtkinclude_HEADERS)) \
 @INTROSPECTION_TEN_TRUE@	--symbol-prefix=dbusmenu \
 @INTROSPECTION_TEN_TRUE@	--identifier-prefix=DbusmenuGtk
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_builddir)/libdbusmenu-glib
-@HAVE_INTROSPECTION_TRUE@introspection_sources = $(libdbusmenu_gtkinclude_HEADERS)
+@HAVE_INTROSPECTION_TRUE@introspection_sources = $(filter-out genericmenuitem.%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0 \
 @HAVE_INTROSPECTION_TRUE@	$(GTKGIR) \

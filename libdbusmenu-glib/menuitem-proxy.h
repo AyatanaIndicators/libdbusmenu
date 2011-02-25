@@ -67,8 +67,7 @@ struct _DbusmenuMenuitemProxyClass {
 };
 
 /**
-	DbusmeneMenuitemProxy:
-	@parent: The instance of #DbusmenuMenuitem
+	DbusmenuMenuitemProxy:
 
 	Public instance data for a #DbusmenuMenuitemProxy.
 */
@@ -82,6 +81,17 @@ struct _DbusmenuMenuitemProxy {
 GType dbusmenu_menuitem_proxy_get_type (void);
 DbusmenuMenuitemProxy * dbusmenu_menuitem_proxy_new (DbusmenuMenuitem * mi);
 DbusmenuMenuitem * dbusmenu_menuitem_proxy_get_wrapped (DbusmenuMenuitemProxy * pmi);
+
+/**
+ * SECTION:menuitem-proxy
+ * @short_description: A menuitem that proxies from another menuitem
+ * @stability: Unstable
+ * @include: libdbusmenu-glib/menuitem-proxy.h
+ *
+ * This small object allows for proxying all the properties from a remote
+ * menuitem to a new object that can be moved around appropriately within
+ * the new menu structure.
+ */
 
 G_END_DECLS
 

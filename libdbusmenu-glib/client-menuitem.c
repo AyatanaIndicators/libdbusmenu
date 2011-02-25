@@ -30,6 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #endif
 
 #include "client-menuitem.h"
+#include "client-private.h"
 
 typedef struct _DbusmenuClientMenuitemPrivate DbusmenuClientMenuitemPrivate;
 
@@ -39,7 +40,7 @@ struct _DbusmenuClientMenuitemPrivate
 };
 
 #define DBUSMENU_CLIENT_MENUITEM_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_CLIENT_MENUITEM_TYPE, DbusmenuClientMenuitemPrivate))
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), DBUSMENU_TYPE_CLIENT_MENUITEM, DbusmenuClientMenuitemPrivate))
 
 static void dbusmenu_client_menuitem_class_init (DbusmenuClientMenuitemClass *klass);
 static void dbusmenu_client_menuitem_init       (DbusmenuClientMenuitem *self);
@@ -94,7 +95,7 @@ dbusmenu_client_menuitem_finalize (GObject *object)
 DbusmenuClientMenuitem *
 dbusmenu_client_menuitem_new (gint id, DbusmenuClient * client)
 {
-	DbusmenuClientMenuitem * mi = g_object_new(DBUSMENU_CLIENT_MENUITEM_TYPE, "id", id, NULL);
+	DbusmenuClientMenuitem * mi = g_object_new(DBUSMENU_TYPE_CLIENT_MENUITEM, "id", id, NULL);
 	DbusmenuClientMenuitemPrivate * priv = DBUSMENU_CLIENT_MENUITEM_GET_PRIVATE(mi);
 	priv->client = client;
 	return mi;
