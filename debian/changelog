@@ -1,5 +1,6 @@
-libdbusmenu (0.3.99-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.3.99-0ubuntu1) natty; urgency=low
 
+  [ Ted Gould ]
   * New upstream release.
     * Add a signal on the menuitem for generic event support
     * Handle the case of a single NULL entry as well.
@@ -18,7 +19,11 @@ libdbusmenu (0.3.99-0ubuntu1) UNRELEASED; urgency=low
     * Resolving property changes by looking at the properties
       directly.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Feb 2011 15:16:43 -0600
+  [ Ken VanDine ]
+  * libdbusmenu-glib/menuitem.c
+    - Making sure to grab the variant and dispose of it in handle_event.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 24 Feb 2011 22:54:54 -0500
 
 libdbusmenu (0.3.98-0ubuntu4) natty; urgency=low
 
