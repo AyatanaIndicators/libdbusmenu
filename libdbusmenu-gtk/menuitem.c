@@ -194,6 +194,7 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	}
 
 	const gchar * keyname = gdk_keyval_name(key);
+	g_return_val_if_fail(keyname != NULL, FALSE);
 	g_variant_builder_add(&builder, "s", keyname);
 
 	GVariant * inside = g_variant_builder_end(&builder);
