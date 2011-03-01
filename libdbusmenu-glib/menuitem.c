@@ -1752,13 +1752,8 @@ dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * prop
 		return FALSE;
 	}
 
-	currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
-	if (currentval != NULL) {
-		return TRUE;
-	}
-
-	g_warn_if_reached();
-	return FALSE;
+	/* If we haven't stored it locally, then it's the default */
+	return TRUE;
 }
 
 /* Check to see if this menu item has been sent into the bus yet or
