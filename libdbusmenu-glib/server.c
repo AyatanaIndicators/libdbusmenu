@@ -1180,7 +1180,11 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	GVariant * items = NULL;
 
 	if (priv->root != NULL) {
-		items = dbusmenu_menuitem_build_variant(priv->root, props, recurse);
+		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, parent);
+
+		if (mi != NULL) {
+			items = dbusmenu_menuitem_build_variant(mi, props, recurse);
+		}
 	}
 
 	/* What happens if we don't have anything? */
