@@ -1,3 +1,20 @@
+libdbusmenu (0.3.99-0ubuntu3) natty; urgency=low
+
+  * Fix LP: #723873 - ensure that changing a menuitem property to a default
+    value gets propagated properly in the client
+    - add debian/patches/fix-defaults-in-client.patch
+    - update debian/patches/series
+
+ -- Chris Coulson <chris.coulson@canonical.com>  Tue, 01 Mar 2011 00:47:24 +0000
+
+libdbusmenu (0.3.99-0ubuntu2) natty; urgency=low
+
+  * debian/patches/disconnect-more-signals.patch:
+    - Fix some crashes by disconnecting more signals when a menuitem is
+      deleted.  LP: #725980 and LP: #726153
+
+ -- Michael Terry <mterry@ubuntu.com>  Mon, 28 Feb 2011 10:09:57 -0500
+
 libdbusmenu (0.3.99-0ubuntu1) natty; urgency=low
 
   [ Ted Gould ]

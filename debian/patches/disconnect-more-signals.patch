@@ -1,0 +1,18 @@
+=== modified file 'libdbusmenu-gtk/parser.c'
+Index: libdbusmenu-0.3.99/libdbusmenu-gtk/parser.c
+===================================================================
+--- libdbusmenu-0.3.99.orig/libdbusmenu-gtk/parser.c	2011-02-28 10:09:40.907065942 -0500
++++ libdbusmenu-0.3.99/libdbusmenu-gtk/parser.c	2011-02-28 10:09:43.037065942 -0500
+@@ -129,6 +129,12 @@
+ 	if (pdata != NULL && pdata->widget != NULL) {
+ 		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+ 						     0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
++		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
++						     0, 0, NULL, G_CALLBACK(accel_changed), NULL);
++		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
++						     0, 0, NULL, G_CALLBACK(checkbox_toggled), NULL);
++		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
++						     0, 0, NULL, G_CALLBACK(menuitem_notify_cb), NULL);
+ 		g_object_remove_weak_pointer(G_OBJECT(pdata->widget), (gpointer*)&pdata->widget);
+ 	}
+ 

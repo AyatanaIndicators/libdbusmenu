@@ -1,0 +1,65 @@
+=== modified file 'libdbusmenu-glib/menuitem.c'
+Index: libdbusmenu-0.3.99/libdbusmenu-glib/menuitem.c
+===================================================================
+--- libdbusmenu-0.3.99.orig/libdbusmenu-glib/menuitem.c	2011-02-25 03:30:16 +0000
++++ libdbusmenu-0.3.99/libdbusmenu-glib/menuitem.c	2011-02-28 22:51:34 +0000
+@@ -1150,9 +1150,9 @@
+ 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+ 	GVariant * default_value = NULL;
+ 
++	const gchar * type = menuitem_get_type(mi);
++
+ 	if (value != NULL) {
+-		const gchar * type = menuitem_get_type(mi);
+-
+ 		/* Check the expected type to see if we want to have a warning */
+ 		GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
+ 		if (default_type != NULL) {
+@@ -1163,22 +1163,23 @@
+ 				g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
+ 			}
+ 		}
++	}
+ 
+-		/* Check the defaults database to see if we have a default
+-		   for this property. */
+-		default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
+-		if (default_value != NULL) {
+-			/* Now see if we're setting this to the same value as the
+-			   default.  If we are then we just want to swallow this variant
+-			   and make the function behave like we're clearing it. */
+-			if (g_variant_equal(default_value, value)) {
+-				g_variant_ref_sink(value);
+-				g_variant_unref(value);
+-				value = NULL;
+-			}
++	/* Check the defaults database to see if we have a default
++	   for this property. */
++	default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
++	if (default_value != NULL && value != NULL) {
++		/* Now see if we're setting this to the same value as the
++		   default.  If we are then we just want to swallow this variant
++		   and make the function behave like we're clearing it. */
++		if (g_variant_equal(default_value, value)) {
++			g_variant_ref_sink(value);
++			g_variant_unref(value);
++			value = NULL;
+ 		}
+ 	}
+ 
++
+ 	gboolean replaced = FALSE;
+ 	gpointer currentval = g_hash_table_lookup(priv->properties, property);
+ 
+@@ -1371,9 +1372,7 @@
+ 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+ 	g_return_if_fail(property != NULL);
+ 
+-	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
+-
+-	g_hash_table_remove(priv->properties, property);
++	dbusmenu_menuitem_property_set_variant(mi, property, NULL);
+ 
+ 	return;
+ }
+
