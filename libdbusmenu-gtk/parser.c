@@ -456,6 +456,17 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                 }
             }
 
+          GtkWidget *submenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(widget));
+          if (submenu)
+            {
+              pdata->shell = submenu;
+              g_signal_connect (G_OBJECT (submenu),
+                                "child-added",
+                                G_CALLBACK (child_added_cb),
+                                mi);
+              g_object_add_weak_pointer(G_OBJECT(submenu), (gpointer*)&pdata->shell);
+            }
+
           if (!g_object_get_data (G_OBJECT (widget), "gtk-empty-menu-item") && !GTK_IS_TEAROFF_MENU_ITEM (widget))
             {
               visible = gtk_widget_get_visible (widget);
