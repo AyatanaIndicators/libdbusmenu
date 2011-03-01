@@ -1,3 +1,13 @@
+libdbusmenu (0.3.99-0ubuntu4) natty; urgency=low
+
+  * Fix a warning in gedit
+    - update debian/patches/fix-defaults-in-client.patch
+  * Fix missing submenus in bluetooth-applet
+    - add debian/patches/bluetooth-applet-fix.patch
+    - update debian/patches/series
+
+ -- Chris Coulson <chris.coulson@canonical.com>  Tue, 01 Mar 2011 15:13:00 +0000
+
 libdbusmenu (0.3.99-0ubuntu3) natty; urgency=low
 
   * Fix LP: #723873 - ensure that changing a menuitem property to a default

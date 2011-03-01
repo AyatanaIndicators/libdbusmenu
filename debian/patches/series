@@ -1,2 +1,3 @@
 disconnect-more-signals.patch
 fix-defaults-in-client.patch
+bluetooth-applet-fix.patch
