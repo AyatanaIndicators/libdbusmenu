@@ -457,7 +457,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
               g_signal_connect (G_OBJECT (submenu),
                                 "child-added",
                                 G_CALLBACK (child_added_cb),
-                                thisitem);
+                                mi);
               g_object_add_weak_pointer(G_OBJECT(submenu), (gpointer*)&pdata->shell);
             }
 
