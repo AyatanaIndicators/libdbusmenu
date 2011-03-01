@@ -1,0 +1,17 @@
+=== modified file 'libdbusmenu-glib/server.c'
+--- a/libdbusmenu-glib/server.c	2011-02-24 19:52:01 +0000
++++ b/libdbusmenu-glib/server.c	2011-03-01 16:51:50 +0000
+@@ -1180,7 +1180,11 @@
+ 	GVariant * items = NULL;
+ 
+ 	if (priv->root != NULL) {
+-		items = dbusmenu_menuitem_build_variant(priv->root, props, recurse);
++		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, parent);
++
++		if (mi != NULL) {
++			items = dbusmenu_menuitem_build_variant(mi, props, recurse);
++		}
+ 	}
+ 
+ 	/* What happens if we don't have anything? */
+

@@ -1,3 +1,10 @@
+libdbusmenu (0.3.99-0ubuntu5) natty; urgency=low
+
+  * debian/patches/lp726678.patch
+    - GTK application menus are not correctly displayed (LP: #726678)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 01 Mar 2011 12:14:35 -0500
+
 libdbusmenu (0.3.99-0ubuntu4) natty; urgency=low
 
   * Fix a warning in gedit
