@@ -1150,9 +1150,9 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	GVariant * default_value = NULL;
 
-	if (value != NULL) {
-		const gchar * type = menuitem_get_type(mi);
+	const gchar * type = menuitem_get_type(mi);
 
+	if (value != NULL) {
 		/* Check the expected type to see if we want to have a warning */
 		GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
 		if (default_type != NULL) {
@@ -1163,21 +1163,22 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 				g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
 			}
 		}
+	}
 
-		/* Check the defaults database to see if we have a default
-		   for this property. */
-		default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
-		if (default_value != NULL) {
-			/* Now see if we're setting this to the same value as the
-			   default.  If we are then we just want to swallow this variant
-			   and make the function behave like we're clearing it. */
-			if (g_variant_equal(default_value, value)) {
-				g_variant_ref_sink(value);
-				g_variant_unref(value);
-				value = NULL;
-			}
+	/* Check the defaults database to see if we have a default
+	   for this property. */
+	default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
+	if (default_value != NULL && value != NULL) {
+		/* Now see if we're setting this to the same value as the
+		   default.  If we are then we just want to swallow this variant
+		   and make the function behave like we're clearing it. */
+		if (g_variant_equal(default_value, value)) {
+			g_variant_ref_sink(value);
+			g_variant_unref(value);
+			value = NULL;
 		}
 	}
+
 
 	gboolean replaced = FALSE;
 	gpointer currentval = g_hash_table_lookup(priv->properties, property);
@@ -1371,9 +1372,7 @@ dbusmenu_menuitem_property_remove (DbusmenuMenuitem * mi, const gchar * property
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	g_return_if_fail(property != NULL);
 
-	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
-
-	g_hash_table_remove(priv->properties, property);
+	dbusmenu_menuitem_property_set_variant(mi, property, NULL);
 
 	return;
 }
@@ -1753,13 +1752,8 @@ dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * prop
 		return FALSE;
 	}
 
-	currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
-	if (currentval != NULL) {
-		return TRUE;
-	}
-
-	g_warn_if_reached();
-	return FALSE;
+	/* If we haven't stored it locally, then it's the default */
+	return TRUE;
 }
 
 /* Check to see if this menu item has been sent into the bus yet or
