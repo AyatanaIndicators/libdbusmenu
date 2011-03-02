@@ -215,7 +215,7 @@ type_handler (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCli
 
 /* Destruction is inevitable */
 static void
-type_destroy_handler (DbusmenuClient * client, const gchar * type, gpointer user_data)
+type_destroy_handler (gpointer user_data)
 {
 	g_return_if_fail(user_data != NULL);
 	type_handler_t * th = (type_handler_t *)user_data;
@@ -255,7 +255,7 @@ dbusmenu_gtk_serializable_menu_item_register_to_client (DbusmenuClient * client,
 	th->class = class;
 	th->type = item_type;
 	if (!dbusmenu_client_add_type_handler_full(client, class->get_type_string(), type_handler, th, type_destroy_handler)) {
-		type_destroy_handler(client, class->get_type_string(), th);
+		type_destroy_handler(th);
 	}
 
 	/* Register defaults */
