@@ -164,14 +164,14 @@ License version 3 and version 2.1 along with this program.  If not, see
 		]]></dox:d>
 
 <!-- Properties -->
-		<property name="version" type="u" access="read">
+		<property name="Version" type="u" access="read">
 			<dox:d>
 			Provides the version of the DBusmenu API that this API is
 			implementing.
 			</dox:d>
 		</property>
 
-		<property name="text-direction" type="s" access="read">
+		<property name="TextDirection" type="s" access="read">
 			<dox:d>
 			Represents the way the text direction of the application.  This
 			allows the server to handle mismatches intelligently.  For left-
@@ -179,7 +179,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</dox:d>
 		</property>
 
-		<property name="status" type="s" access="read">
+		<property name="Status" type="s" access="read">
 			<dox:d>
 			Tells if the menus are in a normal state or they believe that they
 			could use some attention.  Cases for showing them would be if help

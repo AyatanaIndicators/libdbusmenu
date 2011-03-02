@@ -501,7 +501,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			GVariantBuilder params;
 			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("text-direction"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("TextDirection"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
@@ -525,7 +525,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			GVariantBuilder params;
 			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("Status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
@@ -740,11 +740,11 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 	g_return_val_if_fail(g_strcmp0(interface, DBUSMENU_INTERFACE) == 0, NULL);
 	g_return_val_if_fail(g_strcmp0(path, priv->dbusobject) == 0, NULL);
 
-	if (g_strcmp0(property, "version") == 0) {
+	if (g_strcmp0(property, "Version") == 0) {
 		return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
-	} else if (g_strcmp0(property, "text-direction") == 0) {
+	} else if (g_strcmp0(property, "TextDirection") == 0) {
 		return g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction));
-	} else if (g_strcmp0(property, "status") == 0) {
+	} else if (g_strcmp0(property, "Status") == 0) {
 		return g_variant_new_string(dbusmenu_status_get_nick(priv->status));
 	} else {
 		g_warning("Unknown property '%s'", property);

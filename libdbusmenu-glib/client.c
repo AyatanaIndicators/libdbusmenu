@@ -1026,7 +1026,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	}
 
 	/* Check the text direction if available */
-	GVariant * textdir = g_dbus_proxy_get_cached_property(priv->menuproxy, "text-direction");
+	GVariant * textdir = g_dbus_proxy_get_cached_property(priv->menuproxy, "TextDirection");
 	if (textdir != NULL) {
 		GVariant * str = textdir;
 		if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
@@ -1069,10 +1069,10 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	gchar * invalid;
 	gint i = 0;
 	for (invalid = invalidated[i]; invalid != NULL; invalid = invalidated[++i]) {
-		if (g_strcmp0(invalid, "text-direction") == 0) {
+		if (g_strcmp0(invalid, "TextDirection") == 0) {
 			priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
 		}
-		if (g_strcmp0(invalid, "status") == 0) {
+		if (g_strcmp0(invalid, "Status") == 0) {
 			priv->status = DBUSMENU_STATUS_NORMAL;
 		}
 	}
@@ -1082,7 +1082,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	gchar * key; GVariant * value;
 	g_variant_iter_init(&iters, properties);
 	while (g_variant_iter_next(&iters, "{sv}", &key, &value)) {
-		if (g_strcmp0(key, "text-direction") == 0) {
+		if (g_strcmp0(key, "TextDirection") == 0) {
 			GVariant * str = value;
 			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
 				str = g_variant_get_variant(str);
@@ -1090,7 +1090,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 			priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
 		}
-		if (g_strcmp0(key, "status") == 0) {
+		if (g_strcmp0(key, "Status") == 0) {
 			GVariant * str = value;
 			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
 				str = g_variant_get_variant(str);
