@@ -1146,6 +1146,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
 	g_return_val_if_fail(property != NULL, FALSE);
+	g_return_val_if_fail(g_utf8_validate(property, -1, NULL), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	GVariant * default_value = NULL;
@@ -1181,6 +1182,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 
 	gboolean replaced = FALSE;
+	gboolean remove = FALSE;
 	gpointer currentval = g_hash_table_lookup(priv->properties, property);
 
 	if (value != NULL) {
@@ -1195,10 +1197,21 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		gchar * lprop = g_strdup(property);
 		g_variant_ref_sink(value);
 
-		g_hash_table_replace(priv->properties, lprop, value);
+		/* Really important that this is _insert as that means the value
+		   that we just created in the _strdup is free'd and not the one
+		   currently in the hashtable.  That could be the same as the one
+		   being passed in and then the signal emit would be done with a
+		   bad value */
+		g_hash_table_insert(priv->properties, lprop, value);
 	} else {
 		if (currentval != NULL) {
-			g_hash_table_remove(priv->properties, property);
+		/* So the question you should be asking if you're paying attention
+		   is "Why not just do the remove here?"  It's a good question with
+		   an interesting answer.  Bascially it's the same reason as above,
+		   in a couple cases the passed in properties is the value in the hash
+		   table so we can avoid strdup'ing it by removing it (and thus free'ing
+		   it) after the signal emition */
+			remove = TRUE;
 			replaced = TRUE;
 		}
 	}
@@ -1217,6 +1230,10 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		}
 
 		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, signalval, TRUE);
+	}
+
+	if (remove) {
+		g_hash_table_remove(priv->properties, property);
 	}
 
 	return TRUE;
