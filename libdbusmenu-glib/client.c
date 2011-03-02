@@ -1168,7 +1168,7 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			gchar * property;
 
 			while (g_variant_iter_next(&properties, "s", &property)) {
-				g_debug("Removing property '%s' on %d", property, id);
+				/* g_debug("Removing property '%s' on %d", property, id); */
 				dbusmenu_menuitem_property_remove(menuitem, property);
 			}
 		}
