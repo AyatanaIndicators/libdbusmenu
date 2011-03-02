@@ -30,7 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
 #include "menuitem-private.h"
@@ -511,7 +511,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			GVariantBuilder params;
 			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("text-direction"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("TextDirection"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
@@ -535,7 +535,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			GVariantBuilder params;
 			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("Status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
@@ -750,9 +750,9 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 	g_return_val_if_fail(g_strcmp0(interface, DBUSMENU_INTERFACE) == 0, NULL);
 	g_return_val_if_fail(g_strcmp0(path, priv->dbusobject) == 0, NULL);
 
-	if (g_strcmp0(property, "version") == 0) {
+	if (g_strcmp0(property, "Version") == 0) {
 		return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
-	} else if (g_strcmp0(property, "text-direction") == 0) {
+	} else if (g_strcmp0(property, "TextDirection") == 0) {
 		return g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction));
 	} else if (g_strcmp0(property, "icon-theme-path") == 0) {
 		GVariant * dirs = NULL;
@@ -764,6 +764,8 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		}
 
 		return dirs;
+	} else if (g_strcmp0(property, "Status") == 0) {
+		return g_variant_new_string(dbusmenu_status_get_nick(priv->status));
 	} else {
 		g_warning("Unknown property '%s'", property);
 	}
@@ -811,7 +813,7 @@ layout_update_signal (DbusmenuServer * server)
 
 typedef struct _prop_idle_item_t prop_idle_item_t;
 struct _prop_idle_item_t {
-	gint id;
+	DbusmenuMenuitem * mi;
 	GArray * array;
 };
 
@@ -841,6 +843,7 @@ prop_array_teardown (GArray * prop_array)
 			}
 		}
 
+		g_object_unref(G_OBJECT(iitem->mi));
 		g_array_free(iitem->array, TRUE);
 	}
 
@@ -873,6 +876,12 @@ menuitem_property_idle (gpointer user_data)
 
 	for (i = 0; i < priv->prop_array->len; i++) {
 		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
+
+		/* if it's not exposed we're going to block it's properties
+		   from getting into the dbus message */
+		if (dbusmenu_menuitem_exposed(iitem->mi) == FALSE) {
+			continue;
+		}
 
 		GVariantBuilder dictbuilder;
 		gboolean dictinit = FALSE;
@@ -911,7 +920,7 @@ menuitem_property_idle (gpointer user_data)
 			GVariantBuilder tuplebuilder;
 			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(dbusmenu_menuitem_get_id(iitem->mi)));
 			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&dictbuilder));
 
 			if (!item_init) {
@@ -928,7 +937,7 @@ menuitem_property_idle (gpointer user_data)
 			GVariantBuilder tuplebuilder;
 			g_variant_builder_init(&tuplebuilder, G_VARIANT_TYPE_TUPLE);
 
-			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(iitem->id));
+			g_variant_builder_add_value(&tuplebuilder, g_variant_new_int32(dbusmenu_menuitem_get_id(iitem->mi)));
 			g_variant_builder_add_value(&tuplebuilder, g_variant_builder_end(&removedictbuilder));
 
 			if (!removeitem_init) {
@@ -941,9 +950,11 @@ menuitem_property_idle (gpointer user_data)
 	}
 
 	GVariant * megadata[2];
+	gboolean gotsomething = FALSE;
 
 	if (item_init) {
 		megadata[0] = g_variant_builder_end(&itembuilder);
+		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
 		megadata[0] = g_variant_parse(G_VARIANT_TYPE("a(ia{sv})"), "[ ]", NULL, NULL, &error);
@@ -956,6 +967,7 @@ menuitem_property_idle (gpointer user_data)
 
 	if (removeitem_init) {
 		megadata[1] = g_variant_builder_end(&removeitembuilder);
+		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
 		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ia(s))"), "[ ]", NULL, NULL, &error);
@@ -966,7 +978,7 @@ menuitem_property_idle (gpointer user_data)
 		}
 	}
 
-	if (priv->dbusobject != NULL && priv->bus != NULL) {
+	if (gotsomething && priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
 		                              NULL,
 		                              priv->dbusobject,
@@ -1009,7 +1021,7 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	prop_idle_item_t * item = NULL;
 	for (i = 0; i < priv->prop_array->len; i++) {
 		prop_idle_item_t * iitem = &g_array_index(priv->prop_array, prop_idle_item_t, i);
-		if (iitem->id == item_id) {
+		if (iitem->mi == mi) {
 			item = iitem;
 			break;
 		}
@@ -1019,7 +1031,8 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 	/* If not, we'll need to build ourselves one */
 	if (item == NULL) {
 		prop_idle_item_t myitem;
-		myitem.id = item_id;
+		myitem.mi = mi;
+		g_object_ref(G_OBJECT(mi));
 		myitem.array = g_array_new(FALSE, FALSE, sizeof(prop_idle_prop_t));
 
 		g_array_append_val(priv->prop_array, myitem);
@@ -1047,7 +1060,9 @@ menuitem_property_changed (DbusmenuMenuitem * mi, gchar * property, GVariant * v
 
 	/* If so, we need to swap the value */
 	if (prop != NULL) {
-		g_variant_unref(prop->variant);
+		if (prop->variant != NULL) {
+			g_variant_unref(prop->variant);
+		}
 		prop->variant = variant;
 	} else {
 	/* else we need to add it */
@@ -1185,7 +1200,11 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	GVariant * items = NULL;
 
 	if (priv->root != NULL) {
-		items = dbusmenu_menuitem_build_variant(priv->root, props, recurse);
+		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, parent);
+
+		if (mi != NULL) {
+			items = dbusmenu_menuitem_build_variant(mi, props, recurse);
+		}
 	}
 
 	/* What happens if we don't have anything? */
@@ -1642,6 +1661,7 @@ dbusmenu_server_get_text_direction (DbusmenuServer * server)
 /**
 	dbusmenu_server_set_text_direction:
 	@server: The #DbusmenuServer object to set the text direction on
+	@dir: Direction of the text
 
 	Sets the text direction that should be exported over DBus for
 	this server.  If the value is set to #DBUSMENU_TEXT_DIRECTION_NONE
@@ -1689,6 +1709,7 @@ dbusmenu_server_get_status (DbusmenuServer * server)
 /**
 	dbusmenu_server_set_status:
 	@server: The #DbusmenuServer to set the status on
+	@status: Status value to set on the server
 
 	Changes the status of the server.
 */

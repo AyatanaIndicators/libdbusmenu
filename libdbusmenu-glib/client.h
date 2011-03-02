@@ -44,20 +44,89 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_CLIENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_CLIENT))
 #define DBUSMENU_CLIENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_CLIENT, DbusmenuClientClass))
 
+/**
+ * DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED:
+ *
+ * String to attach to signal #DbusmenuClient::layout-updated
+ */
 #define DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED  "layout-updated"
+/**
+ * DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED:
+ *
+ * String to attach to signal #DbusmenuClient::root-changed
+ */
 #define DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED    "root-changed"
+/**
+ * DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM:
+ *
+ * String to attach to signal #DbusmenuClient::new-menuitem
+ */
 #define DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM    "new-menuitem"
+/**
+ * DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE:
+ *
+ * String to attach to signal #DbusmenuClient::item-activate
+ */
 #define DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE   "item-activate"
+/**
+ * DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT:
+ *
+ * String to attach to signal #DbusmenuClient::event-result
+ */
 #define DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT    "event-result"
+/**
+ * DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED:
+ *
+ * String to attach to signal #DbusmenuClient::text-direction-changed
+ */
 #define DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED    "text-direction-changed"
 
+/**
+ * DBUSMENU_CLIENT_PROP_DBUS_NAME:
+ *
+ * String to access property #DbusmenuClient:dbus-name
+ */
 #define DBUSMENU_CLIENT_PROP_DBUS_NAME     "dbus-name"
+/**
+ * DBUSMENU_CLIENT_PROP_DBUS_OBJECT:
+ *
+ * String to access property #DbusmenuClient:dbus-object
+ */
 #define DBUSMENU_CLIENT_PROP_DBUS_OBJECT   "dbus-object"
+/**
+ * DBUSMENU_CLIENT_PROP_STATUS:
+ *
+ * String to access property #DbusmenuClient:status
+ */
 #define DBUSMENU_CLIENT_PROP_STATUS        "status"
+/**
+ * DBUSMENU_CLIENT_PROP_TEXT_DIRECTION:
+ *
+ * String to access property #DbusmenuClient:text-direction
+ */
 #define DBUSMENU_CLIENT_PROP_TEXT_DIRECTION "text-direction"
 
+/**
+ * DBUSMENU_CLIENT_TYPES_DEFAULT:
+ *
+ * Used to set the 'type' property on a menu item to create
+ * a standard menu item.
+ */
 #define DBUSMENU_CLIENT_TYPES_DEFAULT      "standard"
+/**
+ * DBUSMENU_CLIENT_TYPES_SEPARATOR:
+ *
+ * Used to set the 'type' property on a menu item to create
+ * a separator menu item.
+ */
 #define DBUSMENU_CLIENT_TYPES_SEPARATOR    "separator"
+/**
+ * DBUSMENU_CLIENT_TYPES_IMAGE:
+ *
+ * Used to set the 'type' property on a menu item to create
+ * an image menu item.  Deprecated as standard menu items now
+ * support images as well.
+ */
 #define DBUSMENU_CLIENT_TYPES_IMAGE        "standard"
 
 typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
@@ -66,6 +135,7 @@ typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 	DbusmenuClientClass:
 	@parent_class: #GObjectClass
 	@layout_updated: Slot for #DbusmenuClient::layout-updated.
+	@root_changed: Slot for #DbusmenuClient::root-changed.
 	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
 	@item_activate: Slot for #DbusmenuClient::item-activate.
 	@event_result: Slot for #DbusmenuClient::event-error.
@@ -101,7 +171,6 @@ struct _DbusmenuClientClass {
 
 /**
 	DbusmenuClient:
-	@parent: #GObject.
 
 	The client for a #DbusmenuServer creating a shared
 	object set of #DbusmenuMenuitem objects.
@@ -123,6 +192,9 @@ struct _DbusmenuClient {
 
 	The type handler is called when a dbusmenu item is created
 	with a matching type as setup in #dbusmenu_client_add_type_handler
+
+	Return value: #TRUE if the type has been handled.  #FALSE if this
+		function was somehow unable to handle it.
 */
 typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 
@@ -150,15 +222,6 @@ gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * cli
                                                         DbusmenuClientTypeHandler newfunc,
                                                         gpointer user_data,
                                                         DbusmenuClientTypeDestroyHandler destroy_func);
-void                 dbusmenu_client_send_event        (DbusmenuClient * client,
-                                                        gint id,
-                                                        const gchar * name,
-                                                        GVariant * variant,
-                                                        guint timestamp);
-void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
-                                                        gint id,
-                                                        void (*cb) (gpointer user_data),
-                                                        gpointer cb_data);
 DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
 DbusmenuStatus       dbusmenu_client_get_status        (DbusmenuClient * client);
 

@@ -51,6 +51,12 @@ G_END_DECLS
 GType @enum_name@_get_type (void) G_GNUC_CONST;
 const gchar * @enum_name@_get_nick (@EnumName@ value) G_GNUC_CONST;
 @EnumName@ @enum_name@_get_value_from_nick (const gchar * nick) G_GNUC_CONST;
+/**
+	DBUSMENU_TYPE_@ENUMSHORT@:
+
+	Gets the #GType value for the type associated with the
+	#@EnumName@ enumerated type.
+*/
 #define DBUSMENU_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
 
 /*** END value-header ***/

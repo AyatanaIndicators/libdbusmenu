@@ -164,14 +164,14 @@ License version 3 and version 2.1 along with this program.  If not, see
 		]]></dox:d>
 
 <!-- Properties -->
-		<property name="version" type="u" access="read">
+		<property name="Version" type="u" access="read">
 			<dox:d>
 			Provides the version of the DBusmenu API that this API is
 			implementing.
 			</dox:d>
 		</property>
 
-		<property name="text-direction" type="s" access="read">
+		<property name="TextDirection" type="s" access="read">
 			<dox:d>
 			Represents the way the text direction of the application.  This
 			allows the server to handle mismatches intelligently.  For left-
@@ -179,7 +179,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</dox:d>
 		</property>
 
-		<property name="state" type="s" access="read">
+		<property name="Status" type="s" access="read">
 			<dox:d>
 			Tells if the menus are in a normal state or they believe that they
 			could use some attention.  Cases for showing them would be if help
@@ -204,21 +204,24 @@ License version 3 and version 2.1 along with this program.  If not, see
 			<dox:d>
 			  Provides the layout and propertiers that are attached to the entries
 			  that are in the layout.  It only gives the items that are children
-			  of the item that is specified in @parentId.  It will return all of the
-			  properties or specific ones depending of the value in @propertyNames.
+			  of the item that is specified in @a parentId.  It will return all of the
+			  properties or specific ones depending of the value in @a propertyNames.
 
 			  The format is recursive, where the second 'v' is in the same format
-			  as the original 'a(ia(sv)a(v))'.  If the @recursive flag is set to
-			  less than one then the second array will have zero entries.
+			  as the original 'a(ia{sv}av)'.  Its content depends on the value
+			  of @a recursionDepth.
 			</dox:d>
 			<arg type="i" name="parentId" direction="in">
 				<dox:d>The ID of the parent node for the layout.  For
 				grabbing the layout from the root node use zero.</dox:d>
 			</arg>
-			<arg type="i" name="recurse" direction="in">
+			<arg type="i" name="recursionDepth" direction="in">
 				<dox:d>
-				  The amount of levels of recursion to use.  -1, as value would
-				  deliver all the items under the @parentId.
+				  The amount of levels of recursion to use.  This affects the
+				  content of the second variant array.
+				  - -1: deliver all the items under the @a parentId.
+				  - 0: no recursion, the array will be empty.
+				  - n: array will contains items up to 'n' level depth.
 				</dox:d>
 			</arg>
 			<arg type="as" name="propertyNames" direction="in" >
@@ -233,13 +236,11 @@ License version 3 and version 2.1 along with this program.  If not, see
 				with layoutUpdated signals.</dox:d>
 			</arg>
 			<arg type="(ia{sv}av)" name="layout" direction="out">
-				<dox:d>The layout as an XML string of IDs.</dox:d>
+				<dox:d>The layout, as a recursive structure.</dox:d>
 			</arg>
 		</method>
 
 		<method name="GetGroupProperties">
-			<annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantList"/>
-			<annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="DBusMenuItemList"/>
 			<dox:d>
 			Returns the list of items which are children of @a parentId.
 			</dox:d>
@@ -335,8 +336,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 			the ID of the item with a hashtable of names and values for those
 			properties.
 			</dox:d>
-			<arg type="a(ia(sv))" name="props" direction="out" />
-			<arg type="a(ia(s))"  name="props_removed" direction="out" />
+			<arg type="a(ia{sv})" name="updatedProps" direction="out" />
+			<arg type="a(ias)" name="removedProps" direction="out" />
 		</signal>
 		<signal name="LayoutUpdated">
 			<dox:d>

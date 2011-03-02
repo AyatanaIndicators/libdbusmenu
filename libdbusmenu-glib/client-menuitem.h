@@ -35,12 +35,12 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
-#define DBUSMENU_CLIENT_MENUITEM_TYPE            (dbusmenu_client_menuitem_get_type ())
-#define DBUSMENU_CLIENT_MENUITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), DBUSMENU_CLIENT_MENUITEM_TYPE, DbusmenuClientMenuitem))
-#define DBUSMENU_CLIENT_MENUITEM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), DBUSMENU_CLIENT_MENUITEM_TYPE, DbusmenuClientMenuitemClass))
-#define DBUSMENU_IS_CLIENT_MENUITEM(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), DBUSMENU_CLIENT_MENUITEM_TYPE))
-#define DBUSMENU_IS_CLIENT_MENUITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_CLIENT_MENUITEM_TYPE))
-#define DBUSMENU_CLIENT_MENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_CLIENT_MENUITEM_TYPE, DbusmenuClientMenuitemClass))
+#define DBUSMENU_TYPE_CLIENT_MENUITEM            (dbusmenu_client_menuitem_get_type ())
+#define DBUSMENU_CLIENT_MENUITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), DBUSMENU_TYPE_CLIENT_MENUITEM, DbusmenuClientMenuitem))
+#define DBUSMENU_CLIENT_MENUITEM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), DBUSMENU_TYPE_CLIENT_MENUITEM, DbusmenuClientMenuitemClass))
+#define DBUSMENU_IS_CLIENT_MENUITEM(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), DBUSMENU_TYPE_CLIENT_MENUITEM))
+#define DBUSMENU_IS_CLIENT_MENUITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_CLIENT_MENUITEM))
+#define DBUSMENU_CLIENT_MENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_CLIENT_MENUITEM, DbusmenuClientMenuitemClass))
 
 typedef struct _DbusmenuClientMenuitem      DbusmenuClientMenuitem;
 typedef struct _DbusmenuClientMenuitemClass DbusmenuClientMenuitemClass;
