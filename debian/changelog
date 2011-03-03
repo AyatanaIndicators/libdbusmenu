@@ -16,8 +16,9 @@ libdbusmenu (0.3.100-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Restricting GIR scanner to exported interfaces
     * Use the library i18n libraries instead of the app ones
     * Make GetLayout use the parent parameter
+  * debian/patches: All submitted upstream
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:43:48 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:49:09 -0600
 
 libdbusmenu (0.3.99-0ubuntu5) natty; urgency=low
 
