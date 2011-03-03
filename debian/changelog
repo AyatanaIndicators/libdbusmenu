@@ -1,4 +1,4 @@
-libdbusmenu (0.3.100-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.100-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * GTK application menus are not correctly displayed (LP: #726678)
@@ -18,7 +18,7 @@ libdbusmenu (0.3.100-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Make GetLayout use the parent parameter
   * debian/patches: All submitted upstream
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:49:09 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:54:31 -0600
 
 libdbusmenu (0.3.99-0ubuntu5) natty; urgency=low
 
