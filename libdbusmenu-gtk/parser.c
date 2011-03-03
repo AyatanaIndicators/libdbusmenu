@@ -129,6 +129,12 @@ parse_data_free (gpointer data)
 	if (pdata != NULL && pdata->widget != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
+		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(accel_changed), NULL);
+		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(checkbox_toggled), NULL);
+		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(menuitem_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->widget), (gpointer*)&pdata->widget);
 	}
 
@@ -149,6 +155,14 @@ parse_data_free (gpointer data)
 	return;
 }
 
+static void
+widget_freed (gpointer data, GObject * obj)
+{
+	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), obj);
+
+	return;
+}
+
 /* Called when the dbusmenu item that we're keeping around
    is finalized */
 static void
@@ -157,16 +171,10 @@ dbusmenu_item_freed (gpointer data, GObject * obj)
 	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
 
 	if (pdata != NULL && pdata->widget != NULL) {
+		g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), pdata->widget);
 		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
+		g_object_weak_unref(G_OBJECT(pdata->widget), widget_freed, NULL);
 	}
-}
-
-static void
-widget_freed (gpointer data, GObject * obj)
-{
-	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), obj);
-
-	return;
 }
 
 /* Gets the positon of the child with its' parent if it has one.
@@ -448,6 +456,17 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                       g_object_add_weak_pointer(G_OBJECT (action), (gpointer*)&pdata->action);
                     }
                 }
+            }
+
+          GtkWidget *submenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(widget));
+          if (submenu)
+            {
+              pdata->shell = submenu;
+              g_signal_connect (G_OBJECT (submenu),
+                                "child-added",
+                                G_CALLBACK (child_added_cb),
+                                mi);
+              g_object_add_weak_pointer(G_OBJECT(submenu), (gpointer*)&pdata->shell);
             }
 
           if (!g_object_get_data (G_OBJECT (widget), "gtk-empty-menu-item") && !GTK_IS_TEAROFF_MENU_ITEM (widget))

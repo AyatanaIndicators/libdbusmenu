@@ -6,7 +6,7 @@ DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED
 DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM
 DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT
 DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE
-DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED
+DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED
 DBUSMENU_CLIENT_PROP_DBUS_NAME
 DBUSMENU_CLIENT_PROP_DBUS_OBJECT
 DBUSMENU_CLIENT_PROP_STATUS
@@ -17,8 +17,8 @@ DBUSMENU_CLIENT_TYPES_IMAGE
 DbusmenuClient
 DbusmenuClientClass
 DbusmenuClientTypeHandler
-DbusmenuClientTypeDestroyHandler
 dbusmenu_client_new
+dbusmenu_client_get_icon_paths
 dbusmenu_client_get_root
 dbusmenu_client_get_status
 dbusmenu_client_get_text_direction
@@ -152,6 +152,8 @@ DBUSMENU_SERVER_GET_CLASS
 <SUBSECTION Private>
 DbusmenuServerPrivate
 dbusmenu_server_get_type
+dbusmenu_server_get_icon_paths
+dbusmenu_server_set_icon_paths
 </SECTION>
 
 <SECTION>

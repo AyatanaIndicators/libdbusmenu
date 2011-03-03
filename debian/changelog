@@ -1,3 +1,24 @@
+libdbusmenu (0.3.100-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * GTK application menus are not correctly displayed (LP: #726678)
+    * Fix LP: #723873 - ensure that changing a menuitem property to a
+      default value gets propagated properly in the client
+    * Fix some crashes by disconnecting more signals when a menuitem is
+      deleted.  LP: #725980 and LP: #726153
+    * Making sure to grab the variant and dispose of it in handle_event.
+    * Change the destroy prototype to fix GIR warnings
+    * Fix emitting property changes to use tuples
+    * Track the icon theme directories
+    * Handle cases where passed in property names could be in the
+      properties hash table
+    * Making property names match DBus protocol recommendations
+    * Restricting GIR scanner to exported interfaces
+    * Use the library i18n libraries instead of the app ones
+    * Make GetLayout use the parent parameter
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:43:48 -0600
+
 libdbusmenu (0.3.99-0ubuntu5) natty; urgency=low
 
   * debian/patches/lp726678.patch

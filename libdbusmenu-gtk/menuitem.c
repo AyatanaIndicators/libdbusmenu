@@ -177,6 +177,9 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), FALSE);
 	g_return_val_if_fail(gtk_accelerator_valid(key, modifier), FALSE);
 
+	const gchar * keyname = gdk_keyval_name(key);
+	g_return_val_if_fail(keyname != NULL, FALSE);
+
 	GVariantBuilder builder;
 	g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
 
@@ -193,7 +196,6 @@ dbusmenu_menuitem_property_set_shortcut (DbusmenuMenuitem * menuitem, guint key,
 		g_variant_builder_add(&builder, "s", DBUSMENU_MENUITEM_SHORTCUT_SUPER);
 	}
 
-	const gchar * keyname = gdk_keyval_name(key);
 	g_variant_builder_add(&builder, "s", keyname);
 
 	GVariant * inside = g_variant_builder_end(&builder);
