@@ -25,6 +25,9 @@ extern void _dbusmenu_client_marshal_VOID__OBJECT_STRING_VARIANT_UINT_POINTER (G
 /* VOID:ENUM (./client-marshal.list:3) */
 #define _dbusmenu_client_marshal_VOID__ENUM	g_cclosure_marshal_VOID__ENUM
 
+/* VOID:POINTER (./client-marshal.list:4) */
+#define _dbusmenu_client_marshal_VOID__POINTER	g_cclosure_marshal_VOID__POINTER
+
 G_END_DECLS
 
 #endif /* ___dbusmenu_client_marshal_MARSHAL_H__ */

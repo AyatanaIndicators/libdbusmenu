@@ -340,12 +340,16 @@ lib_LTLIBRARIES = \
 	libdbusmenu-glib.la
 
 libdbusmenu_glibincludedir = $(includedir)/libdbusmenu-0.4/libdbusmenu-glib/
-libdbusmenu_glibinclude_HEADERS = \
-	dbusmenu-glib.h \
+EXPORTED_OBJECTS = \
+	enum-types.h \
 	menuitem.h \
 	menuitem-proxy.h \
 	server.h \
-	client.h \
+	client.h
+
+libdbusmenu_glibinclude_HEADERS = \
+	$(EXPORTED_OBJECTS) \
+	dbusmenu-glib.h \
 	types.h
 
 libdbusmenu_glib_la_SOURCES = \
@@ -404,7 +408,10 @@ INTROSPECTION_GIRS = $(am__append_1)
 @INTROSPECTION_TEN_TRUE@        --identifier-prefix=Dbusmenu
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
-@HAVE_INTROSPECTION_TRUE@introspection_sources = $(libdbusmenu_glibinclude_HEADERS) $(libdbusmenu_glib_la_SOURCES)
+@HAVE_INTROSPECTION_TRUE@introspection_sources = \
+@HAVE_INTROSPECTION_TRUE@	$(libdbusmenu_glibinclude_HEADERS) \
+@HAVE_INTROSPECTION_TRUE@	$(EXPORTED_OBJECTS:.h=.c)
+
 @HAVE_INTROSPECTION_TRUE@Dbusmenu_0_4_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0
 

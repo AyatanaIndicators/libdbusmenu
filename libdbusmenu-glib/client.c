@@ -62,6 +62,7 @@ enum {
 	NEW_MENUITEM,
 	ITEM_ACTIVATE,
 	EVENT_RESULT,
+	ICON_THEME_DIRS,
 	LAST_SIGNAL
 };
 
@@ -98,6 +99,7 @@ struct _DbusmenuClientPrivate
 
 	DbusmenuTextDirection text_direction;
 	DbusmenuStatus status;
+	GStrv icon_dirs;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -129,7 +131,7 @@ typedef struct _type_handler_t type_handler_t;
 struct _type_handler_t {
 	DbusmenuClient * client;
 	DbusmenuClientTypeHandler cb;
-	DbusmenuClientTypeDestroyHandler destroy_cb;
+	GDestroyNotify destroy_cb;
 	gpointer user_data;
 	gchar * type;
 };
@@ -272,6 +274,20 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_VARIANT_UINT_POINTER,
 	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT, G_TYPE_POINTER);
+	/**
+		DbusmenuClient::icon-theme-dirs-changed:
+		@arg0: The #DbusmenuClient object
+		@arg1: A #GStrv of theme directories
+
+		Signaled when the theme directories are changed by the server.
+	*/
+	signals[ICON_THEME_DIRS] = g_signal_new(DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, icon_theme_dirs),
+	                                        NULL, NULL,
+	                                        _dbusmenu_client_marshal_VOID__POINTER,
+	                                        G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
@@ -358,6 +374,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
 	priv->status = DBUSMENU_STATUS_NORMAL;
+	priv->icon_dirs = NULL;
 
 	return;
 }
@@ -464,6 +481,11 @@ dbusmenu_client_finalize (GObject *object)
 
 	if (priv->type_handlers != NULL) {
 		g_hash_table_destroy(priv->type_handlers);
+	}
+
+	if (priv->icon_dirs != NULL) {
+		g_strfreev(priv->icon_dirs);
+		priv->icon_dirs = NULL;
 	}
 
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
@@ -1026,7 +1048,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	}
 
 	/* Check the text direction if available */
-	GVariant * textdir = g_dbus_proxy_get_cached_property(priv->menuproxy, "text-direction");
+	GVariant * textdir = g_dbus_proxy_get_cached_property(priv->menuproxy, "TextDirection");
 	if (textdir != NULL) {
 		GVariant * str = textdir;
 		if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
@@ -1064,16 +1086,24 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
 	DbusmenuTextDirection olddir = priv->text_direction;
 	DbusmenuStatus oldstatus = priv->status;
+	gboolean dirs_changed = FALSE;
 
 	/* Invalidate first */
 	gchar * invalid;
 	gint i = 0;
 	for (invalid = invalidated[i]; invalid != NULL; invalid = invalidated[++i]) {
-		if (g_strcmp0(invalid, "text-direction") == 0) {
+		if (g_strcmp0(invalid, "TextDirection") == 0) {
 			priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
 		}
-		if (g_strcmp0(invalid, "status") == 0) {
+		if (g_strcmp0(invalid, "Status") == 0) {
 			priv->status = DBUSMENU_STATUS_NORMAL;
+		}
+		if (g_strcmp0(invalid, "IconThemePath") == 0) {
+			if (priv->icon_dirs != NULL) {
+				dirs_changed = TRUE;
+				g_strfreev(priv->icon_dirs);
+				priv->icon_dirs = NULL;
+			}
 		}
 	}
 
@@ -1082,7 +1112,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	gchar * key; GVariant * value;
 	g_variant_iter_init(&iters, properties);
 	while (g_variant_iter_next(&iters, "{sv}", &key, &value)) {
-		if (g_strcmp0(key, "text-direction") == 0) {
+		if (g_strcmp0(key, "TextDirection") == 0) {
 			GVariant * str = value;
 			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
 				str = g_variant_get_variant(str);
@@ -1090,13 +1120,22 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 			priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
 		}
-		if (g_strcmp0(key, "status") == 0) {
+		if (g_strcmp0(key, "Status") == 0) {
 			GVariant * str = value;
 			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
 				str = g_variant_get_variant(str);
 			}
 
 			priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(str, NULL));
+		}
+		if (g_strcmp0(key, "IconThemePath") == 0) {
+			if (priv->icon_dirs != NULL) {
+				g_strfreev(priv->icon_dirs);
+				priv->icon_dirs = NULL;
+			}
+
+			priv->icon_dirs = g_variant_dup_strv(value, NULL);
+			dirs_changed = TRUE;
 		}
 
 		g_variant_unref(value);
@@ -1109,6 +1148,10 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 	if (oldstatus != priv->status) {
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
+	}
+
+	if (dirs_changed) {
+		g_signal_emit(G_OBJECT(user_data), signals[ICON_THEME_DIRS], 0, priv->icon_dirs, TRUE);
 	}
 
 	return;
@@ -1168,7 +1211,7 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			gchar * property;
 
 			while (g_variant_iter_next(&properties, "s", &property)) {
-				g_debug("Removing property '%s' on %d", property, id);
+				/* g_debug("Removing property '%s' on %d", property, id); */
 				dbusmenu_menuitem_property_remove(menuitem, property);
 			}
 		}
@@ -1881,7 +1924,7 @@ type_handler_destroy (gpointer user_data)
 {
 	type_handler_t * th = (type_handler_t *)user_data;
 	if (th->destroy_cb != NULL) {
-		th->destroy_cb(th->client, th->type, th->user_data);
+		th->destroy_cb(th->user_data);
 	}
 	g_free(th->type);
 	g_free(th);
@@ -1893,7 +1936,7 @@ type_handler_destroy (gpointer user_data)
  * @client: Client where we're getting types coming in
  * @type: A text string that will be matched with the 'type'
  *     property on incoming menu items
- * @newfunc: The function that will be executed with those new
+ * @newfunc: (scope notified): The function that will be executed with those new
  *     items when they come in.
  * 
  * This function connects into the type handling of the #DbusmenuClient.
@@ -1920,7 +1963,7 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
  * @client: Client where we're getting types coming in
  * @type: A text string that will be matched with the 'type'
  *     property on incoming menu items
- * @newfunc: The function that will be executed with those new
+ * @newfunc: (scope notified): The function that will be executed with those new
  *     items when they come in.
  * @user_data: Data passed to @newfunc when it is called
  * @destroy_func: A function that is called when the type handler is
@@ -1941,7 +1984,7 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
  * Return value: If registering the new type was successful.
 */
 gboolean
-dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, DbusmenuClientTypeDestroyHandler destroy_func)
+dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, GDestroyNotify destroy_func)
 {
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
 	g_return_val_if_fail(type != NULL, FALSE);
@@ -2012,4 +2055,21 @@ dbusmenu_client_get_status (DbusmenuClient * client)
 	return priv->status;
 }
 
+/**
+ * dbusmenu_client_get_icon_paths:
+ * @client: The #DbusmenuClient to get the icon paths from
+ * 
+ * Gets the stored and exported icon paths from the client.
+ * 
+ * Return value: (transfer none): A NULL-terminated list of icon paths with
+ *   memory managed by the client.  Duplicate if you want
+ *   to keep them.
+ */
+const GStrv
+dbusmenu_client_get_icon_paths (DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), NULL);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	return priv->icon_dirs;
+}
 

@@ -1146,13 +1146,14 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
 	g_return_val_if_fail(property != NULL, FALSE);
+	g_return_val_if_fail(g_utf8_validate(property, -1, NULL), FALSE);
 
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	GVariant * default_value = NULL;
 
-	if (value != NULL) {
-		const gchar * type = menuitem_get_type(mi);
+	const gchar * type = menuitem_get_type(mi);
 
+	if (value != NULL) {
 		/* Check the expected type to see if we want to have a warning */
 		GVariantType * default_type = dbusmenu_defaults_default_get_type(priv->defaults, type, property);
 		if (default_type != NULL) {
@@ -1163,23 +1164,25 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 				g_warning("Setting menuitem property '%s' with value of type '%s' when expecting '%s'", property, g_variant_get_type_string(value), g_variant_type_peek_string(default_type));
 			}
 		}
+	}
 
-		/* Check the defaults database to see if we have a default
-		   for this property. */
-		default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
-		if (default_value != NULL) {
-			/* Now see if we're setting this to the same value as the
-			   default.  If we are then we just want to swallow this variant
-			   and make the function behave like we're clearing it. */
-			if (g_variant_equal(default_value, value)) {
-				g_variant_ref_sink(value);
-				g_variant_unref(value);
-				value = NULL;
-			}
+	/* Check the defaults database to see if we have a default
+	   for this property. */
+	default_value = dbusmenu_defaults_default_get(priv->defaults, type, property);
+	if (default_value != NULL && value != NULL) {
+		/* Now see if we're setting this to the same value as the
+		   default.  If we are then we just want to swallow this variant
+		   and make the function behave like we're clearing it. */
+		if (g_variant_equal(default_value, value)) {
+			g_variant_ref_sink(value);
+			g_variant_unref(value);
+			value = NULL;
 		}
 	}
 
+
 	gboolean replaced = FALSE;
+	gboolean remove = FALSE;
 	gpointer currentval = g_hash_table_lookup(priv->properties, property);
 
 	if (value != NULL) {
@@ -1194,10 +1197,21 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		gchar * lprop = g_strdup(property);
 		g_variant_ref_sink(value);
 
-		g_hash_table_replace(priv->properties, lprop, value);
+		/* Really important that this is _insert as that means the value
+		   that we just created in the _strdup is free'd and not the one
+		   currently in the hashtable.  That could be the same as the one
+		   being passed in and then the signal emit would be done with a
+		   bad value */
+		g_hash_table_insert(priv->properties, lprop, value);
 	} else {
 		if (currentval != NULL) {
-			g_hash_table_remove(priv->properties, property);
+		/* So the question you should be asking if you're paying attention
+		   is "Why not just do the remove here?"  It's a good question with
+		   an interesting answer.  Bascially it's the same reason as above,
+		   in a couple cases the passed in properties is the value in the hash
+		   table so we can avoid strdup'ing it by removing it (and thus free'ing
+		   it) after the signal emition */
+			remove = TRUE;
 			replaced = TRUE;
 		}
 	}
@@ -1216,6 +1230,10 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		}
 
 		g_signal_emit(G_OBJECT(mi), signals[PROPERTY_CHANGED], 0, property, signalval, TRUE);
+	}
+
+	if (remove) {
+		g_hash_table_remove(priv->properties, property);
 	}
 
 	return TRUE;
@@ -1371,9 +1389,7 @@ dbusmenu_menuitem_property_remove (DbusmenuMenuitem * mi, const gchar * property
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	g_return_if_fail(property != NULL);
 
-	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
-
-	g_hash_table_remove(priv->properties, property);
+	dbusmenu_menuitem_property_set_variant(mi, property, NULL);
 
 	return;
 }
@@ -1670,11 +1686,22 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 	#endif
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
+	/* We need to keep a ref to the variant because the signal
+	   handler will drop the floating ref and then we'll be up
+	   a creek if we don't have our own later. */
+	if (variant != NULL) {
+		g_variant_ref_sink(variant);
+	}
+
 	gboolean handled = FALSE;
 	g_signal_emit(G_OBJECT(mi), signals[EVENT], g_quark_from_string(name), name, variant, timestamp, &handled);
 
 	if (!handled && class->handle_event != NULL) {
-		return class->handle_event(mi, name, variant, timestamp);
+		class->handle_event(mi, name, variant, timestamp);
+	}
+
+	if (variant != NULL) {
+		g_variant_unref(variant);
 	}
 
 	return;
@@ -1742,13 +1769,8 @@ dbusmenu_menuitem_property_is_default (DbusmenuMenuitem * mi, const gchar * prop
 		return FALSE;
 	}
 
-	currentval = dbusmenu_defaults_default_get(priv->defaults, menuitem_get_type(mi), property);
-	if (currentval != NULL) {
-		return TRUE;
-	}
-
-	g_warn_if_reached();
-	return FALSE;
+	/* If we haven't stored it locally, then it's the default */
+	return TRUE;
 }
 
 /* Check to see if this menu item has been sent into the bus yet or
