@@ -509,7 +509,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		/* If the value has changed we need to signal that on DBus */
 		if (priv->text_direction != olddir && priv->bus != NULL && priv->dbusobject != NULL) {
 			GVariantBuilder params;
-			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_init(&params, G_VARIANT_TYPE_TUPLE);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
 			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("TextDirection"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
@@ -533,7 +533,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		/* If the value has changed we need to signal that on DBus */
 		if (priv->status != instatus && priv->bus != NULL && priv->dbusobject != NULL) {
 			GVariantBuilder params;
-			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_init(&params, G_VARIANT_TYPE_TUPLE);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
 			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("Status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
