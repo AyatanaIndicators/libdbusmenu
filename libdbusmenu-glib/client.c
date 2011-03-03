@@ -62,6 +62,7 @@ enum {
 	NEW_MENUITEM,
 	ITEM_ACTIVATE,
 	EVENT_RESULT,
+	ICON_THEME_DIRS,
 	LAST_SIGNAL
 };
 
@@ -98,6 +99,7 @@ struct _DbusmenuClientPrivate
 
 	DbusmenuTextDirection text_direction;
 	DbusmenuStatus status;
+	GStrv icon_dirs;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -272,6 +274,20 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_VARIANT_UINT_POINTER,
 	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT, G_TYPE_POINTER);
+	/**
+		DbusmenuClient::icon-theme-dirs-changed:
+		@arg0: The #DbusmenuClient object
+		@arg1: A #GStrv of theme directories
+
+		Signaled when the theme directories are changed by the server.
+	*/
+	signals[ICON_THEME_DIRS] = g_signal_new(DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, icon_theme_dirs),
+	                                        NULL, NULL,
+	                                        _dbusmenu_client_marshal_VOID__POINTER,
+	                                        G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
@@ -358,6 +374,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
 	priv->status = DBUSMENU_STATUS_NORMAL;
+	priv->icon_dirs = NULL;
 
 	return;
 }
@@ -464,6 +481,11 @@ dbusmenu_client_finalize (GObject *object)
 
 	if (priv->type_handlers != NULL) {
 		g_hash_table_destroy(priv->type_handlers);
+	}
+
+	if (priv->icon_dirs != NULL) {
+		g_strfreev(priv->icon_dirs);
+		priv->icon_dirs = NULL;
 	}
 
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
@@ -1064,6 +1086,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
 	DbusmenuTextDirection olddir = priv->text_direction;
 	DbusmenuStatus oldstatus = priv->status;
+	gboolean dirs_changed = FALSE;
 
 	/* Invalidate first */
 	gchar * invalid;
@@ -1074,6 +1097,13 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 		}
 		if (g_strcmp0(invalid, "Status") == 0) {
 			priv->status = DBUSMENU_STATUS_NORMAL;
+		}
+		if (g_strcmp0(invalid, "IconThemePath") == 0) {
+			if (priv->icon_dirs != NULL) {
+				dirs_changed = TRUE;
+				g_strfreev(priv->icon_dirs);
+				priv->icon_dirs = NULL;
+			}
 		}
 	}
 
@@ -1098,6 +1128,15 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 			priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(str, NULL));
 		}
+		if (g_strcmp0(key, "IconThemePath") == 0) {
+			if (priv->icon_dirs != NULL) {
+				g_strfreev(priv->icon_dirs);
+				priv->icon_dirs = NULL;
+			}
+
+			priv->icon_dirs = g_variant_dup_strv(value, NULL);
+			dirs_changed = TRUE;
+		}
 
 		g_variant_unref(value);
 		g_free(key);
@@ -1109,6 +1148,10 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 	if (oldstatus != priv->status) {
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
+	}
+
+	if (dirs_changed) {
+		g_signal_emit(G_OBJECT(user_data), signals[ICON_THEME_DIRS], 0, priv->icon_dirs, TRUE);
 	}
 
 	return;
@@ -2012,4 +2055,21 @@ dbusmenu_client_get_status (DbusmenuClient * client)
 	return priv->status;
 }
 
+/**
+ * dbusmenu_client_get_icon_paths:
+ * @client: The #DbusmenuClient to get the icon paths from
+ * 
+ * Gets the stored and exported icon paths from the client.
+ * 
+ * Return value: (transfer none): A NULL-terminated list of icon paths with
+ *   memory managed by the client.  Duplicate if you want
+ *   to keep them.
+ */
+const GStrv
+dbusmenu_client_get_icon_paths (DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), NULL);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	return priv->icon_dirs;
+}
 

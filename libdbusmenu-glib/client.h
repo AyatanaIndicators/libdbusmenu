@@ -75,11 +75,11 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT    "event-result"
 /**
- * DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED:
+ * DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED:
  *
- * String to attach to signal #DbusmenuClient::text-direction-changed
+ * String to attach to signal #DbusmenuClient::icon-theme-dirs-changed
  */
-#define DBUSMENU_CLIENT_SIGNAL_TEXT_DIRECTION_CHANGED    "text-direction-changed"
+#define DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED    "icon-theme-dirs-changed"
 
 /**
  * DBUSMENU_CLIENT_PROP_DBUS_NAME:
@@ -139,12 +139,12 @@ typedef struct _DbusmenuClientPrivate DbusmenuClientPrivate;
 	@new_menuitem: Slot for #DbusmenuClient::new-menuitem.
 	@item_activate: Slot for #DbusmenuClient::item-activate.
 	@event_result: Slot for #DbusmenuClient::event-error.
+	@icon_theme_dirs: Slot for #DbusmenuClient::icon-theme-dirs-changed.
 	@reserved1: Reserved for future use.
 	@reserved2: Reserved for future use.
 	@reserved3: Reserved for future use.
 	@reserved4: Reserved for future use.
 	@reserved5: Reserved for future use.
-	@reserved6: Reserved for future use.
 
 	A simple class that takes all of the information from a
 	#DbusmenuServer over DBus and makes the same set of 
@@ -159,6 +159,7 @@ struct _DbusmenuClientClass {
 	void (*new_menuitem) (DbusmenuMenuitem * newitem);
 	void (*item_activate) (DbusmenuMenuitem * item, guint timestamp);
 	void (*event_result) (DbusmenuMenuitem * item, gchar * event, GVariant * data, guint timestamp, GError * error);
+	void (*icon_theme_dirs) (DbusmenuMenuitem * item, gpointer theme_dirs, GError * error);
 
 	/*< Private >*/
 	void (*reserved1) (void);
@@ -166,7 +167,6 @@ struct _DbusmenuClientClass {
 	void (*reserved3) (void);
 	void (*reserved4) (void);
 	void (*reserved5) (void);
-	void (*reserved6) (void);
 };
 
 /**
@@ -224,6 +224,7 @@ gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * cli
                                                         DbusmenuClientTypeDestroyHandler destroy_func);
 DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
 DbusmenuStatus       dbusmenu_client_get_status        (DbusmenuClient * client);
+const GStrv          dbusmenu_client_get_icon_paths    (DbusmenuClient * client);
 
 /**
 	SECTION:client

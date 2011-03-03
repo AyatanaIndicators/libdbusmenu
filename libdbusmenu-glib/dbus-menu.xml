@@ -189,6 +189,15 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</dox:d>
 		</property>
 
+		<property name="IconThemePath" type="as" access="read">
+			<dox:d>
+			A list of directories that should be used for finding icons using
+			the icon naming spec.  Idealy there should only be one for the icon
+			theme, but additional ones are often added by applications for
+			app specific icons.
+			</dox:d>
+		</property>
+
 <!-- Functions -->
 
 		<method name="GetLayout">
