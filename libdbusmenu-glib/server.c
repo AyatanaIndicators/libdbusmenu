@@ -1769,7 +1769,7 @@ dbusmenu_server_set_icon_paths (DbusmenuServer * server, GStrv icon_paths)
 
 	if (priv->bus != NULL && priv->dbusobject != NULL) {
 		GVariantBuilder params;
-		g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+		g_variant_builder_init(&params, G_VARIANT_TYPE_TUPLE);
 		g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
 		GVariant * items = NULL;
 		if (priv->icon_dirs != NULL) {
