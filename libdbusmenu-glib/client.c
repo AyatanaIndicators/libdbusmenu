@@ -1071,6 +1071,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
 	DbusmenuTextDirection olddir = priv->text_direction;
 	DbusmenuStatus oldstatus = priv->status;
+	gboolean dirs_changed = FALSE;
 
 	/* Invalidate first */
 	gchar * invalid;
@@ -1081,6 +1082,13 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 		}
 		if (g_strcmp0(invalid, "Status") == 0) {
 			priv->status = DBUSMENU_STATUS_NORMAL;
+		}
+		if (g_strcmp0(invalid, "IconThemePath") == 0) {
+			if (priv->icon_dirs != NULL) {
+				dirs_changed = TRUE;
+				g_strfreev(priv->icon_dirs);
+				priv->icon_dirs = NULL;
+			}
 		}
 	}
 
@@ -1105,6 +1113,15 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 			priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(str, NULL));
 		}
+		if (g_strcmp0(key, "IconThemePath") == 0) {
+			if (priv->icon_dirs != NULL) {
+				g_strfreev(priv->icon_dirs);
+				priv->icon_dirs = NULL;
+			}
+
+			priv->icon_dirs = g_variant_dup_strv(value, NULL);
+			dirs_changed = TRUE;
+		}
 
 		g_variant_unref(value);
 		g_free(key);
@@ -1116,6 +1133,10 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 	if (oldstatus != priv->status) {
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
+	}
+
+	if (dirs_changed) {
+		// TODO: We need to tell someone!
 	}
 
 	return;
