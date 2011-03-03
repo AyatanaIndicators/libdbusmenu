@@ -754,7 +754,7 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
 	} else if (g_strcmp0(property, "TextDirection") == 0) {
 		return g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction));
-	} else if (g_strcmp0(property, "icon-theme-path") == 0) {
+	} else if (g_strcmp0(property, "IconThemePath") == 0) {
 		GVariant * dirs = NULL;
 
 		if (priv->icon_dirs != NULL) {
@@ -1773,7 +1773,7 @@ dbusmenu_server_set_icon_paths (DbusmenuServer * server, GStrv icon_paths)
 		g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
 		GVariant * items = NULL;
 		if (priv->icon_dirs != NULL) {
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("icon-theme-path"), g_variant_new_strv((const gchar * const *)priv->icon_dirs, -1));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("IconThemePath"), g_variant_new_strv((const gchar * const *)priv->icon_dirs, -1));
 			items = g_variant_new_array(NULL, &dict, 1);
 		} else {
 			items = g_variant_new_array(G_VARIANT_TYPE("{sv}"), NULL, 0);
