@@ -98,6 +98,7 @@ struct _DbusmenuClientPrivate
 
 	DbusmenuTextDirection text_direction;
 	DbusmenuStatus status;
+	GStrv icon_dirs;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -358,6 +359,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->text_direction = DBUSMENU_TEXT_DIRECTION_NONE;
 	priv->status = DBUSMENU_STATUS_NORMAL;
+	priv->icon_dirs = NULL;
 
 	return;
 }
@@ -464,6 +466,11 @@ dbusmenu_client_finalize (GObject *object)
 
 	if (priv->type_handlers != NULL) {
 		g_hash_table_destroy(priv->type_handlers);
+	}
+
+	if (priv->icon_dirs != NULL) {
+		g_strfreev(priv->icon_dirs);
+		priv->icon_dirs = NULL;
 	}
 
 	G_OBJECT_CLASS (dbusmenu_client_parent_class)->finalize (object);
