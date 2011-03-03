@@ -1151,7 +1151,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	}
 
 	if (dirs_changed) {
-		// TODO: We need to tell someone!
+		g_signal_emit(G_OBJECT(user_data), signals[ICON_THEME_DIRS], 0, priv->icon_dirs, TRUE);
 	}
 
 	return;
