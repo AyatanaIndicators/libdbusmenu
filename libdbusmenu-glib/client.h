@@ -224,6 +224,7 @@ gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * cli
                                                         DbusmenuClientTypeDestroyHandler destroy_func);
 DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
 DbusmenuStatus       dbusmenu_client_get_status        (DbusmenuClient * client);
+const GStrv          dbusmenu_client_get_icon_paths    (DbusmenuClient * client);
 
 /**
 	SECTION:client

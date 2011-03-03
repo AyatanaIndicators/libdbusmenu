@@ -2055,4 +2055,21 @@ dbusmenu_client_get_status (DbusmenuClient * client)
 	return priv->status;
 }
 
+/**
+ * dbusmenu_client_get_icon_paths:
+ * @client: The #DbusmenuClient to get the icon paths from
+ * 
+ * Gets the stored and exported icon paths from the client.
+ * 
+ * Return value: (transfer none): A NULL-terminated list of icon paths with
+ *   memory managed by the client.  Duplicate if you want
+ *   to keep them.
+ */
+const GStrv
+dbusmenu_client_get_icon_paths (DbusmenuClient * client)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), NULL);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	return priv->icon_dirs;
+}
 
