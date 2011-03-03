@@ -62,6 +62,7 @@ enum {
 	NEW_MENUITEM,
 	ITEM_ACTIVATE,
 	EVENT_RESULT,
+	ICON_THEME_DIRS,
 	LAST_SIGNAL
 };
 
@@ -273,6 +274,20 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                        NULL, NULL,
 	                                        _dbusmenu_client_marshal_VOID__OBJECT_STRING_VARIANT_UINT_POINTER,
 	                                        G_TYPE_NONE, 5, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_VARIANT, G_TYPE_UINT, G_TYPE_POINTER);
+	/**
+		DbusmenuClient::icon-theme-dirs-changed:
+		@arg0: The #DbusmenuClient object
+		@arg1: A #GStrv of theme directories
+
+		Signaled when the theme directories are changed by the server.
+	*/
+	signals[ICON_THEME_DIRS] = g_signal_new(DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED,
+	                                        G_TYPE_FROM_CLASS (klass),
+	                                        G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (DbusmenuClientClass, icon_theme_dirs),
+	                                        NULL, NULL,
+	                                        _dbusmenu_client_marshal_VOID__POINTER,
+	                                        G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	g_object_class_install_property (object_class, PROP_DBUSOBJECT,
 	                                 g_param_spec_string(DBUSMENU_CLIENT_PROP_DBUS_OBJECT, "DBus Object we represent",
