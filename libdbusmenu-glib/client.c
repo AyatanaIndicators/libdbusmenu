@@ -131,7 +131,7 @@ typedef struct _type_handler_t type_handler_t;
 struct _type_handler_t {
 	DbusmenuClient * client;
 	DbusmenuClientTypeHandler cb;
-	DbusmenuClientTypeDestroyHandler destroy_cb;
+	GDestroyNotify destroy_cb;
 	gpointer user_data;
 	gchar * type;
 };
@@ -1924,7 +1924,7 @@ type_handler_destroy (gpointer user_data)
 {
 	type_handler_t * th = (type_handler_t *)user_data;
 	if (th->destroy_cb != NULL) {
-		th->destroy_cb(th->client, th->type, th->user_data);
+		th->destroy_cb(th->user_data);
 	}
 	g_free(th->type);
 	g_free(th);
@@ -1936,7 +1936,7 @@ type_handler_destroy (gpointer user_data)
  * @client: Client where we're getting types coming in
  * @type: A text string that will be matched with the 'type'
  *     property on incoming menu items
- * @newfunc: The function that will be executed with those new
+ * @newfunc: (scope notified): The function that will be executed with those new
  *     items when they come in.
  * 
  * This function connects into the type handling of the #DbusmenuClient.
@@ -1963,7 +1963,7 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
  * @client: Client where we're getting types coming in
  * @type: A text string that will be matched with the 'type'
  *     property on incoming menu items
- * @newfunc: The function that will be executed with those new
+ * @newfunc: (scope notified): The function that will be executed with those new
  *     items when they come in.
  * @user_data: Data passed to @newfunc when it is called
  * @destroy_func: A function that is called when the type handler is
@@ -1984,7 +1984,7 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
  * Return value: If registering the new type was successful.
 */
 gboolean
-dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, DbusmenuClientTypeDestroyHandler destroy_func)
+dbusmenu_client_add_type_handler_full (DbusmenuClient * client, const gchar * type, DbusmenuClientTypeHandler newfunc, gpointer user_data, GDestroyNotify destroy_func)
 {
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), FALSE);
 	g_return_val_if_fail(type != NULL, FALSE);

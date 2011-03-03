@@ -17,7 +17,6 @@ DBUSMENU_CLIENT_TYPES_IMAGE
 DbusmenuClient
 DbusmenuClientClass
 DbusmenuClientTypeHandler
-DbusmenuClientTypeDestroyHandler
 dbusmenu_client_new
 dbusmenu_client_get_icon_paths
 dbusmenu_client_get_root

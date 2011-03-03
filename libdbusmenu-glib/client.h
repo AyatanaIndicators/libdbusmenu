@@ -198,18 +198,6 @@ struct _DbusmenuClient {
 */
 typedef gboolean (*DbusmenuClientTypeHandler) (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 
-/**
-	DbusmenuClientTypeDestroyHandler:
-	@client: A pointer to the #DbusmenuClient
-	@type: The type that this handler was registered with
-	@user_data: The data you gave us
-
-	This handler is called when the type becomes unregistered by the
-	client.  This is usally caused by the #DbusmenuClient being destroyed
-	and should free memory or unref objects in @user_data.
-*/
-typedef void (*DbusmenuClientTypeDestroyHandler) (DbusmenuClient * client, const gchar * type, gpointer user_data);
-
 GType                dbusmenu_client_get_type          (void);
 DbusmenuClient *     dbusmenu_client_new               (const gchar * name,
                                                         const gchar * object);
@@ -221,7 +209,7 @@ gboolean             dbusmenu_client_add_type_handler_full (DbusmenuClient * cli
                                                         const gchar * type,
                                                         DbusmenuClientTypeHandler newfunc,
                                                         gpointer user_data,
-                                                        DbusmenuClientTypeDestroyHandler destroy_func);
+                                                        GDestroyNotify destroy_func);
 DbusmenuTextDirection dbusmenu_client_get_text_direction (DbusmenuClient * client);
 DbusmenuStatus       dbusmenu_client_get_status        (DbusmenuClient * client);
 const GStrv          dbusmenu_client_get_icon_paths    (DbusmenuClient * client);
