@@ -30,7 +30,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
 #include "menuitem-private.h"
@@ -59,6 +59,7 @@ struct _DbusmenuServerPrivate
 
 	DbusmenuTextDirection text_direction;
 	DbusmenuStatus status;
+	GStrv icon_dirs;
 
 	GArray * prop_array;
 	guint property_idle;
@@ -84,7 +85,8 @@ enum {
 	PROP_ROOT_NODE,
 	PROP_VERSION,
 	PROP_TEXT_DIRECTION,
-	PROP_STATUS
+	PROP_STATUS,
+	PROP_ICON_THEME_DIRS
 };
 
 /* Errors */
@@ -368,6 +370,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 
 	default_text_direction(self);
 	priv->status = DBUSMENU_STATUS_NORMAL;
+	priv->icon_dirs = NULL;
 
 	return;
 }
@@ -425,6 +428,13 @@ dbusmenu_server_dispose (GObject *object)
 static void
 dbusmenu_server_finalize (GObject *object)
 {
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(object);
+
+	if (priv->icon_dirs != NULL) {
+		g_strfreev(priv->icon_dirs);
+		priv->icon_dirs = NULL;
+	}
+
 	G_OBJECT_CLASS (dbusmenu_server_parent_class)->finalize (object);
 	return;
 }
@@ -499,9 +509,9 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		/* If the value has changed we need to signal that on DBus */
 		if (priv->text_direction != olddir && priv->bus != NULL && priv->dbusobject != NULL) {
 			GVariantBuilder params;
-			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_init(&params, G_VARIANT_TYPE_TUPLE);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("text-direction"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("TextDirection"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
@@ -523,9 +533,9 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		/* If the value has changed we need to signal that on DBus */
 		if (priv->status != instatus && priv->bus != NULL && priv->dbusobject != NULL) {
 			GVariantBuilder params;
-			g_variant_builder_init(&params, G_VARIANT_TYPE_ARRAY);
+			g_variant_builder_init(&params, G_VARIANT_TYPE_TUPLE);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("Status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
@@ -740,11 +750,21 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 	g_return_val_if_fail(g_strcmp0(interface, DBUSMENU_INTERFACE) == 0, NULL);
 	g_return_val_if_fail(g_strcmp0(path, priv->dbusobject) == 0, NULL);
 
-	if (g_strcmp0(property, "version") == 0) {
+	if (g_strcmp0(property, "Version") == 0) {
 		return g_variant_new_uint32(DBUSMENU_VERSION_NUMBER);
-	} else if (g_strcmp0(property, "text-direction") == 0) {
+	} else if (g_strcmp0(property, "TextDirection") == 0) {
 		return g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction));
-	} else if (g_strcmp0(property, "status") == 0) {
+	} else if (g_strcmp0(property, "IconThemePath") == 0) {
+		GVariant * dirs = NULL;
+
+		if (priv->icon_dirs != NULL) {
+			dirs = g_variant_new_strv((const gchar * const *)priv->icon_dirs, -1);
+		} else {
+			dirs = g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0);
+		}
+
+		return dirs;
+	} else if (g_strcmp0(property, "Status") == 0) {
 		return g_variant_new_string(dbusmenu_status_get_nick(priv->status));
 	} else {
 		g_warning("Unknown property '%s'", property);
@@ -1180,7 +1200,11 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	GVariant * items = NULL;
 
 	if (priv->root != NULL) {
-		items = dbusmenu_menuitem_build_variant(priv->root, props, recurse);
+		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, parent);
+
+		if (mi != NULL) {
+			items = dbusmenu_menuitem_build_variant(mi, props, recurse);
+		}
 	}
 
 	/* What happens if we don't have anything? */
@@ -1699,6 +1723,73 @@ dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
 	g_value_set_enum(&val, status);
 	g_object_set_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_STATUS, &val);
 	g_value_unset(&val);
+
+	return;
+}
+
+/**
+ * dbusmenu_server_get_icon_paths:
+ * @server: The #DbusmenuServer to get the icon paths from
+ * 
+ * Gets the stored and exported icon paths from the server.
+ * 
+ * Return value: (transfer none): A NULL-terminated list of icon paths with
+ *   memory managed by the server.  Duplicate if you want
+ *   to keep them.
+ */
+const GStrv
+dbusmenu_server_get_icon_paths (DbusmenuServer * server)
+{
+	g_return_val_if_fail(DBUSMENU_IS_SERVER(server), NULL);
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	return priv->icon_dirs;
+}
+
+/**
+	dbusmenu_server_set_icon_paths:
+	@server: The #DbusmenuServer to set the icon paths on
+
+	Sets the icon paths for the server.  This will replace previously
+	set icon theme paths.
+*/
+void
+dbusmenu_server_set_icon_paths (DbusmenuServer * server, GStrv icon_paths)
+{
+	g_return_if_fail(DBUSMENU_IS_SERVER(server));
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	if (priv->icon_dirs != NULL) {
+		g_strfreev(priv->icon_dirs);
+		priv->icon_dirs = NULL;
+	}
+
+	if (icon_paths != NULL) {
+		priv->icon_dirs = g_strdupv(icon_paths);
+	}
+
+	if (priv->bus != NULL && priv->dbusobject != NULL) {
+		GVariantBuilder params;
+		g_variant_builder_init(&params, G_VARIANT_TYPE_TUPLE);
+		g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
+		GVariant * items = NULL;
+		if (priv->icon_dirs != NULL) {
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("IconThemePath"), g_variant_new_strv((const gchar * const *)priv->icon_dirs, -1));
+			items = g_variant_new_array(NULL, &dict, 1);
+		} else {
+			items = g_variant_new_array(G_VARIANT_TYPE("{sv}"), NULL, 0);
+		}
+		g_variant_builder_add_value(&params, items);
+		g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
+		GVariant * vparams = g_variant_builder_end(&params);
+
+		g_dbus_connection_emit_signal(priv->bus,
+		                              NULL,
+		                              priv->dbusobject,
+		                              "org.freedesktop.DBus.Properties",
+		                              "PropertiesChanged",
+		                              vparams,
+		                              NULL);
+	}
 
 	return;
 }

@@ -131,3 +131,5 @@ _dbusmenu_client_marshal_VOID__OBJECT_STRING_VARIANT_UINT_POINTER (GClosure     
 
 /* VOID:ENUM (./client-marshal.list:3) */
 
+/* VOID:POINTER (./client-marshal.list:4) */
+

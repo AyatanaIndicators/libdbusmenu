@@ -17,12 +17,17 @@ lib_LTLIBRARIES = \
 
 libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-glib/
 
-libdbusmenu_glibinclude_HEADERS = \
-	dbusmenu-glib.h \
+
+EXPORTED_OBJECTS = \
+	enum-types.h \
 	menuitem.h \
 	menuitem-proxy.h \
 	server.h \
-	client.h \
+	client.h
+
+libdbusmenu_glibinclude_HEADERS = \
+	$(EXPORTED_OBJECTS) \
+	dbusmenu-glib.h \
 	types.h
 
 libdbusmenu_glib_la_SOURCES = \
@@ -153,7 +158,9 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(libdbusmenu_glibinclude_HEADERS) $(libdbusmenu_glib_la_SOURCES)
+introspection_sources = \
+	$(libdbusmenu_glibinclude_HEADERS) \
+	$(EXPORTED_OBJECTS:.h=.c)
 
 Dbusmenu-0.4.gir: libdbusmenu-glib.la
 Dbusmenu_0_4_gir_INCLUDES = \
