@@ -159,16 +159,90 @@ dbusmenu_gtkclient_finalize (GObject *object)
 	return;
 }
 
+/* Add a theme directory to the table and the theme's list of available
+   themes to use. */
 static void
 theme_dir_ref (GtkIconTheme * theme, GHashTable * db, const gchar * dir)
 {
+	g_return_if_fail(db != NULL);
+	g_return_if_fail(theme != NULL);
+	g_return_if_fail(dir != NULL);
+
+	int count = 0;
+	if ((count = GPOINTER_TO_INT(g_hash_table_lookup(db, dir))) != 0) {
+		/* It exists so what we need to do is increase the ref
+		   count of this dir. */
+		count++;
+	} else {
+		/* It doesn't exist, so we need to add it to the table
+		   and to the search path. */
+		gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), dir);
+		g_debug("\tAppending search path: %s", dir);
+		count = 1;
+	}
+
+	g_hash_table_insert(db, g_strdup(dir), GINT_TO_POINTER(count));
 
 	return;
 }
 
+/* Unreference the theme directory, and if it's count goes to zero then
+   we need to remove it from the search path. */
 static void
 theme_dir_unref (GtkIconTheme * theme, GHashTable * db, const gchar * dir)
 {
+	g_return_if_fail(db != NULL);
+	g_return_if_fail(theme != NULL);
+	g_return_if_fail(dir != NULL);
+
+	/* Grab the count for this dir */
+	int count = GPOINTER_TO_INT(g_hash_table_lookup(db, dir));
+
+	/* Is this a simple deprecation, if so, we can just lower the
+	   number and move on. */
+	if (count > 1) {
+		count--;
+		g_hash_table_insert(db, g_strdup(dir), GINT_TO_POINTER(count));
+		return;
+	}
+
+	/* Try to remove it from the hash table, this makes sure
+	   that it existed */
+	if (!g_hash_table_remove(db, dir)) {
+		g_warning("Unref'd a directory that wasn't in the theme dir hash table.");
+		return;
+	}
+
+	gchar ** paths;
+	gint path_count;
+
+	gtk_icon_theme_get_search_path(theme, &paths, &path_count);
+
+	gint i;
+	gboolean found = FALSE;
+	for (i = 0; i < path_count; i++) {
+		if (found) {
+			/* If we've already found the right entry */
+			paths[i - 1] = paths[i];
+		} else {
+			/* We're still looking, is this the one? */
+			if (!g_strcmp0(paths[i], dir)) {
+				found = TRUE;
+				/* We're freeing this here as it won't be captured by the
+				   g_strfreev() below as it's out of the array. */
+				g_free(paths[i]);
+			}
+		}
+	}
+	
+	/* If we found one we need to reset the path to
+	   accomidate the changes */
+	if (found) {
+		paths[path_count - 1] = NULL; /* Clear the last one */
+		gtk_icon_theme_set_search_path(theme, (const gchar **)paths, path_count - 1);
+	}
+
+	g_strfreev(paths);
 
 	return;
 }
