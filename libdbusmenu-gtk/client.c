@@ -96,6 +96,22 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	priv->agroup = NULL;
 	priv->old_themedirs = NULL;
 
+	/* We either build the theme db or we get a reference
+	   to it.  This way when all clients die the hashtable
+	   will be free'd as well. */
+	if (theme_dir_db == NULL) {
+		theme_dir_db = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+
+		/* NOTE: We're adding an extra ref here because there
+		   is no way to clear the pointer when the hash table
+		   dies, so it's safer to keep the hash table around
+		   forever than not know if it's free'd or not.  Patch
+		   submitted to GLib. */
+		g_hash_table_ref(theme_dir_db);
+	} else {
+		g_hash_table_ref(theme_dir_db);
+	}
+
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
 
@@ -122,6 +138,12 @@ dbusmenu_gtkclient_dispose (GObject *object)
 		remove_theme_dirs(gtk_icon_theme_get_default(), priv->old_themedirs);
 		g_strfreev(priv->old_themedirs);
 		priv->old_themedirs = NULL;
+	}
+
+	if (theme_dir_db != NULL) {
+		g_hash_table_unref(theme_dir_db);
+	} else {
+		g_assert_not_reached();
 	}
 
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->dispose (object);
