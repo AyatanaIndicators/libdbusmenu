@@ -44,13 +44,16 @@ G_END_DECLS
 
 /*** BEGIN file-production ***/
 /* Enumerations from file: "@filename@" */
-#include "@filename@"
+#include "@basename@"
+
 /*** END file-production ***/
 
 /*** BEGIN value-header ***/
+
 GType @enum_name@_get_type (void) G_GNUC_CONST;
 const gchar * @enum_name@_get_nick (@EnumName@ value) G_GNUC_CONST;
 @EnumName@ @enum_name@_get_value_from_nick (const gchar * nick) G_GNUC_CONST;
+
 /**
 	DBUSMENU_TYPE_@ENUMSHORT@:
 
