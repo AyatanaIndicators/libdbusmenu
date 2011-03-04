@@ -1,4 +1,4 @@
-libdbusmenu (0.3.100-0ubuntu1~ppa1) natty; urgency=low
+libdbusmenu (0.3.100-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     * GTK application menus are not correctly displayed (LP: #726678)
