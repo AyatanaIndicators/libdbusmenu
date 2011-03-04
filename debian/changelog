@@ -1,3 +1,9 @@
+libdbusmenu (0.3.100-0ubuntu2) natty; urgency=low
+
+  * Cherry picked fix for path to find types.h
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 04 Mar 2011 10:22:36 -0500
+
 libdbusmenu (0.3.100-0ubuntu1) natty; urgency=low
 
   * New upstream release.
