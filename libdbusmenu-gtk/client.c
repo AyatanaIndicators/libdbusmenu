@@ -42,6 +42,8 @@ struct _DbusmenuGtkClientPrivate {
 	GtkAccelGroup * agroup;
 };
 
+GHashTable * theme_dir_db = NULL;
+
 #define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) (DBUSMENU_GTKCLIENT(o)->priv)
 #define USE_FALLBACK_PROP  "use-fallback"
 
@@ -135,10 +137,32 @@ dbusmenu_gtkclient_finalize (GObject *object)
 	return;
 }
 
+static void
+theme_dir_ref (GtkIconTheme * theme, GHashTable * db, const gchar * dir)
+{
+
+	return;
+}
+
+static void
+theme_dir_unref (GtkIconTheme * theme, GHashTable * db, const gchar * dir)
+{
+
+	return;
+}
+
 /* Unregister this list of theme directories */
 static void
 remove_theme_dirs (GtkIconTheme * theme, GStrv dirs)
 {
+	g_return_if_fail(GTK_ICON_THEME(theme));
+	g_return_if_fail(dirs != NULL);
+
+	int dir;
+
+	for (dir = 0; dirs[dir] != NULL; dir++) {
+		theme_dir_unref(theme, theme_dir_db, dirs[dir]);
+	}
 
 	return;
 }
@@ -148,7 +172,28 @@ remove_theme_dirs (GtkIconTheme * theme, GStrv dirs)
 static void
 theme_dir_changed (DbusmenuClient * client, GStrv theme_dirs, gpointer userdata)
 {
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+	GtkIconTheme * theme = gtk_icon_theme_get_default();
 
+	/* Ref the new directories */
+	if (theme_dirs != NULL) {
+		int dir;
+		for (dir = 0; theme_dirs[dir] != NULL; dir++) {
+			theme_dir_ref(theme, theme_dir_db, theme_dirs[dir]);
+		}
+	}
+
+	/* Unref the old ones */
+	if (priv->old_themedirs) {
+		remove_theme_dirs(theme, priv->old_themedirs);
+		g_strfreev(priv->old_themedirs);
+		priv->old_themedirs = NULL;
+	}
+
+	/* Copy the new to the old */
+	if (theme_dirs != NULL) {
+		priv->old_themedirs = g_strdupv(theme_dirs);
+	}
 
 	return;
 }
