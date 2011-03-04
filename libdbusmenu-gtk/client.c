@@ -38,6 +38,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 /* Private */
 struct _DbusmenuGtkClientPrivate {
+	GStrv old_themedirs;
 	GtkAccelGroup * agroup;
 };
 
@@ -55,6 +56,7 @@ static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, Dbusm
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
 static void item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata);
 static void theme_dir_changed (DbusmenuClient * client, GStrv theme_dirs, gpointer userdata);
+static void remove_theme_dirs (GtkIconTheme * theme, GStrv dirs);
 
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
@@ -90,6 +92,7 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(self);
 
 	priv->agroup = NULL;
+	priv->old_themedirs = NULL;
 
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
@@ -113,6 +116,12 @@ dbusmenu_gtkclient_dispose (GObject *object)
 		priv->agroup = NULL;
 	}
 
+	if (priv->old_themedirs) {
+		remove_theme_dirs(gtk_icon_theme_get_default(), priv->old_themedirs);
+		g_strfreev(priv->old_themedirs);
+		priv->old_themedirs = NULL;
+	}
+
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->dispose (object);
 	return;
 }
@@ -123,6 +132,14 @@ dbusmenu_gtkclient_finalize (GObject *object)
 {
 
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->finalize (object);
+	return;
+}
+
+/* Unregister this list of theme directories */
+static void
+remove_theme_dirs (GtkIconTheme * theme, GStrv dirs)
+{
+
 	return;
 }
 
