@@ -54,6 +54,7 @@ static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint po
 static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient);
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
 static void item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata);
+static void theme_dir_changed (DbusmenuClient * client, GStrv theme_dirs, gpointer userdata);
 
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
@@ -96,6 +97,7 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	/* TODO: I think these can be handled in the class... */
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE, G_CALLBACK(item_activate), NULL);
+	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED, G_CALLBACK(theme_dir_changed), NULL);
 
 	return;
 }
@@ -121,6 +123,16 @@ dbusmenu_gtkclient_finalize (GObject *object)
 {
 
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->finalize (object);
+	return;
+}
+
+/* Called when the theme directories are changed by the
+   server part of things. */
+static void
+theme_dir_changed (DbusmenuClient * client, GStrv theme_dirs, gpointer userdata)
+{
+
+
 	return;
 }
 
