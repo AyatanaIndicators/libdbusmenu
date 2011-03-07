@@ -1215,6 +1215,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		   it) after the signal emition */
 			remove = TRUE;
 			replaced = TRUE;
+			g_hash_table_steal(priv->properties, property);
 		}
 	}
 
@@ -1235,7 +1236,8 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	}
 
 	if (remove) {
-		g_hash_table_remove(priv->properties, property);
+		g_free(hash_key);
+		g_variant_unref(hash_variant);
 	}
 
 	return TRUE;
