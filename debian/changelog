@@ -1,3 +1,17 @@
+libdbusmenu (0.3.100-0ubuntu3) natty; urgency=low
+
+  * libdbusmenu-glib/menuitem.c
+    - Steal earlier instead of later so that signal handlers don't find the 
+      value in the hashtable (LP: #725603) (LP: #730198)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 07 Mar 2011 14:27:09 -0500
+
+libdbusmenu (0.3.100-0ubuntu2) natty; urgency=low
+
+  * Cherry picked fix for path to find types.h
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 04 Mar 2011 10:22:36 -0500
+
 libdbusmenu (0.3.100-0ubuntu2~ppa1) natty; urgency=low
 
   * Upstream Merge
