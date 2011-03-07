@@ -1183,14 +1183,16 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 
 	gboolean replaced = FALSE;
 	gboolean remove = FALSE;
-	gpointer currentval = g_hash_table_lookup(priv->properties, property);
+	gchar * hash_key = NULL;
+	GVariant * hash_variant = NULL;
+	gboolean inhash = g_hash_table_lookup_extended(priv->properties, property, (gpointer *)&hash_key, (gpointer *)&hash_variant);
 
 	if (value != NULL) {
 		/* NOTE: We're only marking this as replaced if this is true
 		   but we're actually replacing it no matter.  This is so that
 		   the variant passed in sticks around which the caller may
 		   expect.  They shouldn't, but it's low cost to remove bugs. */
-		if (currentval == NULL || !g_variant_equal((GVariant*)currentval, value)) {
+		if (inhash || !g_variant_equal(hash_variant, value)) {
 			replaced = TRUE;
 		}
 
@@ -1204,7 +1206,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		   bad value */
 		g_hash_table_insert(priv->properties, lprop, value);
 	} else {
-		if (currentval != NULL) {
+		if (inhash) {
 		/* So the question you should be asking if you're paying attention
 		   is "Why not just do the remove here?"  It's a good question with
 		   an interesting answer.  Bascially it's the same reason as above,
@@ -1220,7 +1222,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	   becuse it has been unref'd when replaced in the hash
 	   table.  But the fact that there was a value is
 	   the imporant part. */
-	if (currentval == NULL || replaced) {
+	if (!inhash || replaced) {
 		GVariant * signalval = value;
 
 		if (signalval == NULL) {
