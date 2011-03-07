@@ -1180,19 +1180,23 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		}
 	}
 
-
 	gboolean replaced = FALSE;
 	gboolean remove = FALSE;
 	gchar * hash_key = NULL;
 	GVariant * hash_variant = NULL;
 	gboolean inhash = g_hash_table_lookup_extended(priv->properties, property, (gpointer *)&hash_key, (gpointer *)&hash_variant);
 
+	if (inhash && hash_variant == NULL) {
+		g_warning("The property '%s' is in the hash with a NULL variant", property);
+		inhash = FALSE;
+	}
+
 	if (value != NULL) {
 		/* NOTE: We're only marking this as replaced if this is true
 		   but we're actually replacing it no matter.  This is so that
 		   the variant passed in sticks around which the caller may
 		   expect.  They shouldn't, but it's low cost to remove bugs. */
-		if (inhash || !g_variant_equal(hash_variant, value)) {
+		if (!inhash || !g_variant_equal(hash_variant, value)) {
 			replaced = TRUE;
 		}
 
