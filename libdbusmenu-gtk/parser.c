@@ -425,7 +425,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
               // (like empathy), so watch the label especially for that.
               dbusmenu_menuitem_property_set (mi,
                                               "label",
-                                              gtk_label_get_text (GTK_LABEL (label)));
+                                              gtk_label_get_label (GTK_LABEL (label)));
 
               pdata->label = label;
               g_signal_connect (G_OBJECT (label),
@@ -670,7 +670,7 @@ label_notify_cb (GtkWidget  *widget,
     {
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      gtk_label_get_text (GTK_LABEL (widget)));
+                                      gtk_label_get_label (GTK_LABEL (widget)));
     }
 }
 
