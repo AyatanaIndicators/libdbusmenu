@@ -884,8 +884,22 @@ child_added_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 static void
 child_removed_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 {
+	gpointer pmi = g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM);
+	if (pmi == NULL) {
+		return;
+	}
 
+	DbusmenuMenuitem * child = DBUSMENU_MENUITEM(pmi);
 
+	pmi = g_object_get_data(G_OBJECT(menu), CACHED_MENUITEM);
+	if (pmi == NULL) {
+		return;
+	}
+
+	DbusmenuMenuitem * parent = DBUSMENU_MENUITEM(pmi);
+
+	dbusmenu_menuitem_child_delete(parent, child);
+	return;
 }
 
 static void
