@@ -144,6 +144,8 @@ parse_data_free (gpointer data)
 	if (pdata != NULL && pdata->shell != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(child_added_cb), NULL);
+		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(child_removed_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
 	}
 
