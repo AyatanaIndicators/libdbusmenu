@@ -101,15 +101,25 @@ static void           menuitem_notify_cb       (GtkWidget *         widget,
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 {
-  g_return_val_if_fail(GTK_IS_MENU_ITEM(widget) || GTK_IS_MENU_SHELL(widget), NULL);
+	g_return_val_if_fail(GTK_IS_MENU_ITEM(widget) || GTK_IS_MENU_SHELL(widget), NULL);
 
-  RecurseContext recurse = {0};
+	DbusmenuMenuitem * returnval = NULL;
+	gpointer data = g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM);
 
-  recurse.toplevel = gtk_widget_get_toplevel(widget);
+	if (data == NULL) {
+		RecurseContext recurse = {0};
 
-  parse_menu_structure_helper(widget, &recurse);
+		recurse.toplevel = gtk_widget_get_toplevel(widget);
 
-  return recurse.parent;
+		parse_menu_structure_helper(widget, &recurse);
+
+		returnval = recurse.parent;
+	} else {
+		returnval = DBUSMENU_MENUITEM(data);
+		g_object_ref(G_OBJECT(returnval));
+	}
+
+	return returnval;
 }
 
 static void
@@ -231,7 +241,6 @@ new_menuitem (GtkWidget * widget)
 static void
 parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 {
-
 	/* If this is a shell, then let's handle the items in it. */
 	if (GTK_IS_MENU_SHELL (widget)) {
 		/* Okay, this is a little janky and all.. but some applications update some
