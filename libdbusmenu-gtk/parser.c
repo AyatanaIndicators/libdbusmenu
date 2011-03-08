@@ -69,6 +69,9 @@ static void           action_notify_cb         (GtkAction *         action,
 static void           child_added_cb           (GtkContainer *      menu,
                                                 GtkWidget *         widget,
                                                 gpointer            data);
+static void           child_removed_cb         (GtkContainer *      menu,
+                                                GtkWidget *         widget,
+                                                gpointer            data);
 static void           theme_changed_cb         (GtkIconTheme *      theme,
                                                 gpointer            data);
 static void           item_activated           (DbusmenuMenuitem *  item,
@@ -261,6 +264,10 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 			g_signal_connect (G_OBJECT (widget),
 				          "child-added",
 				          G_CALLBACK (child_added_cb),
+				          recurse->parent);
+			g_signal_connect (G_OBJECT (widget),
+				          "child-removed",
+				          G_CALLBACK (child_removed_cb),
 				          recurse->parent);
 			g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->shell);
 		}
@@ -465,6 +472,10 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
               g_signal_connect (G_OBJECT (submenu),
                                 "child-added",
                                 G_CALLBACK (child_added_cb),
+                                mi);
+              g_signal_connect (G_OBJECT (submenu),
+                                "child-removed",
+                                G_CALLBACK (child_removed_cb),
                                 mi);
               g_object_add_weak_pointer(G_OBJECT(submenu), (gpointer*)&pdata->shell);
             }
@@ -867,6 +878,14 @@ child_added_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 	recurse.parent = menuitem;
 
 	parse_menu_structure_helper(widget, &recurse);
+}
+
+/* A child item was added to a menu we're watching.  Let's try to integrate it. */
+static void
+child_removed_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
+{
+
+
 }
 
 static void
