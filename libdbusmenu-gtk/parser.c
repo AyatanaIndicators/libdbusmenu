@@ -362,6 +362,32 @@ sanitize_label_text (const gchar * label)
 	}
 }
 
+static gchar *
+sanitize_label (GtkLabel * label)
+{
+	gchar * text;
+
+	if (gtk_label_get_use_markup (label)) {
+		text = sanitize_label_text (gtk_label_get_label (label));
+	}
+	else {
+		text = g_strdup (gtk_label_get_label (label));
+	}
+
+	if (!gtk_label_get_use_underline (label)) {
+		/* Insert extra underscores */
+		GRegex * regex = g_regex_new ("_", 0, 0, NULL);
+		gchar * escaped = g_regex_replace_literal (regex, text, -1, 0, "__", 0, NULL);
+
+		g_regex_unref (regex);
+		g_free (text);
+
+		text = escaped;
+	}
+
+	return text;
+}
+
 /* Turn a widget into a dbusmenu item depending on the type of GTK
    object that it is. */
 static DbusmenuMenuitem *
@@ -445,7 +471,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
             {
               // Sometimes, an app will directly find and modify the label
               // (like empathy), so watch the label especially for that.
-              gchar * text = sanitize_label_text (gtk_label_get_label (GTK_LABEL (label)));
+              gchar * text = sanitize_label (GTK_LABEL (label));
               dbusmenu_menuitem_property_set (mi, "label", text);
               g_free (text);
 
@@ -690,7 +716,7 @@ label_notify_cb (GtkWidget  *widget,
 
   if (pspec->name == g_intern_static_string ("label"))
     {
-      gchar * text = sanitize_label_text (gtk_label_get_label (GTK_LABEL (widget)));
+      gchar * text = sanitize_label (GTK_LABEL (widget));
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       text);
