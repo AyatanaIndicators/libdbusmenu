@@ -219,6 +219,7 @@ new_menuitem (GtkWidget * widget)
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
+	g_object_set_data(G_OBJECT(widget), CACHED_MENUITEM, item);
 
 	return item;
 }
@@ -311,6 +312,10 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
 			/* Oops, let's tell our parents about us */
 			if (peek == NULL) {
+				if (dbusmenu_menuitem_get_parent(thisitem) != NULL) {
+					dbusmenu_menuitem_unparent(thisitem);
+				}
+
 				gint pos = get_child_position (widget);
 				if (pos >= 0)
 					dbusmenu_menuitem_child_add_position (recurse->parent,
