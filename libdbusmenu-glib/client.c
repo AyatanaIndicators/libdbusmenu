@@ -1823,6 +1823,7 @@ static void
 update_layout (DbusmenuClient * client)
 {
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	g_return_if_fail(priv->layout_props != NULL);
 
 	if (priv->menuproxy == NULL) {
 		return;
