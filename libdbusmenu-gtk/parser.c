@@ -219,6 +219,7 @@ new_menuitem (GtkWidget * widget)
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
+	g_object_set_data(G_OBJECT(widget), CACHED_MENUITEM, item);
 
 	return item;
 }
@@ -311,6 +312,10 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
 			/* Oops, let's tell our parents about us */
 			if (peek == NULL) {
+				if (dbusmenu_menuitem_get_parent(thisitem) != NULL) {
+					dbusmenu_menuitem_unparent(thisitem);
+				}
+
 				gint pos = get_child_position (widget);
 				if (pos >= 0)
 					dbusmenu_menuitem_child_add_position (recurse->parent,
@@ -338,6 +343,23 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 	}
 
 	return;
+}
+
+static gchar *
+sanitize_label_text (const gchar * label)
+{
+	/* Label contains underscores, which we like, and pango markup,
+           which we don't. */
+	gchar * sanitized = NULL;
+	GError * error = NULL;
+	if (pango_parse_markup (label, -1, 0, NULL, &sanitized, NULL, &error)) {
+		return sanitized;
+	}
+	else {
+		g_warning ("Could not parse '%s': %s", label, error->message);
+		g_error_free (error);
+		return g_strdup (label);
+	}
 }
 
 /* Turn a widget into a dbusmenu item depending on the type of GTK
@@ -423,9 +445,9 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
             {
               // Sometimes, an app will directly find and modify the label
               // (like empathy), so watch the label especially for that.
-              dbusmenu_menuitem_property_set (mi,
-                                              "label",
-                                              gtk_label_get_text (GTK_LABEL (label)));
+              gchar * text = sanitize_label_text (gtk_label_get_label (GTK_LABEL (label)));
+              dbusmenu_menuitem_property_set (mi, "label", text);
+              g_free (text);
 
               pdata->label = label;
               g_signal_connect (G_OBJECT (label),
@@ -668,9 +690,11 @@ label_notify_cb (GtkWidget  *widget,
 
   if (pspec->name == g_intern_static_string ("label"))
     {
+      gchar * text = sanitize_label_text (gtk_label_get_label (GTK_LABEL (widget)));
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      gtk_label_get_text (GTK_LABEL (widget)));
+                                      text);
+      g_free (text);
     }
 }
 
@@ -724,9 +748,11 @@ action_notify_cb (GtkAction  *action,
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
+      gchar * text = sanitize_label_text (gtk_action_get_label (action));
       dbusmenu_menuitem_property_set (mi,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      gtk_action_get_label (action));
+                                      text);
+      g_free (text);
     }
 }
 
