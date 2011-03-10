@@ -697,6 +697,7 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 
 	if (gmi != NULL) {
 		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+		g_object_unref(gmi);
 	} else {
 		return FALSE;
 	}
@@ -869,6 +870,9 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 				gtkimage = gtk_image_new_from_pixbuf(image);
 			} else {
 				gtk_image_set_from_pixbuf(GTK_IMAGE(gtkimage), image);
+			}
+			if (image) {
+				g_object_unref(image);
 			}
 		}
 

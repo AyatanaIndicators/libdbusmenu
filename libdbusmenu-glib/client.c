@@ -1213,7 +1213,9 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			while (g_variant_iter_next(&properties, "s", &property)) {
 				/* g_debug("Removing property '%s' on %d", property, id); */
 				dbusmenu_menuitem_property_remove(menuitem, property);
+				g_free(property);
 			}
+			g_variant_unref(ritem);
 		}
 
 		GVariantIter items;
@@ -1304,12 +1306,11 @@ menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpoin
 		have_error = TRUE;
 	}
 
-	GList * current_props = NULL;
+	GList * current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
+	GList * tmp = NULL;
 
-	for (current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
-			current_props != NULL && have_error == FALSE;
-			current_props = g_list_next(current_props)) {
-		dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)current_props->data);
+	for (tmp = current_props; tmp != NULL && have_error == FALSE; tmp = g_list_next(tmp)) {
+		dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)tmp->data);
 	}
 	g_list_free(current_props);
 
