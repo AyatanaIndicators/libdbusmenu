@@ -1,3 +1,11 @@
+libdbusmenu (0.3.100-0ubuntu4) natty; urgency=low
+
+  * libdbusmenu-gtk/parser.c
+    - Ensure we set the CACHED_MENUITEM data on GtkWidget's, this fixes a few
+      bugs (LP: #723463) (LP: #729128) (LP: #729194)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Mar 2011 20:49:41 -0500
+
 libdbusmenu (0.3.100-0ubuntu3) natty; urgency=low
 
   * libdbusmenu-glib/menuitem.c
