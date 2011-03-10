@@ -73,5 +73,6 @@ dbusmenu_menuitem_property_get_shortcut
 <SECTION>
 <FILE>parser</FILE>
 dbusmenu_gtk_parse_menu_structure
+dbusmenu_gtk_parse_get_cached_item
 </SECTION>
 

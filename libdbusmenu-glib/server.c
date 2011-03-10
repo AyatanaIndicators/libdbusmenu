@@ -511,7 +511,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			GVariantBuilder params;
 			g_variant_builder_init(&params, G_VARIANT_TYPE_TUPLE);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("TextDirection"), g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction)));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("TextDirection"), g_variant_new_variant(g_variant_new_string(dbusmenu_text_direction_get_nick(priv->text_direction))));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
@@ -535,7 +535,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			GVariantBuilder params;
 			g_variant_builder_init(&params, G_VARIANT_TYPE_TUPLE);
 			g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("Status"), g_variant_new_string(dbusmenu_status_get_nick(instatus)));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("Status"), g_variant_new_variant(g_variant_new_string(dbusmenu_status_get_nick(instatus))));
 			g_variant_builder_add_value(&params, g_variant_new_array(NULL, &dict, 1));
 			g_variant_builder_add_value(&params, g_variant_new_array(G_VARIANT_TYPE_STRING, NULL, 0));
 			GVariant * vparams = g_variant_builder_end(&params);
@@ -1773,7 +1773,7 @@ dbusmenu_server_set_icon_paths (DbusmenuServer * server, GStrv icon_paths)
 		g_variant_builder_add_value(&params, g_variant_new_string(DBUSMENU_INTERFACE));
 		GVariant * items = NULL;
 		if (priv->icon_dirs != NULL) {
-			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("IconThemePath"), g_variant_new_strv((const gchar * const *)priv->icon_dirs, -1));
+			GVariant * dict = g_variant_new_dict_entry(g_variant_new_string("IconThemePath"), g_variant_new_variant(g_variant_new_strv((const gchar * const *)priv->icon_dirs, -1)));
 			items = g_variant_new_array(NULL, &dict, 1);
 		} else {
 			items = g_variant_new_array(G_VARIANT_TYPE("{sv}"), NULL, 0);

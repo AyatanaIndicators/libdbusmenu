@@ -1,0 +1,1696 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DbusmenuMenuitem</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="libdbusmenu-glib Reference Manual">
+<link rel="up" href="ch01.html" title="API">
+<link rel="prev" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html" title="DbusmenuMenuitemProxy">
+<link rel="next" href="libdbusmenu-glib-DbusmenuClient.html" title="DbusmenuClient">
+<meta name="generator" content="GTK-Doc V1.16 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">libdbusmenu-glib Reference Manual</th>
+<td><a accesskey="n" href="libdbusmenu-glib-DbusmenuClient.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#libdbusmenu-glib-DbusmenuMenuitem.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#libdbusmenu-glib-DbusmenuMenuitem.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="libdbusmenu-glib-DbusmenuMenuitem"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="libdbusmenu-glib-DbusmenuMenuitem.top_of_page"></a>DbusmenuMenuitem</span></h2>
+<p>DbusmenuMenuitem — A lowlevel represenation of a menuitem</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="libdbusmenu-glib-DbusmenuMenuitem.stability-level"></a><h2>Stability Level</h2>
+Unstable, unless otherwise indicated
+</div>
+<div class="refsynopsisdiv">
+<a name="libdbusmenu-glib-DbusmenuMenuitem.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+#include &lt;libdbusmenu-glib/menuitem.h&gt;
+
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-PROPERTY-CHANGED:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED">DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-ITEM-ACTIVATED:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED">DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-ADDED:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED">DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-REMOVED:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED">DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-CHILD-MOVED:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED">DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-EVENT:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_EVENT">DBUSMENU_MENUITEM_SIGNAL_EVENT</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-REALIZED:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_REALIZED">DBUSMENU_MENUITEM_SIGNAL_REALIZED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-REALIZED-ID:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID">DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-ABOUT-TO-SHOW:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW">DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SIGNAL-SHOW-TO-USER:CAPS" title="DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER">DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TYPE:CAPS" title="DBUSMENU_MENUITEM_PROP_TYPE">DBUSMENU_MENUITEM_PROP_TYPE</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-VISIBLE:CAPS" title="DBUSMENU_MENUITEM_PROP_VISIBLE">DBUSMENU_MENUITEM_PROP_VISIBLE</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ENABLED:CAPS" title="DBUSMENU_MENUITEM_PROP_ENABLED">DBUSMENU_MENUITEM_PROP_ENABLED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-LABEL:CAPS" title="DBUSMENU_MENUITEM_PROP_LABEL">DBUSMENU_MENUITEM_PROP_LABEL</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ICON-NAME:CAPS" title="DBUSMENU_MENUITEM_PROP_ICON_NAME">DBUSMENU_MENUITEM_PROP_ICON_NAME</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ICON-DATA:CAPS" title="DBUSMENU_MENUITEM_PROP_ICON_DATA">DBUSMENU_MENUITEM_PROP_ICON_DATA</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-TYPE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE">DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE">DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS" title="DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY">DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT">DBUSMENU_MENUITEM_PROP_SHORTCUT</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_CHECK">DBUSMENU_MENUITEM_TOGGLE_CHECK</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_RADIO">DBUSMENU_MENUITEM_TOGGLE_RADIO</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED">DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-CHECKED:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED">DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNKNOWN:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN">DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-ICON-NAME-BLANK:CAPS" title="DBUSMENU_MENUITEM_ICON_NAME_BLANK">DBUSMENU_MENUITEM_ICON_NAME_BLANK</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-CHILD-DISPLAY-SUBMENU:CAPS" title="DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU">DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-ALT:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_ALT">DBUSMENU_MENUITEM_SHORTCUT_ALT</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_CONTROL">DBUSMENU_MENUITEM_SHORTCUT_CONTROL</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_SHIFT">DBUSMENU_MENUITEM_SHORTCUT_SHIFT</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_SUPER">DBUSMENU_MENUITEM_SHORTCUT_SUPER</a>
+struct              <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem">DbusmenuMenuitem</a>;
+<span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-about-to-show-cb" title="dbusmenu_menuitem_about_to_show_cb ()">*dbusmenu_menuitem_about_to_show_cb</a>)
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *          (<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-buildvariant-slot-t" title="dbusmenu_menuitem_buildvariant_slot_t ()">*dbusmenu_menuitem_buildvariant_slot_t</a>)
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **properties</code></em>);
+struct              <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitemClass" title="struct DbusmenuMenuitemClass">DbusmenuMenuitemClass</a>;
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-new" title="dbusmenu_menuitem_new ()">dbusmenu_menuitem_new</a>               (<em class="parameter"><code><span class="type">void</span></code></em>);
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-new-with-id" title="dbusmenu_menuitem_new_with_id ()">dbusmenu_menuitem_new_with_id</a>       (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-id" title="dbusmenu_menuitem_get_id ()">dbusmenu_menuitem_get_id</a>            (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-children" title="dbusmenu_menuitem_get_children ()">dbusmenu_menuitem_get_children</a>      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-take-children" title="dbusmenu_menuitem_take_children ()">dbusmenu_menuitem_take_children</a>     (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-position" title="dbusmenu_menuitem_get_position ()">dbusmenu_menuitem_get_position</a>      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *parent</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-position-realized" title="dbusmenu_menuitem_get_position_realized ()">dbusmenu_menuitem_get_position_realized</a>
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *parent</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-append" title="dbusmenu_menuitem_child_append ()">dbusmenu_menuitem_child_append</a>      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-prepend" title="dbusmenu_menuitem_child_prepend ()">dbusmenu_menuitem_child_prepend</a>     (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-delete" title="dbusmenu_menuitem_child_delete ()">dbusmenu_menuitem_child_delete</a>      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-add-position" title="dbusmenu_menuitem_child_add_position ()">dbusmenu_menuitem_child_add_position</a>
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> position</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-reorder" title="dbusmenu_menuitem_child_reorder ()">dbusmenu_menuitem_child_reorder</a>     (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> position</code></em>);
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-child-find" title="dbusmenu_menuitem_child_find ()">dbusmenu_menuitem_child_find</a>        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>);
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-find-id" title="dbusmenu_menuitem_find_id ()">dbusmenu_menuitem_find_id</a>           (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set" title="dbusmenu_menuitem_property_set ()">dbusmenu_menuitem_property_set</a>      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-bool" title="dbusmenu_menuitem_property_set_bool ()">dbusmenu_menuitem_property_set_bool</a> (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> value</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-int" title="dbusmenu_menuitem_property_set_int ()">dbusmenu_menuitem_property_set_int</a>  (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> value</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-variant" title="dbusmenu_menuitem_property_set_variant ()">dbusmenu_menuitem_property_set_variant</a>
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> *value</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get" title="dbusmenu_menuitem_property_get ()">dbusmenu_menuitem_property_get</a>      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-bool" title="dbusmenu_menuitem_property_get_bool ()">dbusmenu_menuitem_property_get_bool</a> (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-int" title="dbusmenu_menuitem_property_get_int ()">dbusmenu_menuitem_property_get_int</a>  (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *          <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-variant" title="dbusmenu_menuitem_property_get_variant ()">dbusmenu_menuitem_property_get_variant</a>
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-exist" title="dbusmenu_menuitem_property_exist ()">dbusmenu_menuitem_property_exist</a>    (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-properties-list" title="dbusmenu_menuitem_properties_list ()">dbusmenu_menuitem_properties_list</a>   (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="returnvalue">GHashTable</span></a> *        <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-properties-copy" title="dbusmenu_menuitem_properties_copy ()">dbusmenu_menuitem_properties_copy</a>   (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-remove" title="dbusmenu_menuitem_property_remove ()">dbusmenu_menuitem_property_remove</a>   (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-set-root" title="dbusmenu_menuitem_set_root ()">dbusmenu_menuitem_set_root</a>          (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> root</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-root" title="dbusmenu_menuitem_get_root ()">dbusmenu_menuitem_get_root</a>          (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-foreach" title="dbusmenu_menuitem_foreach ()">dbusmenu_menuitem_foreach</a>           (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><span class="type">void</span> (*func) (DbusmenuMenuitem * mi, gpointer data)</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-handle-event" title="dbusmenu_menuitem_handle_event ()">dbusmenu_menuitem_handle_event</a>      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> *variant</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> timestamp</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-send-about-to-show" title="dbusmenu_menuitem_send_about_to_show ()">dbusmenu_menuitem_send_about_to_show</a>
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><span class="type">void</span> (*cb) (DbusmenuMenuitem * mi, gpointer user_data)</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> cb_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-show-to-user" title="dbusmenu_menuitem_show_to_user ()">dbusmenu_menuitem_show_to_user</a>      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> timestamp</code></em>);
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-parent" title="dbusmenu_menuitem_get_parent ()">dbusmenu_menuitem_get_parent</a>        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-set-parent" title="dbusmenu_menuitem_set_parent ()">dbusmenu_menuitem_set_parent</a>        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *parent</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-unparent" title="dbusmenu_menuitem_unparent ()">dbusmenu_menuitem_unparent</a>          (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="libdbusmenu-glib-DbusmenuMenuitem.description"></a><h2>Description</h2>
+<p>
+A <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> is the lowest level of represenation of a
+single item in a menu.  It gets created on the server side
+and copied over to the client side where it gets rendered.  As
+the server starts to change it, and grow it, and do all kinds
+of fun stuff that information is transfered over DBus and the
+client updates it's understanding of the object model.
+</p>
+<p>
+Most people using either the client or the server should be
+able to deal mostly with <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> objects.  These
+are simple, but then they can be attached to more complex
+objects and handled appropriately.
+</p>
+</div>
+<div class="refsect1">
+<a name="libdbusmenu-glib-DbusmenuMenuitem.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-PROPERTY-CHANGED:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED    "property-changed"
+</pre>
+<p>
+String to attach to signal <span class="type">"property-changed"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-ITEM-ACTIVATED:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED      "item-activated"
+</pre>
+<p>
+String to attach to signal <span class="type">"item-activated"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-CHILD-ADDED:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED         "child-added"
+</pre>
+<p>
+String to attach to signal <span class="type">"child-added"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-CHILD-REMOVED:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED       "child-removed"
+</pre>
+<p>
+String to attach to signal <span class="type">"child-removed"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-CHILD-MOVED:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED         "child-moved"
+</pre>
+<p>
+String to attach to signal <span class="type">"child-moved"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-EVENT:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_EVENT</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_EVENT               "event"
+</pre>
+<p>
+String to attach to signal <span class="type">"event"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-REALIZED:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_REALIZED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_REALIZED            "realized"
+</pre>
+<p>
+String to attach to signal <span class="type">"realized"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-REALIZED-ID:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_REALIZED_ID         (g_signal_lookup(DBUSMENU_MENUITEM_SIGNAL_REALIZED, DBUSMENU_TYPE_MENUITEM))
+</pre>
+<p>
+ID to attach to signal <span class="type">"realized"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-ABOUT-TO-SHOW:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW       "about-to-show"
+</pre>
+<p>
+String to attach to signal <span class="type">"about-to-show"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SIGNAL-SHOW-TO-USER:CAPS"></a><h3>DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SIGNAL_SHOW_TO_USER        "show-to-user"
+</pre>
+<p>
+String to attach to signal <span class="type">"show-to-user"</span>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-TYPE:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_TYPE</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_TYPE                  "type"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property used to represent what type of menuitem
+this object represents.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-STRING:CAPS"><span class="type">G_VARIANT_TYPE_STRING</span></a>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-VISIBLE:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_VISIBLE</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_VISIBLE               "visible"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property used to represent whether the menuitem
+should be shown or not.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-BOOLEAN:CAPS"><span class="type">G_VARIANT_TYPE_BOOLEAN</span></a>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-ENABLED:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_ENABLED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_ENABLED               "enabled"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property used to represent whether the menuitem
+is clickable or not.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-BOOLEAN:CAPS"><span class="type">G_VARIANT_TYPE_BOOLEAN</span></a>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-LABEL:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_LABEL</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_LABEL                 "label"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property used for the text on the menu item.
+Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-STRING:CAPS"><span class="type">G_VARIANT_TYPE_STRING</span></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-ICON-NAME:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_ICON_NAME</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_ICON_NAME             "icon-name"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property that is the name of the icon under the
+Freedesktop.org icon naming spec.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-STRING:CAPS"><span class="type">G_VARIANT_TYPE_STRING</span></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-ICON-DATA:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_ICON_DATA</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property that is the raw data of a custom icon
+used in the application.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-VARIANT:CAPS"><span class="type">G_VARIANT_TYPE_VARIANT</span></a>
+</p>
+<p>
+It is recommended that this is not set directly but instead the
+libdbusmenu-gtk library is used with the function <a href="/usr/share/gtk-doc/html/libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-image"><code class="function">dbusmenu_menuitem_property_set_image()</code></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-TOGGLE-TYPE:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE           "toggle-type"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property that says what type of toggle entry should
+be shown in the menu.  Should be either <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_CHECK"><span class="type">DBUSMENU_MENUITEM_TOGGLE_CHECK</span></a>
+or <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_RADIO"><span class="type">DBUSMENU_MENUITEM_TOGGLE_RADIO</span></a>.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-STRING:CAPS"><span class="type">G_VARIANT_TYPE_STRING</span></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_TOGGLE_STATE          "toggle-state"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property that says what state a toggle entry should
+be shown as the menu.  Should be either <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED"><span class="type">DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED</span></a>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-CHECKED:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED"><span class="type">DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED</span></a> or <span class="type">DBUSMENU_MENUITEM_TOGGLE_STATUE_UNKNOWN</span>.
+Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-INT32:CAPS"><span class="type">G_VARIANT_TYPE_INT32</span></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "children-display"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property that tells how the children of this menuitem
+should be displayed.  Most likely this will be unset or of the value
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-CHILD-DISPLAY-SUBMENU:CAPS" title="DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU"><span class="type">DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU</span></a>.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-STRING:CAPS"><span class="type">G_VARIANT_TYPE_STRING</span></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_SHORTCUT</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_SHORTCUT              "shortcut"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property that is the entries that represent a shortcut
+to activate the menuitem.  It is an array of arrays of strings.
+Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-ARRAY:CAPS"><span class="type">G_VARIANT_TYPE_ARRAY</span></a>
+</p>
+<p>
+It is recommended that this is not set directly but instead the
+libdbusmenu-gtk library is used with the function <a href="/usr/share/gtk-doc/html/libdbusmenu-gtk/libdbusmenu-gtk-menuitem.html#dbusmenu-menuitem-property-set-shortcut"><code class="function">dbusmenu_menuitem_property_set_shortcut()</code></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS"></a><h3>DBUSMENU_MENUITEM_TOGGLE_CHECK</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
+</pre>
+<p>
+Used to set <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-TYPE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE"><span class="type">DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE</span></a> to be a standard
+check mark item.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS"></a><h3>DBUSMENU_MENUITEM_TOGGLE_RADIO</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
+</pre>
+<p>
+Used to set <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-TYPE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE"><span class="type">DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE</span></a> to be a standard
+radio item.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS"></a><h3>DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED     0
+</pre>
+<p>
+Used to set <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE"><span class="type">DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</span></a> so that the menu's
+toggle item is empty.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-TOGGLE-STATE-CHECKED:CAPS"></a><h3>DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED       1
+</pre>
+<p>
+Used to set <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE"><span class="type">DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</span></a> so that the menu's
+toggle item is filled.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-TOGGLE-STATE-UNKNOWN:CAPS"></a><h3>DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       -1
+</pre>
+<p>
+Used to set <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE"><span class="type">DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</span></a> so that the menu's
+toggle item is undecided.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-ICON-NAME-BLANK:CAPS"></a><h3>DBUSMENU_MENUITEM_ICON_NAME_BLANK</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
+</pre>
+<p>
+Used to set <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE"><span class="type">DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</span></a> so that the menu's
+toggle item is undecided.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-CHILD-DISPLAY-SUBMENU:CAPS"></a><h3>DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS" title="DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY"><span class="type">DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</span></a> to have the
+subitems displayed as a submenu.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SHORTCUT-ALT:CAPS"></a><h3>DBUSMENU_MENUITEM_SHORTCUT_ALT</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SHORTCUT_ALT               "Alt"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT"><span class="type">DBUSMENU_MENUITEM_PROP_SHORTCUT</span></a> to represent the
+alternate key.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS"></a><h3>DBUSMENU_MENUITEM_SHORTCUT_CONTROL</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SHORTCUT_CONTROL           "Control"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT"><span class="type">DBUSMENU_MENUITEM_PROP_SHORTCUT</span></a> to represent the
+control key.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS"></a><h3>DBUSMENU_MENUITEM_SHORTCUT_SHIFT</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SHORTCUT_SHIFT             "Shift"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT"><span class="type">DBUSMENU_MENUITEM_PROP_SHORTCUT</span></a> to represent the
+shift key.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS"></a><h3>DBUSMENU_MENUITEM_SHORTCUT_SUPER</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_SHORTCUT_SUPER             "Super"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT"><span class="type">DBUSMENU_MENUITEM_PROP_SHORTCUT</span></a> to represent the
+super key.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DbusmenuMenuitem"></a><h3>struct DbusmenuMenuitem</h3>
+<pre class="programlisting">struct DbusmenuMenuitem {
+	GObject parent;
+
+	/*&lt; Private &gt;*/
+	DbusmenuMenuitemPrivate * priv;
+};
+</pre>
+<p>
+This is the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> based object that represents a menu
+item.  It gets created the same on both the client and
+the server side and libdbusmenu-glib does the work of making
+this object model appear on both sides of DBus.  Simple
+really, though through updates and people coming on and off
+the bus it can lead to lots of fun complex scenarios.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> <em class="structfield"><code><a name="DbusmenuMenuitem.parent"></a>parent</code></em>;</span></p></td>
+<td>Parent object</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="type">DbusmenuMenuitemPrivate</span> *<em class="structfield"><code><a name="DbusmenuMenuitem.priv"></a>priv</code></em>;</span></p></td>
+<td>Private data</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-about-to-show-cb"></a><h3>dbusmenu_menuitem_about_to_show_cb ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*dbusmenu_menuitem_about_to_show_cb)
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>
+Callback prototype for a callback that is called when the
+menu should be shown.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>Menu item that should be shown</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>Extra user data sent with the function. <span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-buildvariant-slot-t"></a><h3>dbusmenu_menuitem_buildvariant_slot_t ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *          (*dbusmenu_menuitem_buildvariant_slot_t)
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **properties</code></em>);</pre>
+<p>
+This is the function that is called to represent this menu item
+as a variant.  Should call it's own children.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>Menu item that should be built from. <span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>properties</code></em> :</span></p></td>
+<td>A list of properties that should be the only ones in the resulting variant structure. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A variant representing this item and it's children. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DbusmenuMenuitemClass"></a><h3>struct DbusmenuMenuitemClass</h3>
+<pre class="programlisting">struct DbusmenuMenuitemClass {
+	GObjectClass parent_class;
+
+	/* Signals */
+	void (*property_changed) (gchar * property, GVariant * value);
+	void (*item_activated) (guint timestamp);
+	void (*child_added) (DbusmenuMenuitem * child, guint position);
+	void (*child_removed) (DbusmenuMenuitem * child);
+	void (*child_moved) (DbusmenuMenuitem * child, guint newpos, guint oldpos);
+	void (*realized) (void);
+
+	/* Virtual functions */
+	dbusmenu_menuitem_buildvariant_slot_t buildvariant;
+	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
+	void (*send_about_to_show) (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
+
+	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
+	gboolean (*about_to_show) (void);
+
+	void (*event) (const gchar * name, GVariant * value, guint timestamp);
+
+	/*&lt; Private &gt;*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+};
+</pre>
+<p>
+Functions and signals that every menuitem should know something 
+about.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObjectClass"><span class="type">GObjectClass</span></a> <em class="structfield"><code><a name="DbusmenuMenuitemClass.parent-class"></a>parent_class</code></em>;</span></p></td>
+<td>Functions and signals from our parent</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.property-changed"></a>property_changed</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"property-changed"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.item-activated"></a>item_activated</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"item-activated"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.child-added"></a>child_added</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"child-added"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.child-removed"></a>child_removed</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"child-removed"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.child-moved"></a>child_moved</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"child-moved"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.realized"></a>realized</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"realized"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-buildvariant-slot-t" title="dbusmenu_menuitem_buildvariant_slot_t ()"><span class="type">dbusmenu_menuitem_buildvariant_slot_t</span></a> <em class="structfield"><code><a name="DbusmenuMenuitemClass.buildvariant"></a>buildvariant</code></em>;</span></p></td>
+<td>Virtual function that appends the strings required to represent this menu item in the menu variant.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.handle-event"></a>handle_event</code></em> ()</span></p></td>
+<td>This function is to override how events are handled by subclasses.  Look at <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-handle-event" title="dbusmenu_menuitem_handle_event ()"><span class="type">dbusmenu_menuitem_handle_event</span></a> for lots of good information.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.show-to-user"></a>show_to_user</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"show-to-user"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.about-to-show"></a>about_to_show</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"about-to-show"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.event"></a>event</code></em> ()</span></p></td>
+<td>Slot for <span class="type">"event"</span>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.reserved1"></a>reserved1</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.reserved2"></a>reserved2</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.reserved3"></a>reserved3</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.reserved4"></a>reserved4</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuMenuitemClass.reserved5"></a>reserved5</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-new"></a><h3>dbusmenu_menuitem_new ()</h3>
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_menuitem_new               (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Create a new <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> with all default values.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A newly allocated <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>.</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-new-with-id"></a><h3>dbusmenu_menuitem_new_with_id ()</h3>
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_menuitem_new_with_id       (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>);</pre>
+<p>
+This creates a blank <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> with a specific ID.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
+<td>ID to use for this menuitem</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A newly allocated <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-get-id"></a><h3>dbusmenu_menuitem_get_id ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                dbusmenu_menuitem_get_id            (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<p>
+Gets the unique ID for <em class="parameter"><code>mi</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to query.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The ID of the <em class="parameter"><code>mi</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-get-children"></a><h3>dbusmenu_menuitem_get_children ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             dbusmenu_menuitem_get_children      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<p>
+Returns simply the list of children that this menu item
+has.  The list is valid until another child related function
+is called, where it might be changed.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to query.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of pointers to <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> objects. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-take-children"></a><h3>dbusmenu_menuitem_take_children ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             dbusmenu_menuitem_take_children     (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<p>
+While the name sounds devious that's exactly what this function
+does.  It takes the list of children from the <em class="parameter"><code>mi</code></em> and clears the
+internal list.  The calling function is now in charge of the ref's
+on the children it has taken.  A lot of responsibility involved
+in taking children.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <span class="type">DbusmenMenuitem</span> to take the children from.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of pointers to <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> objects. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> Dbusmenu.Menuitem]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-get-position"></a><h3>dbusmenu_menuitem_get_position ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               dbusmenu_menuitem_get_position      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *parent</code></em>);</pre>
+<p>
+This function returns the position of the menu item <em class="parameter"><code>mi</code></em>
+in the children of <em class="parameter"><code>parent</code></em>.  It will return zero if the
+menu item can't be found.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to find the position of</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>parent</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> who's children contain <em class="parameter"><code>mi</code></em>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The position of <em class="parameter"><code>mi</code></em> in the children of <em class="parameter"><code>parent</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-get-position-realized"></a><h3>dbusmenu_menuitem_get_position_realized ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               dbusmenu_menuitem_get_position_realized
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *parent</code></em>);</pre>
+<p>
+This function is very similar to <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-get-position" title="dbusmenu_menuitem_get_position ()"><span class="type">dbusmenu_menuitem_get_position</span></a>
+except that it only counts in the children that have been realized.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to find the position of</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>parent</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> who's children contain <em class="parameter"><code>mi</code></em>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The position of <em class="parameter"><code>mi</code></em> in the realized children of <em class="parameter"><code>parent</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-child-append"></a><h3>dbusmenu_menuitem_child_append ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_child_append      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>);</pre>
+<p>
+This function adds <em class="parameter"><code>child</code></em> to the list of children on <em class="parameter"><code>mi</code></em> at
+the end of that list.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> which will become a new parent</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>child</code></em> :</span></p></td>
+<td>The <span class="type">DbusmenMenuitem</span> that will be a child</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>Whether the child has been added successfully.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-child-prepend"></a><h3>dbusmenu_menuitem_child_prepend ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_child_prepend     (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>);</pre>
+<p>
+This function adds <em class="parameter"><code>child</code></em> to the list of children on <em class="parameter"><code>mi</code></em> at
+the beginning of that list.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> which will become a new parent</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>child</code></em> :</span></p></td>
+<td>The <span class="type">DbusmenMenuitem</span> that will be a child</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>Whether the child has been added successfully.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-child-delete"></a><h3>dbusmenu_menuitem_child_delete ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_child_delete      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>);</pre>
+<p>
+This function removes <em class="parameter"><code>child</code></em> from the children list of <em class="parameter"><code>mi</code></em>.  It does
+not call <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><span class="type">g_object_unref</span></a> on <em class="parameter"><code>child</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> which has <em class="parameter"><code>child</code></em> as a child</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>child</code></em> :</span></p></td>
+<td>The child <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> that you want to no longer
+be a child of <em class="parameter"><code>mi</code></em>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>If we were able to delete <em class="parameter"><code>child</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-child-add-position"></a><h3>dbusmenu_menuitem_child_add_position ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_child_add_position
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> position</code></em>);</pre>
+<p>
+Puts <em class="parameter"><code>child</code></em> in the list of children for <em class="parameter"><code>mi</code></em> at the location
+specified in <em class="parameter"><code>position</code></em>.  If there is not enough entires available
+then <em class="parameter"><code>child</code></em> will be placed at the end of the list.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> that we're adding the child <em class="parameter"><code>child</code></em> to.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>child</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to make a child of <em class="parameter"><code>mi</code></em>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>position</code></em> :</span></p></td>
+<td>Where in <em class="parameter"><code>mi</code></em> object's list of chidren <em class="parameter"><code>child</code></em> should be placed.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>Whether <em class="parameter"><code>child</code></em> was added successfully.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-child-reorder"></a><h3>dbusmenu_menuitem_child_reorder ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_child_reorder     (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *child</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> position</code></em>);</pre>
+<p>
+This function moves a child on the list of children.  It is
+for a child that is already in the list, but simply needs a 
+new location.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> that has children needing realignment</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>child</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> that is a child needing to be moved</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>position</code></em> :</span></p></td>
+<td>The position in the list to place it in</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>Whether the move was successful.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-child-find"></a><h3>dbusmenu_menuitem_child_find ()</h3>
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_menuitem_child_find        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>);</pre>
+<p>
+Search the children of <em class="parameter"><code>mi</code></em> to find one with the ID of <em class="parameter"><code>id</code></em>.
+If it doesn't exist then we return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> who's children to look on</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
+<td>The ID of the child that we're looking for.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The menu item with the ID <em class="parameter"><code>id</code></em> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if it
+can't be found. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-find-id"></a><h3>dbusmenu_menuitem_find_id ()</h3>
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_menuitem_find_id           (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> id</code></em>);</pre>
+<p>
+This function searchs the whole tree of children that
+are attached to <em class="parameter"><code>mi</code></em>.  This could be quite a few nodes, all
+the way down the tree.  It is a depth first search.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> at the top of the tree to search</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
+<td>ID of the <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to search for</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> with the ID of <em class="parameter"><code>id</code></em>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if there isn't such a menu item in the tree
+represented by <em class="parameter"><code>mi</code></em>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-set"></a><h3>dbusmenu_menuitem_property_set ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);</pre>
+<p>
+Takes the pair of <em class="parameter"><code>property</code></em> and <em class="parameter"><code>value</code></em> and places them as a
+property on <em class="parameter"><code>mi</code></em>.  If a property already exists by that name,
+then the value is set to the new value.  If not, the property
+is added.  If the value is changed or the property was previously
+unset then the signal <span class="type">"prop-changed"</span> will be
+emitted by this function.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>Name of the property to set.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>The value of the property.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A boolean representing if the property value was set.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-set-bool"></a><h3>dbusmenu_menuitem_property_set_bool ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_bool (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> value</code></em>);</pre>
+<p>
+Takes a boolean <em class="parameter"><code>value</code></em> and sets it on <em class="parameter"><code>property</code></em> as a
+property on <em class="parameter"><code>mi</code></em>.  If a property already exists by that name,
+then the value is set to the new value.  If not, the property
+is added.  If the value is changed or the property was previously
+unset then the signal <span class="type">"prop-changed"</span> will be
+emitted by this function.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>Name of the property to set.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>The value of the property.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A boolean representing if the property value was set.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-set-int"></a><h3>dbusmenu_menuitem_property_set_int ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_int  (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> value</code></em>);</pre>
+<p>
+Takes a boolean <em class="parameter"><code>value</code></em> and sets it on <em class="parameter"><code>property</code></em> as a
+property on <em class="parameter"><code>mi</code></em>.  If a property already exists by that name,
+then the value is set to the new value.  If not, the property
+is added.  If the value is changed or the property was previously
+unset then the signal <span class="type">"prop-changed"</span> will be
+emitted by this function.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>Name of the property to set.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>The value of the property.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A boolean representing if the property value was set.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-set-variant"></a><h3>dbusmenu_menuitem_property_set_variant ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_variant
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> *value</code></em>);</pre>
+<p>
+Takes the pair of <em class="parameter"><code>property</code></em> and <em class="parameter"><code>value</code></em> and places them as a
+property on <em class="parameter"><code>mi</code></em>.  If a property already exists by that name,
+then the value is set to the new value.  If not, the property
+is added.  If the value is changed or the property was previously
+unset then the signal <span class="type">"prop-changed"</span> will be
+emitted by this function.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>Name of the property to set.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>The value of the property.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A boolean representing if the property value was set.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-get"></a><h3>dbusmenu_menuitem_property_get ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       dbusmenu_menuitem_property_get      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);</pre>
+<p>
+Look up a property on <em class="parameter"><code>mi</code></em> and return the value of it if
+it exits.  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> will be returned if the property doesn't
+exist.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to look for the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>The property to grab.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A string with the value of the property
+that shouldn't be free'd.  Or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if the property
+is not set or is not a string. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-get-bool"></a><h3>dbusmenu_menuitem_property_get_bool ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_get_bool (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);</pre>
+<p>
+Look up a property on <em class="parameter"><code>mi</code></em> and return the value of it if
+it exits.  Returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><span class="type">FALSE</span></a> if the property doesn't exist.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to look for the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>The property to grab.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The value of the property or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><span class="type">FALSE</span></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-get-int"></a><h3>dbusmenu_menuitem_property_get_int ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                dbusmenu_menuitem_property_get_int  (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);</pre>
+<p>
+Look up a property on <em class="parameter"><code>mi</code></em> and return the value of it if
+it exits.  Returns zero if the property doesn't exist.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to look for the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>The property to grab.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The value of the property or zero.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-get-variant"></a><h3>dbusmenu_menuitem_property_get_variant ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *          dbusmenu_menuitem_property_get_variant
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);</pre>
+<p>
+Look up a property on <em class="parameter"><code>mi</code></em> and return the value of it if
+it exits.  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> will be returned if the property doesn't
+exist.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to look for the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>The property to grab.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A GVariant for the property. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-exist"></a><h3>dbusmenu_menuitem_property_exist ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_exist    (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);</pre>
+<p>
+Checkes to see if a particular property exists on <em class="parameter"><code>mi</code></em> and 
+returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if so.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to look for the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>The property to look for.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A boolean checking to see if the property is available</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-properties-list"></a><h3>dbusmenu_menuitem_properties_list ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             dbusmenu_menuitem_properties_list   (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<p>
+This functiong gets a list of the names of all the properties
+that are set on this menu item.  This data on the list is owned
+by the menuitem but the list is not and should be freed using
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a> when the calling function is done with it.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to list the properties on</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A list of strings or NULL if there are
+none. <span class="annotation">[<acronym title="Free data container after the code is done."><span class="acronym">transfer container</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-properties-copy"></a><h3>dbusmenu_menuitem_properties_copy ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="returnvalue">GHashTable</span></a> *        dbusmenu_menuitem_properties_copy   (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<p>
+This function takes the properties of a <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>
+and puts them into a <a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> that is referenced by the
+key of a string and has the value of a string.  The hash
+table may not have any entries if there aren't any or there
+is an error in processing.  It is the caller's responsibility
+to destroy the created <a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> that we're interested in the properties of</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A brand new <a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> that contains all of
+theroperties that are on this <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> <em class="parameter"><code>mi</code></em>. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-remove"></a><h3>dbusmenu_menuitem_property_remove ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbusmenu_menuitem_property_remove   (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);</pre>
+<p>
+Removes a property from the menuitem.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to remove the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>The property to look for.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-set-root"></a><h3>dbusmenu_menuitem_set_root ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbusmenu_menuitem_set_root          (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> root</code></em>);</pre>
+<p>
+This function sets the internal value of whether this is a
+root node or not.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set whether it's root</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>root</code></em> :</span></p></td>
+<td>Whether <em class="parameter"><code>mi</code></em> is a root node or not</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-get-root"></a><h3>dbusmenu_menuitem_get_root ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_get_root          (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<p>
+This function returns the internal value of whether this is a
+root node or not.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to see whether it's root</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if this is a root node</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-foreach"></a><h3>dbusmenu_menuitem_foreach ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbusmenu_menuitem_foreach           (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><span class="type">void</span> (*func) (DbusmenuMenuitem * mi, gpointer data)</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+<p>
+This calls the function <em class="parameter"><code>func</code></em> on this menu item and all
+of the children of this item.  And their children.  And
+their children.  And... you get the point.  It will get
+called on the whole tree.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <span class="type">DbusmenItem</span> to start from</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
+<td>Function to call on every node in the tree</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td>User data to pass to the function. <span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-handle-event"></a><h3>dbusmenu_menuitem_handle_event ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbusmenu_menuitem_handle_event      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> *variant</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> timestamp</code></em>);</pre>
+<p>
+This function is called to create an event.  It is likely
+to be overrided by subclasses.  The default menu item
+will respond to the activate signal and do:
+</p>
+<p>
+Emits the <span class="type">"item-activate"</span> signal on this
+menu item.  Called by server objects when they get the
+appropriate DBus signals from the client.
+</p>
+<p>
+If you subclass this function you should really think
+about calling the parent function unless you have a good
+reason not to.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to send the signal on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>The name of the signal</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>variant</code></em> :</span></p></td>
+<td>A value that could be set for the event</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>timestamp</code></em> :</span></p></td>
+<td>The timestamp of when the event happened</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-send-about-to-show"></a><h3>dbusmenu_menuitem_send_about_to_show ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbusmenu_menuitem_send_about_to_show
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><span class="type">void</span> (*cb) (DbusmenuMenuitem * mi, gpointer user_data)</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> cb_data</code></em>);</pre>
+<p>
+This function is used to send the even that the submenu
+of this item is about to be shown.  Callers to this event
+should delay showing the menu until their callback is
+called if possible.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to send the signal on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cb</code></em> :</span></p></td>
+<td>Callback to call when the call has returned.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cb_data</code></em> :</span></p></td>
+<td>Data to pass to the callback. <span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-show-to-user"></a><h3>dbusmenu_menuitem_show_to_user ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                dbusmenu_menuitem_show_to_user      (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> timestamp</code></em>);</pre>
+<p>
+Signals that this menu item should be shown to the user.  If this is
+server side the server will then take it and send it over the
+bus.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to show</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>timestamp</code></em> :</span></p></td>
+<td>The time that the user requested it to be shown</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-get-parent"></a><h3>dbusmenu_menuitem_get_parent ()</h3>
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_menuitem_get_parent        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<p>
+This function looks up the parent of <em class="parameter"><code>mi</code></em>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> for which to inspect the parent</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The parent of this menu item. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-set-parent"></a><h3>dbusmenu_menuitem_set_parent ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_set_parent        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *parent</code></em>);</pre>
+<p>
+Sets the parent of <em class="parameter"><code>mi</code></em> to <em class="parameter"><code>parent</code></em>. If <em class="parameter"><code>mi</code></em> already
+has a parent, then this call will fail. The parent will
+be set automatically when using the usual methods to add a
+child menuitem, so this function should not normally be 
+called directly
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> for which to set the parent</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>parent</code></em> :</span></p></td>
+<td>The new parent <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>Whether the parent was set successfully</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-unparent"></a><h3>dbusmenu_menuitem_unparent ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_unparent          (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>);</pre>
+<p>
+Unparents the menu item <em class="parameter"><code>mi</code></em>. If <em class="parameter"><code>mi</code></em> doesn't have a
+parent, then this call will fail. The menuitem will
+be unparented automatically when using the usual methods
+to delete a child menuitem, so this function should not
+normally be called directly
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to unparent</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>Whether the menu item was unparented successfully</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.16</div>
+</body>
+</html>

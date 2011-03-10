@@ -38,8 +38,11 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 /* Private */
 struct _DbusmenuGtkClientPrivate {
+	GStrv old_themedirs;
 	GtkAccelGroup * agroup;
 };
+
+GHashTable * theme_dir_db = NULL;
 
 #define DBUSMENU_GTKCLIENT_GET_PRIVATE(o) (DBUSMENU_GTKCLIENT(o)->priv)
 #define USE_FALLBACK_PROP  "use-fallback"
@@ -54,6 +57,8 @@ static void new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint po
 static void delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient * gtkclient);
 static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint new, guint old, DbusmenuGtkClient * gtkclient);
 static void item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata);
+static void theme_dir_changed (DbusmenuClient * client, GStrv theme_dirs, gpointer userdata);
+static void remove_theme_dirs (GtkIconTheme * theme, GStrv dirs);
 
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
@@ -89,6 +94,23 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(self);
 
 	priv->agroup = NULL;
+	priv->old_themedirs = NULL;
+
+	/* We either build the theme db or we get a reference
+	   to it.  This way when all clients die the hashtable
+	   will be free'd as well. */
+	if (theme_dir_db == NULL) {
+		theme_dir_db = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+
+		/* NOTE: We're adding an extra ref here because there
+		   is no way to clear the pointer when the hash table
+		   dies, so it's safer to keep the hash table around
+		   forever than not know if it's free'd or not.  Patch
+		   submitted to GLib. */
+		g_hash_table_ref(theme_dir_db);
+	} else {
+		g_hash_table_ref(theme_dir_db);
+	}
 
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_DEFAULT,   new_item_normal);
 	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(self), DBUSMENU_CLIENT_TYPES_SEPARATOR, new_item_seperator);
@@ -96,6 +118,9 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	/* TODO: I think these can be handled in the class... */
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE, G_CALLBACK(item_activate), NULL);
+	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED, G_CALLBACK(theme_dir_changed), NULL);
+
+	theme_dir_changed(DBUSMENU_CLIENT(self), dbusmenu_client_get_icon_paths(DBUSMENU_CLIENT(self)), NULL);
 
 	return;
 }
@@ -111,6 +136,18 @@ dbusmenu_gtkclient_dispose (GObject *object)
 		priv->agroup = NULL;
 	}
 
+	if (priv->old_themedirs) {
+		remove_theme_dirs(gtk_icon_theme_get_default(), priv->old_themedirs);
+		g_strfreev(priv->old_themedirs);
+		priv->old_themedirs = NULL;
+	}
+
+	if (theme_dir_db != NULL) {
+		g_hash_table_unref(theme_dir_db);
+	} else {
+		g_assert_not_reached();
+	}
+
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->dispose (object);
 	return;
 }
@@ -121,6 +158,141 @@ dbusmenu_gtkclient_finalize (GObject *object)
 {
 
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->finalize (object);
+	return;
+}
+
+/* Add a theme directory to the table and the theme's list of available
+   themes to use. */
+static void
+theme_dir_ref (GtkIconTheme * theme, GHashTable * db, const gchar * dir)
+{
+	g_return_if_fail(db != NULL);
+	g_return_if_fail(theme != NULL);
+	g_return_if_fail(dir != NULL);
+
+	int count = 0;
+	if ((count = GPOINTER_TO_INT(g_hash_table_lookup(db, dir))) != 0) {
+		/* It exists so what we need to do is increase the ref
+		   count of this dir. */
+		count++;
+	} else {
+		/* It doesn't exist, so we need to add it to the table
+		   and to the search path. */
+		gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), dir);
+		g_debug("\tAppending search path: %s", dir);
+		count = 1;
+	}
+
+	g_hash_table_insert(db, g_strdup(dir), GINT_TO_POINTER(count));
+
+	return;
+}
+
+/* Unreference the theme directory, and if it's count goes to zero then
+   we need to remove it from the search path. */
+static void
+theme_dir_unref (GtkIconTheme * theme, GHashTable * db, const gchar * dir)
+{
+	g_return_if_fail(db != NULL);
+	g_return_if_fail(theme != NULL);
+	g_return_if_fail(dir != NULL);
+
+	/* Grab the count for this dir */
+	int count = GPOINTER_TO_INT(g_hash_table_lookup(db, dir));
+
+	/* Is this a simple deprecation, if so, we can just lower the
+	   number and move on. */
+	if (count > 1) {
+		count--;
+		g_hash_table_insert(db, g_strdup(dir), GINT_TO_POINTER(count));
+		return;
+	}
+
+	/* Try to remove it from the hash table, this makes sure
+	   that it existed */
+	if (!g_hash_table_remove(db, dir)) {
+		g_warning("Unref'd a directory that wasn't in the theme dir hash table.");
+		return;
+	}
+
+	gchar ** paths;
+	gint path_count;
+
+	gtk_icon_theme_get_search_path(theme, &paths, &path_count);
+
+	gint i;
+	gboolean found = FALSE;
+	for (i = 0; i < path_count; i++) {
+		if (found) {
+			/* If we've already found the right entry */
+			paths[i - 1] = paths[i];
+		} else {
+			/* We're still looking, is this the one? */
+			if (!g_strcmp0(paths[i], dir)) {
+				found = TRUE;
+				/* We're freeing this here as it won't be captured by the
+				   g_strfreev() below as it's out of the array. */
+				g_free(paths[i]);
+			}
+		}
+	}
+	
+	/* If we found one we need to reset the path to
+	   accomidate the changes */
+	if (found) {
+		paths[path_count - 1] = NULL; /* Clear the last one */
+		gtk_icon_theme_set_search_path(theme, (const gchar **)paths, path_count - 1);
+	}
+
+	g_strfreev(paths);
+
+	return;
+}
+
+/* Unregister this list of theme directories */
+static void
+remove_theme_dirs (GtkIconTheme * theme, GStrv dirs)
+{
+	g_return_if_fail(GTK_ICON_THEME(theme));
+	g_return_if_fail(dirs != NULL);
+
+	int dir;
+
+	for (dir = 0; dirs[dir] != NULL; dir++) {
+		theme_dir_unref(theme, theme_dir_db, dirs[dir]);
+	}
+
+	return;
+}
+
+/* Called when the theme directories are changed by the
+   server part of things. */
+static void
+theme_dir_changed (DbusmenuClient * client, GStrv theme_dirs, gpointer userdata)
+{
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(client);
+	GtkIconTheme * theme = gtk_icon_theme_get_default();
+
+	/* Ref the new directories */
+	if (theme_dirs != NULL) {
+		int dir;
+		for (dir = 0; theme_dirs[dir] != NULL; dir++) {
+			theme_dir_ref(theme, theme_dir_db, theme_dirs[dir]);
+		}
+	}
+
+	/* Unref the old ones */
+	if (priv->old_themedirs) {
+		remove_theme_dirs(theme, priv->old_themedirs);
+		g_strfreev(priv->old_themedirs);
+		priv->old_themedirs = NULL;
+	}
+
+	/* Copy the new to the old */
+	if (theme_dirs != NULL) {
+		priv->old_themedirs = g_strdupv(theme_dirs);
+	}
+
 	return;
 }
 
@@ -697,6 +869,7 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 
 	if (gmi != NULL) {
 		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+		g_object_unref(gmi);
 	} else {
 		return FALSE;
 	}
@@ -869,6 +1042,9 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 				gtkimage = gtk_image_new_from_pixbuf(image);
 			} else {
 				gtk_image_set_from_pixbuf(GTK_IMAGE(gtkimage), image);
+			}
+			if (image) {
+				g_object_unref(image);
 			}
 		}
 

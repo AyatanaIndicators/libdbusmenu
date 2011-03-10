@@ -119,12 +119,7 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 		g_error_free(error);
 	}
 
-	error = NULL;
-	g_input_stream_close(input, NULL, &error);
-	if (error != NULL) {
-		g_warning("Unable to close input stream: %s", error->message);
-		g_error_free(error);
-	}
+	g_object_unref(input);
 	g_free(icondata);
 
 	return icon;

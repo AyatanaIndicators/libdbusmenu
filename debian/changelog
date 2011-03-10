@@ -1,3 +1,20 @@
+libdbusmenu (0.3.101-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    ∘ Add helper to get cached menuitem from widget
+    ∘ Have the GTK Dbusmenu Client handle theme directories (LP: #727325)
+    ∘ Fix a bunch of memory leaks (LP: #722972)
+    ∘ Handle _ in menuitems more correctly when parsing (LP: #621301) 
+    ∘ Protect from NULL layout_props (LP: #729722)
+    ∘ Remove the property from the hashtable before signaling that
+      it's been changed (LP: #725603)
+    ∘ Wrap emitted properties in a variant
+    ∘ Fix enum templates so they can be included by other programs
+      without error
+    ∘ Setting the cached menu item (LP: #723463) (LP: #729128) (LP: #729194)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Mar 2011 11:12:50 -0600
+
 libdbusmenu (0.3.100-0ubuntu4) natty; urgency=low
 
   * libdbusmenu-gtk/parser.c
