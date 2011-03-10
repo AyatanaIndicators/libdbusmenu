@@ -109,6 +109,25 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
   return recurse.parent;
 }
 
+/**
+ * dbusmenu_gtk_parse_get_cached_item:
+ * @widget: A #GtkMenuItem that may have a cached #DbusmenuMenuitem from the parser
+ *
+ * The Dbusmenu GTK parser adds cached items on the various
+ * menu items throughout the tree.  Sometimes it can be useful
+ * to get that cached item to use directly.  This function
+ * will retrieve it for you.
+ *
+ * Return value: (transfer none): A pointer to the cached item
+ * or NULL if it isn't there.
+ */
+DbusmenuMenuitem *
+dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget)
+{
+	g_return_val_if_fail(GTK_IS_MENU_ITEM(widget), NULL);
+	return DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM));
+}
+
 static void
 parse_data_free (gpointer data)
 {

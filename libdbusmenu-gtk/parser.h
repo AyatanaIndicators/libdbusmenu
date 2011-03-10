@@ -35,6 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 G_BEGIN_DECLS
 
 DbusmenuMenuitem * dbusmenu_gtk_parse_menu_structure (GtkWidget * widget);
+DbusmenuMenuitem * dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget);
 
 /**
 	SECTION:parser
