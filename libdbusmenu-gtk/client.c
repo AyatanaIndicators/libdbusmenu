@@ -120,6 +120,8 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE, G_CALLBACK(item_activate), NULL);
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED, G_CALLBACK(theme_dir_changed), NULL);
 
+	theme_dir_changed(DBUSMENU_CLIENT(self), dbusmenu_client_get_icon_paths(DBUSMENU_CLIENT(self)), NULL);
+
 	return;
 }
 
