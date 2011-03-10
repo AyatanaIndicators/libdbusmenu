@@ -1056,8 +1056,37 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		}
 
 		priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
+		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_TEXT_DIRECTION);
 
 		g_variant_unref(textdir);
+	}
+
+	/* Check the status if available */
+	GVariant * status = g_dbus_proxy_get_cached_property(priv->menuproxy, "Status");
+	if (textdir != NULL) {
+		GVariant * str = status;
+		if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
+			str = g_variant_get_variant(str);
+		}
+
+		priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(str, NULL));
+		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
+
+		g_variant_unref(status);
+	}
+
+	/* Get the icon theme directories if available */
+	GVariant * icon_dirs = g_dbus_proxy_get_cached_property(priv->menuproxy, "IconThemePath");
+	if (icon_dirs != NULL) {
+		if (priv->icon_dirs != NULL) {
+			g_strfreev(priv->icon_dirs);
+			priv->icon_dirs = NULL;
+		}
+
+		priv->icon_dirs = g_variant_dup_strv(icon_dirs, NULL);
+		g_signal_emit(G_OBJECT(client), signals[ICON_THEME_DIRS], 0, priv->icon_dirs, TRUE);
+
+		g_variant_unref(icon_dirs);
 	}
 
 	/* If we get here, we don't need the DBus proxy */
