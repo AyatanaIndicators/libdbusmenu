@@ -1,0 +1,40 @@
+<!-- ##### SECTION Title ##### -->
+parser
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### FUNCTION dbusmenu_gtk_parse_menu_structure ##### -->
+<para>
+
+</para>
+
+@widget: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_gtk_parse_get_cached_item ##### -->
+<para>
+
+</para>
+
+@widget: 
+@Returns: 
+
+

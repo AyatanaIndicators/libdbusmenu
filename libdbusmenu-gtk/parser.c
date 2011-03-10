@@ -109,6 +109,25 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
   return recurse.parent;
 }
 
+/**
+ * dbusmenu_gtk_parse_get_cached_item:
+ * @widget: A #GtkMenuItem that may have a cached #DbusmenuMenuitem from the parser
+ *
+ * The Dbusmenu GTK parser adds cached items on the various
+ * menu items throughout the tree.  Sometimes it can be useful
+ * to get that cached item to use directly.  This function
+ * will retrieve it for you.
+ *
+ * Return value: (transfer none): A pointer to the cached item
+ * or NULL if it isn't there.
+ */
+DbusmenuMenuitem *
+dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget)
+{
+	g_return_val_if_fail(GTK_IS_MENU_ITEM(widget), NULL);
+	return DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM));
+}
+
 static void
 parse_data_free (gpointer data)
 {
@@ -219,6 +238,7 @@ new_menuitem (GtkWidget * widget)
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
+	g_object_set_data(G_OBJECT(widget), CACHED_MENUITEM, item);
 
 	return item;
 }
@@ -311,6 +331,10 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
 			/* Oops, let's tell our parents about us */
 			if (peek == NULL) {
+				if (dbusmenu_menuitem_get_parent(thisitem) != NULL) {
+					dbusmenu_menuitem_unparent(thisitem);
+				}
+
 				gint pos = get_child_position (widget);
 				if (pos >= 0)
 					dbusmenu_menuitem_child_add_position (recurse->parent,
@@ -338,6 +362,49 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 	}
 
 	return;
+}
+
+static gchar *
+sanitize_label_text (const gchar * label)
+{
+	/* Label contains underscores, which we like, and pango markup,
+           which we don't. */
+	gchar * sanitized = NULL;
+	GError * error = NULL;
+	if (pango_parse_markup (label, -1, 0, NULL, &sanitized, NULL, &error)) {
+		return sanitized;
+	}
+	else {
+		g_warning ("Could not parse '%s': %s", label, error->message);
+		g_error_free (error);
+		return g_strdup (label);
+	}
+}
+
+static gchar *
+sanitize_label (GtkLabel * label)
+{
+	gchar * text;
+
+	if (gtk_label_get_use_markup (label)) {
+		text = sanitize_label_text (gtk_label_get_label (label));
+	}
+	else {
+		text = g_strdup (gtk_label_get_label (label));
+	}
+
+	if (!gtk_label_get_use_underline (label)) {
+		/* Insert extra underscores */
+		GRegex * regex = g_regex_new ("_", 0, 0, NULL);
+		gchar * escaped = g_regex_replace_literal (regex, text, -1, 0, "__", 0, NULL);
+
+		g_regex_unref (regex);
+		g_free (text);
+
+		text = escaped;
+	}
+
+	return text;
 }
 
 /* Turn a widget into a dbusmenu item depending on the type of GTK
@@ -423,9 +490,9 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
             {
               // Sometimes, an app will directly find and modify the label
               // (like empathy), so watch the label especially for that.
-              dbusmenu_menuitem_property_set (mi,
-                                              "label",
-                                              gtk_label_get_text (GTK_LABEL (label)));
+              gchar * text = sanitize_label (GTK_LABEL (label));
+              dbusmenu_menuitem_property_set (mi, "label", text);
+              g_free (text);
 
               pdata->label = label;
               g_signal_connect (G_OBJECT (label),
@@ -668,9 +735,11 @@ label_notify_cb (GtkWidget  *widget,
 
   if (pspec->name == g_intern_static_string ("label"))
     {
+      gchar * text = sanitize_label (GTK_LABEL (widget));
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      gtk_label_get_text (GTK_LABEL (widget)));
+                                      text);
+      g_free (text);
     }
 }
 
@@ -724,9 +793,11 @@ action_notify_cb (GtkAction  *action,
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
+      gchar * text = sanitize_label_text (gtk_action_get_label (action));
       dbusmenu_menuitem_property_set (mi,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      gtk_action_get_label (action));
+                                      text);
+      g_free (text);
     }
 }
 
