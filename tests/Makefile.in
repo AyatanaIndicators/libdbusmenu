@@ -40,8 +40,7 @@ TESTS = test-glib-objects-test test-glib-events test-glib-layout \
 	test-glib-properties test-glib-proxy \
 	test-glib-simple-items$(EXEEXT) test-glib-submenu test-json \
 	test-gtk-objects-test test-gtk-label test-gtk-shortcut \
-	test-gtk-shortcut-python test-gtk-reorder test-gtk-submenu \
-	test-gtk-parser-test test-glib-simple-items.py
+	test-gtk-reorder test-gtk-submenu test-gtk-parser-test
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-objects$(EXEEXT) test-glib-events-client$(EXEEXT) \
 	test-glib-events-server$(EXEEXT) \
@@ -65,12 +64,7 @@ DIST_COMMON = $(libdbusmenu_jsonloaderinclude_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/dbusmenu-jsonloader-0.4.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
-	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
-	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -649,6 +643,15 @@ EXTRA_DIST = test-glib-simple-items.py test-gtk-shortcut-client.py \
 	dbusmenu-gtk/mago_tests/data/static.json \
 	dbusmenu-gtk/mago_tests/data/test-gtk-label.json \
 	test-json-01.json
+
+# The Python test only work on the system copy of
+# dbusmenu, so while they can be usefule they're not
+# good tests of what you're currently building.  Handy
+# to check GI support though. FIXME!
+PYTHON_TESTS = \
+	test-gtk-shortcut-python \
+	test-glib-simple-items.py
+
 XVFB_RUN = ". $(srcdir)/run-xvfb.sh"
 
 # for the GI tests, prefer/use the typelibs from the local build tree

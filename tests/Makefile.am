@@ -17,10 +17,16 @@ TESTS = \
 	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-shortcut \
-	test-gtk-shortcut-python \
 	test-gtk-reorder \
 	test-gtk-submenu \
-	test-gtk-parser-test \
+	test-gtk-parser-test
+
+# The Python test only work on the system copy of
+# dbusmenu, so while they can be usefule they're not
+# good tests of what you're currently building.  Handy
+# to check GI support though. FIXME!
+PYTHON_TESTS = \
+	test-gtk-shortcut-python \
 	test-glib-simple-items.py
 
 check_PROGRAMS = \
