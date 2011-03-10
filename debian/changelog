@@ -1,4 +1,4 @@
-libdbusmenu (0.3.101-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.101-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     ∘ Add helper to get cached menuitem from widget
@@ -13,7 +13,7 @@ libdbusmenu (0.3.101-0ubuntu1~ppa1) UNRELEASED; urgency=low
       without error
     ∘ Setting the cached menu item (LP: #723463) (LP: #729128) (LP: #729194)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Mar 2011 11:03:27 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Mar 2011 11:12:50 -0600
 
 libdbusmenu (0.3.100-0ubuntu4) natty; urgency=low
 
