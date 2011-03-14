@@ -371,14 +371,20 @@ sanitize_label_text (const gchar * label)
            which we don't. */
 	gchar * sanitized = NULL;
 	GError * error = NULL;
+
+	if (label == NULL) {
+		return NULL;
+	}
+
 	if (pango_parse_markup (label, -1, 0, NULL, &sanitized, NULL, &error)) {
 		return sanitized;
 	}
-	else {
+
+	if (error != NULL) {
 		g_warning ("Could not parse '%s': %s", label, error->message);
 		g_error_free (error);
-		return g_strdup (label);
 	}
+	return g_strdup (label);
 }
 
 static gchar *
