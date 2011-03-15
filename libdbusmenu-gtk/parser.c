@@ -124,7 +124,9 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget)
 {
-	g_return_val_if_fail(GTK_IS_MENU_ITEM(widget), NULL);
+	if (!GTK_IS_MENU_ITEM(widget)) {
+		return NULL;
+	}
 	return DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM));
 }
 
