@@ -430,7 +430,7 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 static void
 handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * value, guint timestamp)
 {
-	if (g_strcmp0(name, "clicked") == 0) {
+	if (g_strcmp0(name, DBUSMENU_MENUITEM_EVENT_ACTIVATED) == 0) {
 		g_signal_emit(G_OBJECT(mi), signals[ITEM_ACTIVATED], 0, timestamp, TRUE);
 	}
 

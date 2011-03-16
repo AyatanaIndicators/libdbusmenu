@@ -267,6 +267,32 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
 
+/**
+ * DBUSMENU_MENUITEM_EVENT_ACTIVATED:
+ *
+ * String for the event identifier when a menu item is clicked
+ * on by the user.
+ */
+#define DBUSMENU_MENUITEM_EVENT_ACTIVATED            "clicked"
+
+/**
+ * DBUSMENU_MENUITEM_EVENT_OPENED:
+ *
+ * String for the event identifier when a menu is opened and
+ * displayed to the user.  Only valid for items that contain
+ * submenus.
+ */
+#define DBUSMENU_MENUITEM_EVENT_OPENED               "opened"
+
+/**
+ * DBUSMENU_MENUITEM_EVENT_CLOSED:
+ *
+ * String for the event identifier when a menu is closed and
+ * displayed to the user.  Only valid for items that contain
+ * submenus.
+ */
+#define DBUSMENU_MENUITEM_EVENT_CLOSED               "closed"
+
 typedef struct _DbusmenuMenuitemPrivate DbusmenuMenuitemPrivate;
 
 /**

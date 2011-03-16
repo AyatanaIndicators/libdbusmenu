@@ -598,20 +598,27 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 	}
 
 	/* Callback all the folks we can find */
-	GVariantIter * iter = g_variant_iter_new(g_variant_get_child_value(params, 0));
-	GVariant * child;
+	GVariant * child = g_variant_get_child_value(params, 0);
+	GVariantIter * iter = g_variant_iter_new(child);
+	g_variant_unref(child);
 	while ((child = g_variant_iter_next_value(iter)) != NULL) {
 		if (g_strcmp0(g_variant_get_type_string(child), "(ia{sv})") != 0) {
 			g_warning("Properties return signature is not '(ia{sv})' it is '%s'", g_variant_get_type_string(child));
+			g_variant_unref(child);
 			continue;
 		}
 
-		gint id = g_variant_get_int32(g_variant_get_child_value(child, 0));
+		GVariant * idv = g_variant_get_child_value(child, 0);
+		gint id = g_variant_get_int32(idv);
+		g_variant_unref(idv);
+
 		GVariant * properties = g_variant_get_child_value(child, 1);
 
 		properties_listener_t * listener = find_listener(listeners, 0, id);
 		if (listener == NULL) {
 			g_warning("Unable to find listener for ID %d", id);
+			g_variant_unref(properties);
+			g_variant_unref(child);
 			continue;
 		}
 
@@ -621,6 +628,8 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 		} else {
 			g_warning("Odd, we've already replied to the listener on ID %d", id);
 		}
+		g_variant_unref(properties);
+		g_variant_unref(child);
 	}
 	g_variant_iter_free(iter);
 	g_variant_unref(params);
@@ -676,7 +685,9 @@ get_properties_idle (gpointer user_data)
 	GVariant * variant_ids = g_variant_builder_end(&builder);
 
 	/* Build up a prop list to pass */
-	g_variant_builder_init(&builder, g_variant_type_new("as"));
+	GVariantType * type = g_variant_type_new("as");
+	g_variant_builder_init(&builder, type);
+	g_variant_type_free(type);
 	/* TODO: need to use delayed property list here */
 	GVariant * variant_props = g_variant_builder_end(&builder);
 
@@ -1050,12 +1061,13 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	/* Check the text direction if available */
 	GVariant * textdir = g_dbus_proxy_get_cached_property(priv->menuproxy, "TextDirection");
 	if (textdir != NULL) {
-		GVariant * str = textdir;
-		if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
-			str = g_variant_get_variant(str);
+		if (g_variant_is_of_type(textdir, G_VARIANT_TYPE_VARIANT)) {
+			GVariant * tmp =  g_variant_get_variant(textdir);
+			g_variant_unref(textdir);
+			textdir = tmp;
 		}
 
-		priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
+		priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(textdir, NULL));
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_TEXT_DIRECTION);
 
 		g_variant_unref(textdir);
@@ -1063,13 +1075,14 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 
 	/* Check the status if available */
 	GVariant * status = g_dbus_proxy_get_cached_property(priv->menuproxy, "Status");
-	if (textdir != NULL) {
-		GVariant * str = status;
-		if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
-			str = g_variant_get_variant(str);
+	if (status != NULL) {
+		if (g_variant_is_of_type(status, G_VARIANT_TYPE_VARIANT)) {
+			GVariant * tmp = g_variant_get_variant(status);
+			g_variant_unref(status);
+			status = tmp;
 		}
 
-		priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(str, NULL));
+		priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(status, NULL));
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
 
 		g_variant_unref(status);
@@ -1142,20 +1155,22 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	g_variant_iter_init(&iters, properties);
 	while (g_variant_iter_next(&iters, "{sv}", &key, &value)) {
 		if (g_strcmp0(key, "TextDirection") == 0) {
-			GVariant * str = value;
-			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
-				str = g_variant_get_variant(str);
+			if (g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT)) {
+				GVariant * tmp = g_variant_get_variant(value);
+				g_variant_unref(value);
+				value = tmp;
 			}
 
-			priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(str, NULL));
+			priv->text_direction = dbusmenu_text_direction_get_value_from_nick(g_variant_get_string(value, NULL));
 		}
 		if (g_strcmp0(key, "Status") == 0) {
-			GVariant * str = value;
-			if (g_variant_is_of_type(str, G_VARIANT_TYPE_VARIANT)) {
-				str = g_variant_get_variant(str);
+			if (g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT)) {
+				GVariant * tmp = g_variant_get_variant(value);
+				g_variant_unref(value);
+				value = tmp;
 			}
 
-			priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(str, NULL));
+			priv->status = dbusmenu_status_get_value_from_nick(g_variant_get_string(value, NULL));
 		}
 		if (g_strcmp0(key, "IconThemePath") == 0) {
 			if (priv->icon_dirs != NULL) {
@@ -1224,11 +1239,14 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 		/* Remove before adding just incase there is a duplicate, against the
 		   rules, but we can handle it so let's do it. */
 		GVariantIter ritems;
-		g_variant_iter_init(&ritems, g_variant_get_child_value(params, 1));
+		GVariant * ritemsv = g_variant_get_child_value(params, 1);
+		g_variant_iter_init(&ritems, ritemsv);
 
 		GVariant * ritem;
 		while ((ritem = g_variant_iter_next_value(&ritems)) != NULL) {
-			gint id = g_variant_get_int32(g_variant_get_child_value(ritem, 0));
+			GVariant * idv = g_variant_get_child_value(ritem, 0);
+			gint id = g_variant_get_int32(idv);
+			g_variant_unref(idv);
 			DbusmenuMenuitem * menuitem = dbusmenu_menuitem_find_id(priv->root, id);
 
 			if (menuitem == NULL) {
@@ -1236,7 +1254,8 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			}
 
 			GVariantIter properties;
-			g_variant_iter_init(&properties, g_variant_get_child_value(ritem, 1));
+			GVariant * propv = g_variant_get_child_value(ritem, 1);
+			g_variant_iter_init(&properties, propv);
 			gchar * property;
 
 			while (g_variant_iter_next(&properties, "s", &property)) {
@@ -1245,16 +1264,23 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 				g_free(property);
 			}
 			g_variant_unref(ritem);
+			g_variant_unref(propv);
 		}
+		g_variant_unref(ritemsv);
 
 		GVariantIter items;
-		g_variant_iter_init(&items, g_variant_get_child_value(params, 0));
+		GVariant * itemsv = g_variant_get_child_value(params, 0);
+		g_variant_iter_init(&items, itemsv);
 
 		GVariant * item;
 		while ((item = g_variant_iter_next_value(&items)) != NULL) {
-			gint id = g_variant_get_int32(g_variant_get_child_value(item, 0));
+			GVariant * idv = g_variant_get_child_value(item, 0);
+			gint id = g_variant_get_int32(idv);
+			g_variant_unref(idv);
+
 			GVariantIter properties;
-			g_variant_iter_init(&properties, g_variant_get_child_value(item, 1));
+			GVariant * propv = g_variant_get_child_value(item, 1);
+			g_variant_iter_init(&properties, propv);
 			gchar * property;
 			GVariant * value;
 
@@ -1263,14 +1289,21 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 				if (G_LIKELY(g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT))) {
 					/* Unboxing if needed */
 					internalvalue = g_variant_get_variant(value);
+					g_variant_unref(value);
 				}
 				id_prop_update(proxy, id, property, internalvalue, client);
+				g_variant_unref(internalvalue);
 			}
+			g_variant_unref(propv);
+			g_variant_unref(item);
 		}
+		g_variant_unref(itemsv);
 	} else if (g_strcmp0(signal, "ItemPropertyUpdated") == 0) {
 		gint id; gchar * property; GVariant * value;
 		g_variant_get(params, "(isv)", &id, &property, &value);
 		id_prop_update(proxy, id, property, value, client);
+		g_free(property);
+		g_variant_unref(value);
 	} else if (g_strcmp0(signal, "ItemUpdated") == 0) {
 		gint id;
 		g_variant_get(params, "(i)", &id);
@@ -1594,7 +1627,9 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 	}
 
 	/* First verify and figure out what we've got */
-	gint id = g_variant_get_int32(g_variant_get_child_value(layout, 0));
+	GVariant * idv = g_variant_get_child_value(layout, 0);
+	gint id = g_variant_get_int32(idv);
+	g_variant_unref(idv);
 	if (id < 0) {
 		return NULL;
 	}
@@ -1607,8 +1642,10 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 
 	/* Some variables */
 	GVariantIter children;
-	g_variant_iter_init(&children, g_variant_get_child_value(layout, 2));
-	GVariant * child;
+	GVariant * childrenv;
+
+	childrenv = g_variant_get_child_value(layout, 2);
+	g_variant_iter_init(&children, childrenv);
 
 	guint position = 0;
 	GList * oldchildren = g_list_copy(dbusmenu_menuitem_get_children(item));
@@ -1616,16 +1653,22 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 
 	/* Go through all the XML Nodes and make sure that we have menuitems
 	   to cover those XML nodes. */
+	GVariant * child;
 	while ((child = g_variant_iter_next_value(&children)) != NULL) {
 		/* g_debug("Looking at child: %d", position); */
 		if (g_variant_is_of_type(child, G_VARIANT_TYPE_VARIANT)) {
-			child = g_variant_get_variant(child);
+			GVariant * tmp = g_variant_get_variant(child);
+			g_variant_unref(child);
+			child = tmp;
 		}
 
-		gint childid = g_variant_get_int32(g_variant_get_child_value(child, 0));
+		GVariant * childidv = g_variant_get_child_value(child, 0);
+		gint childid = g_variant_get_int32(childidv);
+		g_variant_unref(childidv);
 		if (childid < 0) {
 			/* Don't increment the position when there isn't a valid
 			   node in the XML tree.  It's probably a comment. */
+			g_variant_unref(child);
 			continue;
 		}
 		DbusmenuMenuitem * childmi = NULL;
@@ -1665,10 +1708,12 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 			GVariantIter iter;
 			gchar * prop;
 			GVariant * value;
+			GVariant * child_props;
 
 			/* Set the type first as it can manage the behavior of
 			   all other properties. */
-			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
+			child_props = g_variant_get_child_value(child, 1);
+			g_variant_iter_init(&iter, child_props);
 			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
 				if (g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TYPE) == 0) {
 					dbusmenu_menuitem_property_set_variant(childmi, prop, value);
@@ -1678,15 +1723,17 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 			}
 
 			/* Now go through and do all the properties. */
-			g_variant_iter_init(&iter, g_variant_get_child_value(child, 1));
+			g_variant_iter_init(&iter, child_props);
 			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
 				dbusmenu_menuitem_property_set_variant(childmi, prop, value);
 				g_free(prop);
 				g_variant_unref(value);
 			}
+			g_variant_unref(child_props);
 		}
 
 		position++;
+		g_variant_unref(child);
 	}
 
 	/* Remove any children that are no longer used by this version of
@@ -1709,19 +1756,24 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 	}
 
 	/* now it's time to recurse down the tree. */
-	g_variant_iter_init(&children, g_variant_get_child_value(layout, 2));
+	g_variant_iter_init(&children, childrenv);
 
 	child = g_variant_iter_next_value(&children);
 	GList * childmis = dbusmenu_menuitem_get_children(item);
 	while (child != NULL && childmis != NULL) {
 		if (g_variant_is_of_type(child, G_VARIANT_TYPE_VARIANT)) {
-			child = g_variant_get_variant(child);
+			GVariant * tmp = g_variant_get_variant(child);
+			g_variant_unref(child);
+			child = tmp;
 		}
 
-		gint xmlid = g_variant_get_int32(g_variant_get_child_value(child, 0));
+		GVariant * xmlidv = g_variant_get_child_value(child, 0);
+		gint xmlid = g_variant_get_int32(xmlidv);
+		g_variant_unref(xmlidv);
 		/* If this isn't a valid menu item we need to move on
 		   until we have one.  This avoids things like comments. */
 		if (xmlid < 0) {
+			g_variant_unref(child);
 			child = g_variant_iter_next_value(&children);
 			continue;
 		}
@@ -1733,9 +1785,12 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 		
 		parse_layout_xml(client, child, DBUSMENU_MENUITEM(childmis->data), item, proxy);
 
+		g_variant_unref(child);
 		child = g_variant_iter_next_value(&children);
 		childmis = g_list_next(childmis);
 	}
+
+	g_variant_unref(childrenv);
 
 	if (child != NULL) {
 		g_warning("Sync failed, now we've got extra layout nodes.");
@@ -1801,6 +1856,7 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 
 	GError * error = NULL;
 	GVariant * params = NULL;
+	GVariant * layout = NULL;
 
 	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
 
@@ -1810,8 +1866,11 @@ update_layout_cb (GObject * proxy, GAsyncResult * res, gpointer data)
 		goto out;
 	}
 
-	guint rev = g_variant_get_uint32(g_variant_get_child_value(params, 0));
-	GVariant * layout = g_variant_get_child_value(params, 1);
+	GVariant * revv = g_variant_get_child_value(params, 0);
+	guint rev = g_variant_get_uint32(revv);
+	g_variant_unref(revv);
+
+	layout = g_variant_get_child_value(params, 1);
 
 	guint parseable = parse_layout(client, layout);
 
@@ -1837,6 +1896,10 @@ out:
 	if (priv->layoutcall != NULL) {
 		g_object_unref(priv->layoutcall);
 		priv->layoutcall = NULL;
+	}
+
+	if (layout != NULL) {
+		g_variant_unref(layout);
 	}
 
 	if (params != NULL) {
