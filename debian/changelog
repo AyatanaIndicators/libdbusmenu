@@ -1,3 +1,16 @@
+libdbusmenu (0.3.102-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    ∘ Remove child items when they're removed by GTK
+    ∘ Adding opened and closed events for menu visibility
+    ∘ Handle empty image types
+    ∘ Remove critical warning on parser menuitem check (LP: #733918)
+    ∘ Fix dependencies in pkgconfig files (LP: #733263)
+    ∘ Handle NULL labels (LP: #733688)
+    ∘ Fix memory leaks from variants (LP: #722972)
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 16 Mar 2011 14:08:13 -0500
+
 libdbusmenu (0.3.101-0ubuntu1) natty; urgency=low
 
   * New upstream release.
