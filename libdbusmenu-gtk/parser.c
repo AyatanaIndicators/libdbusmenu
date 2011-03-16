@@ -69,6 +69,9 @@ static void           action_notify_cb         (GtkAction *         action,
 static void           child_added_cb           (GtkContainer *      menu,
                                                 GtkWidget *         widget,
                                                 gpointer            data);
+static void           child_removed_cb         (GtkContainer *      menu,
+                                                GtkWidget *         widget,
+                                                gpointer            data);
 static void           theme_changed_cb         (GtkIconTheme *      theme,
                                                 gpointer            data);
 static void           item_activated           (DbusmenuMenuitem *  item,
@@ -98,15 +101,25 @@ static void           menuitem_notify_cb       (GtkWidget *         widget,
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 {
-  g_return_val_if_fail(GTK_IS_MENU_ITEM(widget) || GTK_IS_MENU_SHELL(widget), NULL);
+	g_return_val_if_fail(GTK_IS_MENU_ITEM(widget) || GTK_IS_MENU_SHELL(widget), NULL);
 
-  RecurseContext recurse = {0};
+	DbusmenuMenuitem * returnval = NULL;
+	gpointer data = g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM);
 
-  recurse.toplevel = gtk_widget_get_toplevel(widget);
+	if (data == NULL) {
+		RecurseContext recurse = {0};
 
-  parse_menu_structure_helper(widget, &recurse);
+		recurse.toplevel = gtk_widget_get_toplevel(widget);
 
-  return recurse.parent;
+		parse_menu_structure_helper(widget, &recurse);
+
+		returnval = recurse.parent;
+	} else {
+		returnval = DBUSMENU_MENUITEM(data);
+		g_object_ref(G_OBJECT(returnval));
+	}
+
+	return returnval;
 }
 
 /**
@@ -124,7 +137,9 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget)
 {
-	g_return_val_if_fail(GTK_IS_MENU_ITEM(widget), NULL);
+	if (!GTK_IS_MENU_ITEM(widget)) {
+		return NULL;
+	}
 	return DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM));
 }
 
@@ -160,6 +175,8 @@ parse_data_free (gpointer data)
 	if (pdata != NULL && pdata->shell != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(child_added_cb), NULL);
+		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(child_removed_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
 	}
 
@@ -246,7 +263,6 @@ new_menuitem (GtkWidget * widget)
 static void
 parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 {
-
 	/* If this is a shell, then let's handle the items in it. */
 	if (GTK_IS_MENU_SHELL (widget)) {
 		/* Okay, this is a little janky and all.. but some applications update some
@@ -281,6 +297,10 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 			g_signal_connect (G_OBJECT (widget),
 				          "child-added",
 				          G_CALLBACK (child_added_cb),
+				          recurse->parent);
+			g_signal_connect (G_OBJECT (widget),
+				          "child-removed",
+				          G_CALLBACK (child_removed_cb),
 				          recurse->parent);
 			g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->shell);
 		}
@@ -371,14 +391,20 @@ sanitize_label_text (const gchar * label)
            which we don't. */
 	gchar * sanitized = NULL;
 	GError * error = NULL;
+
+	if (label == NULL) {
+		return NULL;
+	}
+
 	if (pango_parse_markup (label, -1, 0, NULL, &sanitized, NULL, &error)) {
 		return sanitized;
 	}
-	else {
+
+	if (error != NULL) {
 		g_warning ("Could not parse '%s': %s", label, error->message);
 		g_error_free (error);
-		return g_strdup (label);
 	}
+	return g_strdup (label);
 }
 
 static gchar *
@@ -533,6 +559,10 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                                 "child-added",
                                 G_CALLBACK (child_added_cb),
                                 mi);
+              g_signal_connect (G_OBJECT (submenu),
+                                "child-removed",
+                                G_CALLBACK (child_removed_cb),
+                                mi);
               g_object_add_weak_pointer(G_OBJECT(submenu), (gpointer*)&pdata->shell);
             }
 
@@ -625,6 +655,9 @@ update_icon (DbusmenuMenuitem *menuitem, GtkImage *image)
 
   if (image != NULL && should_show_image (image)) {
     switch (gtk_image_get_storage_type (image)) {
+    case GTK_IMAGE_EMPTY:
+      break;
+
     case GTK_IMAGE_PIXBUF:
       pixbuf = g_object_ref (gtk_image_get_pixbuf (image));
       break;
@@ -938,6 +971,28 @@ child_added_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 	recurse.parent = menuitem;
 
 	parse_menu_structure_helper(widget, &recurse);
+}
+
+/* A child item was added to a menu we're watching.  Let's try to integrate it. */
+static void
+child_removed_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
+{
+	gpointer pmi = g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM);
+	if (pmi == NULL) {
+		return;
+	}
+
+	DbusmenuMenuitem * child = DBUSMENU_MENUITEM(pmi);
+
+	pmi = g_object_get_data(G_OBJECT(menu), CACHED_MENUITEM);
+	if (pmi == NULL) {
+		return;
+	}
+
+	DbusmenuMenuitem * parent = DBUSMENU_MENUITEM(pmi);
+
+	dbusmenu_menuitem_child_delete(parent, child);
+	return;
 }
 
 static void

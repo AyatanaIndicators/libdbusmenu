@@ -458,13 +458,22 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 {
 	if (gtk_menu_item_get_submenu(gmi) == NULL) {
 		GVariant * variant = g_variant_new("i", 0);
-		dbusmenu_menuitem_handle_event(mi, "clicked", variant, gtk_get_current_event_time());
+		dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_ACTIVATED, variant, gtk_get_current_event_time());
 	} else {
 		/* TODO: We need to stop the display of the submenu
 		         until this callback returns. */
 		dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
 	}
 	return TRUE;
+}
+
+static void
+submenu_notify_visible_cb (GtkWidget * menu, GParamSpec * pspec, DbusmenuMenuitem * mi)
+{
+       if (gtk_widget_get_visible (menu))
+               dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_OPENED, NULL, gtk_get_current_event_time());
+       else
+               dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_CLOSED, NULL, gtk_get_current_event_time());
 }
 
 /* Process the visible property */
@@ -740,11 +749,12 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 
 		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get(gtkclient, mi);
 		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));
+
+		g_signal_connect(menu, "notify::visible", G_CALLBACK(submenu_notify_visible_cb), mi);
 	} 
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
 	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
-	gtk_widget_show(GTK_WIDGET(menu));
 	
 	return;
 }

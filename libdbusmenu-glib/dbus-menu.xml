@@ -294,6 +294,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 			@li "clicked"
 			@li "hovered"
+			@li "opened"
+			@li "closed"
 
 			Vendor specific events can be added by prefixing them with "x-<vendor>-"
 			]]></dox:d>

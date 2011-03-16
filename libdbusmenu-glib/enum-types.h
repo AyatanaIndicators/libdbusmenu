@@ -36,10 +36,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 G_BEGIN_DECLS
 
 /* Enumerations from file: "./types.h" */
-#include "./types.h"
+#include "types.h"
+
+
 GType dbusmenu_text_direction_get_type (void) G_GNUC_CONST;
 const gchar * dbusmenu_text_direction_get_nick (DbusmenuTextDirection value) G_GNUC_CONST;
 DbusmenuTextDirection dbusmenu_text_direction_get_value_from_nick (const gchar * nick) G_GNUC_CONST;
+
 /**
 	DBUSMENU_TYPE_TEXT_DIRECTION:
 
@@ -48,9 +51,11 @@ DbusmenuTextDirection dbusmenu_text_direction_get_value_from_nick (const gchar *
 */
 #define DBUSMENU_TYPE_TEXT_DIRECTION (dbusmenu_text_direction_get_type())
 
+
 GType dbusmenu_status_get_type (void) G_GNUC_CONST;
 const gchar * dbusmenu_status_get_nick (DbusmenuStatus value) G_GNUC_CONST;
 DbusmenuStatus dbusmenu_status_get_value_from_nick (const gchar * nick) G_GNUC_CONST;
+
 /**
 	DBUSMENU_TYPE_STATUS:
 
