@@ -1,4 +1,4 @@
-libdbusmenu (0.3.102-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.3.102-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     ∘ Remove child items when they're removed by GTK
@@ -9,7 +9,7 @@ libdbusmenu (0.3.102-0ubuntu1~ppa1) UNRELEASED; urgency=low
     ∘ Handle NULL labels (LP: #733688)
     ∘ Fix memory leaks from variants (LP: #722972)
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 16 Mar 2011 14:01:33 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 16 Mar 2011 14:08:13 -0500
 
 libdbusmenu (0.3.101-0ubuntu1) natty; urgency=low
 
