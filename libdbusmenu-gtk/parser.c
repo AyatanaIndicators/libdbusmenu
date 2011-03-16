@@ -633,6 +633,9 @@ update_icon (DbusmenuMenuitem *menuitem, GtkImage *image)
 
   if (image != NULL && should_show_image (image)) {
     switch (gtk_image_get_storage_type (image)) {
+    case GTK_IMAGE_EMPTY:
+      break;
+
     case GTK_IMAGE_PIXBUF:
       pixbuf = g_object_ref (gtk_image_get_pixbuf (image));
       break;
