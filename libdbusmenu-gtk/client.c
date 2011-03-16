@@ -467,6 +467,15 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 	return TRUE;
 }
 
+static void
+submenu_notify_visible_cb (GtkWidget * menu, GParamSpec * pspec, DbusmenuMenuitem * mi)
+{
+       if (gtk_widget_get_visible (menu))
+               dbusmenu_menuitem_handle_event(mi, "opened", NULL, gtk_get_current_event_time());
+       else
+               dbusmenu_menuitem_handle_event(mi, "closed", NULL, gtk_get_current_event_time());
+}
+
 /* Process the visible property */
 static void
 process_visible (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * value)
@@ -740,11 +749,12 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 
 		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get(gtkclient, mi);
 		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));
+
+		g_signal_connect(menu, "notify::visible", G_CALLBACK(submenu_notify_visible_cb), mi);
 	} 
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
 	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
-	gtk_widget_show(GTK_WIDGET(menu));
 	
 	return;
 }
