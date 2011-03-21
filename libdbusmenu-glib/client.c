@@ -1336,18 +1336,15 @@ menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data
 		return;
 	}
 
-	GVariantIter * iter = g_variant_iter_new(properties);
+	GVariantIter iter;
 	gchar * key;
 	GVariant * value;
 
-	while (g_variant_iter_next(iter, "{sv}", &key, &value)) {
+	g_variant_iter_init(&iter, properties);
+
+	while (g_variant_iter_loop(&iter, "{sv}", &key, &value)) {
 		dbusmenu_menuitem_property_set_variant(item, key, value);
-
-		g_variant_unref(value);
-		g_free(key);
 	}
-
-	g_variant_iter_free(iter);
 
 	g_object_unref(data);
 
