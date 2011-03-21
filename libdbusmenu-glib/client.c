@@ -1280,15 +1280,20 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			gchar * property;
 			GVariant * value;
 
-			while (g_variant_iter_next(&properties, "{sv}", &property, &value)) {
+			while (g_variant_iter_loop(&properties, "{sv}", &property, &value)) {
 				GVariant * internalvalue = value;
 				if (G_LIKELY(g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT))) {
 					/* Unboxing if needed */
 					internalvalue = g_variant_get_variant(value);
-					g_variant_unref(value);
 				}
+
 				id_prop_update(proxy, id, property, internalvalue, client);
-				g_variant_unref(internalvalue);
+
+				if (internalvalue != value) {
+					/* If we unboxed, we need to drop it, otherwise the
+					   iter_loop function will unref for us */
+					g_variant_unref(internalvalue);
+				}
 			}
 			g_variant_unref(propv);
 			g_variant_unref(item);
@@ -1707,20 +1712,16 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 			   all other properties. */
 			child_props = g_variant_get_child_value(child, 1);
 			g_variant_iter_init(&iter, child_props);
-			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+			while (g_variant_iter_loop(&iter, "{sv}", &prop, &value)) {
 				if (g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TYPE) == 0) {
 					dbusmenu_menuitem_property_set_variant(childmi, prop, value);
 				}
-				g_free(prop);
-				g_variant_unref(value);
 			}
 
 			/* Now go through and do all the properties. */
 			g_variant_iter_init(&iter, child_props);
-			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+			while (g_variant_iter_loop(&iter, "{sv}", &prop, &value)) {
 				dbusmenu_menuitem_property_set_variant(childmi, prop, value);
-				g_free(prop);
-				g_variant_unref(value);
 			}
 			g_variant_unref(child_props);
 		}
