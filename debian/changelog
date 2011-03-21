@@ -1,4 +1,4 @@
-libdbusmenu (0.3.102-0ubuntu1~ppa1) natty; urgency=low
+libdbusmenu (0.3.102-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     ∘ Remove child items when they're removed by GTK
