@@ -599,9 +599,10 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 
 	/* Callback all the folks we can find */
 	GVariant * child = g_variant_get_child_value(params, 0);
-	GVariantIter * iter = g_variant_iter_new(child);
+	GVariantIter iter;
+	g_variant_iter_init(&iter, child);
 	g_variant_unref(child);
-	while ((child = g_variant_iter_next_value(iter)) != NULL) {
+	while ((child = g_variant_iter_next_value(&iter)) != NULL) {
 		if (g_strcmp0(g_variant_get_type_string(child), "(ia{sv})") != 0) {
 			g_warning("Properties return signature is not '(ia{sv})' it is '%s'", g_variant_get_type_string(child));
 			g_variant_unref(child);
@@ -631,7 +632,6 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 		g_variant_unref(properties);
 		g_variant_unref(child);
 	}
-	g_variant_iter_free(iter);
 	g_variant_unref(params);
 
 	/* Provide errors for those who we can't */
