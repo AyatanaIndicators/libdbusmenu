@@ -845,7 +845,9 @@ item_activated (DbusmenuMenuitem *item, guint timestamp, gpointer user_data)
 
       if (GTK_IS_MENU_ITEM (child))
         {
+          gdk_threads_enter ();
           gtk_menu_item_activate (GTK_MENU_ITEM (child));
+          gdk_threads_leave ();
         }
     }
 }

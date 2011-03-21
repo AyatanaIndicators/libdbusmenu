@@ -1,3 +1,10 @@
+libdbusmenu (0.3.102-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Enter and exit the GDK threads before calling GTK (LP: #717162)
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Mar 2011 09:02:41 -0500
+
 libdbusmenu (0.3.102-0ubuntu1) natty; urgency=low
 
   * New upstream release.
