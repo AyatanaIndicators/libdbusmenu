@@ -1153,7 +1153,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	GVariantIter iters;
 	gchar * key; GVariant * value;
 	g_variant_iter_init(&iters, properties);
-	while (g_variant_iter_next(&iters, "{sv}", &key, &value)) {
+	while (g_variant_iter_loop(&iters, "{sv}", &key, &value)) {
 		if (g_strcmp0(key, "TextDirection") == 0) {
 			if (g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT)) {
 				GVariant * tmp = g_variant_get_variant(value);
@@ -1181,9 +1181,6 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 			priv->icon_dirs = g_variant_dup_strv(value, NULL);
 			dirs_changed = TRUE;
 		}
-
-		g_variant_unref(value);
-		g_free(key);
 	}
 
 	if (olddir != priv->text_direction) {
@@ -1258,10 +1255,9 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			g_variant_iter_init(&properties, propv);
 			gchar * property;
 
-			while (g_variant_iter_next(&properties, "s", &property)) {
+			while (g_variant_iter_loop(&properties, "s", &property)) {
 				/* g_debug("Removing property '%s' on %d", property, id); */
 				dbusmenu_menuitem_property_remove(menuitem, property);
-				g_free(property);
 			}
 			g_variant_unref(ritem);
 			g_variant_unref(propv);
