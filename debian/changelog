@@ -1,3 +1,11 @@
+libdbusmenu (0.3.102-0ubuntu2~ppa2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Protecting properties that are getting updated from an
+      extra remove signal.  (LP: #730925)
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Mar 2011 14:56:01 -0500
+
 libdbusmenu (0.3.102-0ubuntu2~ppa1) natty; urgency=low
 
   * Upstream Merge
