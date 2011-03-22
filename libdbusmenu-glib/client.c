@@ -1372,18 +1372,20 @@ menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpoin
 	GList * current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
 	GList * tmp = NULL;
 
-	GVariantIter iter;
-	g_variant_iter_init(&iter, properties);
-	gchar * name; GVariant * value;
+	if (properties != NULL) {
+		GVariantIter iter;
+		g_variant_iter_init(&iter, properties);
+		gchar * name; GVariant * value;
 
-	/* Remove the entries from the current list that we have new
-	   values for.  This way we don't create signals of them being
-	   removed with the duplication of the value being changed. */
-	while (g_variant_iter_loop(&iter, "{sv}", &name, &value) && have_error == FALSE) {
-		for (tmp = current_props; tmp != NULL; tmp = g_list_next(tmp)) {
-			if (g_strcmp0((gchar *)tmp->data, name) == 0) {
-				current_props = g_list_delete_link(current_props, tmp);
-				break;
+		/* Remove the entries from the current list that we have new
+		   values for.  This way we don't create signals of them being
+		   removed with the duplication of the value being changed. */
+		while (g_variant_iter_loop(&iter, "{sv}", &name, &value) && have_error == FALSE) {
+			for (tmp = current_props; tmp != NULL; tmp = g_list_next(tmp)) {
+				if (g_strcmp0((gchar *)tmp->data, name) == 0) {
+					current_props = g_list_delete_link(current_props, tmp);
+					break;
+				}
 			}
 		}
 	}
