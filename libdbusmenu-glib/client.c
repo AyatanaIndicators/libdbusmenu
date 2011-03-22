@@ -1382,7 +1382,7 @@ menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpoin
 	while (g_variant_iter_loop(&iter, "{sv}", &name, &value) && have_error == FALSE) {
 		for (tmp = current_props; tmp != NULL; tmp = g_list_next(tmp)) {
 			if (g_strcmp0((gchar *)tmp->data, name) == 0) {
-				current_props = g_list_remove(current_props, tmp);
+				current_props = g_list_delete_link(current_props, tmp);
 				break;
 			}
 		}
