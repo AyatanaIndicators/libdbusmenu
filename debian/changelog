@@ -1,4 +1,4 @@
-libdbusmenu (0.4.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.4.0-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * Protect from NULL variants by using iter_loop (LP: #737844)
@@ -7,7 +7,7 @@ libdbusmenu (0.4.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
       extra remove signal.  (LP: #730925)
     * Enter and exit the GDK threads before calling GTK (LP: #717162)
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 14:47:22 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 14:56:24 -0500
 
 libdbusmenu (0.3.102-0ubuntu1) natty; urgency=low
 
