@@ -9,12 +9,10 @@ DbusmenuMenuitem
 
 </para>
 
-
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -233,6 +231,27 @@ DbusmenuMenuitem
 
 
 <!-- ##### MACRO DBUSMENU_MENUITEM_SHORTCUT_SUPER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_EVENT_ACTIVATED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_EVENT_CLOSED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_EVENT_OPENED ##### -->
 <para>
 
 </para>

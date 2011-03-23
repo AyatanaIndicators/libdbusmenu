@@ -236,8 +236,15 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
                           NULL);
           }
 
-        if (closure == NULL)
-          return FALSE;
+        if (closure == NULL) {
+          /* As a fallback, check for a closure in the related menu item.  This
+             actually happens with SWT menu items. */
+          GList * closures = gtk_widget_list_accel_closures (GTK_WIDGET (gmi));
+          if (closures == NULL)
+            return FALSE;
+          closure = closures->data;
+          g_list_free (closures);
+	}
 
 	GtkAccelGroup * group = gtk_accel_group_from_accel_closure(closure);
 

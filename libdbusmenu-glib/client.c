@@ -599,9 +599,10 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 
 	/* Callback all the folks we can find */
 	GVariant * child = g_variant_get_child_value(params, 0);
-	GVariantIter * iter = g_variant_iter_new(child);
+	GVariantIter iter;
+	g_variant_iter_init(&iter, child);
 	g_variant_unref(child);
-	while ((child = g_variant_iter_next_value(iter)) != NULL) {
+	while ((child = g_variant_iter_next_value(&iter)) != NULL) {
 		if (g_strcmp0(g_variant_get_type_string(child), "(ia{sv})") != 0) {
 			g_warning("Properties return signature is not '(ia{sv})' it is '%s'", g_variant_get_type_string(child));
 			g_variant_unref(child);
@@ -631,7 +632,6 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 		g_variant_unref(properties);
 		g_variant_unref(child);
 	}
-	g_variant_iter_free(iter);
 	g_variant_unref(params);
 
 	/* Provide errors for those who we can't */
@@ -1153,7 +1153,7 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 	GVariantIter iters;
 	gchar * key; GVariant * value;
 	g_variant_iter_init(&iters, properties);
-	while (g_variant_iter_next(&iters, "{sv}", &key, &value)) {
+	while (g_variant_iter_loop(&iters, "{sv}", &key, &value)) {
 		if (g_strcmp0(key, "TextDirection") == 0) {
 			if (g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT)) {
 				GVariant * tmp = g_variant_get_variant(value);
@@ -1181,9 +1181,6 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 			priv->icon_dirs = g_variant_dup_strv(value, NULL);
 			dirs_changed = TRUE;
 		}
-
-		g_variant_unref(value);
-		g_free(key);
 	}
 
 	if (olddir != priv->text_direction) {
@@ -1258,10 +1255,9 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			g_variant_iter_init(&properties, propv);
 			gchar * property;
 
-			while (g_variant_iter_next(&properties, "s", &property)) {
+			while (g_variant_iter_loop(&properties, "s", &property)) {
 				/* g_debug("Removing property '%s' on %d", property, id); */
 				dbusmenu_menuitem_property_remove(menuitem, property);
-				g_free(property);
 			}
 			g_variant_unref(ritem);
 			g_variant_unref(propv);
@@ -1284,15 +1280,20 @@ menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVarian
 			gchar * property;
 			GVariant * value;
 
-			while (g_variant_iter_next(&properties, "{sv}", &property, &value)) {
+			while (g_variant_iter_loop(&properties, "{sv}", &property, &value)) {
 				GVariant * internalvalue = value;
 				if (G_LIKELY(g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT))) {
 					/* Unboxing if needed */
 					internalvalue = g_variant_get_variant(value);
-					g_variant_unref(value);
 				}
+
 				id_prop_update(proxy, id, property, internalvalue, client);
-				g_variant_unref(internalvalue);
+
+				if (internalvalue != value) {
+					/* If we unboxed, we need to drop it, otherwise the
+					   iter_loop function will unref for us */
+					g_variant_unref(internalvalue);
+				}
 			}
 			g_variant_unref(propv);
 			g_variant_unref(item);
@@ -1336,18 +1337,15 @@ menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data
 		return;
 	}
 
-	GVariantIter * iter = g_variant_iter_new(properties);
+	GVariantIter iter;
 	gchar * key;
 	GVariant * value;
 
-	while (g_variant_iter_next(iter, "{sv}", &key, &value)) {
+	g_variant_iter_init(&iter, properties);
+
+	while (g_variant_iter_loop(&iter, "{sv}", &key, &value)) {
 		dbusmenu_menuitem_property_set_variant(item, key, value);
-
-		g_variant_unref(value);
-		g_free(key);
 	}
-
-	g_variant_iter_free(iter);
 
 	g_object_unref(data);
 
@@ -1368,9 +1366,30 @@ menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpoin
 		have_error = TRUE;
 	}
 
+	/* Get the list of the current properties */
 	GList * current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
 	GList * tmp = NULL;
 
+	if (properties != NULL) {
+		GVariantIter iter;
+		g_variant_iter_init(&iter, properties);
+		gchar * name; GVariant * value;
+
+		/* Remove the entries from the current list that we have new
+		   values for.  This way we don't create signals of them being
+		   removed with the duplication of the value being changed. */
+		while (g_variant_iter_loop(&iter, "{sv}", &name, &value) && have_error == FALSE) {
+			for (tmp = current_props; tmp != NULL; tmp = g_list_next(tmp)) {
+				if (g_strcmp0((gchar *)tmp->data, name) == 0) {
+					current_props = g_list_delete_link(current_props, tmp);
+					break;
+				}
+			}
+		}
+	}
+
+	/* Remove all entries that we're not getting values for, we can
+	   assume that they no longer exist */
 	for (tmp = current_props; tmp != NULL && have_error == FALSE; tmp = g_list_next(tmp)) {
 		dbusmenu_menuitem_property_remove(DBUSMENU_MENUITEM(data), (const gchar *)tmp->data);
 	}
@@ -1714,20 +1733,16 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 			   all other properties. */
 			child_props = g_variant_get_child_value(child, 1);
 			g_variant_iter_init(&iter, child_props);
-			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+			while (g_variant_iter_loop(&iter, "{sv}", &prop, &value)) {
 				if (g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TYPE) == 0) {
 					dbusmenu_menuitem_property_set_variant(childmi, prop, value);
 				}
-				g_free(prop);
-				g_variant_unref(value);
 			}
 
 			/* Now go through and do all the properties. */
 			g_variant_iter_init(&iter, child_props);
-			while (g_variant_iter_next(&iter, "{sv}", &prop, &value)) {
+			while (g_variant_iter_loop(&iter, "{sv}", &prop, &value)) {
 				dbusmenu_menuitem_property_set_variant(childmi, prop, value);
-				g_free(prop);
-				g_variant_unref(value);
 			}
 			g_variant_unref(child_props);
 		}
