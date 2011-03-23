@@ -75,6 +75,9 @@ Unstable, unless otherwise indicated
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_CONTROL">DBUSMENU_MENUITEM_SHORTCUT_CONTROL</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_SHIFT">DBUSMENU_MENUITEM_SHORTCUT_SHIFT</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_SUPER">DBUSMENU_MENUITEM_SHORTCUT_SUPER</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS" title="DBUSMENU_MENUITEM_EVENT_ACTIVATED">DBUSMENU_MENUITEM_EVENT_ACTIVATED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS" title="DBUSMENU_MENUITEM_EVENT_CLOSED">DBUSMENU_MENUITEM_EVENT_CLOSED</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-OPENED:CAPS" title="DBUSMENU_MENUITEM_EVENT_OPENED">DBUSMENU_MENUITEM_EVENT_OPENED</a>
 struct              <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem">DbusmenuMenuitem</a>;
 <span class="returnvalue">void</span>                (<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-about-to-show-cb" title="dbusmenu_menuitem_about_to_show_cb ()">*dbusmenu_menuitem_about_to_show_cb</a>)
                                                         (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
@@ -489,6 +492,38 @@ shift key.
 <p>
 Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT"><span class="type">DBUSMENU_MENUITEM_PROP_SHORTCUT</span></a> to represent the
 super key.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS"></a><h3>DBUSMENU_MENUITEM_EVENT_ACTIVATED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_EVENT_ACTIVATED            "clicked"
+</pre>
+<p>
+String for the event identifier when a menu item is clicked
+on by the user.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS"></a><h3>DBUSMENU_MENUITEM_EVENT_CLOSED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_EVENT_CLOSED               "closed"
+</pre>
+<p>
+String for the event identifier when a menu is closed and
+displayed to the user.  Only valid for items that contain
+submenus.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-EVENT-OPENED:CAPS"></a><h3>DBUSMENU_MENUITEM_EVENT_OPENED</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_EVENT_OPENED               "opened"
+</pre>
+<p>
+String for the event identifier when a menu is opened and
+displayed to the user.  Only valid for items that contain
+submenus.
 </p>
 </div>
 <hr>

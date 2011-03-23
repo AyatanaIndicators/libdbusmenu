@@ -66,6 +66,9 @@
 <ANCHOR id="DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-EVENT-OPENED:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-OPENED:CAPS">
 <ANCHOR id="DbusmenuMenuitem" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem">
 <ANCHOR id="dbusmenu-menuitem-about-to-show-cb" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-about-to-show-cb">
 <ANCHOR id="dbusmenu-menuitem-buildvariant-slot-t" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-buildvariant-slot-t">

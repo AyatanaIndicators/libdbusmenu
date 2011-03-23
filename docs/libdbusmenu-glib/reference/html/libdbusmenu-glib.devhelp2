@@ -68,6 +68,9 @@
     <keyword type="macro" name="DBUSMENU_MENUITEM_SHORTCUT_CONTROL" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS"/>
     <keyword type="macro" name="DBUSMENU_MENUITEM_SHORTCUT_SHIFT" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS"/>
     <keyword type="macro" name="DBUSMENU_MENUITEM_SHORTCUT_SUPER" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_EVENT_ACTIVATED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_EVENT_CLOSED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_EVENT_OPENED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-OPENED:CAPS"/>
     <keyword type="struct" name="struct DbusmenuMenuitem" link="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"/>
     <keyword type="function" name="dbusmenu_menuitem_about_to_show_cb ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-about-to-show-cb"/>
     <keyword type="function" name="dbusmenu_menuitem_buildvariant_slot_t ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-buildvariant-slot-t"/>
