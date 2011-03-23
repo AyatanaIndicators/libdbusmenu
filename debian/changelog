@@ -1,10 +1,10 @@
-libdbusmenu (0.3.102-0ubuntu2~ppa3) UNRELEASED; urgency=low
+libdbusmenu (0.3.102-0ubuntu2~ppa3) natty; urgency=low
 
   * Upstream Merge
     * Protect from NULL variants by using iter_loop (LP: #737844)
     * Look for accellerators inside the labels as well
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 11:42:42 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 12:05:54 -0500
 
 libdbusmenu (0.3.102-0ubuntu2~ppa2) natty; urgency=low
 
