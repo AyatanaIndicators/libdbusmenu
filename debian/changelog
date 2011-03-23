@@ -1,25 +1,13 @@
-libdbusmenu (0.3.102-0ubuntu2~ppa3) natty; urgency=low
+libdbusmenu (0.4.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
     * Protect from NULL variants by using iter_loop (LP: #737844)
     * Look for accellerators inside the labels as well
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 12:05:54 -0500
-
-libdbusmenu (0.3.102-0ubuntu2~ppa2) natty; urgency=low
-
-  * Upstream Merge
     * Protecting properties that are getting updated from an
       extra remove signal.  (LP: #730925)
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Mar 2011 15:05:05 -0500
-
-libdbusmenu (0.3.102-0ubuntu2~ppa1) natty; urgency=low
-
-  * Upstream Merge
     * Enter and exit the GDK threads before calling GTK (LP: #717162)
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 21 Mar 2011 09:08:59 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 14:47:22 -0500
 
 libdbusmenu (0.3.102-0ubuntu1) natty; urgency=low
 

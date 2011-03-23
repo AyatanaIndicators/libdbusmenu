@@ -58,6 +58,9 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS">DBUSMENU_MENUITEM_SHORTCUT_CONTROL</link>
 #define             <link linkend="DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS">DBUSMENU_MENUITEM_SHORTCUT_SHIFT</link>
 #define             <link linkend="DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS">DBUSMENU_MENUITEM_SHORTCUT_SUPER</link>
+#define             <link linkend="DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS">DBUSMENU_MENUITEM_EVENT_ACTIVATED</link>
+#define             <link linkend="DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS">DBUSMENU_MENUITEM_EVENT_CLOSED</link>
+#define             <link linkend="DBUSMENU-MENUITEM-EVENT-OPENED:CAPS">DBUSMENU_MENUITEM_EVENT_OPENED</link>
 struct              <link linkend="DbusmenuMenuitem">DbusmenuMenuitem</link>;
 <link linkend="void"><returnvalue>void</returnvalue></link>                (<link linkend="dbusmenu-menuitem-about-to-show-cb">*dbusmenu_menuitem_about_to_show_cb</link>)
                                                         (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
@@ -444,6 +447,35 @@ shift key.
 <para>
 Used in <link linkend="DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS"><type>DBUSMENU_MENUITEM_PROP_SHORTCUT</type></link> to represent the
 super key.
+</para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_EVENT_ACTIVATED</title>
+<indexterm zone="DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS"><primary>DBUSMENU_MENUITEM_EVENT_ACTIVATED</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_EVENT_ACTIVATED            "clicked"
+</programlisting>
+<para>
+String for the event identifier when a menu item is clicked
+on by the user.
+</para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_EVENT_CLOSED</title>
+<indexterm zone="DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS"><primary>DBUSMENU_MENUITEM_EVENT_CLOSED</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_EVENT_CLOSED               "closed"
+</programlisting>
+<para>
+String for the event identifier when a menu is closed and
+displayed to the user.  Only valid for items that contain
+submenus.
+</para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-EVENT-OPENED:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_EVENT_OPENED</title>
+<indexterm zone="DBUSMENU-MENUITEM-EVENT-OPENED:CAPS"><primary>DBUSMENU_MENUITEM_EVENT_OPENED</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_EVENT_OPENED               "opened"
+</programlisting>
+<para>
+String for the event identifier when a menu is opened and
+displayed to the user.  Only valid for items that contain
+submenus.
 </para></refsect2>
 <refsect2 id="DbusmenuMenuitem" role="struct">
 <title>struct DbusmenuMenuitem</title>
