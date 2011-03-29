@@ -85,7 +85,7 @@ dbusmenu_defaults_init (DbusmenuDefaults *self)
 	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_ICON_NAME,      G_VARIANT_TYPE_STRING,    NULL); 
 	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE,    G_VARIANT_TYPE_STRING,    NULL); 
 	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,   G_VARIANT_TYPE_INT32,     NULL); 
-	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_SHORTCUT,       G_VARIANT_TYPE_ARRAY,     NULL); 
+	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_SHORTCUT,       G_VARIANT_TYPE("aas"),    NULL); 
 	dbusmenu_defaults_default_set(self,   DBUSMENU_CLIENT_TYPES_DEFAULT,    DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY,  G_VARIANT_TYPE_STRING,    NULL); 
 
 	/* Separator defaults */
