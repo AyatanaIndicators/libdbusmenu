@@ -305,7 +305,7 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	g_variant_iter_init(&iter, g_variant_get_child_value(wrapper, 0));
 	gchar * string;
 
-	while(g_variant_iter_next(&iter, "s", &string)) {
+	while(g_variant_iter_loop(&iter, "s", &string)) {
 		if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
 			*modifier |= GDK_CONTROL_MASK;
 		} else if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
@@ -318,8 +318,6 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 			GdkModifierType tempmod;
 			gtk_accelerator_parse(string, key, &tempmod);
 		}
-
-		g_free(string);
 	}
 
 	return;
