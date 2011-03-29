@@ -275,6 +275,17 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 void
 dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifier)
 {
+	guint dummykey;
+	GdkModifierType dummymodifier;
+
+	if (key == NULL) {
+		key = &dummykey;
+	}
+
+	if (modifier == NULL) {
+		modifier = &dummymodifier;
+	}
+
 	*key = 0;
 	*modifier = 0;
 
