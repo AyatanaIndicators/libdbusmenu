@@ -598,10 +598,10 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 	}
 
 	/* Callback all the folks we can find */
-	GVariant * child = g_variant_get_child_value(params, 0);
+	GVariant * parent = g_variant_get_child_value(params, 0);
 	GVariantIter iter;
-	g_variant_iter_init(&iter, child);
-	g_variant_unref(child);
+	g_variant_iter_init(&iter, parent);
+	GVariant * child;
 	while ((child = g_variant_iter_next_value(&iter)) != NULL) {
 		if (g_strcmp0(g_variant_get_type_string(child), "(ia{sv})") != 0) {
 			g_warning("Properties return signature is not '(ia{sv})' it is '%s'", g_variant_get_type_string(child));
@@ -632,6 +632,7 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 		g_variant_unref(properties);
 		g_variant_unref(child);
 	}
+	g_variant_unref(parent);
 	g_variant_unref(params);
 
 	/* Provide errors for those who we can't */
@@ -1391,7 +1392,7 @@ menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpoin
 		/* Remove the entries from the current list that we have new
 		   values for.  This way we don't create signals of them being
 		   removed with the duplication of the value being changed. */
-		while (g_variant_iter_loop(&iter, "{sv}", &name, &value) && have_error == FALSE) {
+		while (g_variant_iter_loop(&iter, "{sv}", &name, &value)) {
 			for (tmp = current_props; tmp != NULL; tmp = g_list_next(tmp)) {
 				if (g_strcmp0((gchar *)tmp->data, name) == 0) {
 					current_props = g_list_delete_link(current_props, tmp);
