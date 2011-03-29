@@ -287,7 +287,6 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 
 	if (g_variant_n_children(wrapper) != 1) {
 		g_warning("Unable to parse shortcut, too many keys");
-		g_variant_unref(wrapper);
 		return;
 	}
 
