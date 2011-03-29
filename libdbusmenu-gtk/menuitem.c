@@ -302,7 +302,8 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 	}
 
 	GVariantIter iter;
-	g_variant_iter_init(&iter, g_variant_get_child_value(wrapper, 0));
+	GVariant * child = g_variant_get_child_value(wrapper, 0);
+	g_variant_iter_init(&iter, child);
 	gchar * string;
 
 	while(g_variant_iter_loop(&iter, "s", &string)) {
@@ -319,6 +320,8 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 			gtk_accelerator_parse(string, key, &tempmod);
 		}
 	}
+
+	g_variant_unref(child);
 
 	return;
 }
