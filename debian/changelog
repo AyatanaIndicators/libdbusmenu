@@ -1,3 +1,11 @@
+libdbusmenu (0.4.0-0ubuntu2~ppa3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Don't unref the variant we didn't have a ref to
+      when we error out.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 28 Mar 2011 21:55:07 -0500
+
 libdbusmenu (0.4.0-0ubuntu2~ppa2) natty; urgency=low
 
   * Upstream Merge
