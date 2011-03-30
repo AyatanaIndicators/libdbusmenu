@@ -512,21 +512,18 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
           GtkWidget *label = find_menu_label (widget);
 
-          if (label)
-            {
-              // Sometimes, an app will directly find and modify the label
-              // (like empathy), so watch the label especially for that.
-              gchar * text = sanitize_label (GTK_LABEL (label));
-              dbusmenu_menuitem_property_set (mi, "label", text);
-              g_free (text);
+          // Sometimes, an app will directly find and modify the label
+          // (like empathy), so watch the label especially for that.
+          gchar * text = sanitize_label (GTK_LABEL (label));
+          dbusmenu_menuitem_property_set (mi, "label", text);
+          g_free (text);
 
-              pdata->label = label;
-              g_signal_connect (G_OBJECT (label),
-                                "notify",
-                                G_CALLBACK (label_notify_cb),
-                                mi);
-              g_object_add_weak_pointer(G_OBJECT (label), (gpointer*)&pdata->label);
-            }
+          pdata->label = label;
+          g_signal_connect (G_OBJECT (label),
+                            "notify",
+                            G_CALLBACK (label_notify_cb),
+                            mi);
+          g_object_add_weak_pointer(G_OBJECT (label), (gpointer*)&pdata->label);
 
           if (GTK_IS_ACTIVATABLE (widget))
             {
@@ -891,7 +888,8 @@ widget_notify_cb (GtkWidget  *widget,
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
-      if (!g_strcmp0 (dbusmenu_menuitem_property_get (child, DBUSMENU_MENUITEM_PROP_TYPE), "separator"))
+      ParserData *pdata = g_object_get_data (G_OBJECT (widget), PARSER_DATA);
+      if (!pdata->label)
         {
           /* GtkMenuItem's can start life as a separator if they have no child
            * GtkLabel. In this case, we need to convert the DbusmenuMenuitem from
@@ -902,7 +900,6 @@ widget_notify_cb (GtkWidget  *widget,
           g_return_if_fail (label != NULL);
 
           dbusmenu_menuitem_property_remove (child, DBUSMENU_MENUITEM_PROP_TYPE);
-          ParserData *pdata = g_object_get_data (G_OBJECT (widget), PARSER_DATA);
           pdata->label = label;
           g_signal_connect (G_OBJECT (label),
                             "notify",
