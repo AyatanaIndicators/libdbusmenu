@@ -756,15 +756,13 @@ find_menu_label (GtkWidget *widget)
   return label;
 }
 
-static gboolean
-recreate_menu_item_in_idle_cb (gpointer data)
+static void
+recreate_menu_item (DbusmenuMenuitem * parent, DbusmenuMenuitem * child)
 {
-  DbusmenuMenuitem * child = (DbusmenuMenuitem *)data;
-  DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (child);
-  g_object_unref (child);
   if (parent == NULL)
     {
-      return FALSE;
+      /* We need a parent */
+      return;
     }
   ParserData * pdata = g_object_get_data (G_OBJECT (child), PARSER_DATA);
   /* Keep a pointer to the GtkMenuItem, as pdata->widget might be
@@ -779,7 +777,15 @@ recreate_menu_item_in_idle_cb (gpointer data)
   recurse.parent = parent;
 
   parse_menu_structure_helper(menuitem, &recurse);
+}
 
+static gboolean
+recreate_menu_item_in_idle_cb (gpointer data)
+{
+  DbusmenuMenuitem * child = (DbusmenuMenuitem *)data;
+  DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (child);
+  g_object_unref (child);
+  recreate_menu_item (parent, child);
   return FALSE;
 }
 
@@ -947,14 +953,7 @@ widget_notify_cb (GtkWidget  *widget,
            * this menuitem for now and then recreate it
            */
           DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (child);
-          dbusmenu_menuitem_child_delete (parent, child);
-
-	  RecurseContext recurse = {0};
-	  recurse.toplevel = gtk_widget_get_toplevel(widget);
-	  recurse.parent = parent;
-
-	  parse_menu_structure_helper(widget, &recurse);
-
+          recreate_menu_item (parent, child);
           return;
         }
                       
