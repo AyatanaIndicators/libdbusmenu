@@ -454,7 +454,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
       gboolean visible = FALSE;
       gboolean sensitive = FALSE;
-      if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
+      if (GTK_IS_SEPARATOR_MENU_ITEM (widget) || !find_menu_label (widget))
         {
           dbusmenu_menuitem_property_set (mi,
                                           "type",
@@ -891,6 +891,26 @@ widget_notify_cb (GtkWidget  *widget,
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
+      if (!g_strcmp0 (dbusmenu_menuitem_property_get (child, DBUSMENU_MENUITEM_PROP_TYPE), "separator"))
+        {
+          /* GtkMenuItem's can start life as a separator if they have no child
+           * GtkLabel. In this case, we need to convert the DbusmenuMenuitem from
+           * a separator to a normal menuitem if the application adds a label
+           */
+          GtkWidget *label = find_menu_label (widget);
+          /* This should never fail */
+          g_return_if_fail (label != NULL);
+
+          dbusmenu_menuitem_property_remove (child, DBUSMENU_MENUITEM_PROP_TYPE);
+          ParserData *pdata = g_object_get_data (G_OBJECT (widget), PARSER_DATA);
+          pdata->label = label;
+          g_signal_connect (G_OBJECT (label),
+                            "notify",
+                            G_CALLBACK (label_notify_cb),
+                            child);
+          g_object_add_weak_pointer(G_OBJECT (label), (gpointer*)&pdata->label);
+        }
+                      
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       g_value_get_string (&prop_value));
