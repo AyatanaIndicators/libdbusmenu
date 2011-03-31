@@ -454,7 +454,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
       gboolean visible = FALSE;
       gboolean sensitive = FALSE;
-      if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
+      if (GTK_IS_SEPARATOR_MENU_ITEM (widget) || !find_menu_label (widget))
         {
           dbusmenu_menuitem_property_set (mi,
                                           "type",
@@ -512,21 +512,18 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
           GtkWidget *label = find_menu_label (widget);
 
-          if (label)
-            {
-              // Sometimes, an app will directly find and modify the label
-              // (like empathy), so watch the label especially for that.
-              gchar * text = sanitize_label (GTK_LABEL (label));
-              dbusmenu_menuitem_property_set (mi, "label", text);
-              g_free (text);
+          // Sometimes, an app will directly find and modify the label
+          // (like empathy), so watch the label especially for that.
+          gchar * text = sanitize_label (GTK_LABEL (label));
+          dbusmenu_menuitem_property_set (mi, "label", text);
+          g_free (text);
 
-              pdata->label = label;
-              g_signal_connect (G_OBJECT (label),
-                                "notify",
-                                G_CALLBACK (label_notify_cb),
-                                mi);
-              g_object_add_weak_pointer(G_OBJECT (label), (gpointer*)&pdata->label);
-            }
+          pdata->label = label;
+          g_signal_connect (G_OBJECT (label),
+                            "notify",
+                            G_CALLBACK (label_notify_cb),
+                            mi);
+          g_object_add_weak_pointer(G_OBJECT (label), (gpointer*)&pdata->label);
 
           if (GTK_IS_ACTIVATABLE (widget))
             {
@@ -760,11 +757,48 @@ find_menu_label (GtkWidget *widget)
 }
 
 static void
+recreate_menu_item (DbusmenuMenuitem * parent, DbusmenuMenuitem * child)
+{
+  if (parent == NULL)
+    {
+      /* We need a parent */
+      return;
+    }
+  ParserData * pdata = g_object_get_data (G_OBJECT (child), PARSER_DATA);
+  /* Keep a pointer to the GtkMenuItem, as pdata->widget might be
+   * invalidated when we delete the DbusmenuMenuitem
+   */
+  GtkWidget * menuitem = pdata->widget;
+
+  dbusmenu_menuitem_child_delete (parent, child);
+
+  RecurseContext recurse = {0};
+  recurse.toplevel = gtk_widget_get_toplevel(menuitem);
+  recurse.parent = parent;
+
+  parse_menu_structure_helper(menuitem, &recurse);
+}
+
+static gboolean
+recreate_menu_item_in_idle_cb (gpointer data)
+{
+  DbusmenuMenuitem * child = (DbusmenuMenuitem *)data;
+  DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (child);
+  g_object_unref (child);
+  recreate_menu_item (parent, child);
+  return FALSE;
+}
+
+static void
 label_notify_cb (GtkWidget  *widget,
                  GParamSpec *pspec,
                  gpointer    data)
 {
   DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+  GValue prop_value = {0};
+
+  g_value_init (&prop_value, pspec->value_type); 
+  g_object_get_property (G_OBJECT (widget), pspec->name, &prop_value);
 
   if (pspec->name == g_intern_static_string ("label"))
     {
@@ -773,6 +807,24 @@ label_notify_cb (GtkWidget  *widget,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       text);
       g_free (text);
+    }
+  else if (pspec->name == g_intern_static_string ("parent"))
+    {
+      if (GTK_WIDGET (g_value_get_object (&prop_value)) == NULL)
+        {
+          /* This label is being removed from its GtkMenuItem. The
+           * menuitem becomes a separator now. As the client doesn't handle
+           * changing types so well, we remove the current DbusmenuMenuitem
+           * and add a new one.
+           *
+           * Note, we have to defer this to idle, as we are called before
+           * bin->child member of our old parent is invalidated. If we go ahead
+           * and call parse_menu_structure_helper now, the GtkMenuItem will
+           * still appear to have a label and we never convert it to a separator
+           */
+          g_object_ref (child);
+          g_idle_add ((GSourceFunc)recreate_menu_item_in_idle_cb, child);
+        } 
     }
 }
 
@@ -891,6 +943,20 @@ widget_notify_cb (GtkWidget  *widget,
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
+      ParserData *pdata = g_object_get_data (G_OBJECT (child), PARSER_DATA);
+      if (!pdata->label)
+        {
+          /* GtkMenuItem's can start life as a separator if they have no child
+           * GtkLabel. In this case, we need to convert the DbusmenuMenuitem from
+           * a separator to a normal menuitem if the application adds a label.
+           * As changing types isn't handled too well by the client, we delete
+           * this menuitem for now and then recreate it
+           */
+          DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (child);
+          recreate_menu_item (parent, child);
+          return;
+        }
+                      
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       g_value_get_string (&prop_value));
