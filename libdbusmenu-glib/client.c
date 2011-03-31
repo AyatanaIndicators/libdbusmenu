@@ -1334,8 +1334,16 @@ menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data
 
 	if (error != NULL) {
 		g_warning("Error getting properties on a menuitem: %s", error->message);
-		g_object_unref(data);
-		return;
+		goto out;
+	}
+
+	if (properties == NULL) {
+		goto out;
+	}
+
+	if (!g_variant_is_of_type(properties, G_VARIANT_TYPE("a{sv}"))) {
+		g_warning("Properties are of type '%s' instead of type '%s'", g_variant_get_type_string(properties), "a{sv}");
+		goto out;
 	}
 
 	GVariantIter iter;
@@ -1348,6 +1356,7 @@ menuitem_get_properties_cb (GVariant * properties, GError * error, gpointer data
 		dbusmenu_menuitem_property_set_variant(item, key, value);
 	}
 
+out:
 	g_object_unref(data);
 
 	return;
@@ -1366,12 +1375,16 @@ menuitem_get_properties_replace_cb (GVariant * properties, GError * error, gpoin
 		g_warning("Unable to replace properties on %d: %s", dbusmenu_menuitem_get_id(DBUSMENU_MENUITEM(data)), error->message);
 		have_error = TRUE;
 	}
+	
+	if (properties == NULL) {
+		have_error = TRUE;
+	}
 
 	/* Get the list of the current properties */
 	GList * current_props = dbusmenu_menuitem_properties_list(DBUSMENU_MENUITEM(data));
 	GList * tmp = NULL;
 
-	if (properties != NULL && have_error == FALSE) {
+	if (!have_error && g_variant_is_of_type(properties, G_VARIANT_TYPE("a{sv}"))) {
 		GVariantIter iter;
 		g_variant_iter_init(&iter, properties);
 		gchar * name; GVariant * value;
@@ -1415,8 +1428,12 @@ menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer 
 
 	if (error != NULL) {
 		g_warning("Error getting properties on a new menuitem: %s", error->message);
-		g_object_unref(propdata->item);
-		return;
+		goto out;
+	}
+
+	if (properties == NULL) {
+		g_warning("Not realizing new item as properties for it were unavailable");
+		goto out;
 	}
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(propdata->client);
@@ -1450,6 +1467,7 @@ menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer 
 		g_signal_emit(G_OBJECT(propdata->client), signals[NEW_MENUITEM], 0, propdata->item, TRUE);
 	}
 
+out:
 	g_object_unref(propdata->item);
 	g_free(propdata);
 

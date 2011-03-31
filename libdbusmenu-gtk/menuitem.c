@@ -275,6 +275,17 @@ dbusmenu_menuitem_property_set_shortcut_menuitem (DbusmenuMenuitem * menuitem, c
 void
 dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * key, GdkModifierType * modifier)
 {
+	guint dummykey;
+	GdkModifierType dummymodifier;
+
+	if (key == NULL) {
+		key = &dummykey;
+	}
+
+	if (modifier == NULL) {
+		modifier = &dummymodifier;
+	}
+
 	*key = 0;
 	*modifier = 0;
 
@@ -287,15 +298,15 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 
 	if (g_variant_n_children(wrapper) != 1) {
 		g_warning("Unable to parse shortcut, too many keys");
-		g_variant_unref(wrapper);
 		return;
 	}
 
 	GVariantIter iter;
-	g_variant_iter_init(&iter, g_variant_get_child_value(wrapper, 0));
+	GVariant * child = g_variant_get_child_value(wrapper, 0);
+	g_variant_iter_init(&iter, child);
 	gchar * string;
 
-	while(g_variant_iter_next(&iter, "s", &string)) {
+	while(g_variant_iter_loop(&iter, "s", &string)) {
 		if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_CONTROL) == 0) {
 			*modifier |= GDK_CONTROL_MASK;
 		} else if (g_strcmp0(string, DBUSMENU_MENUITEM_SHORTCUT_ALT) == 0) {
@@ -308,9 +319,9 @@ dbusmenu_menuitem_property_get_shortcut (DbusmenuMenuitem * menuitem, guint * ke
 			GdkModifierType tempmod;
 			gtk_accelerator_parse(string, key, &tempmod);
 		}
-
-		g_free(string);
 	}
+
+	g_variant_unref(child);
 
 	return;
 }
