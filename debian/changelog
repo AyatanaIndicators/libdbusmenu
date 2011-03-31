@@ -1,3 +1,12 @@
+libdbusmenu (0.4.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Managed variant iterators better to stop crash when dealing
+      with apps that have multiple shortcuts (LP: #741726)
+    * Handled GtkMenuItems with no labels as separators (LP: #729187)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 31 Mar 2011 13:48:40 -0500
+
 libdbusmenu (0.4.0-0ubuntu2) natty; urgency=low
 
   * Cherry picked fix for potential memory issues to fix unity-panel-service
