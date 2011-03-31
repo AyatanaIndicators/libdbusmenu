@@ -1,3 +1,10 @@
+libdbusmenu (0.4.0-0ubuntu2) natty; urgency=low
+
+  * Cherry picked fix for potential memory issues to fix unity-panel-service
+     crashed with SIGABRT in __kernel_vsyscall() (LP: #741726)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 28 Mar 2011 14:56:59 -0400
+
 libdbusmenu (0.4.0-0ubuntu2~ppa4) natty; urgency=low
 
   * Upstream Merge
