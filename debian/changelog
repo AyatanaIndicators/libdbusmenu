@@ -1,11 +1,11 @@
-libdbusmenu (0.4.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.4.1-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * Managed variant iterators better to stop crash when dealing
       with apps that have multiple shortcuts (LP: #741726)
     * Handled GtkMenuItems with no labels as separators (LP: #729187)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 31 Mar 2011 13:48:40 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 31 Mar 2011 13:56:54 -0500
 
 libdbusmenu (0.4.0-0ubuntu2) natty; urgency=low
 
@@ -13,38 +13,6 @@ libdbusmenu (0.4.0-0ubuntu2) natty; urgency=low
      crashed with SIGABRT in __kernel_vsyscall() (LP: #741726)
 
  -- Ken VanDine <ken.vandine@canonical.com>  Mon, 28 Mar 2011 14:56:59 -0400
-
-libdbusmenu (0.4.0-0ubuntu2~ppa4) natty; urgency=low
-
-  * Upstream Merge
-    * Protections and keeping the child variant for the
-      iterator around longer.
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 29 Mar 2011 10:07:09 -0500
-
-libdbusmenu (0.4.0-0ubuntu2~ppa3) natty; urgency=low
-
-  * Upstream Merge
-    * Don't unref the variant we didn't have a ref to
-      when we error out.
-
- -- Ted Gould <ted@ubuntu.com>  Mon, 28 Mar 2011 22:01:17 -0500
-
-libdbusmenu (0.4.0-0ubuntu2~ppa2) natty; urgency=low
-
-  * Upstream Merge
-    * Protecting the parent variant throughout it's usage in the
-      iterator in the while loop.  (LP: #741726)
-
- -- Ted Gould <ted@ubuntu.com>  Mon, 28 Mar 2011 21:33:38 -0500
-
-libdbusmenu (0.4.0-0ubuntu2~ppa1) natty; urgency=low
-
-  * Upstream Merge
-    * Putting in protections on properties that we don't quite
-      understand.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Mar 2011 11:40:06 -0500
 
 libdbusmenu (0.4.0-0ubuntu1) natty; urgency=low
 
