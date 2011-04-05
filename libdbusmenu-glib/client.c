@@ -1497,7 +1497,7 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	g_variant_unref(edata->variant);
 	g_free(edata->event);
 	g_object_unref(edata->menuitem);
-	g_object_unref(event->client);
+	g_object_unref(edata->client);
 	g_free(edata);
 
 	if (G_UNLIKELY(error != NULL)) {
