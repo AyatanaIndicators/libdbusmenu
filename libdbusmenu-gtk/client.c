@@ -555,7 +555,10 @@ process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * varia
 static void
 process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, DbusmenuGtkClient * gtkclient)
 {
-	const gchar * submenu = g_variant_get_string(variant, NULL);
+	const gchar * submenu = NULL;
+	if (variant != NULL) {
+		submenu = g_variant_get_string(variant, NULL);
+	}
 
 	if (g_strcmp0(submenu, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU) != 0) {
 		/* This is the only case we're really supporting right now,
