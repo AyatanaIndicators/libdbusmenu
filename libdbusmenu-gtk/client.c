@@ -553,18 +553,29 @@ process_toggle_state (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * varia
 
 /* Submenu processing */
 static void
-process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant)
+process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, DbusmenuGtkClient * gtkclient)
 {
 	const gchar * submenu = g_variant_get_string(variant, NULL);
 
 	if (g_strcmp0(submenu, DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU) != 0) {
 		/* This is the only case we're really supporting right now,
 		   so if it's not this, we want to clean up. */
-
+		/* We're just going to warn for now. */
+		gpointer pmenu = g_object_get_data(G_OBJECT(mi), data_menu);
+		if (pmenu != NULL) {
+			g_warning("The child-display variable is set to '%s' but there's a menu, odd?", submenu);
+		}
 	} else {
+		DbusmenuMenuitem * pmi = dbusmenu_menuitem_get_parent(mi);
+
 		/* We need to build a menu for these guys to live in. */
+		GtkMenu * menu = GTK_MENU(gtk_menu_new());
+		g_object_set_data(G_OBJECT(pmi), data_menu, menu);
 
+		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get(gtkclient, pmi);
+		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));
 
+		g_signal_connect(menu, "notify::visible", G_CALLBACK(submenu_notify_visible_cb), pmi);
 	}
 
 	return;
@@ -573,8 +584,10 @@ process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant)
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
-menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, GtkMenuItem * gmi)
+menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, DbusmenuGtkClient * gtkclient)
 {
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(gtkclient, mi);
+
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_LABEL)) {
 		gtk_menu_item_set_label(gmi, variant == NULL ? NULL : g_variant_get_string(variant, NULL));
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_VISIBLE)) {
@@ -586,7 +599,7 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, Gt
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE)) {
 		process_toggle_state(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
-		process_submenu(mi, gmi, variant);
+		process_submenu(mi, gmi, variant, gtkclient);
 	}
 
 	return;
@@ -725,7 +738,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	#endif
 
 	/* DbusmenuMenuitem signals */
-	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), gmi);
+	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_shortcut_change_cb), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
@@ -741,7 +754,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	process_sensitive(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_ENABLED));
 	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
 	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
-	process_submenu(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY));
+	process_submenu(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY), client);
 	refresh_shortcut(client, item);
 
 	/* Oh, we're a child, let's deal with that */
