@@ -1,4 +1,4 @@
-libdbusmenu (0.4.1-0ubuntu1~ppa1) natty; urgency=low
+libdbusmenu (0.4.1-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     * Managed variant iterators better to stop crash when dealing
