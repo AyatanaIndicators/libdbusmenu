@@ -569,16 +569,13 @@ process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, D
 			g_warning("The child-display variable is set to '%s' but there's a menu, odd?", submenu);
 		}
 	} else {
-		DbusmenuMenuitem * pmi = dbusmenu_menuitem_get_parent(mi);
-
 		/* We need to build a menu for these guys to live in. */
 		GtkMenu * menu = GTK_MENU(gtk_menu_new());
-		g_object_set_data(G_OBJECT(pmi), data_menu, menu);
+		g_object_set_data(G_OBJECT(mi), data_menu, menu);
 
-		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get(gtkclient, pmi);
-		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));
+		gtk_menu_item_set_submenu(gmi, GTK_WIDGET(menu));
 
-		g_signal_connect(menu, "notify::visible", G_CALLBACK(submenu_notify_visible_cb), pmi);
+		g_signal_connect(menu, "notify::visible", G_CALLBACK(submenu_notify_visible_cb), mi);
 	}
 
 	return;
