@@ -441,6 +441,9 @@ dbusmenu_client_dispose (GObject *object)
 		priv->menuproxy_cancel = NULL;
 	}
 	if (priv->menuproxy != NULL) {
+		g_signal_handlers_disconnect_matched(priv->menuproxy,
+		                                     G_SIGNAL_MATCH_DATA,
+		                                     0, 0, NULL, NULL, object);
 		g_object_unref(G_OBJECT(priv->menuproxy));
 		priv->menuproxy = NULL;
 	}
@@ -1494,6 +1497,7 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	g_variant_unref(edata->variant);
 	g_free(edata->event);
 	g_object_unref(edata->menuitem);
+	g_object_unref(edata->client);
 	g_free(edata);
 
 	if (G_UNLIKELY(error != NULL)) {
@@ -1528,6 +1532,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 
 	event_data_t * edata = g_new0(event_data_t, 1);
 	edata->client = client;
+	g_object_ref(client);
 	edata->menuitem = mi;
 	g_object_ref(edata->menuitem);
 	edata->event = g_strdup(name);

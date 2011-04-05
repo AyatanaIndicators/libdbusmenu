@@ -2,8 +2,10 @@ libdbusmenu (0.4.1-0ubuntu2~ppa1) UNRELEASED; urgency=low
 
   * Upstream Merge
     * Fix GIR scan to not include duplicate namespaces (LP: #750575)
+    * Keep refs to the client and makes sure to disconnect all
+      handlers. (LP: #749609)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 05 Apr 2011 16:16:09 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 05 Apr 2011 16:18:25 -0500
 
 libdbusmenu (0.4.1-0ubuntu1) natty; urgency=low
 
