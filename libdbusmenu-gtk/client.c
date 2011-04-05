@@ -776,17 +776,12 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 	if (g_strcmp0(dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_TYPE), DBUSMENU_CLIENT_TYPES_SEPARATOR) == 0) { return; }
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
+	if (ann_menu == NULL) {
+		g_warning("Children but no menu, someone's been naughty with their '" DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY "' property.");
+		return;
+	}
+
 	GtkMenu * menu = GTK_MENU(ann_menu);
-	if (menu == NULL) {
-		/* Oh, we don't have a submenu, build one! */
-		menu = GTK_MENU(gtk_menu_new());
-		g_object_set_data(G_OBJECT(mi), data_menu, menu);
-
-		GtkMenuItem * parent = dbusmenu_gtkclient_menuitem_get(gtkclient, mi);
-		gtk_menu_item_set_submenu(parent, GTK_WIDGET(menu));
-
-		g_signal_connect(menu, "notify::visible", G_CALLBACK(submenu_notify_visible_cb), mi);
-	} 
 
 	GtkMenuItem * childmi  = dbusmenu_gtkclient_menuitem_get(gtkclient, child);
 	gtk_menu_shell_insert(GTK_MENU_SHELL(menu), GTK_WIDGET(childmi), position);
