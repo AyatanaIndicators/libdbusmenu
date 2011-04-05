@@ -777,7 +777,7 @@ new_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint position, Dbus
 
 	gpointer ann_menu = g_object_get_data(G_OBJECT(mi), data_menu);
 	if (ann_menu == NULL) {
-		g_warning("Children but no menu, someone's been naughty with their '" DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY "' property.");
+		g_warning("Children but no menu, someone's been naughty with their '" DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY "' property: '%s'", dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY));
 		return;
 	}
 
