@@ -719,7 +719,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* Attach these two */
 	g_object_ref_sink(G_OBJECT(gmi));
-	g_object_set_data_full(G_OBJECT(item), data_menuitem, gmi, g_object_unref);
+	g_object_set_data_full(G_OBJECT(item), data_menuitem, gmi, (GDestroyNotify)gtk_widget_destroy);
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), client);
