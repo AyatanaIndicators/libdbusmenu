@@ -79,6 +79,11 @@ static void           item_activated           (DbusmenuMenuitem *  item,
                                                 gpointer            user_data);
 static gboolean       item_about_to_show       (DbusmenuMenuitem *  item,
                                                 gpointer            user_data);
+static gboolean       item_handle_event        (DbusmenuMenuitem *  item,
+                                                const gchar *       name,
+                                                GVariant *          variant,
+                                                guint               timestamp,
+                                                GtkWidget *         widget);
 static void           widget_notify_cb         (GtkWidget  *        widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
@@ -580,6 +585,11 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                             DBUSMENU_MENUITEM_SIGNAL_ABOUT_TO_SHOW,
                             G_CALLBACK (item_about_to_show),
                             widget);
+
+          g_signal_connect (G_OBJECT (mi),
+                            DBUSMENU_MENUITEM_SIGNAL_EVENT,
+                            G_CALLBACK (item_handle_event),
+                            widget);
         }
 
       dbusmenu_menuitem_property_set_bool (mi,
@@ -922,6 +932,34 @@ item_about_to_show (DbusmenuMenuitem *item, gpointer user_data)
     }
 
   return TRUE;
+}
+
+static gboolean
+item_handle_event (DbusmenuMenuitem *item, const gchar *name,
+                   GVariant *variant, guint timestamp, GtkWidget *widget)
+{
+  if (g_strcmp0 (name, DBUSMENU_MENUITEM_EVENT_OPENED) == 0)
+    {
+      GtkWidget *submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
+      if (submenu != NULL)
+        {
+          // Show the submenu so the app can notice and futz with the menus as
+          // desired (empathy and geany do this)
+          gtk_widget_show (submenu);
+        }
+    }
+  else if (g_strcmp0 (name, DBUSMENU_MENUITEM_EVENT_CLOSED) == 0)
+    {
+      GtkWidget *submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
+      if (submenu != NULL)
+        {
+          // Hide the submenu so the app can notice and futz with the menus as
+          // desired (empathy and geany do this)
+          gtk_widget_hide (submenu);
+        }
+    }
+
+  return FALSE; // just pass through on everything
 }
 
 static void
