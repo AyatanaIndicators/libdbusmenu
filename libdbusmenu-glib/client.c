@@ -331,6 +331,8 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	return;
 }
 
+#define LAYOUT_PROPS_COUNT  5
+
 static void
 dbusmenu_client_init (DbusmenuClient *self)
 {
@@ -351,13 +353,14 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->layoutcall = NULL;
 
-	gchar * layout_props[5];
+	gchar * layout_props[LAYOUT_PROPS_COUNT + 1];
 	layout_props[0] = DBUSMENU_MENUITEM_PROP_TYPE;
 	layout_props[1] = DBUSMENU_MENUITEM_PROP_LABEL;
 	layout_props[2] = DBUSMENU_MENUITEM_PROP_VISIBLE;
 	layout_props[3] = DBUSMENU_MENUITEM_PROP_ENABLED;
-	layout_props[4] = NULL;
-	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, 4);
+	layout_props[4] = DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY;
+	layout_props[LAYOUT_PROPS_COUNT] = NULL;
+	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, LAYOUT_PROPS_COUNT);
 	g_variant_ref_sink(priv->layout_props);
 
 	priv->current_revision = 0;
@@ -441,6 +444,9 @@ dbusmenu_client_dispose (GObject *object)
 		priv->menuproxy_cancel = NULL;
 	}
 	if (priv->menuproxy != NULL) {
+		g_signal_handlers_disconnect_matched(priv->menuproxy,
+		                                     G_SIGNAL_MATCH_DATA,
+		                                     0, 0, NULL, NULL, object);
 		g_object_unref(G_OBJECT(priv->menuproxy));
 		priv->menuproxy = NULL;
 	}
@@ -1494,6 +1500,7 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	g_variant_unref(edata->variant);
 	g_free(edata->event);
 	g_object_unref(edata->menuitem);
+	g_object_unref(edata->client);
 	g_free(edata);
 
 	if (G_UNLIKELY(error != NULL)) {
@@ -1528,6 +1535,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 
 	event_data_t * edata = g_new0(event_data_t, 1);
 	edata->client = client;
+	g_object_ref(client);
 	edata->menuitem = mi;
 	g_object_ref(edata->menuitem);
 	edata->event = g_strdup(name);
