@@ -1,4 +1,4 @@
-libdbusmenu (0.4.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.4.2-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     ∘ Fix GIR scan to not include duplicate namespaces (LP: #750575)
@@ -10,7 +10,7 @@ libdbusmenu (0.4.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
       have told us they need them with the child-display property.
       (LP: #619811)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Apr 2011 10:24:37 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Apr 2011 10:32:51 -0500
 
 libdbusmenu (0.4.1-0ubuntu1) natty; urgency=low
 
