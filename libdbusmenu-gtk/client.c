@@ -616,19 +616,6 @@ menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * value, 
 	return;
 }
 
-/* Call back that happens when the DbusmenuMenuitem
-   is destroyed.  We're making sure to clean up everything
-   else down the pipe. */
-static void
-destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
-{
-	#ifdef MASSIVEDEBUGGING
-	g_debug("DbusmenuMenuitem was destroyed");
-	#endif
-	gtk_widget_destroy(GTK_WIDGET(udata));
-	return;
-}
-
 /* The new menuitem signal only happens if we don't have a type handler
    for the type of the item.  This should be an error condition and we're
    printing out a message. */
@@ -731,11 +718,8 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	#endif
 
 	/* Attach these two */
-	g_object_set_data(G_OBJECT(item), data_menuitem, gmi);
-	g_object_ref(G_OBJECT(gmi));
-	#ifdef MASSIVEDEBUGGING
-	g_signal_connect(G_OBJECT(gmi), "destroy", G_CALLBACK(destroy_gmi), item);
-	#endif
+	g_object_ref_sink(G_OBJECT(gmi));
+	g_object_set_data_full(G_OBJECT(item), data_menuitem, gmi, g_object_unref);
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), client);
@@ -745,9 +729,6 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* GtkMenuitem signals */
 	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), item);
-
-	/* Life insurance */
-	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
 	/* Check our set of props to see if any are set already */
 	process_visible(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
