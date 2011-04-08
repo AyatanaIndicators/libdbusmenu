@@ -1,3 +1,4 @@
+debian/tmp/usr/include/libdbusmenu-0.4/libdbusmenu-gtk3/*
 debian/tmp/usr/lib/pkgconfig/dbusmenu-gtk3-0.4.pc
 debian/tmp/usr/lib/libdbusmenu-gtk3.a
 debian/tmp/usr/lib/libdbusmenu-gtk3.so

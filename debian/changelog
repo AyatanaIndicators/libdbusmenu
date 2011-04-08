@@ -1,12 +1,19 @@
-libdbusmenu (0.4.2-0ubuntu1~ppa1) natty; urgency=low
+libdbusmenu (0.4.2-0ubuntu2) natty; urgency=low
+
+  * debian/libdbusmenu-gtk3-dev.install:
+    - Add missing header files to gtk3 dev package
+
+ -- Michael Terry <mterry@ubuntu.com>  Thu, 07 Apr 2011 20:20:25 -0400
+
+libdbusmenu (0.4.2-0ubuntu1) natty; urgency=low
 
   * New upstream release.
-    ∘ Fix GIR scan to not include duplicate namespaces (LP: #750575)
-    ∘ Keep refs to the client and makes sure to disconnect all handlers.
+    * Fix GIR scan to not include duplicate namespaces (LP: #750575)
+    * Keep refs to the client and makes sure to disconnect all handlers.
       (LP: #749609)
-    ∘ Add GTK side handlers for the open/close events to ensure GTK apps
+    * Add GTK side handlers for the open/close events to ensure GTK apps
       can use those events still (LP: #750588)
-    ∘ Create submenus for menuitems that don't have children but still
+    * Create submenus for menuitems that don't have children but still
       have told us they need them with the child-display property.
       (LP: #619811)
 
