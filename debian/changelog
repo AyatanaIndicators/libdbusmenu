@@ -1,3 +1,10 @@
+libdbusmenu (0.4.2-0ubuntu2) natty; urgency=low
+
+  * debian/libdbusmenu-gtk3-dev.install:
+    - Add missing header files to gtk3 dev package
+
+ -- Michael Terry <mterry@ubuntu.com>  Thu, 07 Apr 2011 20:20:25 -0400
+
 libdbusmenu (0.4.2-0ubuntu1) natty; urgency=low
 
   * New upstream release.
