@@ -454,6 +454,7 @@ static const gchar * data_menuitem =      "dbusmenugtk-data-gtkmenuitem";
 static const gchar * data_menu =          "dbusmenugtk-data-gtkmenu";
 static const gchar * data_activating =    "dbusmenugtk-data-activating";
 static const gchar * data_idle_close_id = "dbusmenugtk-data-idle-close-id";
+static const gchar * data_delayed_close = "dbusmenugtk-data-delayed-close";
 
 static void
 menu_item_start_activating(DbusmenuMenuitem * mi)
@@ -490,6 +491,12 @@ menu_item_stop_activating(DbusmenuMenuitem * mi)
 	DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (mi);
 	while (dbusmenu_menuitem_get_parent (parent) != NULL &&
 	       menu_item_is_activating(parent)) {
+		/* Now clean up the activating flag */
+		g_object_set_data(G_OBJECT(parent), data_activating,
+		                  GINT_TO_POINTER(FALSE));
+
+		gboolean should_close = FALSE;
+
 		/* Note that dbus might be fast enough to have already
 		   processed the app's reply before close_in_idle() is called.
 		   So to avoid that, we shut down any pending close_in_idle call */
@@ -499,12 +506,25 @@ menu_item_stop_activating(DbusmenuMenuitem * mi)
 			g_source_remove(id);
 			g_object_set_data(G_OBJECT(parent), data_idle_close_id,
 			                  GINT_TO_POINTER(0));
+			should_close = TRUE;
 		}
 
-		/* Now clean up the activating flag and send the delayed close event */
-		g_object_set_data(G_OBJECT(parent), data_activating,
-		                  GINT_TO_POINTER(FALSE));
-		dbusmenu_menuitem_handle_event(parent, DBUSMENU_MENUITEM_EVENT_CLOSED, NULL, gtk_get_current_event_time());
+		gboolean delayed = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(mi),
+		                                                     data_delayed_close));
+		if (delayed) {
+			g_object_set_data(G_OBJECT(mi), data_delayed_close,
+			                  GINT_TO_POINTER(FALSE));
+			should_close = TRUE;
+		}
+
+		/* And finally send a delayed closed event if one would have
+		   happened */
+		if (should_close) {
+			dbusmenu_menuitem_handle_event(parent,
+			                               DBUSMENU_MENUITEM_EVENT_CLOSED,
+			                               NULL,
+			                               gtk_get_current_event_time());
+		}
 
 		parent = dbusmenu_menuitem_get_parent (parent);
 	}
@@ -545,6 +565,8 @@ close_in_idle (DbusmenuMenuitem * mi)
 	   when done with activation. */
 	if (!menu_item_is_activating(mi))
 		dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_CLOSED, NULL, gtk_get_current_event_time());
+	else
+		g_object_set_data(G_OBJECT(mi), data_delayed_close, GINT_TO_POINTER(TRUE));
 
 	g_object_set_data(G_OBJECT(mi), data_idle_close_id, GINT_TO_POINTER(0));
 	return FALSE;
