@@ -887,11 +887,10 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 
 	GtkMenuItem * gmi;
 	gmi = GTK_MENU_ITEM(g_object_new(GENERICMENUITEM_TYPE, NULL));
-	gtk_menu_item_set_label(gmi, dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL));
 
 	if (gmi != NULL) {
+		gtk_menu_item_set_label(gmi, dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL));
 		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-		g_object_unref(gmi);
 	} else {
 		return FALSE;
 	}
