@@ -37,7 +37,8 @@ void                 dbusmenu_client_send_event        (DbusmenuClient * client,
                                                         gint id,
                                                         const gchar * name,
                                                         GVariant * variant,
-                                                        guint timestamp);
+                                                        guint timestamp,
+                                                        DbusmenuMenuitem * mi);
 void                 dbusmenu_client_send_about_to_show(DbusmenuClient * client,
                                                         gint id,
                                                         void (*cb) (gpointer user_data),
