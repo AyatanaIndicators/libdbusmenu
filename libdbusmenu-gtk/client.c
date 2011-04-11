@@ -571,7 +571,8 @@ process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, D
 	} else {
 		/* We need to build a menu for these guys to live in. */
 		GtkMenu * menu = GTK_MENU(gtk_menu_new());
-		g_object_set_data(G_OBJECT(mi), data_menu, menu);
+		g_object_ref_sink(menu);
+		g_object_set_data_full(G_OBJECT(mi), data_menu, menu, g_object_unref);
 
 		gtk_menu_item_set_submenu(gmi, GTK_WIDGET(menu));
 
@@ -782,7 +783,7 @@ delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient
 
 		if (menu != NULL) {
 			gtk_widget_destroy(GTK_WIDGET(menu));
-			g_object_set_data(G_OBJECT(mi), data_menu, NULL);
+			g_object_steal_data(G_OBJECT(mi), data_menu);
 		}
 	}
 
