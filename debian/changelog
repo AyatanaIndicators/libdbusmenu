@@ -1,11 +1,11 @@
-libdbusmenu (0.4.2-0ubuntu4~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.4.2-0ubuntu4~ppa1) natty; urgency=low
 
   * Upstream Merge
     * Handle cases where labels are added later as subwidgets in
       the menuitem (LP: #758759)
     * Fix the destruction of the attached GTK menuitem (LP: #746091)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 12 Apr 2011 22:04:14 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 12 Apr 2011 22:13:59 -0500
 
 libdbusmenu (0.4.2-0ubuntu3) natty; urgency=low
 
