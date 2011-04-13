@@ -329,6 +329,18 @@ remove_child_signals (gpointer data, gpointer user_data)
 	return;
 }
 
+/* Handler for all of the menu items on a root change to ensure that
+   the menus are hidden before we start going and deleting things. */
+static void
+popdown_all (DbusmenuMenuitem * mi, gpointer user_data)
+{
+	GtkMenu * menu = dbusmenu_gtkclient_menuitem_get_submenu(DBUSMENU_GTKCLIENT(user_data), mi);
+	if (menu != NULL) {
+		gtk_menu_popdown(menu);
+	}
+	return;
+}
+
 /* When the root menuitem changes we need to resetup things so that
    we're back in the game. */
 static void
@@ -343,6 +355,8 @@ root_changed (DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, DbusmenuGt
 		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_added, menu);
 		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_moved, menu);
 		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->root), root_child_delete, menu);
+
+		dbusmenu_menuitem_foreach(priv->root, popdown_all, client);
 
 		g_object_unref(priv->root);
 		priv->root = NULL;

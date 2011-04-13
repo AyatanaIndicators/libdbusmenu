@@ -690,7 +690,8 @@ process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, D
 	} else {
 		/* We need to build a menu for these guys to live in. */
 		GtkMenu * menu = GTK_MENU(gtk_menu_new());
-		g_object_set_data(G_OBJECT(mi), data_menu, menu);
+		g_object_ref_sink(menu);
+		g_object_set_data_full(G_OBJECT(mi), data_menu, menu, g_object_unref);
 
 		gtk_menu_item_set_submenu(gmi, GTK_WIDGET(menu));
 
@@ -732,19 +733,6 @@ menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * value, 
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
 		refresh_shortcut(client, mi);
 	}
-	return;
-}
-
-/* Call back that happens when the DbusmenuMenuitem
-   is destroyed.  We're making sure to clean up everything
-   else down the pipe. */
-static void
-destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
-{
-	#ifdef MASSIVEDEBUGGING
-	g_debug("DbusmenuMenuitem was destroyed");
-	#endif
-	gtk_widget_destroy(GTK_WIDGET(udata));
 	return;
 }
 
@@ -850,11 +838,8 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	#endif
 
 	/* Attach these two */
-	g_object_set_data(G_OBJECT(item), data_menuitem, gmi);
-	g_object_ref(G_OBJECT(gmi));
-	#ifdef MASSIVEDEBUGGING
-	g_signal_connect(G_OBJECT(gmi), "destroy", G_CALLBACK(destroy_gmi), item);
-	#endif
+	g_object_ref_sink(G_OBJECT(gmi));
+	g_object_set_data_full(G_OBJECT(item), data_menuitem, gmi, (GDestroyNotify)gtk_widget_destroy);
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), client);
@@ -864,9 +849,6 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* GtkMenuitem signals */
 	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), item);
-
-	/* Life insurance */
-	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
 	/* Check our set of props to see if any are set already */
 	process_visible(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
@@ -920,7 +902,7 @@ delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient
 
 		if (menu != NULL) {
 			gtk_widget_destroy(GTK_WIDGET(menu));
-			g_object_set_data(G_OBJECT(mi), data_menu, NULL);
+			g_object_steal_data(G_OBJECT(mi), data_menu);
 		}
 	}
 
@@ -1024,11 +1006,10 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 
 	GtkMenuItem * gmi;
 	gmi = GTK_MENU_ITEM(g_object_new(GENERICMENUITEM_TYPE, NULL));
-	gtk_menu_item_set_label(gmi, dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL));
 
 	if (gmi != NULL) {
+		gtk_menu_item_set_label(gmi, dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL));
 		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-		g_object_unref(gmi);
 	} else {
 		return FALSE;
 	}
