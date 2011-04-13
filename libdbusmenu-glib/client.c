@@ -1516,14 +1516,13 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 /* Sends the event over DBus to the server on the other side
    of the bus. */
 void
-dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, GVariant * variant, guint timestamp)
+dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name, GVariant * variant, guint timestamp, DbusmenuMenuitem * mi)
 {
 	g_return_if_fail(DBUSMENU_IS_CLIENT(client));
 	g_return_if_fail(id >= 0);
 	g_return_if_fail(name != NULL);
 
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 	if (mi == NULL) {
 		g_warning("Asked to activate a menuitem %d that we don't know about", id);
 		return;
