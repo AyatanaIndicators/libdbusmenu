@@ -1,3 +1,10 @@
+libdbusmenu (0.4.2-0ubuntu4) UNRELEASED; urgency=low
+
+  * debian/rules
+    - Fixed package names for makeshlibs (LP: #760102)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 13 Apr 2011 16:48:13 -0400
+
 libdbusmenu (0.4.2-0ubuntu3) natty; urgency=low
 
   * Merged fix, guard against an activation that does not actually have 
