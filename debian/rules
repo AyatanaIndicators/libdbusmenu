@@ -11,10 +11,6 @@ DEB_BUILDDIR = $(DEB_SRCDIR)/build
 DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
-DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk3 += -V 'libdbusmenu-gtk3 (>= 0.3.90)'
-DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk3-3 += -V 'libdbusmenu-gtk3-3 (>= 0.3.90)'
-DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-glib3 += -V 'libdbusmenu-glib3 (>= 0.3.90)'
-
 configure/libdbusmenu-gtk3-3:: stamp-configure-gtk3
 stamp-configure-gtk3:
 	: # configure for GTK+ 3.0
