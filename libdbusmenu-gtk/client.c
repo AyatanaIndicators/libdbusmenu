@@ -59,6 +59,7 @@ static void move_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, guint n
 static void item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, gpointer userdata);
 static void theme_dir_changed (DbusmenuClient * client, GStrv theme_dirs, gpointer userdata);
 static void remove_theme_dirs (GtkIconTheme * theme, GStrv dirs);
+static void event_result (DbusmenuClient * client, DbusmenuMenuitem * mi, const gchar * event, GVariant * variant, guint timestamp, GError * error);
 
 static gboolean new_item_normal     (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static gboolean new_item_seperator  (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
@@ -119,6 +120,7 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_NEW_MENUITEM, G_CALLBACK(new_menuitem), NULL);
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ITEM_ACTIVATE, G_CALLBACK(item_activate), NULL);
 	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_ICON_THEME_DIRS_CHANGED, G_CALLBACK(theme_dir_changed), NULL);
+	g_signal_connect(G_OBJECT(self), DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT, G_CALLBACK(event_result), NULL);
 
 	theme_dir_changed(DBUSMENU_CLIENT(self), dbusmenu_client_get_icon_paths(DBUSMENU_CLIENT(self)), NULL);
 
@@ -448,8 +450,97 @@ dbusmenu_gtkclient_get_accel_group (DbusmenuGtkClient * client)
 
 /* Internal Functions */
 
-static const gchar * data_menuitem = "dbusmenugtk-data-gtkmenuitem";
-static const gchar * data_menu =     "dbusmenugtk-data-gtkmenu";
+static const gchar * data_menuitem =      "dbusmenugtk-data-gtkmenuitem";
+static const gchar * data_menu =          "dbusmenugtk-data-gtkmenu";
+static const gchar * data_activating =    "dbusmenugtk-data-activating";
+static const gchar * data_idle_close_id = "dbusmenugtk-data-idle-close-id";
+static const gchar * data_delayed_close = "dbusmenugtk-data-delayed-close";
+
+static void
+menu_item_start_activating(DbusmenuMenuitem * mi)
+{
+	/* Mark this item and all it's parents as activating */
+	DbusmenuMenuitem * parent = mi;
+	do {
+		g_object_set_data(G_OBJECT(parent), data_activating,
+		                  GINT_TO_POINTER(TRUE));
+	} while ((parent = dbusmenu_menuitem_get_parent (parent)) != NULL);
+
+	GVariant * variant = g_variant_new("i", 0);
+	dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_ACTIVATED, variant, gtk_get_current_event_time());
+}
+
+static gboolean
+menu_item_is_activating(DbusmenuMenuitem * mi)
+{
+	return GPOINTER_TO_INT(g_object_get_data(G_OBJECT(mi), data_activating));
+}
+
+static void
+menu_item_stop_activating(DbusmenuMenuitem * mi)
+{
+	if (!menu_item_is_activating(mi))
+		return;
+
+	/* Mark this item and all it's parents as not activating and finally
+	   send their queued close event. */
+	g_object_set_data(G_OBJECT(mi), data_activating, GINT_TO_POINTER(FALSE));
+
+	/* There is one master root parent that we don't care about, so stop
+	   right before it */
+	DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (mi);
+	while (dbusmenu_menuitem_get_parent (parent) != NULL &&
+	       menu_item_is_activating(parent)) {
+		/* Now clean up the activating flag */
+		g_object_set_data(G_OBJECT(parent), data_activating,
+		                  GINT_TO_POINTER(FALSE));
+
+		gboolean should_close = FALSE;
+
+		/* Note that dbus might be fast enough to have already
+		   processed the app's reply before close_in_idle() is called.
+		   So to avoid that, we shut down any pending close_in_idle call */
+		guint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(parent),
+		                           data_idle_close_id));
+		if (id > 0) {
+			g_source_remove(id);
+			g_object_set_data(G_OBJECT(parent), data_idle_close_id,
+			                  GINT_TO_POINTER(0));
+			should_close = TRUE;
+		}
+
+		gboolean delayed = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(mi),
+		                                                     data_delayed_close));
+		if (delayed) {
+			g_object_set_data(G_OBJECT(mi), data_delayed_close,
+			                  GINT_TO_POINTER(FALSE));
+			should_close = TRUE;
+		}
+
+		/* And finally send a delayed closed event if one would have
+		   happened */
+		if (should_close) {
+			dbusmenu_menuitem_handle_event(parent,
+			                               DBUSMENU_MENUITEM_EVENT_CLOSED,
+			                               NULL,
+			                               gtk_get_current_event_time());
+		}
+
+		parent = dbusmenu_menuitem_get_parent (parent);
+	}
+}
+
+static void
+event_result (DbusmenuClient * client, DbusmenuMenuitem * mi,
+              const gchar * event, GVariant * variant, guint timestamp,
+              GError * error)
+{
+	if (g_strcmp0(event, DBUSMENU_MENUITEM_EVENT_ACTIVATED) == 0) {
+		menu_item_stop_activating(mi);
+	}
+
+	return;
+}
 
 /* This is the call back for the GTK widget for when it gets
    clicked on by the user to send it back across the bus. */
@@ -457,8 +548,7 @@ static gboolean
 menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 {
 	if (gtk_menu_item_get_submenu(gmi) == NULL) {
-		GVariant * variant = g_variant_new("i", 0);
-		dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_ACTIVATED, variant, gtk_get_current_event_time());
+		menu_item_start_activating(mi);
 	} else {
 		/* TODO: We need to stop the display of the submenu
 		         until this callback returns. */
@@ -467,13 +557,42 @@ menu_pressed_cb (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
 	return TRUE;
 }
 
+static gboolean
+close_in_idle (DbusmenuMenuitem * mi)
+{
+	/* Don't send closed signal if we also sent activating signal.
+	   We'd just be asking for race conditions.  We'll send closed
+	   when done with activation. */
+	if (!menu_item_is_activating(mi))
+		dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_CLOSED, NULL, gtk_get_current_event_time());
+	else
+		g_object_set_data(G_OBJECT(mi), data_delayed_close, GINT_TO_POINTER(TRUE));
+
+	g_object_set_data(G_OBJECT(mi), data_idle_close_id, GINT_TO_POINTER(0));
+	return FALSE;
+}
+
 static void
 submenu_notify_visible_cb (GtkWidget * menu, GParamSpec * pspec, DbusmenuMenuitem * mi)
 {
-       if (gtk_widget_get_visible (menu))
-               dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_OPENED, NULL, gtk_get_current_event_time());
-       else
-               dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_CLOSED, NULL, gtk_get_current_event_time());
+	if (gtk_widget_get_visible (menu)) {
+		menu_item_stop_activating(mi); /* just in case */
+		dbusmenu_menuitem_handle_event(mi, DBUSMENU_MENUITEM_EVENT_OPENED, NULL, gtk_get_current_event_time());
+	} else {
+		/* Try to close in the idle loop because we actually get a menu
+		   close notification before we get notified that a menu item
+		   was clicked.  We want to give that clicked signal some
+		   time, so we wait until all queued signals are handled before
+		   continuing.  (our handling of the closed signal depends on
+		   whether the user clicked an item or not) */
+		guint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(mi),
+		                           data_idle_close_id));
+		if (id == 0) {
+			id = g_idle_add((GSourceFunc)close_in_idle, mi);
+			g_object_set_data(G_OBJECT(mi), data_idle_close_id,
+			                  GINT_TO_POINTER(id));
+		}
+	}
 }
 
 /* Process the visible property */
@@ -571,7 +690,8 @@ process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, D
 	} else {
 		/* We need to build a menu for these guys to live in. */
 		GtkMenu * menu = GTK_MENU(gtk_menu_new());
-		g_object_set_data(G_OBJECT(mi), data_menu, menu);
+		g_object_ref_sink(menu);
+		g_object_set_data_full(G_OBJECT(mi), data_menu, menu, g_object_unref);
 
 		gtk_menu_item_set_submenu(gmi, GTK_WIDGET(menu));
 
@@ -613,19 +733,6 @@ menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * value, 
 	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
 		refresh_shortcut(client, mi);
 	}
-	return;
-}
-
-/* Call back that happens when the DbusmenuMenuitem
-   is destroyed.  We're making sure to clean up everything
-   else down the pipe. */
-static void
-destoryed_dbusmenuitem_cb (gpointer udata, GObject * dbusmenuitem)
-{
-	#ifdef MASSIVEDEBUGGING
-	g_debug("DbusmenuMenuitem was destroyed");
-	#endif
-	gtk_widget_destroy(GTK_WIDGET(udata));
 	return;
 }
 
@@ -731,11 +838,8 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	#endif
 
 	/* Attach these two */
-	g_object_set_data(G_OBJECT(item), data_menuitem, gmi);
-	g_object_ref(G_OBJECT(gmi));
-	#ifdef MASSIVEDEBUGGING
-	g_signal_connect(G_OBJECT(gmi), "destroy", G_CALLBACK(destroy_gmi), item);
-	#endif
+	g_object_ref_sink(G_OBJECT(gmi));
+	g_object_set_data_full(G_OBJECT(item), data_menuitem, gmi, (GDestroyNotify)gtk_widget_destroy);
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), client);
@@ -745,9 +849,6 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* GtkMenuitem signals */
 	g_signal_connect(G_OBJECT(gmi), "activate", G_CALLBACK(menu_pressed_cb), item);
-
-	/* Life insurance */
-	g_object_weak_ref(G_OBJECT(item), destoryed_dbusmenuitem_cb, gmi);
 
 	/* Check our set of props to see if any are set already */
 	process_visible(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_VISIBLE));
@@ -801,7 +902,7 @@ delete_child (DbusmenuMenuitem * mi, DbusmenuMenuitem * child, DbusmenuGtkClient
 
 		if (menu != NULL) {
 			gtk_widget_destroy(GTK_WIDGET(menu));
-			g_object_set_data(G_OBJECT(mi), data_menu, NULL);
+			g_object_steal_data(G_OBJECT(mi), data_menu);
 		}
 	}
 
@@ -905,11 +1006,10 @@ new_item_normal (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusmenu
 
 	GtkMenuItem * gmi;
 	gmi = GTK_MENU_ITEM(g_object_new(GENERICMENUITEM_TYPE, NULL));
-	gtk_menu_item_set_label(gmi, dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL));
 
 	if (gmi != NULL) {
+		gtk_menu_item_set_label(gmi, dbusmenu_menuitem_property_get(newitem, DBUSMENU_MENUITEM_PROP_LABEL));
 		dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-		g_object_unref(gmi);
 	} else {
 		return FALSE;
 	}

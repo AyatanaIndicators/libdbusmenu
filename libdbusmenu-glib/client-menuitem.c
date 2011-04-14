@@ -106,7 +106,7 @@ static void
 handle_event (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp)
 {
 	DbusmenuClientMenuitemPrivate * priv = DBUSMENU_CLIENT_MENUITEM_GET_PRIVATE(mi);
-	dbusmenu_client_send_event(priv->client, dbusmenu_menuitem_get_id(mi), name, variant, timestamp);
+	dbusmenu_client_send_event(priv->client, dbusmenu_menuitem_get_id(mi), name, variant, timestamp, mi);
 	return;
 }
 

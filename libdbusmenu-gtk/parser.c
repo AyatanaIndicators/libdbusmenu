@@ -87,6 +87,9 @@ static gboolean       item_handle_event        (DbusmenuMenuitem *  item,
 static void           widget_notify_cb         (GtkWidget  *        widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
+static void           widget_add_cb            (GtkWidget *         widget,
+                                                GtkWidget *         child,
+                                                gpointer            data);
 static gboolean       should_show_image        (GtkImage *          image);
 static void           menuitem_notify_cb       (GtkWidget *         widget,
                                                 GParamSpec *        pspec,
@@ -168,6 +171,8 @@ parse_data_free (gpointer data)
 	if (pdata != NULL && pdata->widget != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
+		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+						     0, 0, NULL, G_CALLBACK(widget_add_cb), NULL);
 		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(accel_changed), NULL);
 		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
@@ -462,8 +467,8 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
       if (GTK_IS_SEPARATOR_MENU_ITEM (widget) || !find_menu_label (widget))
         {
           dbusmenu_menuitem_property_set (mi,
-                                          "type",
-                                          "separator");
+                                          DBUSMENU_MENUITEM_PROP_TYPE,
+                                          DBUSMENU_CLIENT_TYPES_SEPARATOR);
 
           visible = gtk_widget_get_visible (widget);
           sensitive = gtk_widget_get_sensitive (widget);
@@ -603,6 +608,11 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
       g_signal_connect (widget,
                         "notify",
                         G_CALLBACK (widget_notify_cb),
+                        mi);
+
+      g_signal_connect (widget,
+                        "add",
+                        G_CALLBACK (widget_add_cb),
                         mi);
 
       return mi;
@@ -962,6 +972,26 @@ item_handle_event (DbusmenuMenuitem *item, const gchar *name,
   return FALSE; // just pass through on everything
 }
 
+static gboolean
+handle_first_label (DbusmenuMenuitem *mi)
+{
+  ParserData *pdata = g_object_get_data (G_OBJECT (mi), PARSER_DATA);
+  if (!pdata->label)
+    {
+      /* GtkMenuItem's can start life as a separator if they have no child
+       * GtkLabel. In this case, we need to convert the DbusmenuMenuitem from
+       * a separator to a normal menuitem if the application adds a label.
+       * As changing types isn't handled too well by the client, we delete
+       * this menuitem for now and then recreate it
+       */
+      DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (mi);
+      recreate_menu_item (parent, mi);
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
 static void
 widget_notify_cb (GtkWidget  *widget,
                   GParamSpec *pspec,
@@ -981,20 +1011,11 @@ widget_notify_cb (GtkWidget  *widget,
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
-      ParserData *pdata = g_object_get_data (G_OBJECT (child), PARSER_DATA);
-      if (!pdata->label)
+      if (handle_first_label (child))
         {
-          /* GtkMenuItem's can start life as a separator if they have no child
-           * GtkLabel. In this case, we need to convert the DbusmenuMenuitem from
-           * a separator to a normal menuitem if the application adds a label.
-           * As changing types isn't handled too well by the client, we delete
-           * this menuitem for now and then recreate it
-           */
-          DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent (child);
-          recreate_menu_item (parent, child);
           return;
         }
-                      
+
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       g_value_get_string (&prop_value));
@@ -1064,6 +1085,15 @@ widget_notify_cb (GtkWidget  *widget,
       }
     }
   g_value_unset (&prop_value);
+}
+
+static void
+widget_add_cb (GtkWidget *widget,
+               GtkWidget *child,
+               gpointer   data)
+{
+  if (find_menu_label (child) != NULL)
+    handle_first_label (data);
 }
 
 /* A child item was added to a menu we're watching.  Let's try to integrate it. */
