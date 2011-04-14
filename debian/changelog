@@ -1,5 +1,6 @@
-libdbusmenu (0.4.2-0ubuntu4) UNRELEASED; urgency=low
+libdbusmenu (0.4.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
+  [ Ken VanDine ]
   * debian/rules
     - Fixed package names in build targets (LP: #760102)
     - Dropped makeshlibs in favor of symbols files
@@ -7,16 +8,15 @@ libdbusmenu (0.4.2-0ubuntu4) UNRELEASED; urgency=low
   * +debian/libdbusmenu-gtk3-3.symbols
   * +debian/libdbusmenu-gtk3.symbols
 
- -- Ken VanDine <ken.vandine@canonical.com>  Thu, 14 Apr 2011 09:27:03 -0400
+  [ Ted Gould ]
+  * New upstream release.
+    ∘ Handle cases where labels are added later as subwidgets
+      in the menuitem (LP: #758759)
+    ∘ Fix the destruction of the attached GTK menuitem (LP: #746091)
+    ∘ Guard against an activation that does not actually have an
+      associated menu-hide (LP: #750588)
 
-libdbusmenu (0.4.2-0ubuntu4~ppa1) natty; urgency=low
-
-  * Upstream Merge
-    * Handle cases where labels are added later as subwidgets in
-      the menuitem (LP: #758759)
-    * Fix the destruction of the attached GTK menuitem (LP: #746091)
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 12 Apr 2011 22:13:59 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 14 Apr 2011 16:41:27 -0500
 
 libdbusmenu (0.4.2-0ubuntu3) natty; urgency=low
 
