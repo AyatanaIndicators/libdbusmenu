@@ -15,7 +15,7 @@ DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk3 += -V 'libdbusmenu-gtk3 (>= 0.3.90)'
 DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-gtk3-3 += -V 'libdbusmenu-gtk3-3 (>= 0.3.90)'
 DEB_DH_MAKESHLIBS_ARGS_libdbusmenu-glib3 += -V 'libdbusmenu-glib3 (>= 0.3.90)'
 
-configure/libdbusmenu-gtk3-2:: stamp-configure-gtk3
+configure/libdbusmenu-gtk3-3:: stamp-configure-gtk3
 stamp-configure-gtk3:
 	: # configure for GTK+ 3.0
 	set -e; \
@@ -28,7 +28,7 @@ stamp-configure-gtk3:
 	cd ..;
 	touch stamp-configure-gtk3
 
-build/libdbusmenu-gtk3-2:: stamp-build-gtk3
+build/libdbusmenu-gtk3-3:: stamp-build-gtk3
 stamp-build-gtk3: stamp-configure-gtk3
 	: # build for GTK+ 3.0
 	$(MAKE) -C build-gtk3;
