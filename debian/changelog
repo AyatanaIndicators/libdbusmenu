@@ -1,3 +1,13 @@
+libdbusmenu (0.4.3-0ubuntu2) natty; urgency=low
+
+  * Backport bug fixes from trunk:
+    - Watch additions/removals from submenus that get added
+    - Activate new toplevel menu items as they get added
+    - Make sure we don't activate toplevel children that aren't
+      menu items or don't have submenus (LP: #761112)
+
+ -- Michael Terry <mterry@ubuntu.com>  Fri, 15 Apr 2011 15:55:37 -0400
+
 libdbusmenu (0.4.3-0ubuntu1) natty; urgency=low
 
   [ Ken VanDine ]
