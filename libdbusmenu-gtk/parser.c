@@ -271,6 +271,23 @@ new_menuitem (GtkWidget * widget)
 }
 
 static void
+watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
+{
+	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
+
+	pdata->shell = menu;
+	g_signal_connect (G_OBJECT (menu),
+		          "child-added",
+		          G_CALLBACK (child_added_cb),
+		          mi);
+	g_signal_connect (G_OBJECT (menu),
+		          "child-removed",
+		          G_CALLBACK (child_removed_cb),
+		          mi);
+	g_object_add_weak_pointer(G_OBJECT (menu), (gpointer*)&pdata->shell);
+}
+
+static void
 parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 {
 	/* If this is a shell, then let's handle the items in it. */
@@ -300,19 +317,7 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
 		if (recurse->parent == NULL) {
 			recurse->parent = new_menuitem(widget);
-
-			ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(recurse->parent), PARSER_DATA);
-
-			pdata->shell = widget;
-			g_signal_connect (G_OBJECT (widget),
-				          "child-added",
-				          G_CALLBACK (child_added_cb),
-				          recurse->parent);
-			g_signal_connect (G_OBJECT (widget),
-				          "child-removed",
-				          G_CALLBACK (child_removed_cb),
-				          recurse->parent);
-			g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->shell);
+			watch_submenu(recurse->parent, widget);
 		}
 
 		gtk_container_foreach (GTK_CONTAINER (widget),
@@ -561,16 +566,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
           GtkWidget *submenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(widget));
           if (submenu)
             {
-              pdata->shell = submenu;
-              g_signal_connect (G_OBJECT (submenu),
-                                "child-added",
-                                G_CALLBACK (child_added_cb),
-                                mi);
-              g_signal_connect (G_OBJECT (submenu),
-                                "child-removed",
-                                G_CALLBACK (child_removed_cb),
-                                mi);
-              g_object_add_weak_pointer(G_OBJECT(submenu), (gpointer*)&pdata->shell);
+              watch_submenu(mi, submenu);
             }
 
           if (!g_object_get_data (G_OBJECT (widget), "gtk-empty-menu-item") && !GTK_IS_TEAROFF_MENU_ITEM (widget))
@@ -1077,6 +1073,7 @@ widget_notify_cb (GtkWidget  *widget,
 	  if (item != NULL) {
         GtkWidget * menu = GTK_WIDGET (g_value_get_object (&prop_value));
         parse_menu_structure_helper(menu, &recurse);
+        watch_submenu(item, menu);
       } else {
         /* Note: it would be really odd that we wouldn't have a cached
            item, but we should handle that appropriately. */
