@@ -288,6 +288,33 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 }
 
 static void
+activate_toplevel_item (GtkWidget * item)
+{
+	/* Make sure that we have a menu item before we start calling
+	   functions that depend on it.  This should almost always be
+	   the case. */
+	if (!GTK_IS_MENU_ITEM(item)) {
+		return;
+	}
+
+	/* If the item is not opening a submenu we don't want to activate
+	   it as that'd cause an action.  Like opening a preferences dialog
+	   to the user.  That's not a good idea. */
+	if (gtk_menu_item_get_submenu(GTK_MENU_ITEM(item)) == NULL) {
+		return;
+	}
+
+	GtkWidget * shell = gtk_widget_get_parent (item);
+	if (!GTK_IS_MENU_BAR (shell)) {
+		return;
+	}
+
+	gtk_menu_shell_activate_item (GTK_MENU_SHELL (shell),
+	                              item,
+	                              TRUE);
+}
+
+static void
 parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 {
 	/* If this is a shell, then let's handle the items in it. */
@@ -303,30 +330,9 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 		 * Note that this will not force menuitems in submenus to be updated as well.
 		 */
 		if (recurse->parent == NULL && GTK_IS_MENU_BAR(widget)) {
-			GList *children = gtk_container_get_children (GTK_CONTAINER (widget));
-			GList *iter;
-
-			for (iter = children; iter != NULL; iter = iter->next) {
-				/* Make sure that we have a menu item before we start calling
-				   functions that depend on it.  This should almost always be
-				   the case. */
-				if (!GTK_IS_MENU_ITEM(iter->data)) {
-					continue;
-				}
-
-				/* If the item is not opening a submenu we don't want to activate
-				   it as that'd cause an action.  Like opening a preferences dialog
-				   to the user.  That's not a good idea. */
-				if (gtk_menu_item_get_submenu(GTK_MENU_ITEM(iter->data)) == NULL) {
-					continue;
-				}
-
-				gtk_menu_shell_activate_item (GTK_MENU_SHELL (widget),
-				                              iter->data,
-				                              TRUE);
-			}
-
-			g_list_free (children);
+			gtk_container_foreach (GTK_CONTAINER (widget),
+			                       (GtkCallback)activate_toplevel_item,
+			                       NULL);
 		}
 
 		if (recurse->parent == NULL) {
@@ -1118,11 +1124,7 @@ child_added_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 	recurse.parent = menuitem;
 
 	if (GTK_IS_MENU_BAR(menu)) {
-		/* We should fake-activate this menuitem just like we do other
-		   toplevel entries. */
-		gtk_menu_shell_activate_item (GTK_MENU_SHELL (menu),
-				              widget,
-				              TRUE);
+		activate_toplevel_item (widget);
 	}
 
 	parse_menu_structure_helper(widget, &recurse);
