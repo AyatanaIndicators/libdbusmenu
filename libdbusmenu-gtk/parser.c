@@ -307,6 +307,20 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 			GList *iter;
 
 			for (iter = children; iter != NULL; iter = iter->next) {
+				/* Make sure that we have a menu item before we start calling
+				   functions that depend on it.  This should almost always be
+				   the case. */
+				if (!GTK_IS_MENU_ITEM(iter->data)) {
+					continue;
+				}
+
+				/* If the item is not opening a submenu we don't want to activate
+				   it as that'd cause an action.  Like opening a preferences dialog
+				   to the user.  That's not a good idea. */
+				if (gtk_menu_item_get_submenu(GTK_MENU_ITEM(iter->data)) == NULL) {
+					continue;
+				}
+
 				gtk_menu_shell_activate_item (GTK_MENU_SHELL (widget),
 				                              iter->data,
 				                              TRUE);
