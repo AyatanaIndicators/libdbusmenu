@@ -1106,6 +1106,14 @@ child_added_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 	recurse.toplevel = gtk_widget_get_toplevel(GTK_WIDGET(menu));
 	recurse.parent = menuitem;
 
+	if (GTK_IS_MENU_BAR(menu)) {
+		/* We should fake-activate this menuitem just like we do other
+		   toplevel entries. */
+		gtk_menu_shell_activate_item (GTK_MENU_SHELL (menu),
+				              widget,
+				              TRUE);
+	}
+
 	parse_menu_structure_helper(widget, &recurse);
 }
 
