@@ -455,6 +455,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 				g_return_if_fail(priv->bus_lookup != NULL);
 			}
 
+			g_object_ref(obj);
 			g_bus_get(G_BUS_TYPE_SESSION, priv->bus_lookup, bus_got_cb, obj);
 		} else {
 			register_object(DBUSMENU_SERVER(obj));
@@ -694,6 +695,7 @@ bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data)
 	if (error != NULL) {
 		g_warning("Unable to get session bus: %s", error->message);
 		g_error_free(error);
+		g_object_unref(G_OBJECT(user_data));
 		return;
 	}
 
@@ -706,6 +708,7 @@ bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data)
 
 	register_object(DBUSMENU_SERVER(user_data));
 
+	g_object_unref(G_OBJECT(user_data));
 	return;
 }
 
@@ -983,7 +986,7 @@ menuitem_property_idle (gpointer user_data)
 		                              NULL,
 		                              priv->dbusobject,
 		                              DBUSMENU_INTERFACE,
-		                              "ItemPropertiesUpdated",
+		                              "ItemsPropertiesUpdated",
 		                              g_variant_new_tuple(megadata, 2),
 		                              NULL);
 	} else {

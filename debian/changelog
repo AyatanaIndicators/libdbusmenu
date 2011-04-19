@@ -1,3 +1,13 @@
+libdbusmenu (0.4.3-0ubuntu3) natty; urgency=low
+
+  * Backport bug fixes from trunk:
+    - Fix a typo in the signal name to make it match the XML 
+      files (LP: #641209)
+    - Ref'ing the server for the entire time we're getting the 
+      bus (LP: #738568)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 19 Apr 2011 15:14:23 -0400
+
 libdbusmenu (0.4.3-0ubuntu2) natty; urgency=low
 
   * Backport bug fixes from trunk:
