@@ -986,7 +986,7 @@ menuitem_property_idle (gpointer user_data)
 		                              NULL,
 		                              priv->dbusobject,
 		                              DBUSMENU_INTERFACE,
-		                              "ItemPropertiesUpdated",
+		                              "ItemsPropertiesUpdated",
 		                              g_variant_new_tuple(megadata, 2),
 		                              NULL);
 	} else {
