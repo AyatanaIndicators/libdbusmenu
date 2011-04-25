@@ -1,3 +1,17 @@
+libdbusmenu (0.4.4-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Fix a typo in the signal name to make it match the XML 
+      files (LP: #641209)
+    - Ref'ing the server for the entire time we're getting the 
+      bus (LP: #738568)
+    - Watch additions/removals from submenus that get added
+    - Activate new toplevel menu items as they get added
+    - Make sure we don't activate toplevel children that aren't
+      menu items or don't have submenus (LP: #761112)
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 25 Apr 2011 15:10:54 -0500
+
 libdbusmenu (0.4.3-0ubuntu3) natty; urgency=low
 
   * Backport bug fixes from trunk:
