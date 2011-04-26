@@ -1,3 +1,11 @@
+libdbusmenu (0.4.90~pre1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Bumping library revision for ABI/API changes expected in this
+      release cycle
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 26 Apr 2011 08:46:54 -0500
+
 libdbusmenu (0.4.4-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
