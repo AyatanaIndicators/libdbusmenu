@@ -23,26 +23,6 @@ DbusmenuGtkClientPrivate
 </SECTION>
 
 <SECTION>
-<FILE>serializablemenuitem</FILE>
-<TITLE>DbusmenuGtkSerializableMenuItem</TITLE>
-DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM
-DbusmenuGtkSerializableMenuItemClass
-dbusmenu_gtk_serializable_menu_item_build_menuitem
-dbusmenu_gtk_serializable_menu_item_register_to_client
-dbusmenu_gtk_serializable_menu_item_set_menuitem
-<SUBSECTION Standard>
-DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM
-DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM
-DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_CLASS
-DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM_CLASS
-DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_GET_CLASS
-<SUBSECTION Private>
-DBUSMENU_TYPE_GTK_SERIALIZABLE_MENU_ITEM
-dbusmenu_gtk_serializable_menu_item_get_type
-DbusmenuGtkSerializableMenuItemPrivate
-</SECTION>
-
-<SECTION>
 <FILE>menu</FILE>
 <TITLE>DbusmenuGtkMenu</TITLE>
 DbusmenuGtkMenuClass
