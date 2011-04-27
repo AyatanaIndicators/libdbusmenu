@@ -36,6 +36,5 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <libdbusmenu-gtk/client.h>
 #include <libdbusmenu-gtk/menu.h>
 #include <libdbusmenu-gtk/menuitem.h>
-#include <libdbusmenu-gtk/serializablemenuitem.h>
 
 #endif /* __DBUSMENU_GLIB_H__ */
