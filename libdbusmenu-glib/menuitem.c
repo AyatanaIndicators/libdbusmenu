@@ -575,7 +575,7 @@ dbusmenu_menuitem_set_realized (DbusmenuMenuitem * mi)
  * has.  The list is valid until another child related function
  * is called, where it might be changed.
  * 
- * Return value: (transfer none): A #GList of pointers to #DbusmenuMenuitem objects.
+ * Return value: (transfer none) (element-type Dbusmenu.Menuitem): A #GList of pointers to #DbusmenuMenuitem objects.
  */
 GList *
 dbusmenu_menuitem_get_children (DbusmenuMenuitem * mi)
