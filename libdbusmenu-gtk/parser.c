@@ -276,6 +276,7 @@ toggle_widget_visibility (GtkWidget * widget)
 	gboolean vis = gtk_widget_get_visible (widget);
 	gtk_widget_set_visible (widget, !vis);
 	gtk_widget_set_visible (widget, vis);
+	g_object_unref (G_OBJECT (widget));
 	return FALSE;
 }
 
@@ -300,7 +301,8 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 	   any submenus we come across.  Further, these apps need it done with a
 	   delay while they finish initializing, so we put the call in the idle
 	   queue. */
-	g_idle_add((GSourceFunc)toggle_widget_visibility, menu);
+	g_idle_add((GSourceFunc)toggle_widget_visibility,
+	           g_object_ref (G_OBJECT (menu)));
 }
 
 static void
