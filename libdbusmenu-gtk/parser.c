@@ -270,6 +270,16 @@ new_menuitem (GtkWidget * widget)
 	return item;
 }
 
+static gboolean
+toggle_widget_visibility (GtkWidget * widget)
+{
+	gboolean vis = gtk_widget_get_visible (widget);
+	gtk_widget_set_visible (widget, !vis);
+	gtk_widget_set_visible (widget, vis);
+	g_object_unref (G_OBJECT (widget));
+	return FALSE;
+}
+
 static void
 watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 {
@@ -285,6 +295,14 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 		          G_CALLBACK (child_removed_cb),
 		          mi);
 	g_object_add_weak_pointer(G_OBJECT (menu), (gpointer*)&pdata->shell);
+
+	/* Some apps (notably Eclipse RCP apps) don't fill contents of submenus
+	   until the menu is shown.  So we fake that by toggling the visibility of
+	   any submenus we come across.  Further, these apps need it done with a
+	   delay while they finish initializing, so we put the call in the idle
+	   queue. */
+	g_idle_add((GSourceFunc)toggle_widget_visibility,
+	           g_object_ref (G_OBJECT (menu)));
 }
 
 static void
