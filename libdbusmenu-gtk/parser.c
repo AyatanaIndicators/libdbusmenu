@@ -873,6 +873,9 @@ label_notify_cb (GtkWidget  *widget,
           g_idle_add ((GSourceFunc)recreate_menu_item_in_idle_cb, child);
         } 
     }
+
+  g_value_unset(&prop_value);
+  return;
 }
 
 static void
