@@ -1696,7 +1696,7 @@ dbusmenu_menuitem_handle_event (DbusmenuMenuitem * mi, const gchar * name, GVari
 
 	gboolean handled = FALSE;
 	if (variant == NULL) {
-		variant = g_variant_new("i", 0);
+		variant = g_variant_new_int32(0);
 	}
 
 	g_variant_ref_sink(variant);
