@@ -1337,7 +1337,8 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 
 	if (priv->root == NULL) {
 		/* Allow a request for just id 0 when root is null. Return no properties.
-			TODO: Why is this here?
+		   So that a request always returns a valid structure no matter the
+		   state of the structure in the server.
 		*/
 		GVariant * idlist = g_variant_get_child_value(params, 0);
 		if (g_variant_n_children(idlist) == 1) {
