@@ -97,7 +97,11 @@ test_object_prop_shortcut (void)
 	g_assert(G_IS_OBJECT(item));
 	g_assert(DBUSMENU_IS_MENUITEM(item));
 
+#if GTK_CHECK_VERSION(3,0,0)
+	guint key = GDK_KEY_c;
+#else
 	guint key = GDK_c;
+#endif
 	GdkModifierType modifier = GDK_CONTROL_MASK;
 
 	/* Set a shortcut */

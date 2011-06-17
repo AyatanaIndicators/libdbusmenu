@@ -53,7 +53,7 @@ main (int argc, char ** argv)
 
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), GTK_WIDGET(dmenu));
 	gtk_widget_show(menuitem);
-	gtk_menu_bar_append(menubar, menuitem);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menuitem);
 	gtk_widget_show(menubar);
 	gtk_container_add(GTK_CONTAINER(window), menubar);
 	gtk_window_set_title(GTK_WINDOW(window), "libdbusmenu-gtk test");

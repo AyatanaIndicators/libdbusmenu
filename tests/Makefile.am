@@ -399,7 +399,7 @@ test_gtk_objects_CFLAGS = \
 
 test_gtk_objects_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
@@ -429,7 +429,7 @@ test_gtk_parser_CFLAGS = \
 
 test_gtk_parser_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
@@ -456,7 +456,7 @@ test_gtk_label_server_CFLAGS = \
 
 test_gtk_label_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	libdbusmenu-jsonloader.la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
@@ -472,7 +472,7 @@ test_gtk_label_client_CFLAGS = \
 
 test_gtk_label_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -497,7 +497,7 @@ test_gtk_shortcut_server_CFLAGS = \
 
 test_gtk_shortcut_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -512,7 +512,7 @@ test_gtk_shortcut_client_CFLAGS = \
 
 test_gtk_shortcut_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -550,7 +550,7 @@ test_gtk_reorder_server_CFLAGS = \
 
 test_gtk_reorder_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -575,7 +575,7 @@ test_gtk_submenu_server_CFLAGS = \
 
 test_gtk_submenu_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -590,7 +590,7 @@ test_gtk_submenu_client_CFLAGS = \
 
 test_gtk_submenu_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -658,3 +658,8 @@ distclean-local:
 DISTCLEANFILES += \
 	$(filter-out %.py, $(TESTS))
 
+if USE_GTK3
+VER=3
+else
+VER=
+endif
