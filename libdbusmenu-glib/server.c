@@ -952,11 +952,13 @@ menuitem_property_idle (gpointer user_data)
 		}
 	}
 
+	/* these are going to be standard references in all code paths and must be unrefed */
 	GVariant * megadata[2];
 	gboolean gotsomething = FALSE;
 
 	if (item_init) {
 		megadata[0] = g_variant_builder_end(&itembuilder);
+		g_variant_ref_sink(megadata[0]);
 		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
@@ -970,6 +972,7 @@ menuitem_property_idle (gpointer user_data)
 
 	if (removeitem_init) {
 		megadata[1] = g_variant_builder_end(&removeitembuilder);
+		g_variant_ref_sink(megadata[1]);
 		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
@@ -989,10 +992,10 @@ menuitem_property_idle (gpointer user_data)
 		                              "ItemsPropertiesUpdated",
 		                              g_variant_new_tuple(megadata, 2),
 		                              NULL);
-	} else {
-		g_variant_unref(megadata[0]);
-		g_variant_unref(megadata[1]);
 	}
+
+	g_variant_unref(megadata[0]);
+	g_variant_unref(megadata[1]);
 
 	/* Clean everything up */
 	prop_array_teardown(priv->prop_array);
@@ -1194,9 +1197,11 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
 	/* Input */
-	gint parent = g_variant_get_int32(g_variant_get_child_value(params, 0));
-	gint recurse = g_variant_get_int32(g_variant_get_child_value(params, 1));
-	const gchar ** props = g_variant_get_strv(g_variant_get_child_value(params, 2), NULL);
+	gint32 parent;
+	gint32 recurse;
+	const gchar ** props;
+
+	g_variant_get(params, "(ii^a&s)", &parent, &recurse, &props);
 
 	/* Output */
 	guint revision = priv->layout_revision;
@@ -1209,6 +1214,7 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 			items = dbusmenu_menuitem_build_variant(mi, props, recurse);
 		}
 	}
+	g_free(props);
 
 	/* What happens if we don't have anything? */
 	if (items == NULL) {
@@ -1255,9 +1261,11 @@ bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 			            "There currently isn't a layout in this server");
 		return;
 	}
-	
-	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
-	const gchar * property = g_variant_get_string(g_variant_get_child_value(params, 1), NULL);
+
+	gint32 id;
+	const gchar * property;
+
+	g_variant_get(params, "(i&s)", &id, &property);
 
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
@@ -1299,7 +1307,8 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 		return;
 	}
 
-	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
+	gint32 id;
+	g_variant_get(params, "(i)", &id);
 
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
@@ -1327,28 +1336,43 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
 
 	if (priv->root == NULL) {
+		/* Allow a request for just id 0 when root is null. Return no properties.
+		   So that a request always returns a valid structure no matter the
+		   state of the structure in the server.
+		*/
 		GVariant * idlist = g_variant_get_child_value(params, 0);
-		if (g_variant_n_children(idlist) == 1 && g_variant_get_int32(g_variant_get_child_value(idlist, 0)) == 0) {
-			GVariant * final = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, NULL);
-			g_dbus_method_invocation_return_value(invocation, final);
-			return;
-		}
+		if (g_variant_n_children(idlist) == 1) {
 
-		g_dbus_method_invocation_return_error(invocation,
-			            error_quark(),
-			            NO_VALID_LAYOUT,
-			            "There currently isn't a layout in this server");
+			GVariant *id_v = g_variant_get_child_value(idlist, 0);
+			gint32 id = g_variant_get_int32(id_v);
+			g_variant_unref(id_v);
+
+			if (id == 0) {
+
+				GVariant * final = g_variant_parse(G_VARIANT_TYPE("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, NULL);
+				g_dbus_method_invocation_return_value(invocation, final);
+				g_variant_unref(final);
+			}
+		} else {
+
+			g_dbus_method_invocation_return_error(invocation,
+					          error_quark(),
+					          NO_VALID_LAYOUT,
+					          "There currently isn't a layout in this server");
+		}
+		g_variant_unref(idlist);
 		return;
 	}
 
-	GVariantIter ids;
-	g_variant_iter_init(&ids, g_variant_get_child_value(params, 0));
+	GVariantIter *ids;
+	g_variant_get(params, "(aias)", &ids, NULL);
+	/* TODO: implementation ignores propertyNames declared in XML */
 
 	GVariantBuilder builder;
 	gboolean builder_init = FALSE;
 
-	gint id;
-	while (g_variant_iter_next(&ids, "i", &id)) {
+	gint32 id;
+	while (g_variant_iter_loop(ids, "i", &id)) {
 		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 		if (mi == NULL) continue;
 
@@ -1364,7 +1388,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 
 		if (props == NULL) {
 			GError * error = NULL;
-			props = g_variant_parse(g_variant_type_new("a{sv}"), "{}", NULL, NULL, &error);
+			props = g_variant_parse(G_VARIANT_TYPE("a{sv}"), "{}", NULL, NULL, &error);
 			if (error != NULL) {
 				g_warning("Unable to parse '{}' as a 'a{sv}': %s", error->message);
 				g_error_free(error);
@@ -1377,18 +1401,20 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 
 		g_variant_builder_add_value(&builder, mi_data);
 	}
+	g_variant_iter_free(ids);
 
+	/* a standard reference that must be unrefed */
 	GVariant * ret = NULL;
 	
 	if (builder_init) {
 		ret = g_variant_builder_end(&builder);
+		g_variant_ref_sink(ret);
 	} else {
 		GError * error = NULL;
-		ret = g_variant_parse(g_variant_type_new("a(ia{sv})"), "[]", NULL, NULL, NULL);
+		ret = g_variant_parse(G_VARIANT_TYPE("a(ia{sv})"), "[]", NULL, NULL, &error);
 		if (error != NULL) {
 			g_warning("Unable to parse '[]' as a 'a(ia{sv})': %s", error->message);
 			g_error_free(error);
-			ret = NULL;
 		}
 	}
 
@@ -1396,6 +1422,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 	if (ret != NULL) {
 		g_variant_builder_init(&builder, G_VARIANT_TYPE_TUPLE);
 		g_variant_builder_add_value(&builder, ret);
+		g_variant_unref(ret);
 		final = g_variant_builder_end(&builder);
 	} else {
 		g_warning("Error building property list, final variant is NULL");
@@ -1434,7 +1461,8 @@ static void
 bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
-	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
+	gint32 id;
+	g_variant_get(params, "(i)", &id);
 
 	if (priv->root == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1468,7 +1496,7 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 		ret = g_variant_new_tuple(&end, 1);
 	} else {
 		GError * error = NULL;
-		ret = g_variant_parse(g_variant_type_new("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, &error);
+		ret = g_variant_parse(G_VARIANT_TYPE("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, &error);
 		if (error != NULL) {
 			g_warning("Unable to parse '([(0, {})],)' as a '(a(ia{sv}))': %s", error->message);
 			g_error_free(error);
@@ -1520,32 +1548,35 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 		return;
 	}
 
-	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
+	gint32 id;
+	gchar *etype;
+	GVariant *data;
+	guint32 ts;
+
+	g_variant_get(params, "(isvu)", &id, &etype, &data, &ts);
+
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
+
 		g_dbus_method_invocation_return_error(invocation,
 			                                  error_quark(),
 			                                  INVALID_MENUITEM_ID,
 			                                  "The ID supplied %d does not refer to a menu item we have",
 			                                  id);
-		return;
+		g_free(etype);
+		g_variant_unref(data);
+
+	} else {
+
+		idle_event_t * event_data = g_new0(idle_event_t, 1);
+		event_data->mi = g_object_ref(mi);
+		event_data->eventid = etype;
+		event_data->timestamp = ts;
+		event_data->variant = data; /* give away our reference */
+
+		g_timeout_add(0, event_local_handler, event_data);
 	}
-
-	idle_event_t * event_data = g_new0(idle_event_t, 1);
-	event_data->mi = mi;
-	g_object_ref(event_data->mi);
-	event_data->eventid = g_strdup(g_variant_get_string(g_variant_get_child_value(params, 1), NULL));
-	event_data->timestamp = g_variant_get_uint32(g_variant_get_child_value(params, 3));
-	event_data->variant = g_variant_get_child_value(params, 2);
-
-	if (g_variant_is_of_type(event_data->variant, G_VARIANT_TYPE_VARIANT)) {
-		event_data->variant = g_variant_get_variant(event_data->variant);
-	}
-
-	g_variant_ref_sink(event_data->variant);
-
-	g_timeout_add(0, event_local_handler, event_data);
 
 	g_dbus_method_invocation_return_value(invocation, NULL);
 	return;
@@ -1565,7 +1596,8 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 		return;
 	}
 
-	gint id = g_variant_get_int32(g_variant_get_child_value(params, 0));
+	gint32 id;
+	g_variant_get(params, "(i)", &id);
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
