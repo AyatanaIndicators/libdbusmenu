@@ -7,7 +7,6 @@
       <sub name="menuitem" link="libdbusmenu-gtk-menuitem.html"/>
       <sub name="DbusmenuGtkClient" link="libdbusmenu-gtk-DbusmenuGtkClient.html"/>
       <sub name="parser" link="libdbusmenu-gtk-parser.html"/>
-      <sub name="DbusmenuGtkSerializableMenuItem" link="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html"/>
     </sub>
     <sub name="Object Hierarchy" link="object-tree.html"/>
     <sub name="API Index" link="api-index-full.html"/>
@@ -35,10 +34,5 @@
     <keyword type="function" name="dbusmenu_gtkclient_newitem_base ()" link="libdbusmenu-gtk-DbusmenuGtkClient.html#dbusmenu-gtkclient-newitem-base"/>
     <keyword type="function" name="dbusmenu_gtk_parse_menu_structure ()" link="libdbusmenu-gtk-parser.html#dbusmenu-gtk-parse-menu-structure"/>
     <keyword type="function" name="dbusmenu_gtk_parse_get_cached_item ()" link="libdbusmenu-gtk-parser.html#dbusmenu-gtk-parse-get-cached-item"/>
-    <keyword type="macro" name="DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM_PROP_MENUITEM" link="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#DBUSMENU-GTK-SERIALIZABLE-MENU-ITEM-PROP-MENUITEM:CAPS"/>
-    <keyword type="struct" name="struct DbusmenuGtkSerializableMenuItemClass" link="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#DbusmenuGtkSerializableMenuItemClass"/>
-    <keyword type="function" name="dbusmenu_gtk_serializable_menu_item_build_menuitem ()" link="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#dbusmenu-gtk-serializable-menu-item-build-menuitem"/>
-    <keyword type="function" name="dbusmenu_gtk_serializable_menu_item_register_to_client ()" link="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#dbusmenu-gtk-serializable-menu-item-register-to-client"/>
-    <keyword type="function" name="dbusmenu_gtk_serializable_menu_item_set_menuitem ()" link="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#dbusmenu-gtk-serializable-menu-item-set-menuitem"/>
   </functions>
 </book>
