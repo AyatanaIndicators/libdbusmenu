@@ -1,4 +1,4 @@
-libdbusmenu (0.4.90~pre1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.4.4-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
   * Upstream Merge
     * Bumping library revision for ABI/API changes expected in this
