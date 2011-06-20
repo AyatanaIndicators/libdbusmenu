@@ -8,8 +8,9 @@ libdbusmenu (0.4.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Memory leaks for GVariant usage (LP: #784890)
     * Making GTK 3 default build
     * Removing the SerializableMenuitem object
+  * debian/rules: Making GTK2 the special build 
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 20 Jun 2011 16:38:53 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 20 Jun 2011 16:49:03 -0500
 
 libdbusmenu (0.4.4-0ubuntu1~ppa1) natty; urgency=low
 
