@@ -46,7 +46,11 @@ build_menu (void)
 
 	item = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(item, DBUSMENU_MENUITEM_PROP_LABEL, "Control-L");
+#if GTK_CHECK_VERSION(3,0,0)
+	dbusmenu_menuitem_property_set_shortcut(item, GDK_KEY_l, GDK_CONTROL_MASK);
+#else
 	dbusmenu_menuitem_property_set_shortcut(item, GDK_l, GDK_CONTROL_MASK);
+#endif
 	dbusmenu_menuitem_child_append(root, item);
 	g_object_unref(item);
 

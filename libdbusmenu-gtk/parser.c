@@ -28,7 +28,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "parser.h"
 #include "menuitem.h"
-#include "serializablemenuitem.h"
+#include "client.h"
 
 #define CACHED_MENUITEM  "dbusmenu-gtk-parser-cached-item"
 #define PARSER_DATA      "dbusmenu-gtk-parser-data"
@@ -270,6 +270,16 @@ new_menuitem (GtkWidget * widget)
 	return item;
 }
 
+static gboolean
+toggle_widget_visibility (GtkWidget * widget)
+{
+	gboolean vis = gtk_widget_get_visible (widget);
+	gtk_widget_set_visible (widget, !vis);
+	gtk_widget_set_visible (widget, vis);
+	g_object_unref (G_OBJECT (widget));
+	return FALSE;
+}
+
 static void
 watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 {
@@ -285,6 +295,14 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 		          G_CALLBACK (child_removed_cb),
 		          mi);
 	g_object_add_weak_pointer(G_OBJECT (menu), (gpointer*)&pdata->shell);
+
+	/* Some apps (notably Eclipse RCP apps) don't fill contents of submenus
+	   until the menu is shown.  So we fake that by toggling the visibility of
+	   any submenus we come across.  Further, these apps need it done with a
+	   delay while they finish initializing, so we put the call in the idle
+	   queue. */
+	g_idle_add((GSourceFunc)toggle_widget_visibility,
+	           g_object_ref (G_OBJECT (menu)));
 }
 
 static void
@@ -473,13 +491,6 @@ sanitize_label (GtkLabel * label)
 static DbusmenuMenuitem *
 construct_dbusmenu_for_widget (GtkWidget * widget)
 {
-	/* If it's a subclass of our serializable menu item then we can
-	   use its own build function */
-	if (DBUSMENU_IS_GTK_SERIALIZABLE_MENU_ITEM(widget)) {
-		DbusmenuGtkSerializableMenuItem * smi = DBUSMENU_GTK_SERIALIZABLE_MENU_ITEM(widget);
-		return dbusmenu_gtk_serializable_menu_item_build_menuitem(smi);
-	}
-
   /* If it's a standard GTK Menu Item we need to do some of our own work */
   if (GTK_IS_MENU_ITEM (widget))
     {
@@ -862,6 +873,9 @@ label_notify_cb (GtkWidget  *widget,
           g_idle_add ((GSourceFunc)recreate_menu_item_in_idle_cb, child);
         } 
     }
+
+  g_value_unset(&prop_value);
+  return;
 }
 
 static void

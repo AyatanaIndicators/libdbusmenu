@@ -253,8 +253,8 @@ am_test_gtk_label_client_OBJECTS =  \
 test_gtk_label_client_OBJECTS = $(am_test_gtk_label_client_OBJECTS)
 test_gtk_label_client_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_gtk_label_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_label_client_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -264,7 +264,7 @@ am_test_gtk_label_server_OBJECTS =  \
 test_gtk_label_server_OBJECTS = $(am_test_gtk_label_server_OBJECTS)
 test_gtk_label_server_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	libdbusmenu-jsonloader.la $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 test_gtk_label_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -276,8 +276,8 @@ am_test_gtk_objects_OBJECTS =  \
 test_gtk_objects_OBJECTS = $(am_test_gtk_objects_OBJECTS)
 test_gtk_objects_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_gtk_objects_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_objects_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
@@ -287,8 +287,8 @@ am_test_gtk_parser_OBJECTS =  \
 test_gtk_parser_OBJECTS = $(am_test_gtk_parser_OBJECTS)
 test_gtk_parser_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_gtk_parser_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_parser_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
@@ -299,8 +299,8 @@ test_gtk_reorder_server_OBJECTS =  \
 	$(am_test_gtk_reorder_server_OBJECTS)
 test_gtk_reorder_server_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_gtk_reorder_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_reorder_server_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -311,8 +311,8 @@ test_gtk_shortcut_client_OBJECTS =  \
 	$(am_test_gtk_shortcut_client_OBJECTS)
 test_gtk_shortcut_client_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_gtk_shortcut_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_shortcut_client_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -323,8 +323,8 @@ test_gtk_shortcut_server_OBJECTS =  \
 	$(am_test_gtk_shortcut_server_OBJECTS)
 test_gtk_shortcut_server_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_gtk_shortcut_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_shortcut_server_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -335,8 +335,8 @@ test_gtk_submenu_client_OBJECTS =  \
 	$(am_test_gtk_submenu_client_OBJECTS)
 test_gtk_submenu_client_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_gtk_submenu_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_submenu_client_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -347,8 +347,8 @@ test_gtk_submenu_server_OBJECTS =  \
 	$(am_test_gtk_submenu_server_OBJECTS)
 test_gtk_submenu_server_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_gtk_submenu_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gtk_submenu_server_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -482,6 +482,7 @@ DBUSMENUTESTS_LIBS = @DBUSMENUTESTS_LIBS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISTCHECK_CONFIGURE_FLAGS = @DISTCHECK_CONFIGURE_FLAGS@
+DLLTOOL = @DLLTOOL@
 DOC_USER_FORMATS = @DOC_USER_FORMATS@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
@@ -533,6 +534,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
@@ -574,6 +576,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -606,7 +609,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -648,6 +650,9 @@ EXTRA_DIST = test-glib-simple-items.py test-gtk-shortcut-client.py \
 	dbusmenu-gtk/mago_tests/data/static.json \
 	dbusmenu-gtk/mago_tests/data/test-gtk-label.json \
 	test-json-01.json
+XFAIL_TESTS = \
+	test-glib-proxy
+
 
 # The Python test only work on the system copy of
 # dbusmenu, so while they can be usefule they're not
@@ -916,7 +921,7 @@ test_gtk_objects_CFLAGS = \
 
 test_gtk_objects_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
@@ -937,7 +942,7 @@ test_gtk_parser_CFLAGS = \
 
 test_gtk_parser_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
@@ -952,7 +957,7 @@ test_gtk_label_server_CFLAGS = \
 
 test_gtk_label_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	libdbusmenu-jsonloader.la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
@@ -968,7 +973,7 @@ test_gtk_label_client_CFLAGS = \
 
 test_gtk_label_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -983,7 +988,7 @@ test_gtk_shortcut_server_CFLAGS = \
 
 test_gtk_shortcut_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -998,7 +1003,7 @@ test_gtk_shortcut_client_CFLAGS = \
 
 test_gtk_shortcut_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -1013,7 +1018,7 @@ test_gtk_reorder_server_CFLAGS = \
 
 test_gtk_reorder_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -1028,7 +1033,7 @@ test_gtk_submenu_server_CFLAGS = \
 
 test_gtk_submenu_server_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -1043,7 +1048,7 @@ test_gtk_submenu_client_CFLAGS = \
 
 test_gtk_submenu_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -1059,6 +1064,8 @@ jsondir = $(datadir)/${PACKAGE}/json/
 json_DATA = \
 	test-gtk-label.json
 
+@USE_GTK3_FALSE@VER = 
+@USE_GTK3_TRUE@VER = 3
 all: all-am
 
 .SUFFIXES:

@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="libdbusmenu-gtk Reference Manual">
 <link rel="up" href="ch01.html" title="API">
 <link rel="prev" href="libdbusmenu-gtk-DbusmenuGtkClient.html" title="DbusmenuGtkClient">
-<link rel="next" href="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html" title="DbusmenuGtkSerializableMenuItem">
+<link rel="next" href="object-tree.html" title="Object Hierarchy">
 <meta name="generator" content="GTK-Doc V1.17 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
@@ -18,7 +18,7 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">libdbusmenu-gtk Reference Manual</th>
-<td><a accesskey="n" href="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="object-tree.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#libdbusmenu-gtk-parser.synopsis" class="shortcut">Top</a>
@@ -44,8 +44,8 @@ Unstable, unless otherwise indicated
 <pre class="synopsis">
 #include &lt;libdbusmenu-gtk/parser.h&gt;
 
-<a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-gtk-parser.html#dbusmenu-gtk-parse-menu-structure" title="dbusmenu_gtk_parse_menu_structure ()">dbusmenu_gtk_parse_menu_structure</a>   (<em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/2.24/GtkWidget.html"><span class="type">GtkWidget</span></a> *widget</code></em>);
-<a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-gtk-parser.html#dbusmenu-gtk-parse-get-cached-item" title="dbusmenu_gtk_parse_get_cached_item ()">dbusmenu_gtk_parse_get_cached_item</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/2.24/GtkWidget.html"><span class="type">GtkWidget</span></a> *widget</code></em>);
+<a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-gtk-parser.html#dbusmenu-gtk-parse-menu-structure" title="dbusmenu_gtk_parse_menu_structure ()">dbusmenu_gtk_parse_menu_structure</a>   (<em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> *widget</code></em>);
+<a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  <a class="link" href="libdbusmenu-gtk-parser.html#dbusmenu-gtk-parse-get-cached-item" title="dbusmenu_gtk_parse_get_cached_item ()">dbusmenu_gtk_parse_get_cached_item</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> *widget</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -60,7 +60,7 @@ The parser will take a GTK menu tree and attach it to a Dbusmenu menu
 <a name="libdbusmenu-gtk-parser.details"></a><h2>Details</h2>
 <div class="refsect2">
 <a name="dbusmenu-gtk-parse-menu-structure"></a><h3>dbusmenu_gtk_parse_menu_structure ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_gtk_parse_menu_structure   (<em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/2.24/GtkWidget.html"><span class="type">GtkWidget</span></a> *widget</code></em>);</pre>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_gtk_parse_menu_structure   (<em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> *widget</code></em>);</pre>
 <p>
 Goes through the GTK structures and turns them into the appropraite
 Dbusmenu structures along with setting up all the relationships
@@ -72,7 +72,7 @@ on the GTK items so that they'll be reused if necissary.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>widget</code></em> :</span></p></td>
-<td>A <a href="http://library.gnome.org/devel/gtk/2.24/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> or <a href="http://library.gnome.org/devel/gtk/2.24/GtkMenuShell.html"><span class="type">GtkMenuShell</span></a> to turn into a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>
+<td>A <a href="http://library.gnome.org/devel/gtk/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> or <a href="http://library.gnome.org/devel/gtk/GtkMenuShell.html"><span class="type">GtkMenuShell</span></a> to turn into a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a>
 </td>
 </tr>
 <tr>
@@ -86,7 +86,7 @@ on the GTK items so that they'll be reused if necissary.
 <hr>
 <div class="refsect2">
 <a name="dbusmenu-gtk-parse-get-cached-item"></a><h3>dbusmenu_gtk_parse_get_cached_item ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_gtk_parse_get_cached_item  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/2.24/GtkWidget.html"><span class="type">GtkWidget</span></a> *widget</code></em>);</pre>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="returnvalue">DbusmenuMenuitem</span></a> *  dbusmenu_gtk_parse_get_cached_item  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> *widget</code></em>);</pre>
 <p>
 The Dbusmenu GTK parser adds cached items on the various
 menu items throughout the tree.  Sometimes it can be useful
@@ -98,7 +98,7 @@ will retrieve it for you.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>widget</code></em> :</span></p></td>
-<td>A <a href="http://library.gnome.org/devel/gtk/2.24/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> that may have a cached <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> from the parser</td>
+<td>A <a href="http://library.gnome.org/devel/gtk/GtkMenuItem.html"><span class="type">GtkMenuItem</span></a> that may have a cached <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> from the parser</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>

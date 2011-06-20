@@ -1,12 +1,15 @@
-libdbusmenu (0.4.4-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.4.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
-    * Bumping library revision for ABI/API changes expected in this
-      release cycle
   * debian/control, debian/*: Renaming packages for library version
     bump from 3 to 4.
+  * New upstream release.
+    * Fixing visibility for Eclipse (LP: #770263 and LP: #618587)
+    * Unseting a GValue properly (LP: #785828)
+    * Memory leaks for GVariant usage (LP: #784890)
+    * Making GTK 3 default build
+    * Removing the SerializableMenuitem object
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 26 Apr 2011 08:52:18 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 20 Jun 2011 16:38:53 -0500
 
 libdbusmenu (0.4.4-0ubuntu1~ppa1) natty; urgency=low
 

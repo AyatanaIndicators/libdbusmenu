@@ -38,16 +38,6 @@
 <ANCHOR id="libdbusmenu-gtk-parser.details" href="libdbusmenu-gtk/libdbusmenu-gtk-parser.html#libdbusmenu-gtk-parser.details">
 <ANCHOR id="dbusmenu-gtk-parse-menu-structure" href="libdbusmenu-gtk/libdbusmenu-gtk-parser.html#dbusmenu-gtk-parse-menu-structure">
 <ANCHOR id="dbusmenu-gtk-parse-get-cached-item" href="libdbusmenu-gtk/libdbusmenu-gtk-parser.html#dbusmenu-gtk-parse-get-cached-item">
-<ANCHOR id="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html">
-<ANCHOR id="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.stability-level" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.stability-level">
-<ANCHOR id="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.synopsis" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.synopsis">
-<ANCHOR id="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.description" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.description">
-<ANCHOR id="libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.details" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.details">
-<ANCHOR id="DBUSMENU-GTK-SERIALIZABLE-MENU-ITEM-PROP-MENUITEM:CAPS" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#DBUSMENU-GTK-SERIALIZABLE-MENU-ITEM-PROP-MENUITEM:CAPS">
-<ANCHOR id="DbusmenuGtkSerializableMenuItemClass" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#DbusmenuGtkSerializableMenuItemClass">
-<ANCHOR id="dbusmenu-gtk-serializable-menu-item-build-menuitem" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#dbusmenu-gtk-serializable-menu-item-build-menuitem">
-<ANCHOR id="dbusmenu-gtk-serializable-menu-item-register-to-client" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#dbusmenu-gtk-serializable-menu-item-register-to-client">
-<ANCHOR id="dbusmenu-gtk-serializable-menu-item-set-menuitem" href="libdbusmenu-gtk/libdbusmenu-gtk-DbusmenuGtkSerializableMenuItem.html#dbusmenu-gtk-serializable-menu-item-set-menuitem">
 <ANCHOR id="annotation-glossterm-out" href="libdbusmenu-gtk/annotation-glossary.html#annotation-glossterm-out">
 <ANCHOR id="annotation-glossterm-transfer full" href="libdbusmenu-gtk/annotation-glossary.html#annotation-glossterm-transfer full">
 <ANCHOR id="annotation-glossterm-transfer none" href="libdbusmenu-gtk/annotation-glossary.html#annotation-glossterm-transfer none">
