@@ -1,3 +1,11 @@
+libdbusmenu (0.4.90-0ubuntu2) oneiric; urgency=low
+
+  * debian/control
+    - Also a a breaks to libdbusmenu-glib4 for gir1.2-unity-3.0 and 
+      gir1.2-indicate-0.5 to make sure the library gets held back too.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 24 Jun 2011 16:05:56 -0400
+
 libdbusmenu (0.4.90-0ubuntu1) oneiric; urgency=low
 
   [ Ted Gould ]
