@@ -11,32 +11,32 @@ DEB_BUILDDIR = $(DEB_SRCDIR)/build
 DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
-configure/libdbusmenu-gtk3-3:: stamp-configure-gtk3
-stamp-configure-gtk3:
-	: # configure for GTK+ 3.0
+configure/libdbusmenu-gtk4:: stamp-configure-gtk2
+stamp-configure-gtk2:
+	: # configure for GTK+ 2.0
 	set -e; \
-	rm -rf build-gtk3; \
-	mkdir build-gtk3; \
-	cd build-gtk3; \
-	$(DEB_CONFIGURE_SCRIPT_ENV) ../configure --with-gtk=3 \
+	rm -rf build-gtk2; \
+	mkdir build-gtk2; \
+	cd build-gtk2; \
+	$(DEB_CONFIGURE_SCRIPT_ENV) ../configure --with-gtk=2 \
 		$(filter-out --srcdir=%, $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)) \
 		--enable-gtk-doc=no; \
 	cd ..;
-	touch stamp-configure-gtk3
+	touch stamp-configure-gtk2
 
-build/libdbusmenu-gtk3-3:: stamp-build-gtk3
-stamp-build-gtk3: stamp-configure-gtk3
-	: # build for GTK+ 3.0
-	$(MAKE) -C build-gtk3;
-	touch stamp-build-gtk3
+build/libdbusmenu-gtk4:: stamp-build-gtk2
+stamp-build-gtk2: stamp-configure-gtk2
+	: # build for GTK+ 2.0
+	$(MAKE) -C build-gtk2;
+	touch stamp-build-gtk2
 
-common-install-prehook-arch:: stamp-build-gtk3
-	: # install for GTK+ 3.0
-	$(MAKE) -C build-gtk3 DESTDIR=$(CURDIR)/debian/tmp install
+common-install-prehook-arch:: stamp-build-gtk2
+	: # install for GTK+ 2.0
+	$(MAKE) -C build-gtk2 DESTDIR=$(CURDIR)/debian/tmp install
 
 binary-predeb/gir%::
 	dh_girepository -p$(cdbs_curpkg)
 
 clean::
-	rm -f stamp-*-gtk3
-	rm -rf build-gtk3
+	rm -f stamp-*-gtk2
+	rm -rf build-gtk2

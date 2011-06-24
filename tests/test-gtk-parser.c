@@ -55,9 +55,23 @@ const gchar * test_parser_children_builder =
 "</object>"
 "</interface>";
 
+/* Checks the log level to let warnings not stop the program */
+static gboolean
+test_parser_children_log_handler (const gchar * domain, GLogLevelFlags level, const gchar * message, gpointer user_data)
+{
+	if (level & (G_LOG_LEVEL_WARNING | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 /* Ensure the parser can find children */
 static void
 test_parser_children (void) {
+	/* Hide GTK errors */
+	g_test_log_set_fatal_handler(test_parser_children_log_handler, NULL);
+
 	GtkBuilder * builder = gtk_builder_new();
 	g_assert(builder != NULL);
 

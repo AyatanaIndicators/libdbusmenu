@@ -1,3 +1,31 @@
+libdbusmenu (0.4.90-0ubuntu1~ppa1) oneiric; urgency=low
+
+  * debian/control, debian/*: Renaming packages for library version
+    bump from 3 to 4.
+  * New upstream release.
+    * Fixing visibility for Eclipse (LP: #770263 and LP: #618587)
+    * Unseting a GValue properly (LP: #785828)
+    * Memory leaks for GVariant usage (LP: #784890)
+    * Making GTK 3 default build
+    * Removing the SerializableMenuitem object
+  * debian/rules: Making GTK2 the special build 
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 20 Jun 2011 17:00:12 -0500
+
+libdbusmenu (0.4.4-0ubuntu1~ppa1) natty; urgency=low
+
+  * New upstream release.
+    - Fix a typo in the signal name to make it match the XML 
+      files (LP: #641209)
+    - Ref'ing the server for the entire time we're getting the 
+      bus (LP: #738568)
+    - Watch additions/removals from submenus that get added
+    - Activate new toplevel menu items as they get added
+    - Make sure we don't activate toplevel children that aren't
+      menu items or don't have submenus (LP: #761112)
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 25 Apr 2011 15:19:25 -0500
+
 libdbusmenu (0.4.3-0ubuntu3) natty; urgency=low
 
   * Backport bug fixes from trunk:

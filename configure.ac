@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.4.3, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.4.90, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.4.3, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.4.90, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -62,7 +62,7 @@ AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--with-gtk],
     [Which version of gtk to use @<:@default=2@:>@])],
   [],
-  [with_gtk=2])
+  [with_gtk=3])
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION)
@@ -96,7 +96,7 @@ AC_SUBST(DBUSMENUDUMPER_LIBS)
 # Dependencies - Testing
 ###########################
 
-JSON_GLIB_REQUIRED_VERSION=0.6.0
+JSON_GLIB_REQUIRED_VERSION=0.13.4
 GIO_UNIX_REQUIRED_VERSION=2.24
 
 PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
@@ -133,8 +133,8 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 # Lib versioning 
 ###########################
 
-LIBDBUSMENU_CURRENT=3
-LIBDBUSMENU_REVISION=14
+LIBDBUSMENU_CURRENT=4
+LIBDBUSMENU_REVISION=0
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)

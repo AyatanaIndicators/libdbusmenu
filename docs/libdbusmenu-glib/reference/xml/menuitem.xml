@@ -663,7 +663,7 @@ is called, where it might be changed.
 </para><variablelist role="params">
 <varlistentry><term><parameter>mi</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to query.</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GList"><type>GList</type></link> of pointers to <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects. <emphasis role="annotation">[<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GList"><type>GList</type></link> of pointers to <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> objects. <emphasis role="annotation">[<acronym>transfer none</acronym>][<acronym>element-type</acronym> Dbusmenu.Menuitem]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-take-children" role="function">
 <title>dbusmenu_menuitem_take_children ()</title>

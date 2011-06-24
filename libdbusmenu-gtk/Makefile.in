@@ -46,7 +46,12 @@ DIST_COMMON = $(libdbusmenu_gtk3include_HEADERS) \
 	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-gtk-0.4.pc.in \
 	$(srcdir)/dbusmenu-gtk3-0.4.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -86,8 +91,7 @@ libdbusmenu_gtk_la_DEPENDENCIES =  \
 am_libdbusmenu_gtk_la_OBJECTS = libdbusmenu_gtk_la-client.lo \
 	libdbusmenu_gtk_la-genericmenuitem.lo \
 	libdbusmenu_gtk_la-menu.lo libdbusmenu_gtk_la-menuitem.lo \
-	libdbusmenu_gtk_la-parser.lo \
-	libdbusmenu_gtk_la-serializablemenuitem.lo
+	libdbusmenu_gtk_la-parser.lo
 libdbusmenu_gtk_la_OBJECTS = $(am_libdbusmenu_gtk_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -103,8 +107,7 @@ libdbusmenu_gtk3_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am__objects_1 = libdbusmenu_gtk3_la-client.lo \
 	libdbusmenu_gtk3_la-genericmenuitem.lo \
 	libdbusmenu_gtk3_la-menu.lo libdbusmenu_gtk3_la-menuitem.lo \
-	libdbusmenu_gtk3_la-parser.lo \
-	libdbusmenu_gtk3_la-serializablemenuitem.lo
+	libdbusmenu_gtk3_la-parser.lo
 am_libdbusmenu_gtk3_la_OBJECTS = $(am__objects_1)
 libdbusmenu_gtk3_la_OBJECTS = $(am_libdbusmenu_gtk3_la_OBJECTS)
 libdbusmenu_gtk3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -176,6 +179,7 @@ DBUSMENUTESTS_LIBS = @DBUSMENUTESTS_LIBS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISTCHECK_CONFIGURE_FLAGS = @DISTCHECK_CONFIGURE_FLAGS@
+DLLTOOL = @DLLTOOL@
 DOC_USER_FORMATS = @DOC_USER_FORMATS@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
@@ -227,6 +231,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
@@ -268,6 +273,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -300,7 +306,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -335,8 +340,7 @@ libdbusmenu_gtkinclude_HEADERS = \
 	client.h \
 	menu.h \
 	menuitem.h \
-	parser.h \
-	serializablemenuitem.h
+	parser.h
 
 libdbusmenu_gtk_la_SOURCES = \
 	client.h \
@@ -348,9 +352,7 @@ libdbusmenu_gtk_la_SOURCES = \
 	menuitem.h \
 	menuitem.c \
 	parser.h \
-	parser.c \
-	serializablemenuitem.h \
-	serializablemenuitem.c
+	parser.c
 
 libdbusmenu_gtk_la_LDFLAGS = \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
@@ -505,13 +507,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-menu.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-menuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-parser.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-serializablemenuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-genericmenuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-menu.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-menuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-parser.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-serializablemenuitem.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -577,14 +577,6 @@ libdbusmenu_gtk_la-parser.lo: parser.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk_la-parser.lo `test -f 'parser.c' || echo '$(srcdir)/'`parser.c
 
-libdbusmenu_gtk_la-serializablemenuitem.lo: serializablemenuitem.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk_la-serializablemenuitem.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk_la-serializablemenuitem.Tpo -c -o libdbusmenu_gtk_la-serializablemenuitem.lo `test -f 'serializablemenuitem.c' || echo '$(srcdir)/'`serializablemenuitem.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk_la-serializablemenuitem.Tpo $(DEPDIR)/libdbusmenu_gtk_la-serializablemenuitem.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='serializablemenuitem.c' object='libdbusmenu_gtk_la-serializablemenuitem.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk_la-serializablemenuitem.lo `test -f 'serializablemenuitem.c' || echo '$(srcdir)/'`serializablemenuitem.c
-
 libdbusmenu_gtk3_la-client.lo: client.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk3_la-client.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk3_la-client.Tpo -c -o libdbusmenu_gtk3_la-client.lo `test -f 'client.c' || echo '$(srcdir)/'`client.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk3_la-client.Tpo $(DEPDIR)/libdbusmenu_gtk3_la-client.Plo
@@ -624,14 +616,6 @@ libdbusmenu_gtk3_la-parser.lo: parser.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='parser.c' object='libdbusmenu_gtk3_la-parser.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk3_la-parser.lo `test -f 'parser.c' || echo '$(srcdir)/'`parser.c
-
-libdbusmenu_gtk3_la-serializablemenuitem.lo: serializablemenuitem.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk3_la-serializablemenuitem.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk3_la-serializablemenuitem.Tpo -c -o libdbusmenu_gtk3_la-serializablemenuitem.lo `test -f 'serializablemenuitem.c' || echo '$(srcdir)/'`serializablemenuitem.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk3_la-serializablemenuitem.Tpo $(DEPDIR)/libdbusmenu_gtk3_la-serializablemenuitem.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='serializablemenuitem.c' object='libdbusmenu_gtk3_la-serializablemenuitem.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk3_la-serializablemenuitem.lo `test -f 'serializablemenuitem.c' || echo '$(srcdir)/'`serializablemenuitem.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
