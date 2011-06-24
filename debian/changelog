@@ -1,5 +1,6 @@
-libdbusmenu (0.4.90-0ubuntu1~ppa1) oneiric; urgency=low
+libdbusmenu (0.4.90-0ubuntu1) oneiric; urgency=low
 
+  [ Ted Gould ]
   * debian/control, debian/*: Renaming packages for library version
     bump from 3 to 4.
   * New upstream release.
@@ -10,7 +11,21 @@ libdbusmenu (0.4.90-0ubuntu1~ppa1) oneiric; urgency=low
     * Removing the SerializableMenuitem object
   * debian/rules: Making GTK2 the special build 
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 20 Jun 2011 17:00:12 -0500
+  [ Ken VanDine ]
+  * +debian/libdbusmenu-jsonloader4.symbols
+  * debian/*.symbols
+    - Fixed sonames and removed all the duplicate symbols
+  * debian/*.install, debian/rules
+    - Use cdbs to do the dual builds for gtk2/gtk3
+  * debian/control
+    - Updated standards version to 3.9.2
+    - Set version on the json-glib build depends to >= 0.13.4
+    - Make gir1.2-dbusmenu-glib-0.4 break gir1.2-unity-3.0 and 
+      gir1.2-indicate-0.5 built against older versions of dbusmenu to 
+      prevent breakage in python apps that use gir loading multiple versions
+      of dbusmenu-glib
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 24 Jun 2011 14:55:59 -0400
 
 libdbusmenu (0.4.4-0ubuntu1~ppa1) natty; urgency=low
 

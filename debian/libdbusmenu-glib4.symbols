@@ -1,4 +1,4 @@
-libdbusmenu-glib.so.3 libdbusmenu-glib3 #MINVER#
+libdbusmenu-glib.so.4 libdbusmenu-glib4 #MINVER#
  dbus_menu_clean_xml@Base 0.4.2
  dbusmenu_client_add_type_handler@Base 0.4.2
  dbusmenu_client_add_type_handler_full@Base 0.4.2
@@ -78,64 +78,3 @@ libdbusmenu-glib.so.3 libdbusmenu-glib3 #MINVER#
  dbusmenu_text_direction_get_type@Base 0.4.2
  dbusmenu_text_direction_get_value_from_nick@Base 0.4.2
  session_bus_cb@Base 0.4.2
-libdbusmenu-gtk.so.3 libdbusmenu-glib3 #MINVER#
- dbusmenu_gtk_parse_get_cached_item@Base 0.4.2
- dbusmenu_gtk_parse_menu_structure@Base 0.4.2
- dbusmenu_gtk_serializable_menu_item_build_menuitem@Base 0.4.2
- dbusmenu_gtk_serializable_menu_item_get_type@Base 0.4.2
- dbusmenu_gtk_serializable_menu_item_register_to_client@Base 0.4.2
- dbusmenu_gtk_serializable_menu_item_set_menuitem@Base 0.4.2
- dbusmenu_gtkclient_get_accel_group@Base 0.4.2
- dbusmenu_gtkclient_get_type@Base 0.4.2
- dbusmenu_gtkclient_menuitem_get@Base 0.4.2
- dbusmenu_gtkclient_menuitem_get_submenu@Base 0.4.2
- dbusmenu_gtkclient_new@Base 0.4.2
- dbusmenu_gtkclient_newitem_base@Base 0.4.2
- dbusmenu_gtkclient_set_accel_group@Base 0.4.2
- dbusmenu_gtkmenu_get_client@Base 0.4.2
- dbusmenu_gtkmenu_get_type@Base 0.4.2
- dbusmenu_gtkmenu_new@Base 0.4.2
- dbusmenu_menuitem_property_get_image@Base 0.4.2
- dbusmenu_menuitem_property_get_shortcut@Base 0.4.2
- dbusmenu_menuitem_property_set_image@Base 0.4.2
- dbusmenu_menuitem_property_set_shortcut@Base 0.4.2
- dbusmenu_menuitem_property_set_shortcut_menuitem@Base 0.4.2
- dbusmenu_menuitem_property_set_shortcut_string@Base 0.4.2
- genericmenuitem_get_image@Base 0.4.2
- genericmenuitem_get_type@Base 0.4.2
- genericmenuitem_set_check_type@Base 0.4.2
- genericmenuitem_set_image@Base 0.4.2
- genericmenuitem_set_state@Base 0.4.2
- theme_dir_db@Base 0.4.2
-libdbusmenu-gtk3.so.3 libdbusmenu-glib3 #MINVER#
- dbusmenu_gtk_parse_get_cached_item@Base 0.4.2
- dbusmenu_gtk_parse_menu_structure@Base 0.4.2
- dbusmenu_gtk_serializable_menu_item_build_menuitem@Base 0.4.2
- dbusmenu_gtk_serializable_menu_item_get_type@Base 0.4.2
- dbusmenu_gtk_serializable_menu_item_register_to_client@Base 0.4.2
- dbusmenu_gtk_serializable_menu_item_set_menuitem@Base 0.4.2
- dbusmenu_gtkclient_get_accel_group@Base 0.4.2
- dbusmenu_gtkclient_get_type@Base 0.4.2
- dbusmenu_gtkclient_menuitem_get@Base 0.4.2
- dbusmenu_gtkclient_menuitem_get_submenu@Base 0.4.2
- dbusmenu_gtkclient_new@Base 0.4.2
- dbusmenu_gtkclient_newitem_base@Base 0.4.2
- dbusmenu_gtkclient_set_accel_group@Base 0.4.2
- dbusmenu_gtkmenu_get_client@Base 0.4.2
- dbusmenu_gtkmenu_get_type@Base 0.4.2
- dbusmenu_gtkmenu_new@Base 0.4.2
- dbusmenu_menuitem_property_get_image@Base 0.4.2
- dbusmenu_menuitem_property_get_shortcut@Base 0.4.2
- dbusmenu_menuitem_property_set_image@Base 0.4.2
- dbusmenu_menuitem_property_set_shortcut@Base 0.4.2
- dbusmenu_menuitem_property_set_shortcut_menuitem@Base 0.4.2
- dbusmenu_menuitem_property_set_shortcut_string@Base 0.4.2
- genericmenuitem_get_image@Base 0.4.2
- genericmenuitem_get_type@Base 0.4.2
- genericmenuitem_set_check_type@Base 0.4.2
- genericmenuitem_set_image@Base 0.4.2
- genericmenuitem_set_state@Base 0.4.2
- theme_dir_db@Base 0.4.2
-libdbusmenu-jsonloader.so.3 libdbusmenu-glib3 #MINVER#
- dbusmenu_json_build_from_file@Base 0.4.2
- dbusmenu_json_build_from_node@Base 0.4.2

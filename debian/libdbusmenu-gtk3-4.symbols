@@ -1,4 +1,4 @@
-libdbusmenu-gtk.so.4 libdbusmenu-gtk4 #MINVER#
+libdbusmenu-gtk3.so.4 libdbusmenu-gtk3-4 #MINVER#
  dbusmenu_gtk_parse_get_cached_item@Base 0.4.2
  dbusmenu_gtk_parse_menu_structure@Base 0.4.2
  dbusmenu_gtkclient_get_accel_group@Base 0.4.2
