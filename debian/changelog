@@ -1,3 +1,10 @@
+libdbusmenu (0.4.90-0ubuntu3) oneiric; urgency=low
+
+  * debian/patches/lp799878.patch
+    - Fixed proxied menu events not getting returned (LP: #799878)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 28 Jun 2011 17:53:31 +0100
+
 libdbusmenu (0.4.90-0ubuntu2) oneiric; urgency=low
 
   * debian/control
