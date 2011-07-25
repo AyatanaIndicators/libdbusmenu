@@ -1,3 +1,13 @@
+libdbusmenu (0.4.90-0ubuntu4) UNRELEASED; urgency=low
+
+  * debian/rules:
+    - avoid making indicator-appmenu* depends on gtk2/3 by dpkg-shlibdeps.
+      The library doesn't hurt if gtk isn't installed and that enable
+      pre-installlation of the indicator stack without requiring the full gtk
+      stack being there without any gtk app installed.
+
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 25 Jul 2011 18:03:50 +0200
+
 libdbusmenu (0.4.90-0ubuntu3) oneiric; urgency=low
 
   * debian/patches/lp799878.patch
