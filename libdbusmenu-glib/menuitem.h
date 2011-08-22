@@ -41,7 +41,9 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_MENUITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_MENUITEM))
 #define DBUSMENU_MENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemClass))
 
-
+/* ***************************************** */
+/* *********  GLib Object Signals  ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED:
  *
@@ -103,6 +105,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_SIGNAL_EVENT               "event"
 
+/* ***************************************** */
+/* *********  Menuitem Properties  ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_PROP_TYPE:
  *
@@ -192,6 +197,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_PROP_DISPOSITION           "disposition"
 
+/* ***************************************** */
+/* *********    Toggle Values      ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_TOGGLE_CHECK:
  *
@@ -207,6 +215,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
 
+/* ***************************************** */
+/* *********    Toggle States      ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED:
  *
@@ -229,6 +240,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       -1
 
+/* ***************************************** */
+/* *********    Icon specials      ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_ICON_NAME_BLANK:
  *
@@ -237,6 +251,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
 
+/* ***************************************** */
+/* *********  Shortcut Modifiers   ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_SHORTCUT_CONTROL:
  *
@@ -266,6 +283,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_SHORTCUT_SUPER             "Super"
 
+/* ***************************************** */
+/* *********  Child Display Types  ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU:
  *
@@ -274,6 +294,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
 
+/* ***************************************** */
+/* ********* Menuitem Dispositions ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_DISPOSITION_NORMAL:
  *
@@ -306,6 +329,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_DISPOSITION_ALERT          "alert"
 
+/* ***************************************** */
+/* *********   Dbusmenu Events     ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_EVENT_ACTIVATED:
  *
