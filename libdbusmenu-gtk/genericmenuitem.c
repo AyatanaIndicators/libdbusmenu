@@ -30,6 +30,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#include <gdk/gdk.h>
+
 #include "genericmenuitem.h"
 
 /*
@@ -174,11 +176,51 @@ get_hpadding (GtkWidget * widget)
 	return padding;
 }
 
+/* Get the value to put in the span for the disposition */
+static gchar *
+get_text_color (GenericmenuitemDisposition disposition, GtkStyleContext * context)
+{
+	struct {const gchar * color_name; const gchar * default_color;} values[] = {
+		/* NORMAL */ { NULL, NULL},
+		/* INFO   */ { "informational_color", "blue"},
+		/* WARN   */ { "warning_color", "orange"},
+		/* ALERT  */ { "error_color", "red"}
+	};
+
+	GdkRGBA color;
+
+	if (gtk_style_context_lookup_color(context, values[disposition].color_name, &color)) {
+		return g_strdup_printf("rgb(%d, %d, %d)", (gint)(color.red * 255), (gint)(color.green * 255), (gint)(color.blue * 255));
+	}
+
+	return g_strdup(values[disposition].default_color);
+}
+
 /* Set the label on the item */
 static void
 set_label (GtkMenuItem * menu_item, const gchar * label)
 {
 	if (label == NULL) return;
+
+	/* Build a label that might include the colors of the disposition
+	   so that it gets rendered in the menuitem. */
+	gchar * local_label = NULL;
+	switch (GENERICMENUITEM(menu_item)->priv->disposition) {
+	case GENERICMENUITEM_DISPOSITION_NORMAL:
+		local_label = g_strdup(label);
+		break;
+	case GENERICMENUITEM_DISPOSITION_INFORMATIONAL:
+	case GENERICMENUITEM_DISPOSITION_WARNING:
+	case GENERICMENUITEM_DISPOSITION_ALERT: {
+		gchar * color = get_text_color(GENERICMENUITEM(menu_item)->priv->disposition, gtk_widget_get_style_context(GTK_WIDGET(menu_item)));
+		local_label = g_markup_printf_escaped("<span color=\"%s\">%s</span>", color, label);
+		g_free(color);
+		break;
+	}
+	default:
+		g_warn_if_reached();
+		break;
+	}
 
 	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
 	GtkLabel * labelw = NULL;
@@ -213,8 +255,9 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 	   update the one that we already have. */
 	if (labelw == NULL) {
 		/* Build it */
-		labelw = GTK_LABEL(gtk_accel_label_new(label));
+		labelw = GTK_LABEL(gtk_accel_label_new(local_label));
 		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
+		gtk_label_set_use_markup(GTK_LABEL(labelw), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
 		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 		gtk_widget_show(GTK_WIDGET(labelw));
@@ -234,13 +277,19 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 			   getting in. */
 			suppress_update = TRUE;
 		} else {
-			gtk_label_set_label(labelw, label);
+			gtk_label_set_markup_with_mnemonic(labelw, local_label);
 		}
 	}
 
 	/* If we changed the value, tell folks. */
 	if (!suppress_update) {
 		g_object_notify(G_OBJECT(menu_item), "label");
+	}
+
+	/* Clean up this */
+	if (local_label != NULL) {
+		g_free(local_label);
+		local_label = NULL;
 	}
 
 	return;
