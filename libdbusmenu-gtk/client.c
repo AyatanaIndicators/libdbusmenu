@@ -701,6 +701,20 @@ process_submenu (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, D
 	return;
 }
 
+/* Process the disposition changing */
+static void
+process_disposition (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, DbusmenuGtkClient * gtkclient)
+{
+	/* We can only handle generic menu items here. Perhaps someone else
+	   will find the value useful.  Not us. */
+	if (!IS_GENERICMENUITEM(gmi)) {
+		return;
+	}
+
+
+	return;
+}
+
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
@@ -720,6 +734,8 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, Db
 		process_toggle_state(mi, gmi, variant);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) {
 		process_submenu(mi, gmi, variant, gtkclient);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_DISPOSITION)) {
+		process_disposition(mi, gmi, variant, gtkclient);
 	}
 
 	return;
@@ -856,6 +872,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	process_toggle_type(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE));
 	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
 	process_submenu(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY), client);
+	process_disposition(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_DISPOSITION), client);
 	refresh_shortcut(client, item);
 
 	/* Oh, we're a child, let's deal with that */
