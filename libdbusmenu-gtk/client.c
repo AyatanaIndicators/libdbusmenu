@@ -31,10 +31,12 @@ License version 3 and version 2.1 along with this program.  If not, see
 #endif
 
 #include <gtk/gtk.h>
+#include <glib.h>
 
 #include "client.h"
 #include "menuitem.h"
 #include "genericmenuitem.h"
+#include "genericmenuitem-enum-types.h"
 
 /* Private */
 struct _DbusmenuGtkClientPrivate {
@@ -711,7 +713,7 @@ process_disposition (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * varian
 		return;
 	}
 
-
+	genericmenuitem_set_disposition(GENERICMENUITEM(gmi), genericmenuitem_disposition_get_value_from_nick(g_variant_get_string(variant, NULL)));
 	return;
 }
 
