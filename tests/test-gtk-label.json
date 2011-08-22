@@ -388,5 +388,37 @@ QmCC",
 		 "disposition": "alert"
 		 }
 	 ]
+	},
+	{"id": 1, "type": "standard",
+	 "label": "value1",
+	 "submenu": [
+	 	{"id": 70,
+		 "label": "_Mnemonic"
+		 },
+	 	{"id": 71,
+		 "label": "M_nemonic"
+		 },
+	 	{"id": 72,
+		 "label": "Mn_emonic"
+		 },
+	 	{"id": 73,
+		 "label": "Mne_monic"
+		 },
+	 	{"id": 74,
+		 "label": "Mnem_onic"
+		 },
+	 	{"id": 75,
+		 "label": "Mnemo_nic"
+		 },
+	 	{"id": 76,
+		 "label": "Mnemon_ic"
+		 },
+	 	{"id": 77,
+		 "label": "Mnemoni_c"
+		 },
+	 	{"id": 78,
+		 "label": "__Underline__"
+		 }
+	 ]
 	}
 ]
