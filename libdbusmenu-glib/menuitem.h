@@ -282,13 +282,13 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_DISPOSITION_NORMAL         "normal"
 /**
- * DBUSMENU_MENUITEM_DISPOSITION_INFORMATION:
+ * DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE:
  *
  * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
  * item displayed in a way that conveys it's giving additional
  * information to the user.
  */
-#define DBUSMENU_MENUITEM_DISPOSITION_INFORMATION    "information"
+#define DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE    "informative"
 /**
  * DBUSMENU_MENUITEM_DISPOSITION_WARNING:
  *
