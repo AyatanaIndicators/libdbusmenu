@@ -184,6 +184,13 @@ G_BEGIN_DECLS
  * #DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU.  Type: #G_VARIANT_TYPE_STRING
  */
 #define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "children-display"
+/**
+ * DBUSMENU_MENUITEM_PROP_DISPOSITION:
+ *
+ * #DbusmenuMenuitem property to tell what type of information that the
+ * menu item is displaying to the user.  Type: #G_VARIANT_TYPE_STRING
+ */
+#define DBUSMENU_MENUITEM_PROP_DISPOSITION           "disposition"
 
 /**
  * DBUSMENU_MENUITEM_TOGGLE_CHECK:
@@ -266,6 +273,38 @@ G_BEGIN_DECLS
  * subitems displayed as a submenu.
  */
 #define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
+
+/**
+ * DBUSMENU_MENUITEM_DISPOSITION_NORMAL:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
+ * item displayed in the normal manner.  Default value.
+ */
+#define DBUSMENU_MENUITEM_DISPOSITION_NORMAL         "normal"
+/**
+ * DBUSMENU_MENUITEM_DISPOSITION_INFORMATION:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
+ * item displayed in a way that conveys it's giving additional
+ * information to the user.
+ */
+#define DBUSMENU_MENUITEM_DISPOSITION_INFORMATION    "information"
+/**
+ * DBUSMENU_MENUITEM_DISPOSITION_WARNING:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
+ * item displayed in a way that conveys it's giving a warning
+ * to the user.
+ */
+#define DBUSMENU_MENUITEM_DISPOSITION_WARNING        "warning"
+/**
+ * DBUSMENU_MENUITEM_DISPOSITION_ALERT:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
+ * item displayed in a way that conveys it's giving an alert
+ * to the user.
+ */
+#define DBUSMENU_MENUITEM_DISPOSITION_ALERT          "alert"
 
 /**
  * DBUSMENU_MENUITEM_EVENT_ACTIVATED:
