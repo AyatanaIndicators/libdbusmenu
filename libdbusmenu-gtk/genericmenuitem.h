@@ -42,11 +42,12 @@ G_BEGIN_DECLS
 #define IS_GENERICMENUITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GENERICMENUITEM_TYPE))
 #define GENERICMENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GENERICMENUITEM_TYPE, GenericmenuitemClass))
 
-typedef struct _Genericmenuitem           Genericmenuitem;
-typedef struct _GenericmenuitemClass      GenericmenuitemClass;
-typedef struct _GenericmenuitemPrivate    GenericmenuitemPrivate;
-typedef enum   _GenericmenuitemCheckType  GenericmenuitemCheckType;
-typedef enum   _GenericmenuitemState      GenericmenuitemState;
+typedef struct _Genericmenuitem              Genericmenuitem;
+typedef struct _GenericmenuitemClass         GenericmenuitemClass;
+typedef struct _GenericmenuitemPrivate       GenericmenuitemPrivate;
+typedef enum   _GenericmenuitemCheckType     GenericmenuitemCheckType;
+typedef enum   _GenericmenuitemState         GenericmenuitemState;
+typedef enum   _GenericmenuitemDisposition   GenericmenuitemDisposition;
 
 /*
 	GenericmenuitemClass:
@@ -77,14 +78,24 @@ enum _GenericmenuitemState {
 	GENERICMENUITEM_STATE_INDETERMINATE
 };
 
-GType        genericmenuitem_get_type        (void);
-void         genericmenuitem_set_check_type  (Genericmenuitem *         item,
-                                              GenericmenuitemCheckType  check_type);
-void         genericmenuitem_set_state       (Genericmenuitem *         item,
-                                              GenericmenuitemState      state);
-void         genericmenuitem_set_image       (Genericmenuitem *         item,
-                                              GtkWidget *               image);
-GtkWidget *  genericmenuitem_get_image       (Genericmenuitem *         item);
+enum _GenericmenuitemDisposition {
+	GENERICMENUITEM_DISPOSITION_NORMAL,
+	GENERICMENUITEM_DISPOSITION_INFORMATIONAL,
+	GENERICMENUITEM_DISPOSITION_WARNING,
+	GENERICMENUITEM_DISPOSITION_ALERT
+};
+
+GType                        genericmenuitem_get_type        (void);
+void                         genericmenuitem_set_check_type  (Genericmenuitem *           item,
+                                                              GenericmenuitemCheckType    check_type);
+void                         genericmenuitem_set_state       (Genericmenuitem *           item,
+                                                              GenericmenuitemState        state);
+void                         genericmenuitem_set_image       (Genericmenuitem *           item,
+                                                              GtkWidget *                 image);
+GtkWidget *                  genericmenuitem_get_image       (Genericmenuitem *           item);
+void                         genericmenuitem_set_disposition (Genericmenuitem *           item,
+                                                              GenericmenuitemDisposition  disposition);
+GenericmenuitemDisposition   genericmenuitem_get_disposition (Genericmenuitem *           item);
 
 G_END_DECLS
 
