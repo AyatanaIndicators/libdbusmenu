@@ -367,5 +367,26 @@ QmCC",
 		 "toggle-state": -1
 		 }
 	 ]
+	},
+	{"id": 1, "type": "standard",
+	 "label": "value1",
+	 "submenu": [
+	 	{"id": 60,
+		 "label": "Disposition Normal",
+		 "disposition": "normal"
+		 },
+	 	{"id": 61,
+		 "label": "Disposition Info",
+		 "disposition": "informational"
+		 },
+	 	{"id": 62,
+		 "label": "Disposition Warning",
+		 "disposition": "warning"
+		 },
+	 	{"id": 63,
+		 "label": "Disposition Alert",
+		 "disposition": "alert"
+		 }
+	 ]
 	}
 ]
