@@ -107,7 +107,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(filter-out genericmenuitem.%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
+introspection_sources = $(filter-out genericmenuitem%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
 
 DbusmenuGtk$(VER)-0.4.gir: libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_INCLUDES = \
