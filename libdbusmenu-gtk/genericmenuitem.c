@@ -40,6 +40,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 struct _GenericmenuitemPrivate {
 	GenericmenuitemCheckType   check_type;
 	GenericmenuitemState       state;
+	GenericmenuitemDisposition disposition;
 };
 
 /* Private macro */
@@ -102,6 +103,7 @@ genericmenuitem_init (Genericmenuitem *self)
 
 	self->priv->check_type = GENERICMENUITEM_CHECK_TYPE_NONE;
 	self->priv->state = GENERICMENUITEM_STATE_UNCHECKED;
+	self->priv->disposition = GENERICMENUITEM_DISPOSITION_NORMAL;
 
 	return;
 }
