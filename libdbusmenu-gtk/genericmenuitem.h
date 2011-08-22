@@ -45,9 +45,6 @@ G_BEGIN_DECLS
 typedef struct _Genericmenuitem              Genericmenuitem;
 typedef struct _GenericmenuitemClass         GenericmenuitemClass;
 typedef struct _GenericmenuitemPrivate       GenericmenuitemPrivate;
-typedef enum   _GenericmenuitemCheckType     GenericmenuitemCheckType;
-typedef enum   _GenericmenuitemState         GenericmenuitemState;
-typedef enum   _GenericmenuitemDisposition   GenericmenuitemDisposition;
 
 /*
 	GenericmenuitemClass:
@@ -66,24 +63,43 @@ struct _Genericmenuitem {
 	GenericmenuitemPrivate * priv;
 };
 
-enum _GenericmenuitemCheckType {
+/**
+ * GenericmenuitemCheckType:
+ * @GENERICMENUITEM_CHECK_TYPE_NONE: No check
+ * @GENERICMENUITEM_CHECK_TYPE_CHECKBOX: Nice little check
+ * @GENERICMENUITEM_CHECK_TYPE_RADIO: Radio button
+ */
+typedef enum { /*< prefix=GENERICMENUITEM_CHECK_TYPE >*/
 	GENERICMENUITEM_CHECK_TYPE_NONE,
 	GENERICMENUITEM_CHECK_TYPE_CHECKBOX,
 	GENERICMENUITEM_CHECK_TYPE_RADIO
-};
+} GenericmenuitemCheckType;
 
-enum _GenericmenuitemState {
+/**
+ * GenericmenuitemState:
+ * @GENERICMENUITEM_STATE_UNCHECKED: No check visisble
+ * @GENERICMENUITEM_STATE_CHECKED: Check visible
+ * @GENERICMENUITEM_STATE_INDETERMINATE: We have no clue
+ */
+typedef enum { /*< prefix=GENERICMENUITEM_STATE >*/
 	GENERICMENUITEM_STATE_UNCHECKED,
 	GENERICMENUITEM_STATE_CHECKED,
 	GENERICMENUITEM_STATE_INDETERMINATE
-};
+} GenericmenuitemState;
 
-enum _GenericmenuitemDisposition {
+/**
+ * GenericmenuitemDisposition:
+ * @GENERICMENUITEM_DISPOSITION_NORMAL: Normal state
+ * @GENERICMENUITEM_DISPOSITION_INFORMATIONAL: Item is informational
+ * @GENERICMENUITEM_DISPOSITION_WARNING: Oh, you should watch out for this one
+ * @GENERICMENUITEM_DISPOSITION_ALERT: Boom!
+ */
+typedef enum { /*< prefix=GENERICMENUITEM_DISPOSITION >*/
 	GENERICMENUITEM_DISPOSITION_NORMAL,
 	GENERICMENUITEM_DISPOSITION_INFORMATIONAL,
 	GENERICMENUITEM_DISPOSITION_WARNING,
 	GENERICMENUITEM_DISPOSITION_ALERT
-};
+} GenericmenuitemDisposition;
 
 GType                        genericmenuitem_get_type        (void);
 void                         genericmenuitem_set_check_type  (Genericmenuitem *           item,
