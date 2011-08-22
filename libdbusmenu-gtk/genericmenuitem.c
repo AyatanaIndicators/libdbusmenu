@@ -468,3 +468,41 @@ genericmenuitem_get_image (Genericmenuitem * menu_item)
 
 	return imagew;
 }
+
+/**
+ * genericmenuitem_set_disposition:
+ * @item: A #Genericmenuitem
+ * @disposition: The disposition of the item
+ * 
+ * Sets the disposition of the menuitem.
+ */
+void
+genericmenuitem_set_disposition (Genericmenuitem * item, GenericmenuitemDisposition disposition)
+{
+	g_return_if_fail(IS_GENERICMENUITEM(item));
+
+	if (item->priv->disposition == disposition)
+		return;
+
+	item->priv->disposition = disposition;
+	
+	set_label(GTK_MENU_ITEM(item), get_label(GTK_MENU_ITEM(item)));
+
+	return;
+}
+
+/**
+ * genericmenuitem_get_disposition:
+ * @item: A #Genericmenuitem
+ * 
+ * Gets the disposition of the menuitem.
+ *
+ * Return value: The disposition of the menuitem.
+ */
+GenericmenuitemDisposition
+genericmenuitem_get_disposition (Genericmenuitem * item)
+{
+	g_return_val_if_fail(IS_GENERICMENUITEM(item), GENERICMENUITEM_DISPOSITION_NORMAL);
+
+	return item->priv->disposition;
+}
