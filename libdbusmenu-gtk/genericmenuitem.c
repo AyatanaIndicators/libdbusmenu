@@ -198,22 +198,22 @@ get_text_color (GenericmenuitemDisposition disposition, GtkStyleContext * contex
 
 /* Set the label on the item */
 static void
-set_label (GtkMenuItem * menu_item, const gchar * label)
+set_label (GtkMenuItem * menu_item, const gchar * in_label)
 {
-	if (label == NULL) return;
+	if (in_label == NULL) return;
 
 	/* Build a label that might include the colors of the disposition
 	   so that it gets rendered in the menuitem. */
 	gchar * local_label = NULL;
 	switch (GENERICMENUITEM(menu_item)->priv->disposition) {
 	case GENERICMENUITEM_DISPOSITION_NORMAL:
-		local_label = g_strdup(label);
+		local_label = g_strdup(in_label);
 		break;
 	case GENERICMENUITEM_DISPOSITION_INFORMATIONAL:
 	case GENERICMENUITEM_DISPOSITION_WARNING:
 	case GENERICMENUITEM_DISPOSITION_ALERT: {
 		gchar * color = get_text_color(GENERICMENUITEM(menu_item)->priv->disposition, gtk_widget_get_style_context(GTK_WIDGET(menu_item)));
-		local_label = g_markup_printf_escaped("<span color=\"%s\">%s</span>", color, label);
+		local_label = g_markup_printf_escaped("<span fgcolor=\"%s\">%s</span>", color, in_label);
 		g_free(color);
 		break;
 	}
@@ -260,6 +260,7 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 		gtk_label_set_use_markup(GTK_LABEL(labelw), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
 		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
+		gtk_label_set_markup_with_mnemonic(labelw, local_label);
 		gtk_widget_show(GTK_WIDGET(labelw));
 
 		/* Check to see if it needs to be in the bin for this
@@ -271,7 +272,7 @@ set_label (GtkMenuItem * menu_item, const gchar * label)
 		}
 	} else {
 		/* Oh, just an update.  No biggie. */
-		if (!g_strcmp0(label, gtk_label_get_label(labelw))) {
+		if (!g_strcmp0(local_label, gtk_label_get_label(labelw))) {
 			/* The only reason to suppress the update is if we had
 			   a label and the value was the same as the one we're
 			   getting in. */
