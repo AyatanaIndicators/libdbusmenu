@@ -60,7 +60,7 @@ GTK3_REQUIRED_VERSION=2.91
 
 AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--with-gtk],
-    [Which version of gtk to use @<:@default=2@:>@])],
+    [Which version of gtk to use @<:@default=3@:>@])],
   [],
   [with_gtk=3])
 AS_IF([test "x$with_gtk" = x3],
