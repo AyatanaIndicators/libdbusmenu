@@ -182,9 +182,9 @@ get_text_color (GenericmenuitemDisposition disposition, GtkStyleContext * contex
 {
 	struct {const gchar * color_name; const gchar * default_color;} values[] = {
 		/* NORMAL */ { NULL, NULL},
-		/* INFO   */ { "informational_color", "blue"},
-		/* WARN   */ { "warning_color", "orange"},
-		/* ALERT  */ { "error_color", "red"}
+		/* INFO   */ { "informational-color", "blue"},
+		/* WARN   */ { "warning-color", "orange"},
+		/* ALERT  */ { "error-color", "red"}
 	};
 
 	GdkRGBA color;
