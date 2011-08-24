@@ -976,10 +976,10 @@ menuitem_property_idle (gpointer user_data)
 		gotsomething = TRUE;
 	} else {
 		GError * error = NULL;
-		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ia(s))"), "[ ]", NULL, NULL, &error);
+		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ias)"), "[ ]", NULL, NULL, &error);
 
 		if (error != NULL) {
-			g_warning("Unable to parse '[ ]' as a 'a(ia(s))': %s", error->message);
+			g_warning("Unable to parse '[ ]' as a 'a(ias)': %s", error->message);
 			g_error_free(error);
 		}
 	}
