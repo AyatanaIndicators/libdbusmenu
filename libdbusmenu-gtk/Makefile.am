@@ -1,6 +1,4 @@
 
-CLEANFILES = 
-
 if USE_GTK3
 VER=3
 GTKGIR=Gtk-3.0
@@ -13,9 +11,27 @@ GTKVALA=gtk+-2.0
 lib_LTLIBRARIES = libdbusmenu-gtk.la
 endif
 
+BUILT_SOURCES = 
+CLEANFILES = 
+DISTCLEANFILES = 
 EXTRA_DIST = \
 	dbusmenu-gtk-0.4.pc.in \
 	dbusmenu-gtk3-0.4.pc.in
+
+##############
+# Enum Stuff
+##############
+
+include $(top_srcdir)/Makefile.am.enum
+
+glib_enum_h = genericmenuitem-enum-types.h
+glib_enum_c = genericmenuitem-enum-types.c
+glib_enum_headers = $(srcdir)/genericmenuitem.h
+
+
+#####################
+# Include Directory
+#####################
 
 libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-gtk$(VER)/
 
@@ -31,6 +47,8 @@ libdbusmenu_gtk_la_SOURCES = \
 	client.c \
 	genericmenuitem.h \
 	genericmenuitem.c \
+	genericmenuitem-enum-types.h \
+	genericmenuitem-enum-types.c \
 	menu.h \
 	menu.c \
 	menuitem.h \
@@ -89,7 +107,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(filter-out genericmenuitem.%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
+introspection_sources = $(filter-out genericmenuitem%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
 
 DbusmenuGtk$(VER)-0.4.gir: libdbusmenu-gtk$(VER).la
 DbusmenuGtk_0_4_gir_INCLUDES = \

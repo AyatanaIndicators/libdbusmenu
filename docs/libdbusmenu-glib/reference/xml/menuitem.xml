@@ -47,6 +47,7 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS">DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</link>
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS">DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</link>
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS">DBUSMENU_MENUITEM_PROP_SHORTCUT</link>
+#define             <link linkend="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS">DBUSMENU_MENUITEM_PROP_DISPOSITION</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS">DBUSMENU_MENUITEM_TOGGLE_CHECK</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS">DBUSMENU_MENUITEM_TOGGLE_RADIO</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS">DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED</link>
@@ -58,6 +59,10 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS">DBUSMENU_MENUITEM_SHORTCUT_CONTROL</link>
 #define             <link linkend="DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS">DBUSMENU_MENUITEM_SHORTCUT_SHIFT</link>
 #define             <link linkend="DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS">DBUSMENU_MENUITEM_SHORTCUT_SUPER</link>
+#define             <link linkend="DBUSMENU-MENUITEM-DISPOSITION-NORMAL:CAPS">DBUSMENU_MENUITEM_DISPOSITION_NORMAL</link>
+#define             <link linkend="DBUSMENU-MENUITEM-DISPOSITION-INFORMATIVE:CAPS">DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE</link>
+#define             <link linkend="DBUSMENU-MENUITEM-DISPOSITION-WARNING:CAPS">DBUSMENU_MENUITEM_DISPOSITION_WARNING</link>
+#define             <link linkend="DBUSMENU-MENUITEM-DISPOSITION-ALERT:CAPS">DBUSMENU_MENUITEM_DISPOSITION_ALERT</link>
 #define             <link linkend="DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS">DBUSMENU_MENUITEM_EVENT_ACTIVATED</link>
 #define             <link linkend="DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS">DBUSMENU_MENUITEM_EVENT_CLOSED</link>
 #define             <link linkend="DBUSMENU-MENUITEM-EVENT-OPENED:CAPS">DBUSMENU_MENUITEM_EVENT_OPENED</link>
@@ -349,6 +354,15 @@ Type: <link linkend="G-VARIANT-TYPE-ARRAY:CAPS"><type>G_VARIANT_TYPE_ARRAY</type
 It is recommended that this is not set directly but instead the
 libdbusmenu-gtk library is used with the function <link linkend="dbusmenu-menuitem-property-set-shortcut"><function>dbusmenu_menuitem_property_set_shortcut()</function></link>
 </para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_PROP_DISPOSITION</title>
+<indexterm zone="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS"><primary>DBUSMENU_MENUITEM_PROP_DISPOSITION</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_PROP_DISPOSITION           "disposition"
+</programlisting>
+<para>
+<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> property to tell what type of information that the
+menu item is displaying to the user.  Type: <link linkend="G-VARIANT-TYPE-STRING:CAPS"><type>G_VARIANT_TYPE_STRING</type></link>
+</para></refsect2>
 <refsect2 id="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" role="macro">
 <title>DBUSMENU_MENUITEM_TOGGLE_CHECK</title>
 <indexterm zone="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS"><primary>DBUSMENU_MENUITEM_TOGGLE_CHECK</primary></indexterm>
@@ -447,6 +461,45 @@ shift key.
 <para>
 Used in <link linkend="DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS"><type>DBUSMENU_MENUITEM_PROP_SHORTCUT</type></link> to represent the
 super key.
+</para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-DISPOSITION-NORMAL:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_DISPOSITION_NORMAL</title>
+<indexterm zone="DBUSMENU-MENUITEM-DISPOSITION-NORMAL:CAPS"><primary>DBUSMENU_MENUITEM_DISPOSITION_NORMAL</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_DISPOSITION_NORMAL         "normal"
+</programlisting>
+<para>
+Used in <link linkend="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS"><type>DBUSMENU_MENUITEM_PROP_DISPOSITION</type></link> to have a menu
+item displayed in the normal manner.  Default value.
+</para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-DISPOSITION-INFORMATIVE:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE</title>
+<indexterm zone="DBUSMENU-MENUITEM-DISPOSITION-INFORMATIVE:CAPS"><primary>DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE    "informative"
+</programlisting>
+<para>
+Used in <link linkend="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS"><type>DBUSMENU_MENUITEM_PROP_DISPOSITION</type></link> to have a menu
+item displayed in a way that conveys it's giving additional
+information to the user.
+</para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-DISPOSITION-WARNING:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_DISPOSITION_WARNING</title>
+<indexterm zone="DBUSMENU-MENUITEM-DISPOSITION-WARNING:CAPS"><primary>DBUSMENU_MENUITEM_DISPOSITION_WARNING</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_DISPOSITION_WARNING        "warning"
+</programlisting>
+<para>
+Used in <link linkend="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS"><type>DBUSMENU_MENUITEM_PROP_DISPOSITION</type></link> to have a menu
+item displayed in a way that conveys it's giving a warning
+to the user.
+</para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-DISPOSITION-ALERT:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_DISPOSITION_ALERT</title>
+<indexterm zone="DBUSMENU-MENUITEM-DISPOSITION-ALERT:CAPS"><primary>DBUSMENU_MENUITEM_DISPOSITION_ALERT</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_DISPOSITION_ALERT          "alert"
+</programlisting>
+<para>
+Used in <link linkend="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS"><type>DBUSMENU_MENUITEM_PROP_DISPOSITION</type></link> to have a menu
+item displayed in a way that conveys it's giving an alert
+to the user.
 </para></refsect2>
 <refsect2 id="DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS" role="macro">
 <title>DBUSMENU_MENUITEM_EVENT_ACTIVATED</title>

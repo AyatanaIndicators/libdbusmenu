@@ -64,6 +64,7 @@ Unstable, unless otherwise indicated
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS" title="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE">DBUSMENU_MENUITEM_PROP_TOGGLE_STATE</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS" title="DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY">DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT">DBUSMENU_MENUITEM_PROP_SHORTCUT</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" title="DBUSMENU_MENUITEM_PROP_DISPOSITION">DBUSMENU_MENUITEM_PROP_DISPOSITION</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_CHECK">DBUSMENU_MENUITEM_TOGGLE_CHECK</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_RADIO">DBUSMENU_MENUITEM_TOGGLE_RADIO</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED">DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED</a>
@@ -75,6 +76,10 @@ Unstable, unless otherwise indicated
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_CONTROL">DBUSMENU_MENUITEM_SHORTCUT_CONTROL</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_SHIFT">DBUSMENU_MENUITEM_SHORTCUT_SHIFT</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS" title="DBUSMENU_MENUITEM_SHORTCUT_SUPER">DBUSMENU_MENUITEM_SHORTCUT_SUPER</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-NORMAL:CAPS" title="DBUSMENU_MENUITEM_DISPOSITION_NORMAL">DBUSMENU_MENUITEM_DISPOSITION_NORMAL</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-INFORMATIVE:CAPS" title="DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE">DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-WARNING:CAPS" title="DBUSMENU_MENUITEM_DISPOSITION_WARNING">DBUSMENU_MENUITEM_DISPOSITION_WARNING</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-ALERT:CAPS" title="DBUSMENU_MENUITEM_DISPOSITION_ALERT">DBUSMENU_MENUITEM_DISPOSITION_ALERT</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS" title="DBUSMENU_MENUITEM_EVENT_ACTIVATED">DBUSMENU_MENUITEM_EVENT_ACTIVATED</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS" title="DBUSMENU_MENUITEM_EVENT_CLOSED">DBUSMENU_MENUITEM_EVENT_CLOSED</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-OPENED:CAPS" title="DBUSMENU_MENUITEM_EVENT_OPENED">DBUSMENU_MENUITEM_EVENT_OPENED</a>
@@ -386,6 +391,16 @@ libdbusmenu-gtk library is used with the function <a href="/usr/share/gtk-doc/ht
 </div>
 <hr>
 <div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_DISPOSITION</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_DISPOSITION           "disposition"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property to tell what type of information that the
+menu item is displaying to the user.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-STRING:CAPS"><span class="type">G_VARIANT_TYPE_STRING</span></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
 <a name="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS"></a><h3>DBUSMENU_MENUITEM_TOGGLE_CHECK</h3>
 <pre class="programlisting">#define DBUSMENU_MENUITEM_TOGGLE_CHECK               "checkmark"
 </pre>
@@ -492,6 +507,49 @@ shift key.
 <p>
 Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT"><span class="type">DBUSMENU_MENUITEM_PROP_SHORTCUT</span></a> to represent the
 super key.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-DISPOSITION-NORMAL:CAPS"></a><h3>DBUSMENU_MENUITEM_DISPOSITION_NORMAL</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_DISPOSITION_NORMAL         "normal"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" title="DBUSMENU_MENUITEM_PROP_DISPOSITION"><span class="type">DBUSMENU_MENUITEM_PROP_DISPOSITION</span></a> to have a menu
+item displayed in the normal manner.  Default value.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-DISPOSITION-INFORMATIVE:CAPS"></a><h3>DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE    "informative"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" title="DBUSMENU_MENUITEM_PROP_DISPOSITION"><span class="type">DBUSMENU_MENUITEM_PROP_DISPOSITION</span></a> to have a menu
+item displayed in a way that conveys it's giving additional
+information to the user.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-DISPOSITION-WARNING:CAPS"></a><h3>DBUSMENU_MENUITEM_DISPOSITION_WARNING</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_DISPOSITION_WARNING        "warning"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" title="DBUSMENU_MENUITEM_PROP_DISPOSITION"><span class="type">DBUSMENU_MENUITEM_PROP_DISPOSITION</span></a> to have a menu
+item displayed in a way that conveys it's giving a warning
+to the user.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-DISPOSITION-ALERT:CAPS"></a><h3>DBUSMENU_MENUITEM_DISPOSITION_ALERT</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_DISPOSITION_ALERT          "alert"
+</pre>
+<p>
+Used in <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" title="DBUSMENU_MENUITEM_PROP_DISPOSITION"><span class="type">DBUSMENU_MENUITEM_PROP_DISPOSITION</span></a> to have a menu
+item displayed in a way that conveys it's giving an alert
+to the user.
 </p>
 </div>
 <hr>

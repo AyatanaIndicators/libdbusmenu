@@ -9,10 +9,12 @@ DbusmenuMenuitem
 
 </para>
 
+
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
+
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -160,6 +162,13 @@ DbusmenuMenuitem
 
 
 
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_DISPOSITION ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO DBUSMENU_MENUITEM_TOGGLE_CHECK ##### -->
 <para>
 
@@ -231,6 +240,34 @@ DbusmenuMenuitem
 
 
 <!-- ##### MACRO DBUSMENU_MENUITEM_SHORTCUT_SUPER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_DISPOSITION_NORMAL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_DISPOSITION_WARNING ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_MENUITEM_DISPOSITION_ALERT ##### -->
 <para>
 
 </para>

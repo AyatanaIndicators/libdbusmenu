@@ -1,3 +1,10 @@
+libdbusmenu (0.4.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Add in a property for setting the menuitem disposition
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 24 Aug 2011 15:55:27 -0500
+
 libdbusmenu (0.4.90-0ubuntu4) oneiric; urgency=low
 
   * debian/rules:

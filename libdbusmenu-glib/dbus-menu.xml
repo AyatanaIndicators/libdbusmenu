@@ -157,6 +157,19 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</td>
 			<td>""</td>
 		</tr>
+		<tr>
+			<td>disposition</td>
+			<td>string</td>
+			<td>
+			How the menuitem feels the information it's displaying to the
+			user should be presented.
+			- "normal" a standard menu item
+			- "informative" providing additional information to the user
+			- "warning" looking at potentially harmful results
+			- "alert" something bad could potentially happen
+			</td>
+			<td>"normal"</td>
+		</tr>
 		</table>
 
 		Vendor specific properties can be added by prefixing them with
