@@ -57,6 +57,7 @@
     <function name="DBUSMENU_MENUITEM_PROP_TOGGLE_STATE" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS"/>
     <function name="DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS"/>
     <function name="DBUSMENU_MENUITEM_PROP_SHORTCUT" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS"/>
+    <function name="DBUSMENU_MENUITEM_PROP_DISPOSITION" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS"/>
     <function name="DBUSMENU_MENUITEM_TOGGLE_CHECK" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS"/>
     <function name="DBUSMENU_MENUITEM_TOGGLE_RADIO" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS"/>
     <function name="DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS"/>
@@ -68,6 +69,10 @@
     <function name="DBUSMENU_MENUITEM_SHORTCUT_CONTROL" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS"/>
     <function name="DBUSMENU_MENUITEM_SHORTCUT_SHIFT" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS"/>
     <function name="DBUSMENU_MENUITEM_SHORTCUT_SUPER" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS"/>
+    <function name="DBUSMENU_MENUITEM_DISPOSITION_NORMAL" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-NORMAL:CAPS"/>
+    <function name="DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-INFORMATIVE:CAPS"/>
+    <function name="DBUSMENU_MENUITEM_DISPOSITION_WARNING" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-WARNING:CAPS"/>
+    <function name="DBUSMENU_MENUITEM_DISPOSITION_ALERT" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-ALERT:CAPS"/>
     <function name="DBUSMENU_MENUITEM_EVENT_ACTIVATED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS"/>
     <function name="DBUSMENU_MENUITEM_EVENT_CLOSED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS"/>
     <function name="DBUSMENU_MENUITEM_EVENT_OPENED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-OPENED:CAPS"/>

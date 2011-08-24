@@ -15,6 +15,23 @@
 
 @SET_MAKE@
 
+# Rules for generating enumeration types using glib-mkenums
+#
+# Define:
+# 	glib_enum_h = header template file
+# 	glib_enum_c = source template file
+# 	glib_enum_headers = list of headers to parse
+#
+# before including Makefile.am.enums. You will also need to have
+# the following targets already defined:
+#
+# 	CLEANFILES
+#	DISTCLEANFILES
+#	BUILT_SOURCES
+#	EXTRA_DIST
+#
+# Author: Emmanuele Bassi <ebassi@linux.intel.com>
+
 
 
 VPATH = @srcdir@
@@ -36,15 +53,16 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+DIST_COMMON = $(libdbusmenu_gtk3include_HEADERS) \
+	$(libdbusmenu_gtkinclude_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-gtk-0.4.pc.in \
+	$(srcdir)/dbusmenu-gtk3-0.4.pc.in \
+	$(top_srcdir)/Makefile.am.enum
 @HAVE_INTROSPECTION_TRUE@am__append_1 = DbusmenuGtk$(VER)-0.4.gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
 @HAVE_INTROSPECTION_TRUE@	$(vapi_DATA) \
 @HAVE_INTROSPECTION_TRUE@	DbusmenuGtk$(VER)-0.4.tmp.gir
 subdir = libdbusmenu-gtk
-DIST_COMMON = $(libdbusmenu_gtk3include_HEADERS) \
-	$(libdbusmenu_gtkinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-gtk-0.4.pc.in \
-	$(srcdir)/dbusmenu-gtk3-0.4.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
 	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
@@ -90,6 +108,7 @@ libdbusmenu_gtk_la_DEPENDENCIES =  \
 	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1)
 am_libdbusmenu_gtk_la_OBJECTS = libdbusmenu_gtk_la-client.lo \
 	libdbusmenu_gtk_la-genericmenuitem.lo \
+	libdbusmenu_gtk_la-genericmenuitem-enum-types.lo \
 	libdbusmenu_gtk_la-menu.lo libdbusmenu_gtk_la-menuitem.lo \
 	libdbusmenu_gtk_la-parser.lo
 libdbusmenu_gtk_la_OBJECTS = $(am_libdbusmenu_gtk_la_OBJECTS)
@@ -106,6 +125,7 @@ am__DEPENDENCIES_2 = ../libdbusmenu-glib/libdbusmenu-glib.la \
 libdbusmenu_gtk3_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am__objects_1 = libdbusmenu_gtk3_la-client.lo \
 	libdbusmenu_gtk3_la-genericmenuitem.lo \
+	libdbusmenu_gtk3_la-genericmenuitem-enum-types.lo \
 	libdbusmenu_gtk3_la-menu.lo libdbusmenu_gtk3_la-menuitem.lo \
 	libdbusmenu_gtk3_la-parser.lo
 am_libdbusmenu_gtk3_la_OBJECTS = $(am__objects_1)
@@ -321,7 +341,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-CLEANFILES = $(am__append_2)
 @USE_GTK3_FALSE@VER = 
 @USE_GTK3_TRUE@VER = 3
 @USE_GTK3_FALSE@GTKGIR = Gtk-2.0
@@ -330,10 +349,24 @@ CLEANFILES = $(am__append_2)
 @USE_GTK3_TRUE@GTKVALA = gtk+-3.0
 @USE_GTK3_FALSE@lib_LTLIBRARIES = libdbusmenu-gtk.la
 @USE_GTK3_TRUE@lib_LTLIBRARIES = libdbusmenu-gtk3.la
-EXTRA_DIST = \
-	dbusmenu-gtk-0.4.pc.in \
-	dbusmenu-gtk3-0.4.pc.in
+BUILT_SOURCES = $(glib_enum_h) $(glib_enum_c)
+CLEANFILES = stamp-enum-types $(am__append_2)
+DISTCLEANFILES = $(glib_enum_h) $(glib_enum_c)
+EXTRA_DIST = dbusmenu-gtk-0.4.pc.in dbusmenu-gtk3-0.4.pc.in \
+	$(enum_tmpl_h) $(enum_tmpl_c)
+enum_tmpl_h = $(glib_enum_h:.h=.h.in)
+enum_tmpl_c = $(glib_enum_c:.c=.c.in)
 
+##############
+# Enum Stuff
+##############
+glib_enum_h = genericmenuitem-enum-types.h
+glib_enum_c = genericmenuitem-enum-types.c
+glib_enum_headers = $(srcdir)/genericmenuitem.h
+
+#####################
+# Include Directory
+#####################
 libdbusmenu_gtkincludedir = $(includedir)/libdbusmenu-0.4/libdbusmenu-gtk$(VER)/
 libdbusmenu_gtkinclude_HEADERS = \
 	dbusmenu-gtk.h \
@@ -347,6 +380,8 @@ libdbusmenu_gtk_la_SOURCES = \
 	client.c \
 	genericmenuitem.h \
 	genericmenuitem.c \
+	genericmenuitem-enum-types.h \
+	genericmenuitem-enum-types.c \
 	menu.h \
 	menu.c \
 	menuitem.h \
@@ -393,7 +428,7 @@ INTROSPECTION_GIRS = $(am__append_1)
 @INTROSPECTION_TEN_TRUE@	--identifier-prefix=DbusmenuGtk
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_builddir)/libdbusmenu-glib
-@HAVE_INTROSPECTION_TRUE@introspection_sources = $(filter-out genericmenuitem.%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
+@HAVE_INTROSPECTION_TRUE@introspection_sources = $(filter-out genericmenuitem%, $(libdbusmenu_gtkinclude_HEADERS) $(libdbusmenu_gtk_la_SOURCES))
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk_0_4_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@	GObject-2.0 \
 @HAVE_INTROSPECTION_TRUE@	$(GTKGIR) \
@@ -422,11 +457,12 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 #########################
 @HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
 @HAVE_INTROSPECTION_TRUE@vapi_DATA = DbusmenuGtk$(VER)-0.4.vapi
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/Makefile.am.enum $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -503,11 +539,13 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-client.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem-enum-types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-menu.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-menuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk3_la-parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-client.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-genericmenuitem-enum-types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-genericmenuitem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-menu.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_gtk_la-menuitem.Plo@am__quote@
@@ -553,6 +591,14 @@ libdbusmenu_gtk_la-genericmenuitem.lo: genericmenuitem.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk_la-genericmenuitem.lo `test -f 'genericmenuitem.c' || echo '$(srcdir)/'`genericmenuitem.c
 
+libdbusmenu_gtk_la-genericmenuitem-enum-types.lo: genericmenuitem-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk_la-genericmenuitem-enum-types.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk_la-genericmenuitem-enum-types.Tpo -c -o libdbusmenu_gtk_la-genericmenuitem-enum-types.lo `test -f 'genericmenuitem-enum-types.c' || echo '$(srcdir)/'`genericmenuitem-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk_la-genericmenuitem-enum-types.Tpo $(DEPDIR)/libdbusmenu_gtk_la-genericmenuitem-enum-types.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='genericmenuitem-enum-types.c' object='libdbusmenu_gtk_la-genericmenuitem-enum-types.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk_la-genericmenuitem-enum-types.lo `test -f 'genericmenuitem-enum-types.c' || echo '$(srcdir)/'`genericmenuitem-enum-types.c
+
 libdbusmenu_gtk_la-menu.lo: menu.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk_la-menu.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk_la-menu.Tpo -c -o libdbusmenu_gtk_la-menu.lo `test -f 'menu.c' || echo '$(srcdir)/'`menu.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk_la-menu.Tpo $(DEPDIR)/libdbusmenu_gtk_la-menu.Plo
@@ -592,6 +638,14 @@ libdbusmenu_gtk3_la-genericmenuitem.lo: genericmenuitem.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='genericmenuitem.c' object='libdbusmenu_gtk3_la-genericmenuitem.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk3_la-genericmenuitem.lo `test -f 'genericmenuitem.c' || echo '$(srcdir)/'`genericmenuitem.c
+
+libdbusmenu_gtk3_la-genericmenuitem-enum-types.lo: genericmenuitem-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk3_la-genericmenuitem-enum-types.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem-enum-types.Tpo -c -o libdbusmenu_gtk3_la-genericmenuitem-enum-types.lo `test -f 'genericmenuitem-enum-types.c' || echo '$(srcdir)/'`genericmenuitem-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem-enum-types.Tpo $(DEPDIR)/libdbusmenu_gtk3_la-genericmenuitem-enum-types.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='genericmenuitem-enum-types.c' object='libdbusmenu_gtk3_la-genericmenuitem-enum-types.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -c -o libdbusmenu_gtk3_la-genericmenuitem-enum-types.lo `test -f 'genericmenuitem-enum-types.c' || echo '$(srcdir)/'`genericmenuitem-enum-types.c
 
 libdbusmenu_gtk3_la-menu.lo: menu.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbusmenu_gtk3_la_CFLAGS) $(CFLAGS) -MT libdbusmenu_gtk3_la-menu.lo -MD -MP -MF $(DEPDIR)/libdbusmenu_gtk3_la-menu.Tpo -c -o libdbusmenu_gtk3_la-menu.lo `test -f 'menu.c' || echo '$(srcdir)/'`menu.c
@@ -826,13 +880,15 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(libdbusmenu_gtk3includedir)" "$(DESTDIR)$(libdbusmenu_gtkincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -854,10 +910,12 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -936,7 +994,7 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 	uninstall-pkgconfigDATA uninstall-typelibDATA \
 	uninstall-vapiDATA
 
-.MAKE: install-am install-strip
+.MAKE: all check install install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libLTLIBRARIES clean-libtool ctags distclean \
@@ -959,6 +1017,26 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 	uninstall-pkgconfigDATA uninstall-typelibDATA \
 	uninstall-vapiDATA
 
+
+stamp-enum-types: $(glib_enum_headers)
+	$(QUIET_GEN)mkdir -p `dirname $(builddir)/$(glib_enum_h)`
+	$(QUIET_GEN)$(GLIB_MKENUMS) \
+		--template $(srcdir)/$(enum_tmpl_h) \
+	$(glib_enum_headers) > xgen-eh \
+	&& (cmp -s xgen-eh $(builddir)/$(glib_enum_h) || cp -f xgen-eh $(builddir)/$(glib_enum_h)) \
+	&& rm -f xgen-eh \
+	&& echo timestamp > $(@F)
+
+$(glib_enum_h): stamp-enum-types
+	@true
+
+$(glib_enum_c): $(glib_enum_h)
+	$(QUIET_GEN)mkdir -p `dirname $(builddir)/$(glib_enum_c)`
+	$(QUIET_GEN)$(GLIB_MKENUMS) \
+		--template $(srcdir)/$(enum_tmpl_c) \
+	$(glib_enum_headers) > xgen-ec \
+	&& cp -f xgen-ec $(builddir)/$(glib_enum_c) \
+	&& rm -f xgen-ec
 
 #########################
 # GObject Introsepction 

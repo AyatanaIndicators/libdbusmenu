@@ -55,6 +55,7 @@
 <ANCHOR id="DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-TOGGLE-STATE:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS">
@@ -66,6 +67,10 @@
 <ANCHOR id="DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-CONTROL:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SHIFT:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-SHORTCUT-SUPER:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-DISPOSITION-NORMAL:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-NORMAL:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-DISPOSITION-INFORMATIVE:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-INFORMATIVE:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-DISPOSITION-WARNING:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-WARNING:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-DISPOSITION-ALERT:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-DISPOSITION-ALERT:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-ACTIVATED:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-CLOSED:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-EVENT-OPENED:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-EVENT-OPENED:CAPS">
