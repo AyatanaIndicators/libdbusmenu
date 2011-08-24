@@ -178,7 +178,7 @@ get_hpadding (GtkWidget * widget)
 
 /* Get the value to put in the span for the disposition */
 static gchar *
-get_text_color (GenericmenuitemDisposition disposition, GtkStyleContext * context)
+get_text_color (GenericmenuitemDisposition disposition, GtkWidget * widget)
 {
 	struct {const gchar * color_name; const gchar * default_color;} values[] = {
 		/* NORMAL */ { NULL, NULL},
@@ -187,11 +187,14 @@ get_text_color (GenericmenuitemDisposition disposition, GtkStyleContext * contex
 		/* ALERT  */ { "error-color", "red"}
 	};
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+	GtkStyleContext * context = gtk_widget_get_style_context(widget);
 	GdkRGBA color;
 
 	if (gtk_style_context_lookup_color(context, values[disposition].color_name, &color)) {
 		return g_strdup_printf("rgb(%d, %d, %d)", (gint)(color.red * 255), (gint)(color.green * 255), (gint)(color.blue * 255));
 	}
+#endif
 
 	return g_strdup(values[disposition].default_color);
 }
@@ -212,7 +215,7 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 	case GENERICMENUITEM_DISPOSITION_INFORMATIONAL:
 	case GENERICMENUITEM_DISPOSITION_WARNING:
 	case GENERICMENUITEM_DISPOSITION_ALERT: {
-		gchar * color = get_text_color(GENERICMENUITEM(menu_item)->priv->disposition, gtk_widget_get_style_context(GTK_WIDGET(menu_item)));
+		gchar * color = get_text_color(GENERICMENUITEM(menu_item)->priv->disposition, GTK_WIDGET(menu_item));
 		local_label = g_markup_printf_escaped("<span fgcolor=\"%s\">%s</span>", color, in_label);
 		g_free(color);
 		break;

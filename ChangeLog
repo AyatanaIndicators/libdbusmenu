@@ -2,6 +2,23 @@
 
 2011-08-24  Ted Gould  <ted@gould.cx>
 
+	0.4.92
+
+2011-08-24  Ted Gould  <ted@gould.cx>
+
+	Fix signatures on signals
+
+2011-06-28  Chris Coulson  <chrisccoulson@ubuntu.com>
+
+	When there are no removed properties in ItemsPropertiesUpdated, ensure the arguments
+	have the correct signature so that they aren't rejected by the client (LP: #799878)
+
+2011-08-24  Ted Gould  <ted@gould.cx>
+
+	Making the capturing of colors from the theme GTK3 specific (it is) so that GTK2 can build
+
+2011-08-24  Ted Gould  <ted@gould.cx>
+
 	0.4.91
 
 2011-08-24  Ted Gould  <ted@gould.cx>
