@@ -1,0 +1,17 @@
+=== modified file 'libdbusmenu-glib/server.c'
+--- old/libdbusmenu-glib/server.c	2011-06-17 03:42:29 +0000
++++ new/libdbusmenu-glib/server.c	2011-06-28 16:40:16 +0000
+@@ -976,10 +976,10 @@
+ 		gotsomething = TRUE;
+ 	} else {
+ 		GError * error = NULL;
+-		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ia(s))"), "[ ]", NULL, NULL, &error);
++		megadata[1] = g_variant_parse(G_VARIANT_TYPE("a(ias)"), "[ ]", NULL, NULL, &error);
+ 
+ 		if (error != NULL) {
+-			g_warning("Unable to parse '[ ]' as a 'a(ia(s))': %s", error->message);
++			g_warning("Unable to parse '[ ]' as a 'a(ias)': %s", error->message);
+ 			g_error_free(error);
+ 		}
+ 	}
+

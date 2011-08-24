@@ -1,1 +1,1 @@
-debian/tmp/usr/lib/libdbusmenu-glib.so.*
+debian/tmp/gtk3/usr/lib/libdbusmenu-glib.so.* /usr/lib/
