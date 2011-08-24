@@ -68,6 +68,8 @@ struct _Genericmenuitem {
  * @GENERICMENUITEM_CHECK_TYPE_NONE: No check
  * @GENERICMENUITEM_CHECK_TYPE_CHECKBOX: Nice little check
  * @GENERICMENUITEM_CHECK_TYPE_RADIO: Radio button
+ *
+ * Tracks what type of checkmark should be shown on the item
  */
 typedef enum { /*< prefix=GENERICMENUITEM_CHECK_TYPE >*/
 	GENERICMENUITEM_CHECK_TYPE_NONE,
@@ -80,6 +82,8 @@ typedef enum { /*< prefix=GENERICMENUITEM_CHECK_TYPE >*/
  * @GENERICMENUITEM_STATE_UNCHECKED: No check visisble
  * @GENERICMENUITEM_STATE_CHECKED: Check visible
  * @GENERICMENUITEM_STATE_INDETERMINATE: We have no clue
+ *
+ * What the state of the check mark on the item is
  */
 typedef enum { /*< prefix=GENERICMENUITEM_STATE >*/
 	GENERICMENUITEM_STATE_UNCHECKED,
@@ -93,6 +97,8 @@ typedef enum { /*< prefix=GENERICMENUITEM_STATE >*/
  * @GENERICMENUITEM_DISPOSITION_INFORMATIONAL: Item is informational
  * @GENERICMENUITEM_DISPOSITION_WARNING: Oh, you should watch out for this one
  * @GENERICMENUITEM_DISPOSITION_ALERT: Boom!
+ *
+ * What the disposition of the menu item is
  */
 typedef enum { /*< prefix=GENERICMENUITEM_DISPOSITION >*/
 	GENERICMENUITEM_DISPOSITION_NORMAL,
