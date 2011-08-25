@@ -1,4 +1,4 @@
-libdbusmenu (0.4.93-0ubuntu1~ppa1) oneiric; urgency=low
+libdbusmenu (0.4.93-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.
     * Fix packing of generic menu items to use toggle-spacing
