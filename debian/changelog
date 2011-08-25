@@ -1,9 +1,8 @@
-libdbusmenu (0.4.92-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.4.92-0ubuntu1) oneiric; urgency=low
 
   [ Ted Gould ]
-  * New upstream release (0.4.91).
-    * Add in a property for setting the menuitem disposition
   * New upstream release (0.4.92).
+    * Add in a property for setting the menuitem disposition
     * Fix GTK 2 build for style properties
     * Fixed proxied menu events not getting returned (LP: #799878)
   * Removed debian/patches:
