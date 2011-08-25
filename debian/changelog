@@ -1,3 +1,10 @@
+libdbusmenu (0.4.93-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Fix packing of generic menu items to use toggle-spacing
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Aug 2011 09:44:27 -0500
+
 libdbusmenu (0.4.92-0ubuntu1) oneiric; urgency=low
 
   [ Ted Gould ]
