@@ -41,7 +41,9 @@ G_BEGIN_DECLS
 #define DBUSMENU_IS_MENUITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), DBUSMENU_TYPE_MENUITEM))
 #define DBUSMENU_MENUITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), DBUSMENU_TYPE_MENUITEM, DbusmenuMenuitemClass))
 
-
+/* ***************************************** */
+/* *********  GLib Object Signals  ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED:
  *
@@ -103,6 +105,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_SIGNAL_EVENT               "event"
 
+/* ***************************************** */
+/* *********  Menuitem Properties  ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_PROP_TYPE:
  *
@@ -184,7 +189,17 @@ G_BEGIN_DECLS
  * #DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU.  Type: #G_VARIANT_TYPE_STRING
  */
 #define DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY         "children-display"
+/**
+ * DBUSMENU_MENUITEM_PROP_DISPOSITION:
+ *
+ * #DbusmenuMenuitem property to tell what type of information that the
+ * menu item is displaying to the user.  Type: #G_VARIANT_TYPE_STRING
+ */
+#define DBUSMENU_MENUITEM_PROP_DISPOSITION           "disposition"
 
+/* ***************************************** */
+/* *********    Toggle Values      ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_TOGGLE_CHECK:
  *
@@ -200,6 +215,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_TOGGLE_RADIO               "radio"
 
+/* ***************************************** */
+/* *********    Toggle States      ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED:
  *
@@ -222,6 +240,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_TOGGLE_STATE_UNKNOWN       -1
 
+/* ***************************************** */
+/* *********    Icon specials      ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_ICON_NAME_BLANK:
  *
@@ -230,6 +251,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_ICON_NAME_BLANK            "blank-icon"
 
+/* ***************************************** */
+/* *********  Shortcut Modifiers   ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_SHORTCUT_CONTROL:
  *
@@ -259,6 +283,9 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_SHORTCUT_SUPER             "Super"
 
+/* ***************************************** */
+/* *********  Child Display Types  ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU:
  *
@@ -267,6 +294,44 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU      "submenu"
 
+/* ***************************************** */
+/* ********* Menuitem Dispositions ********* */
+/* ***************************************** */
+/**
+ * DBUSMENU_MENUITEM_DISPOSITION_NORMAL:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
+ * item displayed in the normal manner.  Default value.
+ */
+#define DBUSMENU_MENUITEM_DISPOSITION_NORMAL         "normal"
+/**
+ * DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
+ * item displayed in a way that conveys it's giving additional
+ * information to the user.
+ */
+#define DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE    "informative"
+/**
+ * DBUSMENU_MENUITEM_DISPOSITION_WARNING:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
+ * item displayed in a way that conveys it's giving a warning
+ * to the user.
+ */
+#define DBUSMENU_MENUITEM_DISPOSITION_WARNING        "warning"
+/**
+ * DBUSMENU_MENUITEM_DISPOSITION_ALERT:
+ *
+ * Used in #DBUSMENU_MENUITEM_PROP_DISPOSITION to have a menu
+ * item displayed in a way that conveys it's giving an alert
+ * to the user.
+ */
+#define DBUSMENU_MENUITEM_DISPOSITION_ALERT          "alert"
+
+/* ***************************************** */
+/* *********   Dbusmenu Events     ********* */
+/* ***************************************** */
 /**
  * DBUSMENU_MENUITEM_EVENT_ACTIVATED:
  *

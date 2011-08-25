@@ -1,3 +1,20 @@
+libdbusmenu (0.4.92-0ubuntu1) UNRELEASED; urgency=low
+
+  [ Ted Gould ]
+  * New upstream release (0.4.91).
+    * Add in a property for setting the menuitem disposition
+  * New upstream release (0.4.92).
+    * Fix GTK 2 build for style properties
+    * Fixed proxied menu events not getting returned (LP: #799878)
+  * Removed debian/patches:
+    * All upstream
+
+  [ Ken VanDine ]
+  * debian/libdbusmenu-gtk4.symbols debian/libdbusmenu-gtk3-4.symbols
+    - Added new symbols
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 24 Aug 2011 20:22:14 -0400
+
 libdbusmenu (0.4.90-0ubuntu4) oneiric; urgency=low
 
   * debian/rules:

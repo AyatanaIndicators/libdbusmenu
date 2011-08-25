@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.4.90, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.4.92, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.4.90, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.4.92, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -60,7 +60,7 @@ GTK3_REQUIRED_VERSION=2.91
 
 AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--with-gtk],
-    [Which version of gtk to use @<:@default=2@:>@])],
+    [Which version of gtk to use @<:@default=3@:>@])],
   [],
   [with_gtk=3])
 AS_IF([test "x$with_gtk" = x3],
@@ -134,7 +134,7 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 ###########################
 
 LIBDBUSMENU_CURRENT=4
-LIBDBUSMENU_REVISION=0
+LIBDBUSMENU_REVISION=2
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
