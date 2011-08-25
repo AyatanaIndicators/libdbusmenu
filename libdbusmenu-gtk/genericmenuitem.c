@@ -169,10 +169,10 @@ set_label_helper (GtkWidget * widget, gpointer data)
    style.  It should be considered for caching when
    optimizing. */
 static gint
-get_hpadding (GtkWidget * widget)
+get_toggle_space (GtkWidget * widget)
 {
 	gint padding = 0;
-	gtk_widget_style_get(widget, "horizontal-padding", &padding, NULL);
+	gtk_widget_style_get(widget, "toggle-spacing", &padding, NULL);
 	return padding;
 }
 
@@ -241,10 +241,10 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 			/* We need to put the child into a new box and
 			   make the box the child of the menu item.  Basically
 			   we're inserting a box in the middle. */
-			GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+			GtkWidget * hbox = gtk_hbox_new(FALSE, get_toggle_space(GTK_WIDGET(menu_item)));
 			g_object_ref(child);
 			gtk_container_remove(GTK_CONTAINER(menu_item), child);
-			gtk_box_pack_start(GTK_BOX(hbox), child, FALSE, FALSE, get_hpadding(GTK_WIDGET(menu_item)));
+			gtk_box_pack_start(GTK_BOX(hbox), child, FALSE, FALSE, 0);
 			gtk_container_add(GTK_CONTAINER(menu_item), hbox);
 			gtk_widget_show(hbox);
 			g_object_unref(child);
@@ -271,7 +271,7 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 		if (child == NULL) {
 			gtk_container_add(GTK_CONTAINER(menu_item), GTK_WIDGET(labelw));
 		} else {
-			gtk_box_pack_end(GTK_BOX(child), GTK_WIDGET(labelw), TRUE, TRUE, get_hpadding(GTK_WIDGET(menu_item)));
+			gtk_box_pack_end(GTK_BOX(child), GTK_WIDGET(labelw), TRUE, TRUE, 0);
 		}
 	} else {
 		/* Oh, just an update.  No biggie. */
@@ -456,10 +456,10 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 			/* We need to put the child into a new box and
 			   make the box the child of the menu item.  Basically
 			   we're inserting a box in the middle. */
-			GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+			GtkWidget * hbox = gtk_hbox_new(FALSE, get_toggle_space(GTK_WIDGET(menu_item)));
 			g_object_ref(child);
 			gtk_container_remove(GTK_CONTAINER(menu_item), child);
-			gtk_box_pack_end(GTK_BOX(hbox), child, TRUE, TRUE, get_hpadding(GTK_WIDGET(menu_item)));
+			gtk_box_pack_end(GTK_BOX(hbox), child, TRUE, TRUE, 0);
 			gtk_container_add(GTK_CONTAINER(menu_item), hbox);
 			gtk_widget_show(hbox);
 			g_object_unref(child);
@@ -484,7 +484,7 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 		if (child == NULL) {
 			gtk_container_add(GTK_CONTAINER(menu_item), GTK_WIDGET(image));
 		} else {
-			gtk_box_pack_start(GTK_BOX(child), GTK_WIDGET(image), FALSE, FALSE, get_hpadding(GTK_WIDGET(menu_item)));
+			gtk_box_pack_start(GTK_BOX(child), GTK_WIDGET(image), FALSE, FALSE, 0);
 		}
 
 		gtk_widget_show(image);
