@@ -17,9 +17,20 @@ libdbusmenu-gtk3.so.4 libdbusmenu-gtk3-4 #MINVER#
  dbusmenu_menuitem_property_set_shortcut@Base 0.4.2
  dbusmenu_menuitem_property_set_shortcut_menuitem@Base 0.4.2
  dbusmenu_menuitem_property_set_shortcut_string@Base 0.4.2
+ genericmenuitem_check_type_get_nick@Base 0.4.92
+ genericmenuitem_check_type_get_type@Base 0.4.92
+ genericmenuitem_check_type_get_value_from_nick@Base 0.4.92
+ genericmenuitem_disposition_get_nick@Base 0.4.92
+ genericmenuitem_disposition_get_type@Base 0.4.92
+ genericmenuitem_disposition_get_value_from_nick@Base 0.4.92
+ genericmenuitem_get_disposition@Base 0.4.92
  genericmenuitem_get_image@Base 0.4.2
  genericmenuitem_get_type@Base 0.4.2
  genericmenuitem_set_check_type@Base 0.4.2
+ genericmenuitem_set_disposition@Base 0.4.92
  genericmenuitem_set_image@Base 0.4.2
  genericmenuitem_set_state@Base 0.4.2
+ genericmenuitem_state_get_nick@Base 0.4.92
+ genericmenuitem_state_get_type@Base 0.4.92
+ genericmenuitem_state_get_value_from_nick@Base 0.4.92
  theme_dir_db@Base 0.4.2
