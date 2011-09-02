@@ -58,27 +58,37 @@ AC_SUBST(DBUSMENUGLIB_LIBS)
 GTK_REQUIRED_VERSION=2.16
 GTK3_REQUIRED_VERSION=2.91
 
+AC_ARG_ENABLE([gtk],
+	AC_HELP_STRING([--disable-gtk], [Disable libdbusmenu-gtk library]),
+	[enable_gtk=$enableval], [enable_gtk=auto])
+AM_CONDITIONAL([WANT_LIBDBUSMENUGTK], [test "x$enable_gtk" != "xno"])
+
 AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--with-gtk],
     [Which version of gtk to use @<:@default=2@:>@])],
   [],
   [with_gtk=3])
+AM_CONDITIONAL([USE_GTK3], [test "x$with_gtk" = "x3"])
+
+AS_IF([test "x$enable_gtk" != "xno"],[
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                                         glib-2.0 >= $GLIB_REQUIRED_VERSION)
-         AC_SUBST(DBUSMENUGTK_CFLAGS)
-         AC_SUBST(DBUSMENUGTK_LIBS)
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION,
+                                         [have_gtk=yes]
+)
          AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
         ],
       [test "x$with_gtk" = x2],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                         glib-2.0 >= $GLIB_REQUIRED_VERSION)
-         AC_SUBST(DBUSMENUGTK_CFLAGS)
-         AC_SUBST(DBUSMENUGTK_LIBS)
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION,
+                                         [have_gtk=yes]
+)
         ],
       [AC_MSG_FAILURE([Value for --with-gtk was neither 2 nor 3])]
 )
-AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
+])
+AC_SUBST(DBUSMENUGTK_CFLAGS)
+AC_SUBST(DBUSMENUGTK_LIBS)
 
 ###########################
 # Dependencies - dumper
@@ -198,4 +208,9 @@ libdbusmenu Configuration:
 	Massive Debugging:      $with_massivedebugging
 	GTK+ Version:           $with_gtk
 ])
+
+AS_IF([test "x$enable_gtk" = "xyes"],
+	AC_MSG_NOTICE([	Gtk:                    yes (gtk$with_gtk)]),
+	AC_MSG_NOTICE([	Gtk:                    no])
+)
 

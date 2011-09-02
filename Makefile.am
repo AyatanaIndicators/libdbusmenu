@@ -3,9 +3,13 @@ EXTRA_DIST = \
 	COPYING-GPL3 \
 	m4/introspection.m4
 
+if WANT_LIBDBUSMENUGTK
+LIBDBUSMENUGTK_SUBDIR = libdbusmenu-gtk
+endif
+
 SUBDIRS = \
 	libdbusmenu-glib \
-	libdbusmenu-gtk \
+	$(LIBDBUSMENUGTK_SUBDIR) \
 	tools \
 	tests \
 	docs \
