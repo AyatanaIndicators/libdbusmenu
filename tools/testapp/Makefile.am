@@ -5,7 +5,11 @@ else
 VER=
 endif
 
-libexec_PROGRAMS = dbusmenu-testapp
+libexec_PROGRAMS =
+
+if WANT_TESTS
+libexec_PROGRAMS += dbusmenu-testapp
+endif
 
 dbusmenu_testapp_SOURCES = \
 	main.c

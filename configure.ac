@@ -99,8 +99,17 @@ AC_SUBST(DBUSMENUDUMPER_LIBS)
 JSON_GLIB_REQUIRED_VERSION=0.13.4
 GIO_UNIX_REQUIRED_VERSION=2.24
 
+AC_ARG_ENABLE([tests],
+	AC_HELP_STRING([--disable-tests], [Disable tests]),
+	[enable_tests=$enableval], [enable_tests=auto])
+AM_CONDITIONAL([WANT_TESTS], [test "x$enable_tests" != "xno"])
+
+AS_IF([test "x$enable_tests" != "xno"],[
 PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
-                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION)
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION,
+                                  [have_tests=yes]
+)
+])
 
 AC_SUBST(DBUSMENUTESTS_CFLAGS)
 AC_SUBST(DBUSMENUTESTS_LIBS)
@@ -198,4 +207,9 @@ libdbusmenu Configuration:
 	Massive Debugging:      $with_massivedebugging
 	GTK+ Version:           $with_gtk
 ])
+
+AS_IF([test "x$have_tests" = "xyes"],
+	AC_MSG_NOTICE([	Tests:                  yes]),
+	AC_MSG_NOTICE([	Tests:                  no])
+)
 

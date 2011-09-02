@@ -3,11 +3,15 @@ EXTRA_DIST = \
 	COPYING-GPL3 \
 	m4/introspection.m4
 
+if WANT_TESTS
+TESTS_SUBDIR = tests
+endif
+
 SUBDIRS = \
 	libdbusmenu-glib \
 	libdbusmenu-gtk \
 	tools \
-	tests \
+	$(TESTS_SUBDIR) \
 	docs \
 	po
 
