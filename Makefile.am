@@ -7,9 +7,13 @@ if WANT_TESTS
 TESTS_SUBDIR = tests
 endif
 
+if WANT_LIBDBUSMENUGTK
+LIBDBUSMENUGTK_SUBDIR = libdbusmenu-gtk
+endif
+
 SUBDIRS = \
 	libdbusmenu-glib \
-	libdbusmenu-gtk \
+	$(LIBDBUSMENUGTK_SUBDIR) \
 	tools \
 	$(TESTS_SUBDIR) \
 	docs \
