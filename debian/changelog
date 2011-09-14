@@ -1,3 +1,10 @@
+libdbusmenu (0.4.93-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Build fixes to allow more optional builds
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 14 Sep 2011 14:17:15 -0500
+
 libdbusmenu (0.4.93-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.
