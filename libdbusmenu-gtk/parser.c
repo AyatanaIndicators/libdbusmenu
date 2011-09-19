@@ -283,6 +283,9 @@ toggle_widget_visibility (GtkWidget * widget)
 static void
 watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 {
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
+	g_return_if_fail(GTK_IS_MENU_SHELL(menu));
+
 	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
 
 	pdata->shell = menu;
