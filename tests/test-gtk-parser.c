@@ -28,6 +28,8 @@ test_parser_runs (void)
 {
 	GtkWidget * gmi = gtk_menu_item_new_with_label("Test Item");
 	g_assert(gmi != NULL);
+	g_object_ref_sink(gmi);
+
 	DbusmenuMenuitem * mi = dbusmenu_gtk_parse_menu_structure(gmi);
 	g_assert(mi != NULL);
 
