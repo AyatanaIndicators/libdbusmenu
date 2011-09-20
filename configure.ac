@@ -96,8 +96,17 @@ AC_SUBST(DBUSMENUGTK_LIBS)
 
 X11_REQUIRED_VERSION=1.3
 
+AC_ARG_ENABLE([dumper],
+	AC_HELP_STRING([--disable-dumper], [Disable dbusmenudumper tool]),
+	[enable_dumper=$enableval], [enable_dumper=auto])
+AM_CONDITIONAL([WANT_DBUSMENUDUMPER], [test "x$enable_dumper" != "xno"])
+
+AS_IF([test "x$enable_dumper" != "xno"],[
 PKG_CHECK_MODULES(DBUSMENUDUMPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                  x11 >= $X11_REQUIRED_VERSION)
+                                  x11 >= $X11_REQUIRED_VERSION,
+                                  [have_dumper=yes]
+)
+])
 
 AC_SUBST(DBUSMENUDUMPER_CFLAGS)
 AC_SUBST(DBUSMENUDUMPER_LIBS)
@@ -241,5 +250,10 @@ AS_IF([test "x$enable_gtk" = "xno"],
 AM_COND_IF([HAVE_VALA],
 	AC_MSG_NOTICE([	Vala bindings:          yes]),
 	AC_MSG_NOTICE([	Vala bindings           no])
+)
+
+AS_IF([test "x$have_dumper" = "xyes"],
+   AC_MSG_NOTICE([	Dumper:                 yes]),
+   AC_MSG_NOTICE([	Dumper:                 no])
 )
 

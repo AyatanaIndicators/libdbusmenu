@@ -12,8 +12,12 @@ TESTS = \
 	test-glib-properties \
 	test-glib-proxy \
 	test-glib-simple-items \
-	test-glib-submenu \
+	test-glib-submenu
+
+if WANT_DBUSMENUDUMPER
+TESTS += \
 	test-json
+endif
 
 if WANT_LIBDBUSMENUGTK
 TESTS += \
@@ -50,9 +54,13 @@ check_PROGRAMS = \
 	test-glib-proxy-proxy \
 	test-glib-submenu-client \
 	test-glib-submenu-server \
-	test-glib-simple-items \
+	test-glib-simple-items
+
+if WANT_DBUSMENUDUMPER
+check_PROGRAMS += \
 	test-json-client \
 	test-json-server
+endif
 
 if WANT_LIBDBUSMENUGTK
 check_PROGRAMS += \
