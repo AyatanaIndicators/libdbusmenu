@@ -144,6 +144,7 @@ endif
 # VAPI Files
 #########################
 
+if HAVE_VALA
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
@@ -166,5 +167,6 @@ DbusmenuGtk$(VER)-0.4.tmp.gir: DbusmenuGtk$(VER)-0.4.gir
 
 CLEANFILES += $(vapi_DATA) DbusmenuGtk$(VER)-0.4.tmp.gir
 
+endif
 endif
 

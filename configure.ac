@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.4.93, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.4.94, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.4.93, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.4.94, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -96,8 +96,17 @@ AC_SUBST(DBUSMENUGTK_LIBS)
 
 X11_REQUIRED_VERSION=1.3
 
+AC_ARG_ENABLE([dumper],
+	AC_HELP_STRING([--disable-dumper], [Disable dbusmenudumper tool]),
+	[enable_dumper=$enableval], [enable_dumper=auto])
+AM_CONDITIONAL([WANT_DBUSMENUDUMPER], [test "x$enable_dumper" != "xno"])
+
+AS_IF([test "x$enable_dumper" != "xno"],[
 PKG_CHECK_MODULES(DBUSMENUDUMPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                  x11 >= $X11_REQUIRED_VERSION)
+                                  x11 >= $X11_REQUIRED_VERSION,
+                                  [have_dumper=yes]
+)
+])
 
 AC_SUBST(DBUSMENUDUMPER_CFLAGS)
 AC_SUBST(DBUSMENUDUMPER_LIBS)
@@ -140,7 +149,17 @@ AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
 # Vala API Generation
 ###########################
 
+AC_ARG_ENABLE([vala],
+	AC_HELP_STRING([--disable-vala], [Disable vala]),
+	[enable_vala=$enableval], [enable_vala=auto])
+
+AS_IF([test "x$enable_vala" != "xno"],[
+	AM_COND_IF([HAVE_INTROSPECTION],,[
+		AC_MSG_ERROR([Vala bindings require introspection support, please --enable-introspection])
+	])
 AC_PATH_PROG([VALA_API_GEN], [vapigen])
+])
+AM_CONDITIONAL([HAVE_VALA], [test -n "$VALA_API_GEN"])
 
 ###########################
 # XSLT Processor
@@ -153,7 +172,7 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 ###########################
 
 LIBDBUSMENU_CURRENT=4
-LIBDBUSMENU_REVISION=3
+LIBDBUSMENU_REVISION=4
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
@@ -226,5 +245,15 @@ AS_IF([test "x$have_tests" = "xyes"],
 AS_IF([test "x$enable_gtk" = "xno"],
 	AC_MSG_NOTICE([	Gtk:                    no]),
 	AC_MSG_NOTICE([	Gtk:                    yes (gtk$with_gtk)])
+)
+
+AM_COND_IF([HAVE_VALA],
+	AC_MSG_NOTICE([	Vala bindings:          yes]),
+	AC_MSG_NOTICE([	Vala bindings           no])
+)
+
+AS_IF([test "x$have_dumper" = "xyes"],
+   AC_MSG_NOTICE([	Dumper:                 yes]),
+   AC_MSG_NOTICE([	Dumper:                 no])
 )
 

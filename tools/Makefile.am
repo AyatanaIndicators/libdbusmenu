@@ -1,7 +1,11 @@
 
 SUBDIRS = testapp
 
-libexec_PROGRAMS = dbusmenu-dumper
+libexec_PROGRAMS =
+
+if WANT_DBUSMENUDUMPER
+libexec_PROGRAMS += dbusmenu-dumper
+endif
 
 libexec_SCRIPTS = dbusmenu-bench
 

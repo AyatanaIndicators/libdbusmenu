@@ -30,7 +30,7 @@ Unstable, unless otherwise indicated
 struct              <link linkend="DbusmenuGtkMenuClass">DbusmenuGtkMenuClass</link>;
 <link linkend="DbusmenuGtkMenu"><returnvalue>DbusmenuGtkMenu</returnvalue></link> *   <link linkend="dbusmenu-gtkmenu-new">dbusmenu_gtkmenu_new</link>                (<parameter><link linkend="gchar"><type>gchar</type></link> *dbus_name</parameter>,
                                                          <parameter><link linkend="gchar"><type>gchar</type></link> *dbus_object</parameter>);
-<link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> *  <link linkend="dbusmenu-gtkmenu-get-client">dbusmenu_gtkmenu_get_client</link>        (<parameter><link linkend="DbusmenuGtkMenu"><type>DbusmenuGtkMenu</type></link> *menu</parameter>);
+<link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> * <link linkend="dbusmenu-gtkmenu-get-client">dbusmenu_gtkmenu_get_client</link>         (<parameter><link linkend="DbusmenuGtkMenu"><type>DbusmenuGtkMenu</type></link> *menu</parameter>);
 </synopsis>
 </refsynopsisdiv>
 
@@ -118,7 +118,7 @@ that connects across DBus to a <link linkend="DbusmenuServer"><type>DbusmenuServ
 <refsect2 id="dbusmenu-gtkmenu-get-client" role="function">
 <title>dbusmenu_gtkmenu_get_client ()</title>
 <indexterm zone="dbusmenu-gtkmenu-get-client"><primary>dbusmenu_gtkmenu_get_client</primary></indexterm>
-<programlisting><link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> *  dbusmenu_gtkmenu_get_client        (<parameter><link linkend="DbusmenuGtkMenu"><type>DbusmenuGtkMenu</type></link> *menu</parameter>);</programlisting>
+<programlisting><link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> * dbusmenu_gtkmenu_get_client         (<parameter><link linkend="DbusmenuGtkMenu"><type>DbusmenuGtkMenu</type></link> *menu</parameter>);</programlisting>
 <para>
 An accessor for the client that this menu is using to
 communicate with the server.
