@@ -40,7 +40,12 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	compile config.guess config.sub depcomp install-sh ltmain.sh \
 	missing mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -71,7 +76,7 @@ AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
 	distdir dist dist-all distcheck
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS = libdbusmenu-glib libdbusmenu-gtk tools tests docs po
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -153,6 +158,8 @@ GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
 HELP_DIR = @HELP_DIR@
@@ -279,16 +286,19 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = \
 	COPYING.2.1 \
 	COPYING-GPL3 \
 	m4/introspection.m4
 
+@WANT_TESTS_TRUE@TESTS_SUBDIR = tests
+@WANT_LIBDBUSMENUGTK_TRUE@LIBDBUSMENUGTK_SUBDIR = libdbusmenu-gtk
 SUBDIRS = \
 	libdbusmenu-glib \
-	libdbusmenu-gtk \
+	$(LIBDBUSMENUGTK_SUBDIR) \
 	tools \
-	tests \
+	$(TESTS_SUBDIR) \
 	docs \
 	po
 

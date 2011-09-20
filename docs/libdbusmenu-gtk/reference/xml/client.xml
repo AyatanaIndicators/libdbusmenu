@@ -30,7 +30,7 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-GTKCLIENT-SIGNAL-ROOT-CHANGED:CAPS">DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED</link>
                     <link linkend="DbusmenuGtkClient">DbusmenuGtkClient</link>;
 struct              <link linkend="DbusmenuGtkClientClass">DbusmenuGtkClientClass</link>;
-<link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> *  <link linkend="dbusmenu-gtkclient-new">dbusmenu_gtkclient_new</link>             (<parameter><link linkend="gchar"><type>gchar</type></link> *dbus_name</parameter>,
+<link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> * <link linkend="dbusmenu-gtkclient-new">dbusmenu_gtkclient_new</link>              (<parameter><link linkend="gchar"><type>gchar</type></link> *dbus_name</parameter>,
                                                          <parameter><link linkend="gchar"><type>gchar</type></link> *dbus_object</parameter>);
 <link linkend="GtkMenuItem"><returnvalue>GtkMenuItem</returnvalue></link> *       <link linkend="dbusmenu-gtkclient-menuitem-get">dbusmenu_gtkclient_menuitem_get</link>     (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>);
@@ -137,7 +137,7 @@ Functions and signal slots for using a <link linkend="DbusmenuGtkClient"><type>D
 <refsect2 id="dbusmenu-gtkclient-new" role="function">
 <title>dbusmenu_gtkclient_new ()</title>
 <indexterm zone="dbusmenu-gtkclient-new"><primary>dbusmenu_gtkclient_new</primary></indexterm>
-<programlisting><link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> *  dbusmenu_gtkclient_new             (<parameter><link linkend="gchar"><type>gchar</type></link> *dbus_name</parameter>,
+<programlisting><link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> * dbusmenu_gtkclient_new              (<parameter><link linkend="gchar"><type>gchar</type></link> *dbus_name</parameter>,
                                                          <parameter><link linkend="gchar"><type>gchar</type></link> *dbus_object</parameter>);</programlisting>
 <para>
 Creates a new <link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> object and creates a <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link>

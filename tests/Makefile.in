@@ -38,9 +38,19 @@ build_triplet = @build@
 host_triplet = @host@
 TESTS = test-glib-objects-test test-glib-events test-glib-layout \
 	test-glib-properties test-glib-proxy \
-	test-glib-simple-items$(EXEEXT) test-glib-submenu test-json \
-	test-gtk-objects-test test-gtk-label test-gtk-shortcut \
-	test-gtk-reorder test-gtk-submenu test-gtk-parser-test
+	test-glib-simple-items$(EXEEXT) test-glib-submenu \
+	$(am__append_1) $(am__append_2)
+@WANT_DBUSMENUDUMPER_TRUE@am__append_1 = \
+@WANT_DBUSMENUDUMPER_TRUE@	test-json
+
+@WANT_LIBDBUSMENUGTK_TRUE@am__append_2 = \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-objects-test \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-label \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-shortcut \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-reorder \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-submenu \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-parser-test
+
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-objects$(EXEEXT) test-glib-events-client$(EXEEXT) \
 	test-glib-events-server$(EXEEXT) \
@@ -50,21 +60,36 @@ check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-properties-server$(EXEEXT) \
 	test-glib-proxy-client$(EXEEXT) \
 	test-glib-proxy-server$(EXEEXT) test-glib-proxy-proxy$(EXEEXT) \
-	test-gtk-objects$(EXEEXT) test-glib-submenu-client$(EXEEXT) \
+	test-glib-submenu-client$(EXEEXT) \
 	test-glib-submenu-server$(EXEEXT) \
-	test-gtk-label-client$(EXEEXT) test-gtk-label-server$(EXEEXT) \
-	test-gtk-shortcut-client$(EXEEXT) \
-	test-gtk-shortcut-server$(EXEEXT) \
-	test-glib-simple-items$(EXEEXT) \
-	test-gtk-reorder-server$(EXEEXT) test-json-client$(EXEEXT) \
-	test-json-server$(EXEEXT) test-gtk-submenu-server$(EXEEXT) \
-	test-gtk-submenu-client$(EXEEXT) test-gtk-parser$(EXEEXT)
+	test-glib-simple-items$(EXEEXT) $(am__EXEEXT_1) \
+	$(am__EXEEXT_2)
+@WANT_DBUSMENUDUMPER_TRUE@am__append_3 = \
+@WANT_DBUSMENUDUMPER_TRUE@	test-json-client \
+@WANT_DBUSMENUDUMPER_TRUE@	test-json-server
+
+@WANT_LIBDBUSMENUGTK_TRUE@am__append_4 = \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-objects \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-label-client \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-label-server \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-shortcut-client \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-shortcut-server \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-reorder-server \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-submenu-server \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-submenu-client \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-parser
+
 subdir = tests
 DIST_COMMON = $(libdbusmenu_jsonloaderinclude_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/dbusmenu-jsonloader-0.4.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -111,6 +136,17 @@ libdbusmenu_jsonloader_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdbusmenu_jsonloader_la_CFLAGS) $(CFLAGS) \
 	$(libdbusmenu_jsonloader_la_LDFLAGS) $(LDFLAGS) -o $@
+@WANT_DBUSMENUDUMPER_TRUE@am__EXEEXT_1 = test-json-client$(EXEEXT) \
+@WANT_DBUSMENUDUMPER_TRUE@	test-json-server$(EXEEXT)
+@WANT_LIBDBUSMENUGTK_TRUE@am__EXEEXT_2 = test-gtk-objects$(EXEEXT) \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-label-client$(EXEEXT) \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-label-server$(EXEEXT) \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-shortcut-client$(EXEEXT) \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-shortcut-server$(EXEEXT) \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-reorder-server$(EXEEXT) \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-submenu-server$(EXEEXT) \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-submenu-client$(EXEEXT) \
+@WANT_LIBDBUSMENUGTK_TRUE@	test-gtk-parser$(EXEEXT)
 am_glib_server_nomenu_OBJECTS =  \
 	glib_server_nomenu-glib-server-nomenu.$(OBJEXT)
 glib_server_nomenu_OBJECTS = $(am_glib_server_nomenu_OBJECTS)
@@ -493,6 +529,8 @@ GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
 HELP_DIR = @HELP_DIR@

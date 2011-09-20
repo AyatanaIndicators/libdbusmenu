@@ -34,17 +34,24 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-libexec_PROGRAMS = dbusmenu-testapp$(EXEEXT)
+libexec_PROGRAMS = $(am__EXEEXT_1)
+@WANT_TESTS_TRUE@am__append_1 = dbusmenu-testapp
 subdir = tools/testapp
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+@WANT_TESTS_TRUE@am__EXEEXT_1 = dbusmenu-testapp$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(libexecdir)"
 PROGRAMS = $(libexec_PROGRAMS)
 am_dbusmenu_testapp_OBJECTS = dbusmenu_testapp-main.$(OBJEXT)
@@ -52,8 +59,7 @@ dbusmenu_testapp_OBJECTS = $(am_dbusmenu_testapp_OBJECTS)
 am__DEPENDENCIES_1 =
 dbusmenu_testapp_DEPENDENCIES =  \
 	$(builddir)/../../libdbusmenu-glib/libdbusmenu-glib.la \
-	$(builddir)/../../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -137,6 +143,8 @@ GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
 HELP_DIR = @HELP_DIR@
@@ -263,8 +271,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@USE_GTK3_FALSE@VER = 
-@USE_GTK3_TRUE@VER = 3
 dbusmenu_testapp_SOURCES = \
 	main.c
 
@@ -276,8 +282,6 @@ dbusmenu_testapp_CFLAGS = \
 
 dbusmenu_testapp_LDADD = \
 	$(builddir)/../../libdbusmenu-glib/libdbusmenu-glib.la \
-	$(builddir)/../../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
 all: all-am

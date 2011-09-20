@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.4.93, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.4.94, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.4.93, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.4.94, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -58,27 +58,37 @@ AC_SUBST(DBUSMENUGLIB_LIBS)
 GTK_REQUIRED_VERSION=2.16
 GTK3_REQUIRED_VERSION=2.91
 
+AC_ARG_ENABLE([gtk],
+	AC_HELP_STRING([--disable-gtk], [Disable libdbusmenu-gtk library]),
+	[enable_gtk=$enableval], [enable_gtk=auto])
+AM_CONDITIONAL([WANT_LIBDBUSMENUGTK], [test "x$enable_gtk" != "xno"])
+
 AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--with-gtk],
     [Which version of gtk to use @<:@default=3@:>@])],
   [],
   [with_gtk=3])
+AM_CONDITIONAL([USE_GTK3], [test "x$with_gtk" = "x3"])
+
+AS_IF([test "x$enable_gtk" != "xno"],[
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                                         glib-2.0 >= $GLIB_REQUIRED_VERSION)
-         AC_SUBST(DBUSMENUGTK_CFLAGS)
-         AC_SUBST(DBUSMENUGTK_LIBS)
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION,
+                                         [have_gtk=yes]
+)
          AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
         ],
       [test "x$with_gtk" = x2],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                         glib-2.0 >= $GLIB_REQUIRED_VERSION)
-         AC_SUBST(DBUSMENUGTK_CFLAGS)
-         AC_SUBST(DBUSMENUGTK_LIBS)
+                                         glib-2.0 >= $GLIB_REQUIRED_VERSION,
+                                         [have_gtk=yes]
+)
         ],
       [AC_MSG_FAILURE([Value for --with-gtk was neither 2 nor 3])]
 )
-AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
+])
+AC_SUBST(DBUSMENUGTK_CFLAGS)
+AC_SUBST(DBUSMENUGTK_LIBS)
 
 ###########################
 # Dependencies - dumper
@@ -86,8 +96,17 @@ AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
 
 X11_REQUIRED_VERSION=1.3
 
+AC_ARG_ENABLE([dumper],
+	AC_HELP_STRING([--disable-dumper], [Disable dbusmenudumper tool]),
+	[enable_dumper=$enableval], [enable_dumper=auto])
+AM_CONDITIONAL([WANT_DBUSMENUDUMPER], [test "x$enable_dumper" != "xno"])
+
+AS_IF([test "x$enable_dumper" != "xno"],[
 PKG_CHECK_MODULES(DBUSMENUDUMPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                  x11 >= $X11_REQUIRED_VERSION)
+                                  x11 >= $X11_REQUIRED_VERSION,
+                                  [have_dumper=yes]
+)
+])
 
 AC_SUBST(DBUSMENUDUMPER_CFLAGS)
 AC_SUBST(DBUSMENUDUMPER_LIBS)
@@ -99,8 +118,17 @@ AC_SUBST(DBUSMENUDUMPER_LIBS)
 JSON_GLIB_REQUIRED_VERSION=0.13.4
 GIO_UNIX_REQUIRED_VERSION=2.24
 
+AC_ARG_ENABLE([tests],
+	AC_HELP_STRING([--disable-tests], [Disable tests]),
+	[enable_tests=$enableval], [enable_tests=auto])
+AM_CONDITIONAL([WANT_TESTS], [test "x$enable_tests" != "xno"])
+
+AS_IF([test "x$enable_tests" != "xno"],[
 PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
-                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION)
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION,
+                                  [have_tests=yes]
+)
+])
 
 AC_SUBST(DBUSMENUTESTS_CFLAGS)
 AC_SUBST(DBUSMENUTESTS_LIBS)
@@ -121,7 +149,17 @@ AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
 # Vala API Generation
 ###########################
 
+AC_ARG_ENABLE([vala],
+	AC_HELP_STRING([--disable-vala], [Disable vala]),
+	[enable_vala=$enableval], [enable_vala=auto])
+
+AS_IF([test "x$enable_vala" != "xno"],[
+	AM_COND_IF([HAVE_INTROSPECTION],,[
+		AC_MSG_ERROR([Vala bindings require introspection support, please --enable-introspection])
+	])
 AC_PATH_PROG([VALA_API_GEN], [vapigen])
+])
+AM_CONDITIONAL([HAVE_VALA], [test -n "$VALA_API_GEN"])
 
 ###########################
 # XSLT Processor
@@ -134,7 +172,7 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 ###########################
 
 LIBDBUSMENU_CURRENT=4
-LIBDBUSMENU_REVISION=3
+LIBDBUSMENU_REVISION=4
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
@@ -198,4 +236,24 @@ libdbusmenu Configuration:
 	Massive Debugging:      $with_massivedebugging
 	GTK+ Version:           $with_gtk
 ])
+
+AS_IF([test "x$have_tests" = "xyes"],
+	AC_MSG_NOTICE([	Tests:                  yes]),
+	AC_MSG_NOTICE([	Tests:                  no])
+)
+
+AS_IF([test "x$enable_gtk" = "xno"],
+	AC_MSG_NOTICE([	Gtk:                    no]),
+	AC_MSG_NOTICE([	Gtk:                    yes (gtk$with_gtk)])
+)
+
+AM_COND_IF([HAVE_VALA],
+	AC_MSG_NOTICE([	Vala bindings:          yes]),
+	AC_MSG_NOTICE([	Vala bindings           no])
+)
+
+AS_IF([test "x$have_dumper" = "xyes"],
+   AC_MSG_NOTICE([	Dumper:                 yes]),
+   AC_MSG_NOTICE([	Dumper:                 no])
+)
 

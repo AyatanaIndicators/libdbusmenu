@@ -1,13 +1,23 @@
+ACLOCAL_AMFLAGS = -I m4
+
 EXTRA_DIST = \
 	COPYING.2.1 \
 	COPYING-GPL3 \
 	m4/introspection.m4
 
+if WANT_TESTS
+TESTS_SUBDIR = tests
+endif
+
+if WANT_LIBDBUSMENUGTK
+LIBDBUSMENUGTK_SUBDIR = libdbusmenu-gtk
+endif
+
 SUBDIRS = \
 	libdbusmenu-glib \
-	libdbusmenu-gtk \
+	$(LIBDBUSMENUGTK_SUBDIR) \
 	tools \
-	tests \
+	$(TESTS_SUBDIR) \
 	docs \
 	po
 

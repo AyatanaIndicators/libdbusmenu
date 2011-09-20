@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API">
 <link rel="prev" href="ch01.html" title="API">
 <link rel="next" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html" title="DbusmenuMenuitemProxy">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -57,9 +57,9 @@ Unstable, unless otherwise indicated
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DBUSMENU-SERVER-PROP-VERSION:CAPS" title="DBUSMENU_SERVER_PROP_VERSION">DBUSMENU_SERVER_PROP_VERSION</a>
                     <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer">DbusmenuServer</a>;
 struct              <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServerClass" title="struct DbusmenuServerClass">DbusmenuServerClass</a>;
-<a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="returnvalue">DbusmenuServer</span></a> *         <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-new" title="dbusmenu_server_new ()">dbusmenu_server_new</a>            (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *object</code></em>);
+<a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="returnvalue">DbusmenuServer</span></a> *    <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-new" title="dbusmenu_server_new ()">dbusmenu_server_new</a>                 (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *object</code></em>);
 <a class="link" href="libdbusmenu-glib-Types.html#DbusmenuStatus" title="enum DbusmenuStatus"><span class="returnvalue">DbusmenuStatus</span></a>      <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-get-status" title="dbusmenu_server_get_status ()">dbusmenu_server_get_status</a>          (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="type">DbusmenuServer</span></a> *server</code></em>);
-<a class="link" href="libdbusmenu-glib-Types.html#DbusmenuTextDirection" title="enum DbusmenuTextDirection"><span class="returnvalue">DbusmenuTextDirection</span></a>  <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-get-text-direction" title="dbusmenu_server_get_text_direction ()">dbusmenu_server_get_text_direction</a>
+<a class="link" href="libdbusmenu-glib-Types.html#DbusmenuTextDirection" title="enum DbusmenuTextDirection"><span class="returnvalue">DbusmenuTextDirection</span></a> <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-get-text-direction" title="dbusmenu_server_get_text_direction ()">dbusmenu_server_get_text_direction</a>
                                                         (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="type">DbusmenuServer</span></a> *server</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#dbusmenu-server-set-root" title="dbusmenu_server_set_root ()">dbusmenu_server_set_root</a>            (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="type">DbusmenuServer</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *root</code></em>);
@@ -263,7 +263,7 @@ The class implementing the virtual functions for <a class="link" href="libdbusme
 <hr>
 <div class="refsect2">
 <a name="dbusmenu-server-new"></a><h3>dbusmenu_server_new ()</h3>
-<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="returnvalue">DbusmenuServer</span></a> *         dbusmenu_server_new            (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *object</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="returnvalue">DbusmenuServer</span></a> *    dbusmenu_server_new                 (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *object</code></em>);</pre>
 <p>
 Creates a new <a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="type">DbusmenuServer</span></a> object with a specific object
 	path on DBus.  If <em class="parameter"><code>object</code></em> is set to NULL the default object
@@ -310,7 +310,7 @@ Gets the current statust hat the server is sending out over
 <hr>
 <div class="refsect2">
 <a name="dbusmenu-server-get-text-direction"></a><h3>dbusmenu_server_get_text_direction ()</h3>
-<pre class="programlisting"><a class="link" href="libdbusmenu-glib-Types.html#DbusmenuTextDirection" title="enum DbusmenuTextDirection"><span class="returnvalue">DbusmenuTextDirection</span></a>  dbusmenu_server_get_text_direction
+<pre class="programlisting"><a class="link" href="libdbusmenu-glib-Types.html#DbusmenuTextDirection" title="enum DbusmenuTextDirection"><span class="returnvalue">DbusmenuTextDirection</span></a> dbusmenu_server_get_text_direction
                                                         (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer" title="DbusmenuServer"><span class="type">DbusmenuServer</span></a> *server</code></em>);</pre>
 <p>
 Returns the value of the text direction that is being exported
@@ -407,6 +407,6 @@ Sets the text direction that should be exported over DBus for
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>
