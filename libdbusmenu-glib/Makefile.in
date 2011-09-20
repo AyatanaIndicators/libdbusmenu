@@ -57,11 +57,16 @@ DIST_COMMON = $(libdbusmenu_glibinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/dbusmenu-glib-0.4.pc.in \
 	$(top_srcdir)/Makefile.am.enum
 @HAVE_INTROSPECTION_TRUE@am__append_1 = Dbusmenu-0.4.gir
-@HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
-@HAVE_INTROSPECTION_TRUE@	$(vapi_DATA)
+@HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA)
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@am__append_3 = $(vapi_DATA)
 subdir = libdbusmenu-glib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
+	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -194,6 +199,8 @@ GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
 HELP_DIR = @HELP_DIR@
@@ -325,7 +332,7 @@ BUILT_SOURCES = $(glib_enum_h) $(glib_enum_c) dbus-menu-clean.xml.c \
 	menuitem-marshal.h menuitem-marshal.c server-marshal.h \
 	server-marshal.c
 CLEANFILES = stamp-enum-types dbus-menu-clean.xml $(BUILT_SOURCES) \
-	$(am__append_2)
+	$(am__append_2) $(am__append_3)
 DISTCLEANFILES = $(glib_enum_h) $(glib_enum_c) enum-types.c \
 	enum-types.h
 EXTRA_DIST = clean-namespaces.xslt dbusmenu-glib-0.4.pc.in \
@@ -427,8 +434,8 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 #########################
 # VAPI Files
 #########################
-@HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@vapi_DATA = Dbusmenu-0.4.vapi
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@vapidir = $(datadir)/vala/vapi
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@vapi_DATA = Dbusmenu-0.4.vapi
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1022,8 +1029,8 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 
 @HAVE_INTROSPECTION_TRUE@Dbusmenu-0.4.gir: libdbusmenu-glib.la
 
-@HAVE_INTROSPECTION_TRUE@Dbusmenu-0.4.vapi: Dbusmenu-0.4.gir
-@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=Dbusmenu-0.4 $<
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@Dbusmenu-0.4.vapi: Dbusmenu-0.4.gir
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@	$(VALA_API_GEN) --library=Dbusmenu-0.4 $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

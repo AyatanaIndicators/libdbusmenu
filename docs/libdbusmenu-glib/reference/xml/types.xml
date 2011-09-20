@@ -37,7 +37,7 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
 <link linkend="DbusmenuStatus"><returnvalue>DbusmenuStatus</returnvalue></link>      <link linkend="dbusmenu-status-get-value-from-nick">dbusmenu_status_get_value_from_nick</link> (<parameter>const <link linkend="gchar"><type>gchar</type></link> *nick</parameter>);
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="dbusmenu-text-direction-get-nick">dbusmenu_text_direction_get_nick</link>    (<parameter><link linkend="DbusmenuTextDirection"><type>DbusmenuTextDirection</type></link> value</parameter>);
 <link linkend="GType"><returnvalue>GType</returnvalue></link>               <link linkend="dbusmenu-text-direction-get-type">dbusmenu_text_direction_get_type</link>    (<parameter><type>void</type></parameter>);
-<link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link>  <link linkend="dbusmenu-text-direction-get-value-from-nick">dbusmenu_text_direction_get_value_from_nick</link>
+<link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> <link linkend="dbusmenu-text-direction-get-value-from-nick">dbusmenu_text_direction_get_value_from_nick</link>
                                                         (<parameter>const <link linkend="gchar"><type>gchar</type></link> *nick</parameter>);
 </synopsis>
 </refsynopsisdiv>
@@ -73,7 +73,8 @@ Gets the <link linkend="GType"><type>GType</type></link> value for the type asso
 <refsect2 id="DbusmenuStatus" role="enum">
 <title>enum DbusmenuStatus</title>
 <indexterm zone="DbusmenuStatus"><primary>DbusmenuStatus</primary></indexterm>
-<programlisting>typedef enum { /*&lt; prefix=DBUSMENU_STATUS &gt;*/
+<programlisting>typedef enum {
+ /*&lt; prefix=DBUSMENU_STATUS &gt;*/
 	DBUSMENU_STATUS_NORMAL,   /*&lt; nick=normal &gt;*/
 	DBUSMENU_STATUS_NOTICE    /*&lt; nick=notice &gt;*/
 } DbusmenuStatus;
@@ -95,7 +96,8 @@ Tracks how the menus should be presented to the user.
 <refsect2 id="DbusmenuTextDirection" role="enum">
 <title>enum DbusmenuTextDirection</title>
 <indexterm zone="DbusmenuTextDirection"><primary>DbusmenuTextDirection</primary></indexterm>
-<programlisting>typedef enum { /*&lt; prefix=DBUSMENU_TEXT_DIRECTION &gt;*/
+<programlisting>typedef enum {
+ /*&lt; prefix=DBUSMENU_TEXT_DIRECTION &gt;*/
 	DBUSMENU_TEXT_DIRECTION_NONE, /*&lt; nick=none &gt;*/
 	DBUSMENU_TEXT_DIRECTION_LTR,  /*&lt; nick=ltr  &gt;*/
 	DBUSMENU_TEXT_DIRECTION_RTL   /*&lt; nick=rtl  &gt;*/
@@ -175,7 +177,7 @@ Builds a GLib type for the <link linkend="DbusmenuTextDirection"><type>DbusmenuT
 <refsect2 id="dbusmenu-text-direction-get-value-from-nick" role="function">
 <title>dbusmenu_text_direction_get_value_from_nick ()</title>
 <indexterm zone="dbusmenu-text-direction-get-value-from-nick"><primary>dbusmenu_text_direction_get_value_from_nick</primary></indexterm>
-<programlisting><link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link>  dbusmenu_text_direction_get_value_from_nick
+<programlisting><link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> dbusmenu_text_direction_get_value_from_nick
                                                         (<parameter>const <link linkend="gchar"><type>gchar</type></link> *nick</parameter>);</programlisting>
 <para>
 Looks up in the enum table for the value of <parameter>nick</parameter>.

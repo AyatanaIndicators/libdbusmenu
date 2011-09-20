@@ -12,14 +12,22 @@ TESTS = \
 	test-glib-properties \
 	test-glib-proxy \
 	test-glib-simple-items \
-	test-glib-submenu \
-	test-json \
+	test-glib-submenu
+
+if WANT_DBUSMENUDUMPER
+TESTS += \
+	test-json
+endif
+
+if WANT_LIBDBUSMENUGTK
+TESTS += \
 	test-gtk-objects-test \
 	test-gtk-label \
 	test-gtk-shortcut \
 	test-gtk-reorder \
 	test-gtk-submenu \
 	test-gtk-parser-test
+endif
 
 XFAIL_TESTS = \
 	test-glib-proxy
@@ -44,20 +52,28 @@ check_PROGRAMS = \
 	test-glib-proxy-client \
 	test-glib-proxy-server \
 	test-glib-proxy-proxy \
-	test-gtk-objects \
 	test-glib-submenu-client \
 	test-glib-submenu-server \
+	test-glib-simple-items
+
+if WANT_DBUSMENUDUMPER
+check_PROGRAMS += \
+	test-json-client \
+	test-json-server
+endif
+
+if WANT_LIBDBUSMENUGTK
+check_PROGRAMS += \
+	test-gtk-objects \
 	test-gtk-label-client \
 	test-gtk-label-server \
 	test-gtk-shortcut-client \
 	test-gtk-shortcut-server \
-	test-glib-simple-items \
 	test-gtk-reorder-server \
-	test-json-client \
-	test-json-server \
 	test-gtk-submenu-server \
 	test-gtk-submenu-client \
 	test-gtk-parser
+endif
 
 XVFB_RUN=". $(srcdir)/run-xvfb.sh"
 

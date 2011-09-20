@@ -40,9 +40,9 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-SERVER-PROP-VERSION:CAPS">DBUSMENU_SERVER_PROP_VERSION</link>
                     <link linkend="DbusmenuServer">DbusmenuServer</link>;
 struct              <link linkend="DbusmenuServerClass">DbusmenuServerClass</link>;
-<link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *         <link linkend="dbusmenu-server-new">dbusmenu_server_new</link>            (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
+<link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *    <link linkend="dbusmenu-server-new">dbusmenu_server_new</link>                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
 <link linkend="DbusmenuStatus"><returnvalue>DbusmenuStatus</returnvalue></link>      <link linkend="dbusmenu-server-get-status">dbusmenu_server_get_status</link>          (<parameter><link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> *server</parameter>);
-<link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link>  <link linkend="dbusmenu-server-get-text-direction">dbusmenu_server_get_text_direction</link>
+<link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> <link linkend="dbusmenu-server-get-text-direction">dbusmenu_server_get_text_direction</link>
                                                         (<parameter><link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> *server</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-server-set-root">dbusmenu_server_set_root</link>            (<parameter><link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> *self</parameter>,
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *root</parameter>);
@@ -221,7 +221,7 @@ The class implementing the virtual functions for <link linkend="DbusmenuServer">
 <refsect2 id="dbusmenu-server-new" role="function">
 <title>dbusmenu_server_new ()</title>
 <indexterm zone="dbusmenu-server-new"><primary>dbusmenu_server_new</primary></indexterm>
-<programlisting><link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *         dbusmenu_server_new            (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);</programlisting>
+<programlisting><link linkend="DbusmenuServer"><returnvalue>DbusmenuServer</returnvalue></link> *    dbusmenu_server_new                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);</programlisting>
 <para>
 Creates a new <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> object with a specific object
 	path on DBus.  If <parameter>object</parameter> is set to NULL the default object
@@ -247,7 +247,7 @@ Gets the current statust hat the server is sending out over
 <refsect2 id="dbusmenu-server-get-text-direction" role="function">
 <title>dbusmenu_server_get_text_direction ()</title>
 <indexterm zone="dbusmenu-server-get-text-direction"><primary>dbusmenu_server_get_text_direction</primary></indexterm>
-<programlisting><link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link>  dbusmenu_server_get_text_direction
+<programlisting><link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> dbusmenu_server_get_text_direction
                                                         (<parameter><link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> *server</parameter>);</programlisting>
 <para>
 Returns the value of the text direction that is being exported

@@ -46,12 +46,12 @@ struct              <link linkend="DbusmenuClientClass">DbusmenuClientClass</lin
                                                          <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *parent</parameter>,
                                                          <parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
                                                          <parameter><link linkend="gpointer"><type>gpointer</type></link> user_data</parameter>);
-<link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *      <link linkend="dbusmenu-client-new">dbusmenu_client_new</link>               (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
+<link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *    <link linkend="dbusmenu-client-new">dbusmenu_client_new</link>                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
 const <link linkend="GStrv"><returnvalue>GStrv</returnvalue></link>         <link linkend="dbusmenu-client-get-icon-paths">dbusmenu_client_get_icon_paths</link>      (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
-<link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *    <link linkend="dbusmenu-client-get-root">dbusmenu_client_get_root</link>          (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
+<link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  <link linkend="dbusmenu-client-get-root">dbusmenu_client_get_root</link>            (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
 <link linkend="DbusmenuStatus"><returnvalue>DbusmenuStatus</returnvalue></link>      <link linkend="dbusmenu-client-get-status">dbusmenu_client_get_status</link>          (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
-<link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link>  <link linkend="dbusmenu-client-get-text-direction">dbusmenu_client_get_text_direction</link>
+<link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> <link linkend="dbusmenu-client-get-text-direction">dbusmenu_client_get_text_direction</link>
                                                         (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
 <link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-client-add-type-handler">dbusmenu_client_add_type_handler</link>    (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *type</parameter>,
@@ -290,7 +290,7 @@ function was somehow unable to handle it.</simpara></listitem></varlistentry>
 <refsect2 id="dbusmenu-client-new" role="function">
 <title>dbusmenu_client_new ()</title>
 <indexterm zone="dbusmenu-client-new"><primary>dbusmenu_client_new</primary></indexterm>
-<programlisting><link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *      dbusmenu_client_new               (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
+<programlisting><link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *    dbusmenu_client_new                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);</programlisting>
 <para>
 This function creates a new client that connects to a specific
@@ -321,7 +321,7 @@ to keep them. <emphasis role="annotation">[<acronym>transfer none</acronym>]</em
 <refsect2 id="dbusmenu-client-get-root" role="function">
 <title>dbusmenu_client_get_root ()</title>
 <indexterm zone="dbusmenu-client-get-root"><primary>dbusmenu_client_get_root</primary></indexterm>
-<programlisting><link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *    dbusmenu_client_get_root          (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
+<programlisting><link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  dbusmenu_client_get_root            (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
 <para>
 Grabs the root node for the specified client <parameter>client</parameter>.  This
 function may block.  It will block if there is currently a
@@ -355,7 +355,7 @@ Gets the recommended current status that the server
 <refsect2 id="dbusmenu-client-get-text-direction" role="function">
 <title>dbusmenu_client_get_text_direction ()</title>
 <indexterm zone="dbusmenu-client-get-text-direction"><primary>dbusmenu_client_get_text_direction</primary></indexterm>
-<programlisting><link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link>  dbusmenu_client_get_text_direction
+<programlisting><link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> dbusmenu_client_get_text_direction
                                                         (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
 <para>
 Gets the text direction that the server is exporting.  If
