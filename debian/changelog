@@ -1,11 +1,16 @@
-libdbusmenu (0.4.94-0ubuntu1~ppa1) oneiric; urgency=low
+libdbusmenu (0.4.94-0ubuntu1) oneiric; urgency=low
 
+  [ Ted Gould ]
   * New upstream release.
     ∘ Protect functions from NULL submenus (LP: #803667)
     ∘ Build fixes (LP: #552526, LP: #552530, LP: #552538, LP: #709761,
       LP: #713690, LP: #643871, LP: #713685)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 20 Sep 2011 00:08:19 -0500
+  [ Ken VanDine ]
+  * debian/control
+    - build dep on valac-0.14
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 20 Sep 2011 09:16:41 -0700
 
 libdbusmenu (0.4.93-0ubuntu1) oneiric; urgency=low
 
