@@ -140,7 +140,17 @@ AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
 # Vala API Generation
 ###########################
 
+AC_ARG_ENABLE([vala],
+	AC_HELP_STRING([--disable-vala], [Disable vala]),
+	[enable_vala=$enableval], [enable_vala=auto])
+
+AS_IF([test "x$enable_vala" != "xno"],[
+	AM_COND_IF([HAVE_INTROSPECTION],,[
+		AC_MSG_ERROR([Vala bindings require introspection support, please --enable-introspection])
+	])
 AC_PATH_PROG([VALA_API_GEN], [vapigen])
+])
+AM_CONDITIONAL([HAVE_VALA], [test -n "$VALA_API_GEN"])
 
 ###########################
 # XSLT Processor
@@ -226,5 +236,10 @@ AS_IF([test "x$have_tests" = "xyes"],
 AS_IF([test "x$enable_gtk" = "xno"],
 	AC_MSG_NOTICE([	Gtk:                    no]),
 	AC_MSG_NOTICE([	Gtk:                    yes (gtk$with_gtk)])
+)
+
+AM_COND_IF([HAVE_VALA],
+	AC_MSG_NOTICE([	Vala bindings:          yes]),
+	AC_MSG_NOTICE([	Vala bindings           no])
 )
 
