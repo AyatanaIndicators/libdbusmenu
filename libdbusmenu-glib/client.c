@@ -1578,7 +1578,11 @@ about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 void
 dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(gpointer data), gpointer cb_data)
 {
+	g_return_if_fail(DBUSMENU_CLIENT(client));
+	g_return_if_fail(id > 0);
+
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	g_return_if_fail(priv != NULL);
 
 	about_to_show_t * data = g_new0(about_to_show_t, 1);
 	data->client = client;
