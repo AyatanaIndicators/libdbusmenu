@@ -188,6 +188,7 @@ proxy_item_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, gui
 	DbusmenuMenuitemProxy * pmi = DBUSMENU_MENUITEM_PROXY(user_data);
 	DbusmenuMenuitemProxy * child_pmi = dbusmenu_menuitem_proxy_new(child);
 	dbusmenu_menuitem_child_add_position(DBUSMENU_MENUITEM(pmi), DBUSMENU_MENUITEM(child_pmi), position);
+	g_object_unref (child_pmi);
 	return;
 }
 
@@ -283,6 +284,7 @@ add_menuitem (DbusmenuMenuitemProxy * pmi, DbusmenuMenuitem * mi)
 	for (child = children; child != NULL; child = g_list_next(child)) {
 		DbusmenuMenuitemProxy * child_pmi = dbusmenu_menuitem_proxy_new(DBUSMENU_MENUITEM(child->data));
 		dbusmenu_menuitem_child_append(DBUSMENU_MENUITEM(pmi), DBUSMENU_MENUITEM(child_pmi));
+		g_object_unref (child_pmi);
 	}
 
 	return;
