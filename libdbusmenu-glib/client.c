@@ -1050,7 +1050,12 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 
 	/* If this wasn't cancelled, we should be good */
 	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	/* But let's check */
+	g_return_if_fail(client != NULL);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+	g_return_if_fail(priv != NULL);
+
+
 	priv->menuproxy = proxy;
 
 	if (priv->menuproxy_cancel != NULL) {
