@@ -1188,7 +1188,9 @@ error_quark (void)
 static void
 bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
+	g_return_if_fail(DBUSMENU_IS_SERVER(server));
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+	g_return_if_fail(priv != NULL);
 
 	/* Input */
 	gint parent = g_variant_get_int32(g_variant_get_child_value(params, 0));
