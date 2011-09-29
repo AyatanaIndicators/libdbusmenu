@@ -1730,7 +1730,7 @@ dbusmenu_menuitem_send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (Dbusmen
 	#endif
 	DbusmenuMenuitemClass * class = DBUSMENU_MENUITEM_GET_CLASS(mi);
 
-	if (class->send_about_to_show != NULL) {
+	if (class != NULL && class->send_about_to_show != NULL) {
 		return class->send_about_to_show(mi, cb, cb_data);
 	} else if (cb != NULL) {
 		cb(mi, cb_data);
