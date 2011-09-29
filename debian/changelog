@@ -1,3 +1,11 @@
+libdbusmenu (0.5.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Protect functions against NULL results (LP: #757569, LP: #742909,
+      LP: #743050, LP: #743661)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 29 Sep 2011 14:40:18 -0500
+
 libdbusmenu (0.4.94-0ubuntu1) oneiric; urgency=low
 
   [ Ted Gould ]
