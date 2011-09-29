@@ -1,4 +1,4 @@
-libdbusmenu (0.5.0-0ubuntu1~ppa1) oneiric; urgency=low
+libdbusmenu (0.5.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.
     * Protect functions against NULL results (LP: #757569, LP: #742909,
