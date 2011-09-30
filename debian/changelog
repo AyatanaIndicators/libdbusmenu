@@ -1,3 +1,11 @@
+libdbusmenu (0.5.0-0ubuntu2) oneiric; urgency=low
+
+  * libdbusmenu-glib/client.c
+    - id of 0 in dbusmenu_client_send_about_to_show is valid, and used in 
+      appindicators like nm-applet (LP: #862989)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 30 Sep 2011 10:06:19 -0400
+
 libdbusmenu (0.5.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.
