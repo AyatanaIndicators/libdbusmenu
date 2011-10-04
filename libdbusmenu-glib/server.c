@@ -54,6 +54,7 @@ struct _DbusmenuServerPrivate
 	guint layout_idle;
 
 	GDBusConnection * bus;
+	guint find_server_signal;
 	GCancellable * bus_lookup;
 	guint dbus_registration;
 
@@ -191,6 +192,14 @@ static void       bus_event                   (DbusmenuServer * server,
 static void       bus_about_to_show           (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
+static void       find_servers_cb             (GDBusConnection * connection,
+                                               const gchar * sender,
+                                               const gchar * path,
+                                               const gchar * interface,
+                                               const gchar * signal,
+                                               GVariant * params,
+                                               gpointer user_data);
+static gboolean   layout_update_idle          (gpointer user_data);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
@@ -366,6 +375,7 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->layout_idle = 0;
 	priv->bus = NULL;
 	priv->bus_lookup = NULL;
+	priv->find_server_signal = 0;
 	priv->dbus_registration = 0;
 
 	default_text_direction(self);
@@ -403,6 +413,11 @@ dbusmenu_server_dispose (GObject *object)
 	if (priv->dbus_registration != 0) {
 		g_dbus_connection_unregister_object(priv->bus, priv->dbus_registration);
 		priv->dbus_registration = 0;
+	}
+
+	if (priv->find_server_signal != 0) {
+		g_dbus_connection_signal_unsubscribe(priv->bus, priv->find_server_signal);
+		priv->find_server_signal = 0;
 	}
 
 	if (priv->bus != NULL) {
@@ -706,9 +721,29 @@ bus_got_cb (GObject * obj, GAsyncResult * result, gpointer user_data)
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(user_data);
 	priv->bus = bus;
 
+	priv->find_server_signal = g_dbus_connection_signal_subscribe(priv->bus,
+	                                                              NULL, /* sender */
+	                                                              "com.canonical.dbusmenu", /* interface */
+	                                                              "FindServers", /* member */
+	                                                              NULL, /* object path */
+	                                                              NULL, /* arg0 */
+	                                                              G_DBUS_SIGNAL_FLAGS_NONE, /* flags */
+	                                                              find_servers_cb, /* cb */
+	                                                              user_data, /* data */
+	                                                              NULL); /* free func */
+
 	register_object(DBUSMENU_SERVER(user_data));
 
 	g_object_unref(G_OBJECT(user_data));
+	return;
+}
+
+/* Respond to the find servers signal by sending an update
+   to the bus */
+static void
+find_servers_cb (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * signal, GVariant * params, gpointer user_data)
+{
+	layout_update_idle(user_data);
 	return;
 }
 
