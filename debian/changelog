@@ -1,3 +1,13 @@
+libdbusmenu (0.5.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Allow for an ID of 0 in about_to_show for indicators (LP: #862989)
+    * Clear the image pointer when we take it
+    * Ensure we drop all references to the GTK widget when a menuitem
+      gets destroyed (LP: #835646)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 13 Oct 2011 11:23:14 -0500
+
 libdbusmenu (0.5.0-0ubuntu2) oneiric; urgency=low
 
   * libdbusmenu-glib/client.c
