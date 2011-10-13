@@ -449,6 +449,7 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 		if (GTK_IS_IMAGE(child)) {
 			/* We've got a label, let's update it. */
 			imagew = GTK_IMAGE(child);
+			child = NULL;
 		} else if (GTK_IS_BOX(child)) {
 			/* Look for the label in the box */
 			gtk_container_foreach(GTK_CONTAINER(child), set_image_helper, &imagew);
