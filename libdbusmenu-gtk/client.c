@@ -823,14 +823,22 @@ item_activate (DbusmenuClient * client, DbusmenuMenuitem * mi, guint timestamp, 
 	return;
 }
 
-#ifdef MASSIVEDEBUGGING
 static void
-destroy_gmi (GtkMenuItem * gmi, DbusmenuMenuitem * mi)
+destroy_gmi (GtkMenuItem * gmi)
 {
-	g_debug("Destorying GTK Menuitem for %d", dbusmenu_menuitem_get_id(mi));
+#ifdef MASSIVEDEBUGGING
+	g_debug("Destroying GTK Menuitem %d", gmi);
+#endif
+
+	/* Call gtk_widget_destroy to remove from any containers and cleanup */
+	gtk_widget_destroy(GTK_WIDGET(gmi));
+
+	/* Now remove last ref that we are holding (due to g_object_ref_sink in
+	   dbusmenu_gtkclient_newitem_base).  This should finalize the object */
+	g_object_unref(G_OBJECT(gmi));
+
 	return;
 }
-#endif
 
 /**
  * dbusmenu_gtkclient_newitem_base:
@@ -857,7 +865,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* Attach these two */
 	g_object_ref_sink(G_OBJECT(gmi));
-	g_object_set_data_full(G_OBJECT(item), data_menuitem, gmi, (GDestroyNotify)gtk_widget_destroy);
+	g_object_set_data_full(G_OBJECT(item), data_menuitem, gmi, (GDestroyNotify)destroy_gmi);
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), client);
