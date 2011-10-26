@@ -29,9 +29,6 @@ TESTS += \
 	test-gtk-parser-test
 endif
 
-XFAIL_TESTS = \
-	test-glib-proxy
-
 # The Python test only work on the system copy of
 # dbusmenu, so while they can be usefule they're not
 # good tests of what you're currently building.  Handy
