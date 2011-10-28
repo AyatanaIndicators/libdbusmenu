@@ -1,1 +1,1 @@
-debian/tmp/gtk3/usr/lib/libdbusmenu-gtk3.so.* /usr/lib/
+usr/lib/*/libdbusmenu-gtk3.so.*

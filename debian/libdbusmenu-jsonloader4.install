@@ -1,1 +1,1 @@
-debian/tmp/gtk3/usr/lib/libdbusmenu-jsonloader.so.* /usr/lib/
+usr/lib/*/libdbusmenu-jsonloader.so.*

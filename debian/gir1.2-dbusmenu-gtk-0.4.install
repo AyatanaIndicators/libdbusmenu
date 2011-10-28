@@ -1,1 +1,1 @@
-debian/tmp/gtk2/usr/lib/girepository-1.0/DbusmenuGtk-0.4.typelib /usr/lib/girepository-1.0/
+usr/lib/*/girepository-1.0/DbusmenuGtk-0.4.typelib /usr/lib/girepository-1.0/

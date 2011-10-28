@@ -1,3 +1,19 @@
+libdbusmenu (0.5.0-1ubuntu1) precise; urgency=low
+
+  * Multiarch conversion (partial, gobject instrospection not touched)
+    (LP: #859512)
+
+ -- Riku Voipio <riku.voipio@linaro.org>  Mon, 26 Sep 2011 12:13:07 +0300
+
+libdbusmenu (0.5.0-1) experimental; urgency=low
+
+  * Merge from Ubuntu.
+    + Re-enable GTK3 packages.
+  * Re-order includes in debian/rules to prevent lintian's
+    E: libdbusmenu source: temporary-debhelper-file
+
+ -- Evgeni Golov <evgeni@debian.org>  Sat, 15 Oct 2011 09:29:54 +0200
+
 libdbusmenu (0.5.0-0ubuntu3) oneiric; urgency=low
 
   * libdbusmenu-gtk/client.c:
@@ -131,6 +147,15 @@ libdbusmenu (0.4.4-0ubuntu1~ppa1) natty; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Mon, 25 Apr 2011 15:19:25 -0500
 
+libdbusmenu (0.4.3-1) unstable; urgency=low
+
+  * Merge new upstream release from Ubuntu.
+  * Do not build-depend on gir-repository-dev, libgtk2.0-dev 
+    has Gtk-2.0.gir since 2.24.4-1 (bump B-D accordingly).
+  * Standards-Version: 3.9.2
+
+ -- Evgeni Golov <evgeni@debian.org>  Wed, 27 Apr 2011 14:00:04 +0200
+
 libdbusmenu (0.4.3-0ubuntu3) natty; urgency=low
 
   * Backport bug fixes from trunk:
@@ -171,6 +196,12 @@ libdbusmenu (0.4.3-0ubuntu1) natty; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 14 Apr 2011 16:49:13 -0500
 
+libdbusmenu (0.4.2-1) unstable; urgency=low
+
+  * Merge new upstream release from Ubuntu.
+
+ -- Evgeni Golov <evgeni@debian.org>  Mon, 11 Apr 2011 12:43:49 +0200
+
 libdbusmenu (0.4.2-0ubuntu3) natty; urgency=low
 
   * Merged fix, guard against an activation that does not actually have 
@@ -207,6 +238,27 @@ libdbusmenu (0.4.1-0ubuntu1) natty; urgency=low
     * Handled GtkMenuItems with no labels as separators (LP: #729187)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 31 Mar 2011 13:56:54 -0500
+
+libdbusmenu (0.4.0-2) unstable; urgency=low
+
+  * Build-depend on gir1.2-atk-1.0, it's not pulled in by gir1.2-gtk-2.0
+    on ia64, mipsel and sparc64, causing FTBFS there.
+
+ -- Evgeni Golov <evgeni@debian.org>  Wed, 30 Mar 2011 10:16:59 +0200
+
+libdbusmenu (0.4.0-1) unstable; urgency=low
+
+  * Merge new upstream release from Ubuntu.
+    This builds with gir-1.2 and thus closes: #614490.
+    Also builds fine with --as-needed, closes: #615741.
+  * Disable GTK3 packages for now.
+  * Fix DEB_DH_MAKESHLIBS_ARGS_* for the latest SONAME bump.
+  * Also fix cdbs targets for it.
+  * Use valac-0.10, valac-0.12 is only in experimental.
+  * Add gir-repository-dev back to Build-Depends,
+    it still has Gtk-2.0.gir on Debian.
+
+ -- Evgeni Golov <evgeni@debian.org>  Fri, 25 Mar 2011 15:55:16 +0100
 
 libdbusmenu (0.4.0-0ubuntu2) natty; urgency=low
 
