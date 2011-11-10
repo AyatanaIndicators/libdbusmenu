@@ -505,7 +505,6 @@ menu_item_stop_activating(DbusmenuMenuitem * mi)
 		guint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(parent),
 		                           data_idle_close_id));
 		if (id > 0) {
-			g_source_remove(id);
 			g_object_set_data(G_OBJECT(parent), data_idle_close_id,
 			                  GINT_TO_POINTER(0));
 			should_close = TRUE;
@@ -575,6 +574,14 @@ close_in_idle (DbusmenuMenuitem * mi)
 }
 
 static void
+cancel_idle_close_id (gpointer data)
+{
+  guint id = GPOINTER_TO_INT(data);
+  if (id > 0)
+  	g_source_remove(id);
+}
+
+static void
 submenu_notify_visible_cb (GtkWidget * menu, GParamSpec * pspec, DbusmenuMenuitem * mi)
 {
 	if (gtk_widget_get_visible (menu)) {
@@ -591,8 +598,8 @@ submenu_notify_visible_cb (GtkWidget * menu, GParamSpec * pspec, DbusmenuMenuite
 		                           data_idle_close_id));
 		if (id == 0) {
 			id = g_idle_add((GSourceFunc)close_in_idle, mi);
-			g_object_set_data(G_OBJECT(mi), data_idle_close_id,
-			                  GINT_TO_POINTER(id));
+			g_object_set_data_full(G_OBJECT(mi), data_idle_close_id,
+			                       GINT_TO_POINTER(id), cancel_idle_close_id);
 		}
 	}
 }
