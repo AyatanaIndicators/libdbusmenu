@@ -1,1 +1,1 @@
-debian/tmp/gtk2/usr/lib/libdbusmenu-gtk.so.* /usr/lib/
+usr/lib/*/libdbusmenu-gtk.so.*
