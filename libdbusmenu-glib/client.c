@@ -331,7 +331,7 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	return;
 }
 
-#define LAYOUT_PROPS_COUNT  5
+#define LAYOUT_PROPS_COUNT  6
 
 static void
 dbusmenu_client_init (DbusmenuClient *self)
@@ -359,6 +359,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 	layout_props[2] = DBUSMENU_MENUITEM_PROP_VISIBLE;
 	layout_props[3] = DBUSMENU_MENUITEM_PROP_ENABLED;
 	layout_props[4] = DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY;
+	layout_props[5] = DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC;
 	layout_props[LAYOUT_PROPS_COUNT] = NULL;
 	priv->layout_props = g_variant_new_strv((const gchar * const *)layout_props, LAYOUT_PROPS_COUNT);
 	g_variant_ref_sink(priv->layout_props);

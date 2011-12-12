@@ -73,6 +73,7 @@ AM_CONDITIONAL([USE_GTK3], [test "x$with_gtk" = "x3"])
 AS_IF([test "x$enable_gtk" != "xno"],[
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                                         atk
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION,
                                          [have_gtk=yes]
 )
@@ -80,6 +81,7 @@ AS_IF([test "x$with_gtk" = x3],
         ],
       [test "x$with_gtk" = x2],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                         atk
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION,
                                          [have_gtk=yes]
 )

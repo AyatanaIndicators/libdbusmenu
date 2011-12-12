@@ -32,6 +32,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <atk/atk.h>
 
 #include "client.h"
 #include "menuitem.h"
@@ -745,6 +746,9 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, Db
 		process_submenu(mi, gmi, variant, gtkclient);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_DISPOSITION)) {
 		process_disposition(mi, gmi, variant, gtkclient);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC)) {
+		atk_object_set_name(gtk_widget_get_accessible(GTK_WIDGET(gmi)), variant == NULL ? NULL :
+		                    g_variant_get_string(variant, NULL));
 	}
 
 	return;
@@ -890,6 +894,8 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
 	process_submenu(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY), client);
 	process_disposition(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_DISPOSITION), client);
+	atk_object_set_name(gtk_widget_Get_accessible(GTK_WIDGET)gmi)),
+			    g_variant_get_string(dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC)));
 	refresh_shortcut(client, item);
 
 	/* Oh, we're a child, let's deal with that */
