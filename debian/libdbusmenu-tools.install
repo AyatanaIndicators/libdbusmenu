@@ -1,3 +1,0 @@
-usr/lib/libdbusmenu/dbusmenu-* /usr/lib/libdbusmenu/
-usr/share/libdbusmenu/* /usr/share/libdbusmenu-tools/
-usr/share/doc/libdbusmenu/README.dbusmenu-bench /usr/share/doc/libdbusmenu-tools/
