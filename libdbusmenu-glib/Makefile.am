@@ -70,8 +70,8 @@ libdbusmenu_glib_la_LIBADD = \
 pkgconfig_DATA = dbusmenu-glib-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
-glib_enum_h = enum-types.h
-glib_enum_c = enum-types.c
+glib_enum_h = $(srcdir)/enum-types.h
+glib_enum_c = $(srcdir)/enum-types.c
 glib_enum_headers = $(addprefix $(srcdir)/, $(libdbusmenu_glibinclude_HEADERS))
 
 DISTCLEANFILES += \
