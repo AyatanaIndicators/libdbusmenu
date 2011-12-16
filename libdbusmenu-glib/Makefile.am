@@ -19,7 +19,6 @@ libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-glib/
 
 
 EXPORTED_OBJECTS = \
-	enum-types.h \
 	menuitem.h \
 	menuitem-proxy.h \
 	server.h \
@@ -27,6 +26,7 @@ EXPORTED_OBJECTS = \
 
 libdbusmenu_glibinclude_HEADERS = \
 	$(EXPORTED_OBJECTS) \
+	enum-types.h \
 	dbusmenu-glib.h \
 	types.h
 
@@ -70,9 +70,16 @@ libdbusmenu_glib_la_LIBADD = \
 pkgconfig_DATA = dbusmenu-glib-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
-glib_enum_h = $(srcdir)/enum-types.h
-glib_enum_c = $(srcdir)/enum-types.c
-glib_enum_headers = $(addprefix $(srcdir)/, $(libdbusmenu_glibinclude_HEADERS))
+ENUMHEADERS = \
+	menuitem.h \
+	menuitem-proxy.h \
+	server.h \
+	client.h \
+	types.h
+
+glib_enum_h = enum-types.h
+glib_enum_c = enum-types.c
+glib_enum_headers = $(addprefix $(srcdir)/, $(ENUMHEADERS))
 
 DISTCLEANFILES += \
 	enum-types.c \
@@ -158,16 +165,22 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
+introspection_objects = \
+	$(addprefix $(srcdir)/, $(EXPORTED_OBJECTS)) \
+	$(builddir)/enum-types.h
+
 introspection_sources = \
-	$(libdbusmenu_glibinclude_HEADERS) \
-	$(EXPORTED_OBJECTS:.h=.c)
+	$(addprefix $(srcdir)/, $(EXPORTED_OBJECTS)) \
+	$(srcdir)/dbusmenu-glib.h \
+	$(srcdir)/types.h \
+	$(introspection_objects:.h=.c)
 
 Dbusmenu-0.4.gir: libdbusmenu-glib.la
 Dbusmenu_0_4_gir_INCLUDES = \
 	GObject-2.0
 Dbusmenu_0_4_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS) -I$(top_srcdir)
 Dbusmenu_0_4_gir_LIBS = libdbusmenu-glib.la
-Dbusmenu_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+Dbusmenu_0_4_gir_FILES = $(introspection_sources)
 Dbusmenu_0_4_gir_NAMESPACE = Dbusmenu
 Dbusmenu_0_4_gir_VERSION = 0.4
 Dbusmenu_0_4_gir_EXPORT_PACKAGES = dbusmenu-glib-0.4
