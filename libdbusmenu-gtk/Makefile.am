@@ -33,7 +33,7 @@ glib_enum_headers = $(srcdir)/genericmenuitem.h
 # Include Directory
 #####################
 
-libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu$(VER)-0.4/libdbusmenu-gtk/
+libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-gtk$(VER)-0.4/libdbusmenu-gtk/
 
 libdbusmenu_gtkinclude_HEADERS = \
 	dbusmenu-gtk.h \
