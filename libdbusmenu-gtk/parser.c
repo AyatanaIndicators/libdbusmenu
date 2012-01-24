@@ -1059,8 +1059,13 @@ widget_notify_cb (GtkWidget  *widget,
                                            DBUSMENU_MENUITEM_PROP_VISIBLE,
                                            g_value_get_boolean (&prop_value));
     }
-  else if (pspec->name == g_intern_static_string ("image") ||
-           pspec->name == g_intern_static_string ("always-show-image"))
+  else if (pspec->name == g_intern_static_string ("always-show-image"))
+    {
+      GtkWidget *image = NULL;
+      g_object_get(widget, "image", &image, NULL);
+      update_icon (child, GTK_IMAGE(image));
+    }
+  else if (pspec->name == g_intern_static_string ("image"))
     {
       GtkWidget *image;
       image = GTK_WIDGET (g_value_get_object (&prop_value));
