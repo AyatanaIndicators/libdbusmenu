@@ -241,7 +241,12 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 			/* We need to put the child into a new box and
 			   make the box the child of the menu item.  Basically
 			   we're inserting a box in the middle. */
+			#ifdef HAVE_GTK3
+			GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,
+			                               get_toggle_space(GTK_WIDGET(menu_item)));
+			#else
 			GtkWidget * hbox = gtk_hbox_new(FALSE, get_toggle_space(GTK_WIDGET(menu_item)));
+			#endif
 			g_object_ref(child);
 			gtk_container_remove(GTK_CONTAINER(menu_item), child);
 			gtk_box_pack_start(GTK_BOX(hbox), child, FALSE, FALSE, 0);
@@ -457,7 +462,12 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 			/* We need to put the child into a new box and
 			   make the box the child of the menu item.  Basically
 			   we're inserting a box in the middle. */
+			#ifdef HAVE_GTK3
+			GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,
+			                               get_toggle_space(GTK_WIDGET(menu_item)));
+			#else
 			GtkWidget * hbox = gtk_hbox_new(FALSE, get_toggle_space(GTK_WIDGET(menu_item)));
+			#endif
 			g_object_ref(child);
 			gtk_container_remove(GTK_CONTAINER(menu_item), child);
 			gtk_box_pack_end(GTK_BOX(hbox), child, TRUE, TRUE, 0);
