@@ -15,7 +15,7 @@ include $(top_srcdir)/Makefile.am.enum
 lib_LTLIBRARIES = \
 	libdbusmenu-glib.la
 
-libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-glib/
+libdbusmenu_glibincludedir=$(includedir)/libdbusmenu-glib-0.4/libdbusmenu-glib/
 
 
 EXPORTED_OBJECTS = \
