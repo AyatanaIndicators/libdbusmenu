@@ -66,10 +66,13 @@ static void           image_notify_cb          (GtkWidget *         widget,
 static void           action_notify_cb         (GtkAction *         action,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
-static void           child_added_cb           (GtkContainer *      menu,
+static void           item_inserted_cb         (GtkContainer *      menu,
                                                 GtkWidget *         widget,
+#ifdef HAVE_GTK3
+                                                gint                position,
+#endif
                                                 gpointer            data);
-static void           child_removed_cb         (GtkContainer *      menu,
+static void           item_removed_cb          (GtkContainer *      menu,
                                                 GtkWidget *         widget,
                                                 gpointer            data);
 static void           theme_changed_cb         (GtkIconTheme *      theme,
@@ -184,9 +187,9 @@ parse_data_free (gpointer data)
 
 	if (pdata != NULL && pdata->shell != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(child_added_cb), NULL);
+						     0, 0, NULL, G_CALLBACK(item_inserted_cb), NULL);
 		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(child_removed_cb), NULL);
+						     0, 0, NULL, G_CALLBACK(item_removed_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
 	}
 
@@ -290,12 +293,16 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 
 	pdata->shell = menu;
 	g_signal_connect (G_OBJECT (menu),
-		          "child-added",
-		          G_CALLBACK (child_added_cb),
+#ifdef HAVE_GTK3
+                          "insert",
+#else
+                          "child-added"
+#endif
+		          G_CALLBACK (item_inserted_cb),
 		          mi);
 	g_signal_connect (G_OBJECT (menu),
-		          "child-removed",
-		          G_CALLBACK (child_removed_cb),
+		          "remove",
+		          G_CALLBACK (item_removed_cb),
 		          mi);
 	g_object_add_weak_pointer(G_OBJECT (menu), (gpointer*)&pdata->shell);
 
@@ -1137,7 +1144,12 @@ widget_add_cb (GtkWidget *widget,
 
 /* A child item was added to a menu we're watching.  Let's try to integrate it. */
 static void
-child_added_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
+item_inserted_cb (GtkContainer *menu,
+                  GtkWidget    *widget,
+#ifdef HAVE_GTK3
+                  gint          position,
+#endif
+                  gpointer      data)
 {
 	DbusmenuMenuitem *menuitem = (DbusmenuMenuitem *)data;
 
@@ -1152,9 +1164,9 @@ child_added_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 	parse_menu_structure_helper(widget, &recurse);
 }
 
-/* A child item was added to a menu we're watching.  Let's try to integrate it. */
+/* A child item was removed from a menu we're watching. */
 static void
-child_removed_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
+item_removed_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 {
 	gpointer pmi = g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM);
 	if (pmi == NULL) {
@@ -1216,4 +1228,3 @@ should_show_image (GtkImage *image)
 
   return FALSE;
 }
-
