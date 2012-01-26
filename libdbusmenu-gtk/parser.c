@@ -29,6 +29,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "parser.h"
 #include "menuitem.h"
 #include "client.h"
+#include "config.h"
 
 #define CACHED_MENUITEM  "dbusmenu-gtk-parser-cached-item"
 #define PARSER_DATA      "dbusmenu-gtk-parser-data"
