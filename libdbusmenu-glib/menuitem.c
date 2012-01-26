@@ -1127,6 +1127,32 @@ dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * propert
 }
 
 /**
+ * dbusmenu_menuitem_property_set_byte_array:
+ * @mi: The #DbusmenuMenuitem to set the property on.
+ * @property: Name of the property to set.
+ * @value: The byte array.
+ * @nelements: The number of elements in the byte array.
+ * 
+ * Takes a byte array @value and sets it on @property as a
+ * property on @mi.  If a property already exists by that name,
+ * then the value is set to the new value.  If not, the property
+ * is added.  If the value is changed or the property was previously
+ * unset then the signal #DbusmenuMenuitem::prop-changed will be
+ * emitted by this function.
+ * 
+ * Return value:  A boolean representing if the property value was set.
+ */
+gboolean
+dbusmenu_menuitem_property_set_byte_array (DbusmenuMenuitem * mi, const gchar * property, const guchar * value, gsize nelements)
+{
+	GVariant * variant = NULL;
+	if (value != NULL) {
+		variant = g_variant_new_fixed_array(G_VARIANT_TYPE_BYTE, value, nelements, sizeof(guchar));
+	}
+	return dbusmenu_menuitem_property_set_variant(mi, property, variant);
+}
+
+/**
  * dbusmenu_menuitem_property_set_variant:
  * @mi: The #DbusmenuMenuitem to set the property on.
  * @property: Name of the property to set.
@@ -1360,6 +1386,31 @@ dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * propert
 	return 0;
 }
 
+/**
+ * dbusmenu_menuitem_property_get_byte_array:
+ * @mi: The #DbusmenuMenuitem to look for the property on.
+ * @property: The property to grab.
+ * @nelements: A pointer to the location to store the number of items (out)
+ * 
+ * Look up a property on @mi and return the value of it if
+ * it exits.  #NULL will be returned if the property doesn't
+ * exist.
+ * 
+ * Return value: (array length=nelements)(element-type guint8)(transfer none): A byte array with the
+ * 	value of the property that shouldn't be free'd.  Or #NULL if the property
+ * 	is not set or is not a byte array.
+ */
+const guchar *
+dbusmenu_menuitem_property_get_byte_array (DbusmenuMenuitem * mi, const gchar * property, gsize * nelements)
+{
+	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
+	if (variant == NULL) {
+		*nelements = 0;
+		return NULL;
+	}
+	if (!g_variant_type_equal(g_variant_get_type(variant), G_VARIANT_TYPE("ay"))) return NULL;
+	return g_variant_get_fixed_array(variant, nelements, sizeof(guchar));
+}
 
 /**
  * dbusmenu_menuitem_property_exist:

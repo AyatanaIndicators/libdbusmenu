@@ -83,7 +83,7 @@ TESTS_ENVIRONMENT = env GI_TYPELIB_PATH=$(top_builddir)/libdbusmenu-glib:$(top_b
 
 lib_LTLIBRARIES = libdbusmenu-jsonloader.la
 
-libdbusmenu_jsonloaderincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-jsonloader/
+libdbusmenu_jsonloaderincludedir=$(includedir)/libdbusmenu-glib-0.4/libdbusmenu-jsonloader/
 
 libdbusmenu_jsonloaderinclude_HEADERS = \
 	json-loader.h

@@ -33,7 +33,7 @@ glib_enum_headers = $(srcdir)/genericmenuitem.h
 # Include Directory
 #####################
 
-libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-gtk$(VER)/
+libdbusmenu_gtkincludedir=$(includedir)/libdbusmenu-gtk$(VER)-0.4/libdbusmenu-gtk/
 
 libdbusmenu_gtkinclude_HEADERS = \
 	dbusmenu-gtk.h \
@@ -62,7 +62,10 @@ libdbusmenu_gtk_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_gtk_la_CFLAGS = \
-	$(DBUSMENUGTK_CFLAGS) -I$(top_srcdir) -Wall -Werror -DG_DISABLE_DEPRECATED -DG_LOG_DOMAIN="\"LIBDBUSMENU-GTK\""
+	$(DBUSMENUGTK_CFLAGS) \
+	-I$(top_srcdir) \
+	-Wall -Werror -Wno-error=deprecated-declarations \
+	-DG_LOG_DOMAIN="\"LIBDBUSMENU-GTK\""
 
 libdbusmenu_gtk_la_LIBADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
