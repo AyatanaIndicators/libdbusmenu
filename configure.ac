@@ -23,8 +23,6 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AC_PATH_PROG([GLIB_MKENUMS], [glib-mkenums])
 
-CFLAGS="$CFLAGS -Wno-error=deprecated-declarations"
-
 ###########################
 # GTK Doc 
 ###########################
