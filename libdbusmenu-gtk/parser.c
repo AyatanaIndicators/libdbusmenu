@@ -68,7 +68,7 @@ static void           action_notify_cb         (GtkAction *         action,
                                                 gpointer            data);
 static void           item_inserted_cb         (GtkContainer *      menu,
                                                 GtkWidget *         widget,
-#ifdef WITH_GTK3
+#ifdef HAVE_GTK3
                                                 gint                position,
 #endif
                                                 gpointer            data);
@@ -293,7 +293,7 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 
 	pdata->shell = menu;
 	g_signal_connect (G_OBJECT (menu),
-#ifdef WITH_GTK3
+#ifdef HAVE_GTK3
                           "insert",
 #else
                           "child-added"
@@ -1146,7 +1146,7 @@ widget_add_cb (GtkWidget *widget,
 static void
 item_inserted_cb (GtkContainer *menu,
                   GtkWidget    *widget,
-#ifdef WITH_GTK3
+#ifdef HAVE_GTK3
                   gint          position,
 #endif
                   gpointer      data)

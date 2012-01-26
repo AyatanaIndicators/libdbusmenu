@@ -76,7 +76,7 @@ libdbusmenu_gtk3includedir = $(libdbusmenu_gtkincludedir)
 libdbusmenu_gtk3include_HEADERS = $(libdbusmenu_gtkinclude_HEADERS)
 libdbusmenu_gtk3_la_SOURCES = $(libdbusmenu_gtk_la_SOURCES)
 libdbusmenu_gtk3_la_LDFLAGS = $(libdbusmenu_gtk_la_LDFLAGS)
-libdbusmenu_gtk3_la_CFLAGS = $(libdbusmenu_gtk_la_CFLAGS) -DWITH_GTK3
+libdbusmenu_gtk3_la_CFLAGS = $(libdbusmenu_gtk_la_CFLAGS)
 libdbusmenu_gtk3_la_LIBADD = $(libdbusmenu_gtk_la_LIBADD)
 
 pkgconfig_DATA = dbusmenu-gtk$(VER)-0.4.pc
