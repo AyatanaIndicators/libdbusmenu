@@ -154,6 +154,18 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
 /**
+ * DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC:
+ *
+ * #DbusmenuMenuitem property used to provide a textual description of any
+ * information that the icon may convey. The contents of this property are
+ * passed through to assistive technologies such as the Orca screen reader.
+ * The contents of this property will not be visible in the menu item. If
+ * this property is set, Orca will use this property instead of the label 
+ * property.
+ * Type: #G_VARIANT_TYPE_STRING
+ */
+#define DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC       "accessible-desc"
+/**
  * DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE:
  *
  * #DbusmenuMenuitem property that says what type of toggle entry should
