@@ -485,10 +485,12 @@ gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * pr
 gboolean dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * property, GVariant * value);
 gboolean dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value);
 gboolean dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value);
+gboolean dbusmenu_menuitem_property_set_byte_array (DbusmenuMenuitem * mi, const gchar * property, const guchar * value, gsize nelements);
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
 GVariant * dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property);
 gint dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property);
+const guchar * dbusmenu_menuitem_property_get_byte_array (DbusmenuMenuitem * mi, const gchar * property, gsize * nelements);
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 GList * dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
 GHashTable * dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi);
