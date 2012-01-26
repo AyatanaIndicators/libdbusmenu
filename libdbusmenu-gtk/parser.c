@@ -296,7 +296,7 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 #ifdef HAVE_GTK3
                           "insert",
 #else
-                          "child-added"
+                          "child-added",
 #endif
 		          G_CALLBACK (item_inserted_cb),
 		          mi);
