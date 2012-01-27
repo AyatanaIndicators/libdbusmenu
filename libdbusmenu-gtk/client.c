@@ -894,9 +894,12 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
 	process_submenu(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY), client);
 	process_disposition(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_DISPOSITION), client);
-	atk_object_set_name(gtk_widget_get_accessible(GTK_WIDGET(gmi)),
-			    g_variant_get_string(dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC), NULL));
 	refresh_shortcut(client, item);
+
+	const gchar * a11y_desc = dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC);
+	if (a11y_desc != NULL) {
+		atk_object_set_name(gtk_widget_get_accessible(GTK_WIDGET(gmi)), a11y_desc);
+	}
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {
