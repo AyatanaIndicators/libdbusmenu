@@ -62,8 +62,17 @@ node2variant (JsonNode * node, const gchar * name)
 			return g_variant_new_double(json_node_get_double(node));
 		case G_TYPE_BOOLEAN:
 			return g_variant_new_boolean(json_node_get_boolean(node));
-		case G_TYPE_STRING:
-			return g_variant_new_string(json_node_get_string(node));
+		case G_TYPE_STRING: {
+			if (g_strcmp0(name, DBUSMENU_MENUITEM_PROP_ICON_DATA) != 0) {
+				return g_variant_new_string(json_node_get_string(node));
+			} else {
+				gsize length;
+				guchar * b64 = g_base64_decode(json_node_get_string(node), &length);
+				GVariant * retval = g_variant_new_fixed_array(G_VARIANT_TYPE_BYTE, b64, length, sizeof(guchar));
+				g_free(b64);
+				return retval;
+			}
+		}
 		default:
 			g_assert_not_reached();
 		}
