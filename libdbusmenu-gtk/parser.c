@@ -607,7 +607,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
               // so we had better watch out for it.
               pdata->accessible = accessible;
               g_signal_connect (G_OBJECT (accessible),
-                                "accessible-name",
+                                "notify",
                                 G_CALLBACK (a11y_name_notify_cb),
                                 mi);
               g_object_add_weak_pointer(G_OBJECT (accessible), (gpointer*)&pdata->accessible);
@@ -994,10 +994,13 @@ a11y_name_notify_cb (AtkObject  *accessible,
    * string as the text of the menu item label, in which case, we want to clear
    * the accessible description property of the dbusmenu item.
    */
-  if (!g_strcmp0 (name, label_text))
-    dbusmenu_menuitem_property_set (item, "accessible-desc", NULL);
-  else
-    dbusmenu_menuitem_property_set (item, "accessible-desc", name);
+  if (pspec->name == g_intern_static_string ("accessible-name"))
+    {
+      if (!g_strcmp0 (name, label_text))
+        dbusmenu_menuitem_property_set (item, "accessible-desc", NULL);
+      else
+        dbusmenu_menuitem_property_set (item, "accessible-desc", name);
+    }
 }
 
 static void
