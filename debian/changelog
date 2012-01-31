@@ -1,5 +1,6 @@
-libdbusmenu (0.5.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.5.90-0ubuntu1) UNRELEASED; urgency=low
 
+  [ Ted Gould ]
   * New upstream release.
     * Add property for accessible descriptions
     * Use insert/remove signals on GTK3 build
@@ -8,7 +9,15 @@ libdbusmenu (0.5.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Don't get objects from boolean values (LP: #870742)
     * Fix depreactions on GTK3 (LP: #917115)
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 30 Jan 2012 23:21:31 -0600
+  [ Ken VanDine ]
+  * debian/control
+    - build depend on libatk1.0-dev
+  * debian/*-dev.install
+    - fixed paths for installed headers
+  * debian/libdbusmenu-glib4.symbols
+    - added new symbols
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 31 Jan 2012 10:07:36 -0500
 
 libdbusmenu (0.5.1-0ubuntu2) precise; urgency=low
 
