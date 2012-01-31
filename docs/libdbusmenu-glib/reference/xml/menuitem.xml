@@ -48,6 +48,7 @@ Unstable, unless otherwise indicated
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS">DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</link>
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS">DBUSMENU_MENUITEM_PROP_SHORTCUT</link>
 #define             <link linkend="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS">DBUSMENU_MENUITEM_PROP_DISPOSITION</link>
+#define             <link linkend="DBUSMENU-MENUITEM-PROP-ACCESSIBLE-DESC:CAPS">DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS">DBUSMENU_MENUITEM_TOGGLE_CHECK</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS">DBUSMENU_MENUITEM_TOGGLE_RADIO</link>
 #define             <link linkend="DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS">DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED</link>
@@ -107,6 +108,11 @@ struct              <link linkend="DbusmenuMenuitemClass">DbusmenuMenuitemClass<
 <link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-set-bool">dbusmenu_menuitem_property_set_bool</link> (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
                                                          <parameter>const <link linkend="gboolean"><type>gboolean</type></link> value</parameter>);
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-set-byte-array">dbusmenu_menuitem_property_set_byte_array</link>
+                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
+                                                         <parameter>const <link linkend="guchar"><type>guchar</type></link> *value</parameter>,
+                                                         <parameter><link linkend="gsize"><type>gsize</type></link> nelements</parameter>);
 <link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-set-int">dbusmenu_menuitem_property_set_int</link>  (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
                                                          <parameter>const <link linkend="gint"><type>gint</type></link> value</parameter>);
@@ -118,6 +124,10 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
 <link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-get-bool">dbusmenu_menuitem_property_get_bool</link> (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
+const <link linkend="guchar"><returnvalue>guchar</returnvalue></link> *      <link linkend="dbusmenu-menuitem-property-get-byte-array">dbusmenu_menuitem_property_get_byte_array</link>
+                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
+                                                         <parameter><link linkend="gsize"><type>gsize</type></link> *nelements</parameter>);
 <link linkend="gint"><returnvalue>gint</returnvalue></link>                <link linkend="dbusmenu-menuitem-property-get-int">dbusmenu_menuitem_property_get_int</link>  (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
 <link linkend="GVariant"><returnvalue>GVariant</returnvalue></link> *          <link linkend="dbusmenu-menuitem-property-get-variant">dbusmenu_menuitem_property_get_variant</link>
@@ -362,6 +372,20 @@ libdbusmenu-gtk library is used with the function <link linkend="dbusmenu-menuit
 <para>
 <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> property to tell what type of information that the
 menu item is displaying to the user.  Type: <link linkend="G-VARIANT-TYPE-STRING:CAPS"><type>G_VARIANT_TYPE_STRING</type></link>
+</para></refsect2>
+<refsect2 id="DBUSMENU-MENUITEM-PROP-ACCESSIBLE-DESC:CAPS" role="macro">
+<title>DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC</title>
+<indexterm zone="DBUSMENU-MENUITEM-PROP-ACCESSIBLE-DESC:CAPS"><primary>DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC</primary></indexterm>
+<programlisting>#define DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC       "accessible-desc"
+</programlisting>
+<para>
+<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> property used to provide a textual description of any
+information that the icon may convey. The contents of this property are
+passed through to assistive technologies such as the Orca screen reader.
+The contents of this property will not be visible in the menu item. If
+this property is set, Orca will use this property instead of the label 
+property.
+Type: <link linkend="G-VARIANT-TYPE-STRING:CAPS"><type>G_VARIANT_TYPE_STRING</type></link>
 </para></refsect2>
 <refsect2 id="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" role="macro">
 <title>DBUSMENU_MENUITEM_TOGGLE_CHECK</title>
@@ -928,6 +952,32 @@ emitted by this function.
 <listitem><simpara>The value of the property.</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A boolean representing if the property value was set.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="dbusmenu-menuitem-property-set-byte-array" role="function">
+<title>dbusmenu_menuitem_property_set_byte_array ()</title>
+<indexterm zone="dbusmenu-menuitem-property-set-byte-array"><primary>dbusmenu_menuitem_property_set_byte_array</primary></indexterm>
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            dbusmenu_menuitem_property_set_byte_array
+                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
+                                                         <parameter>const <link linkend="guchar"><type>guchar</type></link> *value</parameter>,
+                                                         <parameter><link linkend="gsize"><type>gsize</type></link> nelements</parameter>);</programlisting>
+<para>
+Takes a byte array <parameter>value</parameter> and sets it on <parameter>property</parameter> as a
+property on <parameter>mi</parameter>.  If a property already exists by that name,
+then the value is set to the new value.  If not, the property
+is added.  If the value is changed or the property was previously
+unset then the signal <link linkend="DbusmenuMenuitem-prop-changed"><type>"prop-changed"</type></link> will be
+emitted by this function.
+</para><variablelist role="params">
+<varlistentry><term><parameter>mi</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to set the property on.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>property</parameter>&#160;:</term>
+<listitem><simpara>Name of the property to set.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&#160;:</term>
+<listitem><simpara>The byte array.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>nelements</parameter>&#160;:</term>
+<listitem><simpara>The number of elements in the byte array.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A boolean representing if the property value was set.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-property-set-int" role="function">
 <title>dbusmenu_menuitem_property_set_int ()</title>
 <indexterm zone="dbusmenu-menuitem-property-set-int"><primary>dbusmenu_menuitem_property_set_int</primary></indexterm>
@@ -1005,6 +1055,28 @@ it exits.  Returns <link linkend="FALSE:CAPS"><type>FALSE</type></link> if the p
 <varlistentry><term><parameter>property</parameter>&#160;:</term>
 <listitem><simpara>The property to grab.</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The value of the property or <link linkend="FALSE:CAPS"><type>FALSE</type></link>.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-menuitem-property-get-byte-array" role="function">
+<title>dbusmenu_menuitem_property_get_byte_array ()</title>
+<indexterm zone="dbusmenu-menuitem-property-get-byte-array"><primary>dbusmenu_menuitem_property_get_byte_array</primary></indexterm>
+<programlisting>const <link linkend="guchar"><returnvalue>guchar</returnvalue></link> *      dbusmenu_menuitem_property_get_byte_array
+                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
+                                                         <parameter><link linkend="gsize"><type>gsize</type></link> *nelements</parameter>);</programlisting>
+<para>
+Look up a property on <parameter>mi</parameter> and return the value of it if
+it exits.  <link linkend="NULL:CAPS"><type>NULL</type></link> will be returned if the property doesn't
+exist.
+</para><variablelist role="params">
+<varlistentry><term><parameter>mi</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to look for the property on.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>property</parameter>&#160;:</term>
+<listitem><simpara>The property to grab.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>nelements</parameter>&#160;:</term>
+<listitem><simpara>A pointer to the location to store the number of items (out)</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A byte array with the
+value of the property that shouldn't be free'd.  Or <link linkend="NULL:CAPS"><type>NULL</type></link> if the property
+is not set or is not a byte array. <emphasis role="annotation">[<acronym>array</acronym> length=nelements][<acronym>element-type</acronym> guint8][<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-property-get-int" role="function">
 <title>dbusmenu_menuitem_property_get_int ()</title>

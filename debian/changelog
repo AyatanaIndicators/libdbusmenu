@@ -1,3 +1,15 @@
+libdbusmenu (0.5.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Add property for accessible descriptions
+    * Use insert/remove signals on GTK3 build
+    * Change icon data to be a byte stream instead of base64
+    * Adjust GTK3 include path to match other libs
+    * Don't get objects from boolean values (LP: #870742)
+    * Fix depreactions on GTK3 (LP: #917115)
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 30 Jan 2012 23:21:31 -0600
+
 libdbusmenu (0.5.1-0ubuntu2) precise; urgency=low
 
   * libdbusmenu-gtk/parser.c

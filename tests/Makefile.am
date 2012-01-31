@@ -1,5 +1,5 @@
 
-DBUS_RUNNER=dbus-test-runner
+DBUS_RUNNER=dbus-test-runner --max-wait=0
 
 CLEANFILES=
 DISTCLEANFILES=
@@ -28,9 +28,6 @@ TESTS += \
 	test-gtk-submenu \
 	test-gtk-parser-test
 endif
-
-XFAIL_TESTS = \
-	test-glib-proxy
 
 # The Python test only work on the system copy of
 # dbusmenu, so while they can be usefule they're not
@@ -86,7 +83,7 @@ TESTS_ENVIRONMENT = env GI_TYPELIB_PATH=$(top_builddir)/libdbusmenu-glib:$(top_b
 
 lib_LTLIBRARIES = libdbusmenu-jsonloader.la
 
-libdbusmenu_jsonloaderincludedir=$(includedir)/libdbusmenu-0.4/libdbusmenu-jsonloader/
+libdbusmenu_jsonloaderincludedir=$(includedir)/libdbusmenu-glib-0.4/libdbusmenu-jsonloader/
 
 libdbusmenu_jsonloaderinclude_HEADERS = \
 	json-loader.h

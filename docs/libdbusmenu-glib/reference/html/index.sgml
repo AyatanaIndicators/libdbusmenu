@@ -56,6 +56,7 @@
 <ANCHOR id="DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS">
+<ANCHOR id="DBUSMENU-MENUITEM-PROP-ACCESSIBLE-DESC:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ACCESSIBLE-DESC:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS">
 <ANCHOR id="DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS">
@@ -94,10 +95,12 @@
 <ANCHOR id="dbusmenu-menuitem-find-id" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-find-id">
 <ANCHOR id="dbusmenu-menuitem-property-set" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set">
 <ANCHOR id="dbusmenu-menuitem-property-set-bool" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-bool">
+<ANCHOR id="dbusmenu-menuitem-property-set-byte-array" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-byte-array">
 <ANCHOR id="dbusmenu-menuitem-property-set-int" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-int">
 <ANCHOR id="dbusmenu-menuitem-property-set-variant" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-variant">
 <ANCHOR id="dbusmenu-menuitem-property-get" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get">
 <ANCHOR id="dbusmenu-menuitem-property-get-bool" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-bool">
+<ANCHOR id="dbusmenu-menuitem-property-get-byte-array" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-byte-array">
 <ANCHOR id="dbusmenu-menuitem-property-get-int" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-int">
 <ANCHOR id="dbusmenu-menuitem-property-get-variant" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-variant">
 <ANCHOR id="dbusmenu-menuitem-property-exist" href="libdbusmenu-glib/libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-exist">
@@ -164,6 +167,7 @@
 <ANCHOR id="annotation-glossterm-allow-none" href="libdbusmenu-glib/annotation-glossary.html#annotation-glossterm-allow-none">
 <ANCHOR id="annotation-glossterm-closure" href="libdbusmenu-glib/annotation-glossary.html#annotation-glossterm-closure">
 <ANCHOR id="annotation-glossterm-transfer none" href="libdbusmenu-glib/annotation-glossary.html#annotation-glossterm-transfer none">
+<ANCHOR id="annotation-glossterm-array" href="libdbusmenu-glib/annotation-glossary.html#annotation-glossterm-array">
 <ANCHOR id="annotation-glossterm-element-type" href="libdbusmenu-glib/annotation-glossary.html#annotation-glossterm-element-type">
 <ANCHOR id="annotation-glossterm-in" href="libdbusmenu-glib/annotation-glossary.html#annotation-glossterm-in">
 <ANCHOR id="annotation-glossterm-transfer container" href="libdbusmenu-glib/annotation-glossary.html#annotation-glossterm-transfer container">

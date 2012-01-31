@@ -154,6 +154,18 @@ G_BEGIN_DECLS
  */
 #define DBUSMENU_MENUITEM_PROP_ICON_DATA             "icon-data"
 /**
+ * DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC:
+ *
+ * #DbusmenuMenuitem property used to provide a textual description of any
+ * information that the icon may convey. The contents of this property are
+ * passed through to assistive technologies such as the Orca screen reader.
+ * The contents of this property will not be visible in the menu item. If
+ * this property is set, Orca will use this property instead of the label 
+ * property.
+ * Type: #G_VARIANT_TYPE_STRING
+ */
+#define DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC       "accessible-desc"
+/**
  * DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE:
  *
  * #DbusmenuMenuitem property that says what type of toggle entry should
@@ -485,10 +497,12 @@ gboolean dbusmenu_menuitem_property_set (DbusmenuMenuitem * mi, const gchar * pr
 gboolean dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * property, GVariant * value);
 gboolean dbusmenu_menuitem_property_set_bool (DbusmenuMenuitem * mi, const gchar * property, const gboolean value);
 gboolean dbusmenu_menuitem_property_set_int (DbusmenuMenuitem * mi, const gchar * property, const gint value);
+gboolean dbusmenu_menuitem_property_set_byte_array (DbusmenuMenuitem * mi, const gchar * property, const guchar * value, gsize nelements);
 const gchar * dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property);
 GVariant * dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property);
 gboolean dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property);
 gint dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property);
+const guchar * dbusmenu_menuitem_property_get_byte_array (DbusmenuMenuitem * mi, const gchar * property, gsize * nelements);
 gboolean dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property);
 GList * dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi) G_GNUC_WARN_UNUSED_RESULT;
 GHashTable * dbusmenu_menuitem_properties_copy (DbusmenuMenuitem * mi);
