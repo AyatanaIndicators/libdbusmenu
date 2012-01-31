@@ -32,6 +32,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <atk/atk.h>
 
 #include "client.h"
 #include "menuitem.h"
@@ -505,7 +506,6 @@ menu_item_stop_activating(DbusmenuMenuitem * mi)
 		guint id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(parent),
 		                           data_idle_close_id));
 		if (id > 0) {
-			g_source_remove(id);
 			g_object_set_data(G_OBJECT(parent), data_idle_close_id,
 			                  GINT_TO_POINTER(0));
 			should_close = TRUE;
@@ -575,6 +575,14 @@ close_in_idle (DbusmenuMenuitem * mi)
 }
 
 static void
+cancel_idle_close_id (gpointer data)
+{
+  guint id = GPOINTER_TO_INT(data);
+  if (id > 0)
+  	g_source_remove(id);
+}
+
+static void
 submenu_notify_visible_cb (GtkWidget * menu, GParamSpec * pspec, DbusmenuMenuitem * mi)
 {
 	if (gtk_widget_get_visible (menu)) {
@@ -591,8 +599,8 @@ submenu_notify_visible_cb (GtkWidget * menu, GParamSpec * pspec, DbusmenuMenuite
 		                           data_idle_close_id));
 		if (id == 0) {
 			id = g_idle_add((GSourceFunc)close_in_idle, mi);
-			g_object_set_data(G_OBJECT(mi), data_idle_close_id,
-			                  GINT_TO_POINTER(id));
+			g_object_set_data_full(G_OBJECT(mi), data_idle_close_id,
+			                       GINT_TO_POINTER(id), cancel_idle_close_id);
 		}
 	}
 }
@@ -738,6 +746,9 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, Db
 		process_submenu(mi, gmi, variant, gtkclient);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_DISPOSITION)) {
 		process_disposition(mi, gmi, variant, gtkclient);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC)) {
+		atk_object_set_name(gtk_widget_get_accessible(GTK_WIDGET(gmi)), variant == NULL ? NULL :
+		                    g_variant_get_string(variant, NULL));
 	}
 
 	return;
@@ -884,6 +895,11 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	process_submenu(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY), client);
 	process_disposition(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_DISPOSITION), client);
 	refresh_shortcut(client, item);
+
+	const gchar * a11y_desc = dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC);
+	if (a11y_desc != NULL) {
+		atk_object_set_name(gtk_widget_get_accessible(GTK_WIDGET(gmi)), a11y_desc);
+	}
 
 	/* Oh, we're a child, let's deal with that */
 	if (parent != NULL) {

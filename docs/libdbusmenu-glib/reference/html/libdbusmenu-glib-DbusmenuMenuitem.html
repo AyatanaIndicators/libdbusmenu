@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>DbusmenuMenuitem</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="libdbusmenu-glib Reference Manual">
 <link rel="up" href="ch01.html" title="API">
 <link rel="prev" href="libdbusmenu-glib-DbusmenuMenuitemProxy.html" title="DbusmenuMenuitemProxy">
@@ -65,6 +65,7 @@ Unstable, unless otherwise indicated
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS" title="DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY">DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS" title="DBUSMENU_MENUITEM_PROP_SHORTCUT">DBUSMENU_MENUITEM_PROP_SHORTCUT</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS" title="DBUSMENU_MENUITEM_PROP_DISPOSITION">DBUSMENU_MENUITEM_PROP_DISPOSITION</a>
+#define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ACCESSIBLE-DESC:CAPS" title="DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC">DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_CHECK">DBUSMENU_MENUITEM_TOGGLE_CHECK</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_RADIO">DBUSMENU_MENUITEM_TOGGLE_RADIO</a>
 #define             <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS" title="DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED">DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED</a>
@@ -124,6 +125,11 @@ struct              <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-bool" title="dbusmenu_menuitem_property_set_bool ()">dbusmenu_menuitem_property_set_bool</a> (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> value</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-byte-array" title="dbusmenu_menuitem_property_set_byte_array ()">dbusmenu_menuitem_property_set_byte_array</a>
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guchar"><span class="type">guchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code><span class="type">gsize</span> nelements</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-int" title="dbusmenu_menuitem_property_set_int ()">dbusmenu_menuitem_property_set_int</a>  (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> value</code></em>);
@@ -135,6 +141,10 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-bool" title="dbusmenu_menuitem_property_get_bool ()">dbusmenu_menuitem_property_get_bool</a> (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guchar"><span class="returnvalue">guchar</span></a> *      <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-byte-array" title="dbusmenu_menuitem_property_get_byte_array ()">dbusmenu_menuitem_property_get_byte_array</a>
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code><span class="type">gsize</span> *nelements</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-int" title="dbusmenu_menuitem_property_get_int ()">dbusmenu_menuitem_property_get_int</a>  (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *          <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-variant" title="dbusmenu_menuitem_property_get_variant ()">dbusmenu_menuitem_property_get_variant</a>
@@ -397,6 +407,21 @@ libdbusmenu-gtk library is used with the function <a href="/usr/share/gtk-doc/ht
 <p>
 <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property to tell what type of information that the
 menu item is displaying to the user.  Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-STRING:CAPS"><span class="type">G_VARIANT_TYPE_STRING</span></a>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DBUSMENU-MENUITEM-PROP-ACCESSIBLE-DESC:CAPS"></a><h3>DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC</h3>
+<pre class="programlisting">#define DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC       "accessible-desc"
+</pre>
+<p>
+<a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> property used to provide a textual description of any
+information that the icon may convey. The contents of this property are
+passed through to assistive technologies such as the Orca screen reader.
+The contents of this property will not be visible in the menu item. If
+this property is set, Orca will use this property instead of the label 
+property.
+Type: <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariantType.html#G-VARIANT-TYPE-STRING:CAPS"><span class="type">G_VARIANT_TYPE_STRING</span></a>
 </p>
 </div>
 <hr>
@@ -1231,6 +1256,48 @@ emitted by this function.
 </div>
 <hr>
 <div class="refsect2">
+<a name="dbusmenu-menuitem-property-set-byte-array"></a><h3>dbusmenu_menuitem_property_set_byte_array ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_byte_array
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guchar"><span class="type">guchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code><span class="type">gsize</span> nelements</code></em>);</pre>
+<p>
+Takes a byte array <em class="parameter"><code>value</code></em> and sets it on <em class="parameter"><code>property</code></em> as a
+property on <em class="parameter"><code>mi</code></em>.  If a property already exists by that name,
+then the value is set to the new value.  If not, the property
+is added.  If the value is changed or the property was previously
+unset then the signal <span class="type">"prop-changed"</span> will be
+emitted by this function.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to set the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>Name of the property to set.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>The byte array.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>nelements</code></em> :</span></p></td>
+<td>The number of elements in the byte array.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A boolean representing if the property value was set.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
 <a name="dbusmenu-menuitem-property-set-int"></a><h3>dbusmenu_menuitem_property_set_int ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            dbusmenu_menuitem_property_set_int  (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
@@ -1356,6 +1423,43 @@ it exits.  Returns <a href="http://library.gnome.org/devel/glib/unstable/glib-St
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>The value of the property or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><span class="type">FALSE</span></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-menuitem-property-get-byte-array"></a><h3>dbusmenu_menuitem_property_get_byte_array ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guchar"><span class="returnvalue">guchar</span></a> *      dbusmenu_menuitem_property_get_byte_array
+                                                        (<em class="parameter"><code><a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> *mi</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property</code></em>,
+                                                         <em class="parameter"><code><span class="type">gsize</span> *nelements</code></em>);</pre>
+<p>
+Look up a property on <em class="parameter"><code>mi</code></em> and return the value of it if
+it exits.  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> will be returned if the property doesn't
+exist.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mi</code></em> :</span></p></td>
+<td>The <a class="link" href="libdbusmenu-glib-DbusmenuMenuitem.html#DbusmenuMenuitem" title="struct DbusmenuMenuitem"><span class="type">DbusmenuMenuitem</span></a> to look for the property on.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>property</code></em> :</span></p></td>
+<td>The property to grab.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>nelements</code></em> :</span></p></td>
+<td>A pointer to the location to store the number of items (out)</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A byte array with the
+value of the property that shouldn't be free'd.  Or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if the property
+is not set or is not a byte array. <span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=nelements][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> guint8][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
 </tr>
 </tbody>
 </table></div>

@@ -152,7 +152,6 @@ layout_verify_timer (gpointer data)
 
 	GVariant * value = g_variant_new("i", 0);
 	dbusmenu_menuitem_handle_event(menuroot, "clicked", value, layouton);
-	g_variant_unref(value);
 
 	return FALSE;
 }
