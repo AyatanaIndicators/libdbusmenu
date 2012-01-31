@@ -66,11 +66,9 @@ dbusmenu_menuitem_property_set_image (DbusmenuMenuitem * menuitem, const gchar *
 		return FALSE;
 	}
 
-	gchar * prop_str = g_base64_encode((guchar *)png_data, png_data_len);
 	gboolean propreturn = FALSE;
-	propreturn = dbusmenu_menuitem_property_set(menuitem, property, prop_str);
+	propreturn = dbusmenu_menuitem_property_set_byte_array(menuitem, property, (guchar *)png_data, png_data_len);
 
-	g_free(prop_str);
 	g_free(png_data);
 
 	return propreturn;
@@ -94,20 +92,17 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(menuitem), NULL);
 	g_return_val_if_fail(property != NULL && property[0] != '\0', NULL);
 
-	const gchar * value = dbusmenu_menuitem_property_get(menuitem, property);
+	gsize length = 0;
+	const guchar * icondata = dbusmenu_menuitem_property_get_byte_array(menuitem, property, &length);
 
 	/* There is no icon */
-	if (value == NULL || value[0] == '\0') {
+	if (length == 0) {
 		return NULL;
 	}
-
-	gsize length = 0;
-	guchar * icondata = g_base64_decode(value, &length);
 	
 	GInputStream * input = g_memory_input_stream_new_from_data(icondata, length, NULL);
 	if (input == NULL) {
 		g_warning("Cound not create input stream from icon property data");
-		g_free(icondata);
 		return NULL;
 	}
 
@@ -120,7 +115,6 @@ dbusmenu_menuitem_property_get_image (DbusmenuMenuitem * menuitem, const gchar *
 	}
 
 	g_object_unref(input);
-	g_free(icondata);
 
 	return icon;
 }

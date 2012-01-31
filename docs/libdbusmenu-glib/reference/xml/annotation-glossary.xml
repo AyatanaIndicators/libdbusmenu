@@ -31,6 +31,14 @@
       </glossdef>
     </glossentry>
 </glossdiv>
+<glossdiv><title>A</title>
+    <glossentry>
+      <glossterm><anchor id="annotation-glossterm-array"/>array</glossterm>
+      <glossdef>
+        <para>Parameter points to an array of items.</para>
+      </glossdef>
+    </glossentry>
+</glossdiv>
 <glossdiv><title>E</title>
     <glossentry>
       <glossterm><anchor id="annotation-glossterm-element-type"/>element-type</glossterm>

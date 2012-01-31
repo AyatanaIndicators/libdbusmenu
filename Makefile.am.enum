@@ -35,7 +35,7 @@ stamp-enum-types: $(glib_enum_headers)
 $(glib_enum_h): stamp-enum-types
 	@true
 
-$(glib_enum_c): $(glib_enum_h)
+$(glib_enum_c): $(builddir)/$(glib_enum_h)
 	$(QUIET_GEN)mkdir -p `dirname $(builddir)/$(glib_enum_c)`
 	$(QUIET_GEN)$(GLIB_MKENUMS) \
 		--template $(srcdir)/$(enum_tmpl_c) \

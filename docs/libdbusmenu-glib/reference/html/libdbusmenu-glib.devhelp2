@@ -58,6 +58,7 @@
     <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-CHILD-DISPLAY:CAPS"/>
     <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_SHORTCUT" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-SHORTCUT:CAPS"/>
     <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_DISPOSITION" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-DISPOSITION:CAPS"/>
+    <keyword type="macro" name="DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-PROP-ACCESSIBLE-DESC:CAPS"/>
     <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_CHECK" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-CHECK:CAPS"/>
     <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_RADIO" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-RADIO:CAPS"/>
     <keyword type="macro" name="DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED" link="libdbusmenu-glib-DbusmenuMenuitem.html#DBUSMENU-MENUITEM-TOGGLE-STATE-UNCHECKED:CAPS"/>
@@ -96,10 +97,12 @@
     <keyword type="function" name="dbusmenu_menuitem_find_id ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-find-id"/>
     <keyword type="function" name="dbusmenu_menuitem_property_set ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set"/>
     <keyword type="function" name="dbusmenu_menuitem_property_set_bool ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-bool"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_set_byte_array ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-byte-array"/>
     <keyword type="function" name="dbusmenu_menuitem_property_set_int ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-int"/>
     <keyword type="function" name="dbusmenu_menuitem_property_set_variant ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-set-variant"/>
     <keyword type="function" name="dbusmenu_menuitem_property_get ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get"/>
     <keyword type="function" name="dbusmenu_menuitem_property_get_bool ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-bool"/>
+    <keyword type="function" name="dbusmenu_menuitem_property_get_byte_array ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-byte-array"/>
     <keyword type="function" name="dbusmenu_menuitem_property_get_int ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-int"/>
     <keyword type="function" name="dbusmenu_menuitem_property_get_variant ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-get-variant"/>
     <keyword type="function" name="dbusmenu_menuitem_property_exist ()" link="libdbusmenu-glib-DbusmenuMenuitem.html#dbusmenu-menuitem-property-exist"/>

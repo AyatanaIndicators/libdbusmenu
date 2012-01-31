@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.5.1, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.5.90, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.5.1, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.5.90, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -22,15 +22,6 @@ AC_CONFIG_MACRO_DIR([m4])
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AC_PATH_PROG([GLIB_MKENUMS], [glib-mkenums])
-
-AC_ARG_ENABLE([deprecations],
-  [AS_HELP_STRING([--enable-deprecations],
-    [allow deprecated API usage @<:@default=yes@:>@])],
-  [],
-  [enable_deprecations=yes])
-AS_IF([test "x$enable_deprecations" = xno],
-  [CFLAGS="$CFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGSEAL_ENABLE -DGTK_DISABLE_SINGLE_INCLUDES"]
-)
 
 ###########################
 # GTK Doc 
@@ -73,6 +64,7 @@ AM_CONDITIONAL([USE_GTK3], [test "x$with_gtk" = "x3"])
 AS_IF([test "x$enable_gtk" != "xno"],[
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                                         atk
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION,
                                          [have_gtk=yes]
 )
@@ -80,6 +72,7 @@ AS_IF([test "x$with_gtk" = x3],
         ],
       [test "x$with_gtk" = x2],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                         atk
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION,
                                          [have_gtk=yes]
 )
@@ -172,7 +165,7 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 ###########################
 
 LIBDBUSMENU_CURRENT=4
-LIBDBUSMENU_REVISION=6
+LIBDBUSMENU_REVISION=7
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)

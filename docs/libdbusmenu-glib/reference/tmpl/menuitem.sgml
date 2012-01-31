@@ -169,6 +169,13 @@ DbusmenuMenuitem
 
 
 
+<!-- ##### MACRO DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO DBUSMENU_MENUITEM_TOGGLE_CHECK ##### -->
 <para>
 
@@ -504,6 +511,18 @@ DbusmenuMenuitem
 @Returns: 
 
 
+<!-- ##### FUNCTION dbusmenu_menuitem_property_set_byte_array ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@value: 
+@nelements: 
+@Returns: 
+
+
 <!-- ##### FUNCTION dbusmenu_menuitem_property_set_int ##### -->
 <para>
 
@@ -543,6 +562,17 @@ DbusmenuMenuitem
 
 @mi: 
 @property: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_menuitem_property_get_byte_array ##### -->
+<para>
+
+</para>
+
+@mi: 
+@property: 
+@nelements: 
 @Returns: 
 
 
