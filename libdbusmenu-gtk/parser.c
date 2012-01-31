@@ -41,6 +41,7 @@ typedef struct _ParserData
   GtkWidget *widget;
   GtkWidget *shell;
   GtkWidget *image;
+  AtkObject *accessible;
 } ParserData;
 
 typedef struct _RecurseContext
@@ -65,6 +66,9 @@ static void           image_notify_cb          (GtkWidget *         widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
 static void           action_notify_cb         (GtkAction *         action,
+                                                GParamSpec *        pspec,
+                                                gpointer            data);
+static void           a11y_name_notify_cb      (AtkObject *         accessible,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
 static void           item_inserted_cb         (GtkContainer *      menu,
@@ -199,6 +203,12 @@ parse_data_free (gpointer data)
 						     0, 0, NULL, G_CALLBACK(image_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
 	}
+
+        if (pdata != NULL && pdata->accessible != NULL) {
+                g_signal_handlers_disconnect_matched(pdata->accessible, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+                                                     0, 0, NULL, G_CALLBACK(a11y_name_notify_cb), NULL);
+                g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
+        }
 
 	g_free(pdata);
 
@@ -582,6 +592,27 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                             mi);
           g_object_add_weak_pointer(G_OBJECT (label), (gpointer*)&pdata->label);
 
+          AtkObject *accessible = gtk_widget_get_accessible (widget);
+          if (accessible)
+            {
+              // Getting the accessible name of the Atk object retrieves the text
+              // of the menu item label, unless the application has set an alternate
+              // accessible name.
+              const gchar * label_text = gtk_label_get_text (GTK_LABEL (label));
+              const gchar * a11y_name = atk_object_get_name (accessible);
+              if (g_strcmp0 (a11y_name, label_text))
+                dbusmenu_menuitem_property_set (mi, "accessible-desc", a11y_name);
+
+              // An application may set an alternate accessible name in the future,
+              // so we had better watch out for it.
+              pdata->accessible = accessible;
+              g_signal_connect (G_OBJECT (accessible),
+                                "accessible-name",
+                                G_CALLBACK (a11y_name_notify_cb),
+                                mi);
+              g_object_add_weak_pointer(G_OBJECT (accessible), (gpointer*)&pdata->accessible);
+            }
+
           if (GTK_IS_ACTIVATABLE (widget))
             {
               GtkActivatable *activatable = GTK_ACTIVATABLE (widget);
@@ -945,6 +976,28 @@ action_notify_cb (GtkAction  *action,
                                       text);
       g_free (text);
     }
+}
+
+static void
+a11y_name_notify_cb (AtkObject  *accessible,
+                     GParamSpec *pspec,
+                     gpointer    data)
+{
+  DbusmenuMenuitem *item = (DbusmenuMenuitem *)data;
+  GtkWidget *widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible));
+  GtkWidget *label = find_menu_label (widget);
+  const gchar *label_text = gtk_label_get_text (GTK_LABEL (label));
+  const gchar *name = atk_object_get_name (accessible);
+
+  /* If an application sets the accessible name to NULL, then a subsequent
+   * call to get the accessible name from the Atk object should return the same
+   * string as the text of the menu item label, in which case, we want to clear
+   * the accessible description property of the dbusmenu item.
+   */
+  if (!g_strcmp0 (name, label_text))
+    dbusmenu_menuitem_property_set (item, "accessible-desc", NULL);
+  else
+    dbusmenu_menuitem_property_set (item, "accessible-desc", name);
 }
 
 static void

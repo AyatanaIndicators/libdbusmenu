@@ -31,6 +31,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <libdbusmenu-glib/menuitem.h>
 #include <gtk/gtk.h>
+#include <atk/atk.h>
 
 G_BEGIN_DECLS
 
