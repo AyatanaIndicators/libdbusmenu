@@ -1,5 +1,5 @@
 
-DBUS_RUNNER=dbus-test-runner
+DBUS_RUNNER=dbus-test-runner --max-wait=0
 
 CLEANFILES=
 DISTCLEANFILES=
