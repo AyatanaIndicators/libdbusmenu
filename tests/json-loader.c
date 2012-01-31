@@ -21,13 +21,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "json-loader.h"
 
-static GVariant * node2variant (JsonNode * node);
+static GVariant * node2variant (JsonNode * node, const gchar * name);
 
 static void
 array_foreach (JsonArray * array, guint index, JsonNode * node, gpointer user_data)
 {
 	GVariantBuilder * builder = (GVariantBuilder *)user_data;
-	GVariant * variant = node2variant(node);
+	GVariant * variant = node2variant(node, NULL);
 	if (variant != NULL) {
 		g_variant_builder_add_value(builder, variant);
 	}
@@ -38,7 +38,7 @@ static void
 object_foreach (JsonObject * array, const gchar * member, JsonNode * node, gpointer user_data)
 {
 	GVariantBuilder * builder = (GVariantBuilder *)user_data;
-	GVariant * variant = node2variant(node);
+	GVariant * variant = node2variant(node, member);
 	if (variant != NULL) {
 		g_variant_builder_add(builder, "{sv}", member, variant);
 	}
@@ -46,7 +46,7 @@ object_foreach (JsonObject * array, const gchar * member, JsonNode * node, gpoin
 }
 
 static GVariant *
-node2variant (JsonNode * node)
+node2variant (JsonNode * node, const gchar * name)
 {
 	if (node == NULL) {
 		return NULL;
@@ -62,8 +62,17 @@ node2variant (JsonNode * node)
 			return g_variant_new_double(json_node_get_double(node));
 		case G_TYPE_BOOLEAN:
 			return g_variant_new_boolean(json_node_get_boolean(node));
-		case G_TYPE_STRING:
-			return g_variant_new_string(json_node_get_string(node));
+		case G_TYPE_STRING: {
+			if (g_strcmp0(name, DBUSMENU_MENUITEM_PROP_ICON_DATA) != 0) {
+				return g_variant_new_string(json_node_get_string(node));
+			} else {
+				gsize length;
+				guchar * b64 = g_base64_decode(json_node_get_string(node), &length);
+				GVariant * retval = g_variant_new_fixed_array(G_VARIANT_TYPE_BYTE, b64, length, sizeof(guchar));
+				g_free(b64);
+				return retval;
+			}
+		}
 		default:
 			g_assert_not_reached();
 		}
@@ -105,7 +114,7 @@ set_props (DbusmenuMenuitem * mi, JsonObject * node)
 		if (!g_strcmp0(member, "submenu")) { continue; }
 
 		JsonNode * lnode = json_object_get_member(node, member);
-		GVariant * variant = node2variant(lnode);
+		GVariant * variant = node2variant(lnode, member);
 
 		if (variant != NULL) {
 			dbusmenu_menuitem_property_set_variant(mi, member, variant);
