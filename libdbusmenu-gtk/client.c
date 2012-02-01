@@ -747,7 +747,7 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, Db
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_DISPOSITION)) {
 		process_disposition(mi, gmi, variant, gtkclient);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC)) {
-		atk_object_set_name(gtk_widget_get_accessible(GTK_WIDGET(gmi)), variant == NULL ? NULL :
+		atk_object_set_name(gtk_widget_get_accessible(GTK_WIDGET(gmi)), variant == NULL ? "" :
 		                    g_variant_get_string(variant, NULL));
 	}
 
