@@ -1,4 +1,4 @@
-libdbusmenu (0.5.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.5.90-0ubuntu1~ppa1) precise; urgency=low
 
   [ Ted Gould ]
   * New upstream release.
@@ -17,7 +17,7 @@ libdbusmenu (0.5.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * debian/libdbusmenu-glib4.symbols
     - added new symbols
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 31 Jan 2012 20:53:55 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 31 Jan 2012 21:02:32 -0600
 
 libdbusmenu (0.5.1-0ubuntu2) precise; urgency=low
 
