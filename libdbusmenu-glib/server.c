@@ -1595,7 +1595,6 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
 
 	if (mi == NULL) {
-
 		g_dbus_method_invocation_return_error(invocation,
 			                                  error_quark(),
 			                                  INVALID_MENUITEM_ID,
@@ -1605,17 +1604,17 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 		g_variant_unref(data);
 
 	} else {
-
 		idle_event_t * event_data = g_new0(idle_event_t, 1);
 		event_data->mi = g_object_ref(mi);
-		event_data->eventid = etype;
+		event_data->eventid = etype; /* give away our allocation */
 		event_data->timestamp = ts;
 		event_data->variant = data; /* give away our reference */
 
 		g_timeout_add(0, event_local_handler, event_data);
+
+		g_dbus_method_invocation_return_value(invocation, NULL);
 	}
 
-	g_dbus_method_invocation_return_value(invocation, NULL);
 	return;
 }
 
