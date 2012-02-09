@@ -990,6 +990,7 @@ menuitem_property_idle (gpointer user_data)
 	/* these are going to be standard references in all code paths and must be unrefed */
 	GVariant * megadata[2];
 	gboolean gotsomething = FALSE;
+	gboolean error_nosend = FALSE;
 
 	if (item_init) {
 		megadata[0] = g_variant_builder_end(&itembuilder);
@@ -1002,6 +1003,10 @@ menuitem_property_idle (gpointer user_data)
 		if (error != NULL) {
 			g_warning("Unable to parse '[ ]' as a 'a(ia{sv})': %s", error->message);
 			g_error_free(error);
+			megadata[0] = NULL;
+			error_nosend = TRUE;
+		} else {
+			g_variant_ref_sink(megadata[0]);
 		}
 	}
 
@@ -1016,10 +1021,14 @@ menuitem_property_idle (gpointer user_data)
 		if (error != NULL) {
 			g_warning("Unable to parse '[ ]' as a 'a(ias)': %s", error->message);
 			g_error_free(error);
+			megadata[1] = NULL;
+			error_nosend = TRUE;
+		} else {
+			g_variant_ref_sink(megadata[1]);
 		}
 	}
 
-	if (gotsomething && priv->dbusobject != NULL && priv->bus != NULL) {
+	if (gotsomething && !error_nosend && priv->dbusobject != NULL && priv->bus != NULL) {
 		g_dbus_connection_emit_signal(priv->bus,
 		                              NULL,
 		                              priv->dbusobject,
@@ -1029,8 +1038,13 @@ menuitem_property_idle (gpointer user_data)
 		                              NULL);
 	}
 
-	g_variant_unref(megadata[0]);
-	g_variant_unref(megadata[1]);
+	if (megadata[0] != NULL) {
+		g_variant_unref(megadata[0]);
+	}
+
+	if (megadata[1] != NULL) {
+		g_variant_unref(megadata[1]);
+	}
 
 	/* Clean everything up */
 	prop_array_teardown(priv->prop_array);
