@@ -2210,7 +2210,7 @@ dbusmenu_client_get_status (DbusmenuClient * client)
  *   memory managed by the client.  Duplicate if you want
  *   to keep them.
  */
-const GStrv
+GStrv
 dbusmenu_client_get_icon_paths (DbusmenuClient * client)
 {
 	g_return_val_if_fail(DBUSMENU_IS_CLIENT(client), NULL);
