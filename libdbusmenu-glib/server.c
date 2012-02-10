@@ -1809,7 +1809,7 @@ dbusmenu_server_set_status (DbusmenuServer * server, DbusmenuStatus status)
  *   memory managed by the server.  Duplicate if you want
  *   to keep them.
  */
-const GStrv
+GStrv
 dbusmenu_server_get_icon_paths (DbusmenuServer * server)
 {
 	g_return_val_if_fail(DBUSMENU_IS_SERVER(server), NULL);
