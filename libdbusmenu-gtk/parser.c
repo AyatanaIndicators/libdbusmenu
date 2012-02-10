@@ -607,7 +607,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
               // so we had better watch out for it.
               pdata->accessible = accessible;
               g_signal_connect (G_OBJECT (accessible),
-                                "notify",
+                                "notify::accessible-name",
                                 G_CALLBACK (a11y_name_notify_cb),
                                 mi);
               g_object_add_weak_pointer(G_OBJECT (accessible), (gpointer*)&pdata->accessible);
