@@ -601,7 +601,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
               const gchar * label_text = gtk_label_get_text (GTK_LABEL (label));
               const gchar * a11y_name = atk_object_get_name (accessible);
               if (g_strcmp0 (a11y_name, label_text))
-                dbusmenu_menuitem_property_set (mi, "accessible-desc", a11y_name);
+                dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC, a11y_name);
 
               // An application may set an alternate accessible name in the future,
               // so we had better watch out for it.
@@ -997,9 +997,9 @@ a11y_name_notify_cb (AtkObject  *accessible,
   if (pspec->name == g_intern_static_string ("accessible-name"))
     {
       if (!g_strcmp0 (name, label_text))
-        dbusmenu_menuitem_property_set (item, "accessible-desc", NULL);
+        dbusmenu_menuitem_property_set (item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC, NULL);
       else
-        dbusmenu_menuitem_property_set (item, "accessible-desc", name);
+        dbusmenu_menuitem_property_set (item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC, name);
     }
 }
 
