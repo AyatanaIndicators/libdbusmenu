@@ -741,6 +741,10 @@ process_a11y_desc (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant,
 		setname = g_variant_get_string(variant, NULL);
 	}
 
+	if (setname == NULL) {
+		setname = "";
+	}
+
 	atk_object_set_name(aobj, setname);
 	return;
 }
