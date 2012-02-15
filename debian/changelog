@@ -1,4 +1,4 @@
-libdbusmenu (0.5.91-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (0.5.91-0ubuntu1) precise; urgency=low
 
   * debian/control:
     - drop git binaries, the libdev depends on it
@@ -18,7 +18,7 @@ libdbusmenu (0.5.91-0ubuntu1) UNRELEASED; urgency=low
     * Don't pass NULL to ATK
     * Non-srcdir build fixes
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 15 Feb 2012 21:35:12 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 15 Feb 2012 21:38:35 +0100
 
 libdbusmenu (0.5.90-0ubuntu1) precise; urgency=low
 
