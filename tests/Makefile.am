@@ -135,6 +135,7 @@ glib_server_nomenu_LDADD = \
 
 test-glib-layout: test-glib-layout-client test-glib-layout-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -168,6 +169,7 @@ test_glib_layout_client_LDADD = \
 
 test-glib-events: test-glib-events-client test-glib-events-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-events-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -199,6 +201,7 @@ test_glib_events_client_LDADD = \
 
 test-json: test-json-client test-json-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-json-client --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
 	@echo diff $(srcdir)/test-json-01.json test-json-01.output.json \> /dev/null >> $@
@@ -240,6 +243,7 @@ test_json_client_LDADD = \
 
 test-glib-submenu: test-glib-submenu-client test-glib-submenu-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-submenu-client --task-name Client --task ./test-glib-submenu-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -275,6 +279,7 @@ OBJECT_XML_REPORT = test-glib-objects.xml
 
 test-glib-objects-test: test-glib-objects Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
 	@chmod +x $@
 
@@ -297,6 +302,7 @@ DISTCLEANFILES += $(OBJECT_XML_REPORT)
 
 test-glib-properties: test-glib-properties-client test-glib-properties-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -330,6 +336,7 @@ test_glib_properties_client_LDADD = \
 
 test-glib-proxy: test-glib-proxy-client test-glib-proxy-server test-glib-proxy-proxy Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-proxy-client --task-name Client --task ./test-glib-proxy-server --task-name Server --ignore-return \\ >> $@
 	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.first_proxy --parameter test.proxy.second_proxy --task-name Proxy01 --ignore-return \\ >> $@
 	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.second_proxy --parameter test.proxy.third_proxy --task-name Proxy02 --ignore-return \\ >> $@
@@ -399,6 +406,7 @@ GTK_OBJECT_XML_REPORT = test-gtk-objects.xml
 
 test-gtk-objects-test: test-gtk-objects Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_OBJECT_XML_REPORT) --parameter ./test-gtk-objects >> $@
 	@chmod +x $@
@@ -429,6 +437,7 @@ GTK_PARSER_XML_REPORT = test-gtk-parser.xml
 
 test-gtk-parser-test: test-gtk-parser Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo gtester --verbose -k -o $(GTK_PARSER_XML_REPORT) ./test-gtk-parser >> $@
 	@chmod +x $@
@@ -457,6 +466,7 @@ DISTCLEANFILES += $(GTK_PARSER_XML_REPORT)
 
 test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -498,6 +508,7 @@ test_gtk_label_client_LDADD = \
 
 test-gtk-shortcut: test-gtk-shortcut-client test-gtk-shortcut-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -538,6 +549,7 @@ test_gtk_shortcut_client_LDADD = \
 
 test-gtk-shortcut-python: test-gtk-shortcut-server test-gtk-shortcut-client.py Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task $(srcdir)/test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -551,6 +563,7 @@ CLEANFILES += test-gtk-shortcut-client.pyc
 
 test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -576,6 +589,7 @@ test_gtk_reorder_server_LDADD = \
 
 test-gtk-submenu: test-gtk-submenu-client test-gtk-submenu-server Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-submenu-client --task-name Client --task ./test-gtk-submenu-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -616,6 +630,7 @@ test_gtk_submenu_client_LDADD = \
 
 test-mago: test-gtk-label-client test-gtk-label-server $(srcdir)/dbusmenu-gtk/mago_tests/dbusmenu.xml Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo cd $(srcdir)/dbusmenu-gtk >> $@
 	@echo /usr/lib/at-spi/at-spi-registryd \& >> $@
