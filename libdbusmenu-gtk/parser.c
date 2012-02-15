@@ -427,8 +427,11 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 
 			/* Oops, let's tell our parents about us */
 			if (peek == NULL) {
-				if (dbusmenu_menuitem_get_parent(thisitem) != NULL) {
-					dbusmenu_menuitem_unparent(thisitem);
+				g_object_ref(thisitem);
+
+				DbusmenuMenuitem * parent = dbusmenu_menuitem_get_parent(thisitem);
+				if (parent != NULL) {
+					dbusmenu_menuitem_child_delete(parent, thisitem);
 				}
 
 				gint pos = get_child_position (widget);
@@ -439,6 +442,8 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 				else
 					dbusmenu_menuitem_child_append (recurse->parent,
 					                                thisitem);
+
+				g_object_unref(thisitem);
 			}
 		}
 

@@ -1152,12 +1152,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 		return;
 	}
 
-	const gchar * value = NULL;
-	if (variant != NULL) {
-		value = g_variant_get_string(variant, NULL);
-	}
-	
-	if (value == NULL || value[0] == '\0') {
+	if (variant == NULL) {
 		/* This means that we're unsetting a value. */
 		/* Try to use the other one */
 		if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_NAME)) {
