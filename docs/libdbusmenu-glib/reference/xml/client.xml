@@ -48,7 +48,7 @@ struct              <link linkend="DbusmenuClientClass">DbusmenuClientClass</lin
                                                          <parameter><link linkend="gpointer"><type>gpointer</type></link> user_data</parameter>);
 <link linkend="DbusmenuClient"><returnvalue>DbusmenuClient</returnvalue></link> *    <link linkend="dbusmenu-client-new">dbusmenu_client_new</link>                 (<parameter>const <link linkend="gchar"><type>gchar</type></link> *name</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *object</parameter>);
-const <link linkend="GStrv"><returnvalue>GStrv</returnvalue></link>         <link linkend="dbusmenu-client-get-icon-paths">dbusmenu_client_get_icon_paths</link>      (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
+<link linkend="GStrv"><returnvalue>GStrv</returnvalue></link>               <link linkend="dbusmenu-client-get-icon-paths">dbusmenu_client_get_icon_paths</link>      (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
 <link linkend="DbusmenuMenuitem"><returnvalue>DbusmenuMenuitem</returnvalue></link> *  <link linkend="dbusmenu-client-get-root">dbusmenu_client_get_root</link>            (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
 <link linkend="DbusmenuStatus"><returnvalue>DbusmenuStatus</returnvalue></link>      <link linkend="dbusmenu-client-get-status">dbusmenu_client_get_status</link>          (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);
 <link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> <link linkend="dbusmenu-client-get-text-direction">dbusmenu_client_get_text_direction</link>
@@ -308,7 +308,7 @@ sending out events as it syncs up with the server.
 <refsect2 id="dbusmenu-client-get-icon-paths" role="function">
 <title>dbusmenu_client_get_icon_paths ()</title>
 <indexterm zone="dbusmenu-client-get-icon-paths"><primary>dbusmenu_client_get_icon_paths</primary></indexterm>
-<programlisting>const <link linkend="GStrv"><returnvalue>GStrv</returnvalue></link>         dbusmenu_client_get_icon_paths      (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
+<programlisting><link linkend="GStrv"><returnvalue>GStrv</returnvalue></link>               dbusmenu_client_get_icon_paths      (<parameter><link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> *client</parameter>);</programlisting>
 <para>
 Gets the stored and exported icon paths from the client.
 </para><variablelist role="params">

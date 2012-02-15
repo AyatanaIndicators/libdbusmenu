@@ -167,7 +167,7 @@ void                    dbusmenu_server_set_text_direction  (DbusmenuServer *   
 DbusmenuStatus          dbusmenu_server_get_status          (DbusmenuServer *       server);
 void                    dbusmenu_server_set_status          (DbusmenuServer *       server,
                                                              DbusmenuStatus         status);
-const GStrv             dbusmenu_server_get_icon_paths      (DbusmenuServer *       server);
+GStrv                   dbusmenu_server_get_icon_paths      (DbusmenuServer *       server);
 void                    dbusmenu_server_set_icon_paths      (DbusmenuServer *       server,
                                                              GStrv                  icon_paths);
 
