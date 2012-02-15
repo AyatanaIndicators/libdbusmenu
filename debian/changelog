@@ -1,8 +1,8 @@
-libdbusmenu (0.5.91-0ubuntu2) UNRELEASED; urgency=low
+libdbusmenu (0.5.91-0ubuntu2) precise; urgency=low
 
   * debian/control: restore gtk2 gir depends until that source is updated
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 15 Feb 2012 21:59:26 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 15 Feb 2012 22:00:04 +0100
 
 libdbusmenu (0.5.91-0ubuntu1) precise; urgency=low
 
