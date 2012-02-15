@@ -725,6 +725,30 @@ process_disposition (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * varian
 	return;
 }
 
+/* Process the accessible description */
+static void
+process_a11y_desc (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant, DbusmenuGtkClient * gtkclient)
+{
+	AtkObject * aobj = gtk_widget_get_accessible(GTK_WIDGET(gmi));
+
+	if (aobj == NULL) {
+		return;
+	}
+
+	const gchar * setname = NULL;
+
+	if (variant != NULL) {
+		setname = g_variant_get_string(variant, NULL);
+	}
+
+	if (setname == NULL) {
+		setname = "";
+	}
+
+	atk_object_set_name(aobj, setname);
+	return;
+}
+
 /* Whenever we have a property change on a DbusmenuMenuitem
    we need to be responsive to that. */
 static void
@@ -747,8 +771,7 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, Db
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_DISPOSITION)) {
 		process_disposition(mi, gmi, variant, gtkclient);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC)) {
-		atk_object_set_name(gtk_widget_get_accessible(GTK_WIDGET(gmi)), variant == NULL ? NULL :
-		                    g_variant_get_string(variant, NULL));
+		process_a11y_desc(mi, gmi, variant, gtkclient);
 	}
 
 	return;
@@ -894,6 +917,7 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 	process_toggle_state(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_TOGGLE_STATE));
 	process_submenu(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY), client);
 	process_disposition(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_DISPOSITION), client);
+	process_a11y_desc(item, gmi, dbusmenu_menuitem_property_get_variant(item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC), client);
 	refresh_shortcut(client, item);
 
 	const gchar * a11y_desc = dbusmenu_menuitem_property_get(item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC);
@@ -1128,12 +1152,7 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 		return;
 	}
 
-	const gchar * value = NULL;
-	if (variant != NULL) {
-		value = g_variant_get_string(variant, NULL);
-	}
-	
-	if (value == NULL || value[0] == '\0') {
+	if (variant == NULL) {
 		/* This means that we're unsetting a value. */
 		/* Try to use the other one */
 		if (g_strcmp0(property, DBUSMENU_MENUITEM_PROP_ICON_NAME)) {

@@ -1,3 +1,19 @@
+libdbusmenu (0.5.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Remove unused const on GStrv's
+    * Only free when there is data to free
+    * Ensure that we only return once even with error (LP: #929856)
+    * Fix an error on a failure to send properties (LP: #929707)
+    * Ensure the hash variant isn't NULL in the comparison (LP: #929710)
+    * Fix some of the issues with throwing criticals
+    * Ensure our tests fail if they throw criticals
+    * Parse and handle a11y descriptions
+    * Don't pass NULL to ATK
+    * Non-srcdir build fixes
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 15 Feb 2012 11:33:35 -0600
+
 libdbusmenu (0.5.90-0ubuntu1) precise; urgency=low
 
   [ Ted Gould ]

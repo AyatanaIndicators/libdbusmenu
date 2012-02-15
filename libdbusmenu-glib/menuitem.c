@@ -1222,7 +1222,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 		   but we're actually replacing it no matter.  This is so that
 		   the variant passed in sticks around which the caller may
 		   expect.  They shouldn't, but it's low cost to remove bugs. */
-		if (!inhash || !g_variant_equal(hash_variant, value)) {
+		if (!inhash || (hash_variant != NULL && !g_variant_equal(hash_variant, value))) {
 			replaced = TRUE;
 		}
 

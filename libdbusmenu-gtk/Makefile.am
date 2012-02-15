@@ -68,7 +68,7 @@ libdbusmenu_gtk_la_CFLAGS = \
 	-DG_LOG_DOMAIN="\"LIBDBUSMENU-GTK\""
 
 libdbusmenu_gtk_la_LIBADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGTK_LIBS)
 
 # We duplicate these here because Automake won't let us use $(VER) on the left hand side.
@@ -118,7 +118,8 @@ DbusmenuGtk_0_4_gir_INCLUDES = \
 	$(GTKGIR) \
 	Dbusmenu-0.4 
 DbusmenuGtk_0_4_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
-DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la
+DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la
 DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
 DbusmenuGtk_0_4_gir_NAMESPACE = DbusmenuGtk$(VER)
 DbusmenuGtk_0_4_gir_EXPORT_PACKAGES = dbusmenu-gtk$(VER)-0.4
