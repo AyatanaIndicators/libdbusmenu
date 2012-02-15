@@ -1,4 +1,4 @@
-libdbusmenu (0.5.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.5.91-0ubuntu1~ppa1) precise; urgency=low
 
   * New upstream release.
     * Remove unused const on GStrv's
@@ -12,7 +12,7 @@ libdbusmenu (0.5.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Don't pass NULL to ATK
     * Non-srcdir build fixes
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 15 Feb 2012 11:33:35 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 15 Feb 2012 11:43:39 -0600
 
 libdbusmenu (0.5.90-0ubuntu1) precise; urgency=low
 
