@@ -589,7 +589,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
           // Sometimes, an app will directly find and modify the label
           // (like empathy), so watch the label especially for that.
           gchar * text = sanitize_label (GTK_LABEL (label));
-          dbusmenu_menuitem_property_set (mi, "label", text);
+          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, text);
           g_free (text);
 
           pdata->label = label;
