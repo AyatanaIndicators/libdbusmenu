@@ -125,6 +125,8 @@ genericmenuitem_dispose (GObject *object)
 static void
 genericmenuitem_finalize (GObject *object)
 {
+	Genericmenuitem * self = GENERICMENUITEM(object);
+	g_free(self->priv->label_text);
 
 	G_OBJECT_CLASS (genericmenuitem_parent_class)->finalize (object);
 	return;
@@ -209,7 +211,7 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 
 	Genericmenuitem * item = GENERICMENUITEM(menu_item);
 	if (in_label != item->priv->label_text) {
-		g_free (item->priv->label_text);
+		g_free(item->priv->label_text);
 		item->priv->label_text = g_strdup(in_label);
 	}
 
