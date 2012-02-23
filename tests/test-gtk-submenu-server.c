@@ -64,6 +64,7 @@ on_bus (GDBusConnection * connection, const gchar * name, gpointer user_data)
 
 	DbusmenuMenuitem * item;
 	item = add_item(root, "Folder 1");
+	dbusmenu_menuitem_property_set(item, "disposition", "alert");
 	add_item(item, "1.1");
 	add_item(item, "1.2");
 	add_item(item, "1.3");
