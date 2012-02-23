@@ -1,3 +1,10 @@
+libdbusmenu (0.5.92-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Fix label leak and make it not have disposition (LP: #937829)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 23 Feb 2012 00:01:52 -0600
+
 libdbusmenu (0.5.91-0ubuntu1~ppa1) precise; urgency=low
 
   * New upstream release.
