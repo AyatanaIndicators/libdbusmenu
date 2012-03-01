@@ -351,18 +351,29 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 	}
 
 	item->priv->check_type = check_type;
+	AtkObject * aobj = gtk_widget_get_accessible(GTK_WIDGET(item));
 
 	switch (item->priv->check_type) {
 	case GENERICMENUITEM_CHECK_TYPE_NONE:
 		/* We don't need to do anything here as we're queuing the
 		   draw and then when it draws it'll avoid drawing the
 		   check on the item. */
+
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_MENU_ITEM);
+		}
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_CHECKBOX:
 		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), FALSE);
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_CHECK_MENU_ITEM);
+		}
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_RADIO:
 		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_RADIO_MENU_ITEM);
+		}
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check type: %d", check_type);
