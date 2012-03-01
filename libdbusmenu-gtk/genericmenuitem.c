@@ -83,6 +83,10 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 	object_class->dispose = genericmenuitem_dispose;
 	object_class->finalize = genericmenuitem_finalize;
 
+	GtkWidgetClass * widget_class = GTK_WIDGET_CLASS(klass);
+
+	gtk_widget_class_set_accessible_role(widget_class, ATK_ROLE_MENU_ITEM);
+
 	GtkCheckMenuItemClass * check_class = GTK_CHECK_MENU_ITEM_CLASS (klass);
 
 	parent_draw_indicator = check_class->draw_indicator;
