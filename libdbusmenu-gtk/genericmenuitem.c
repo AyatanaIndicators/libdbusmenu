@@ -83,9 +83,11 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 	object_class->dispose = genericmenuitem_dispose;
 	object_class->finalize = genericmenuitem_finalize;
 
+#ifdef HAVE_GTK3
 	GtkWidgetClass * widget_class = GTK_WIDGET_CLASS(klass);
 
 	gtk_widget_class_set_accessible_role(widget_class, ATK_ROLE_MENU_ITEM);
+#endif
 
 	GtkCheckMenuItemClass * check_class = GTK_CHECK_MENU_ITEM_CLASS (klass);
 
@@ -112,6 +114,13 @@ genericmenuitem_init (Genericmenuitem *self)
 	self->priv->state = GENERICMENUITEM_STATE_UNCHECKED;
 	self->priv->disposition = GENERICMENUITEM_DISPOSITION_NORMAL;
 	self->priv->label_text = NULL;
+
+#ifndef HAVE_GTK3
+	AtkObject * aobj = gtk_widget_get_accessible(GTK_WIDGET(self));
+	if (aobj != NULL) {
+		atk_object_set_role(aobj, ATK_ROLE_MENU_ITEM);
+	}
+#endif
 
 	return;
 }
