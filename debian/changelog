@@ -1,12 +1,24 @@
-libdbusmenu (0.5.92-0ubuntu1~ppa1) precise; urgency=low
+libdbusmenu (0.5.92-0ubuntu1) precise; urgency=low
 
   * New upstream release.
     * Fix label leak and make it not have disposition (LP: #937829)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 23 Feb 2012 00:10:04 -0600
 
-libdbusmenu (0.5.91-0ubuntu1~ppa1) precise; urgency=low
+libdbusmenu (0.5.91-0ubuntu2) precise; urgency=low
 
+  * debian/control: restore gtk2 gir depends until that source is updated
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 15 Feb 2012 22:00:04 +0100
+
+libdbusmenu (0.5.91-0ubuntu1) precise; urgency=low
+
+  * debian/control:
+    - drop git binaries, the libdev depends on it
+    - set ubuntu vcs
+    - use the current vala version
+
+  [ Ted Gould ]
   * New upstream release.
     * Remove unused const on GStrv's
     * Only free when there is data to free
@@ -19,7 +31,7 @@ libdbusmenu (0.5.91-0ubuntu1~ppa1) precise; urgency=low
     * Don't pass NULL to ATK
     * Non-srcdir build fixes
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 15 Feb 2012 11:43:39 -0600
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 15 Feb 2012 21:38:35 +0100
 
 libdbusmenu (0.5.90-0ubuntu1) precise; urgency=low
 
