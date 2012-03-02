@@ -754,9 +754,6 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * 
       pdata->theme_changed_sig = 0;
     }
 
-    pdata->theme_changed_sig = g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
-                                                "changed", G_CALLBACK(theme_changed_cb), gmenuitem);
-
     if (pdata->image != NULL) {
       g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), menuitem);
       g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
