@@ -44,6 +44,8 @@ typedef struct _ParserData
   GtkWidget *shell;
   GtkWidget *image;
   AtkObject *accessible;
+
+  guint theme_changed_sig;
 } ParserData;
 
 typedef struct _RecurseContext
@@ -211,6 +213,11 @@ parse_data_free (gpointer data)
                                                      0, 0, NULL, G_CALLBACK(a11y_name_notify_cb), NULL);
                 g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
         }
+
+	if (pdata != NULL && pdata->theme_changed_sig != 0) {
+		g_signal_handler_disconnect(gtk_icon_theme_get_default(), pdata->theme_changed_sig);
+		pdata->theme_changed_sig = 0;
+	}
 
 	g_free(pdata);
 
@@ -572,7 +579,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
                   /* Watch for theme changes because if gicon changes, we want to send a
                      different pixbuf. */
-                  g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
+                  pdata->theme_changed_sig = g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
                                    "changed", G_CALLBACK(theme_changed_cb), widget);
 
                   pdata->image = image;
