@@ -578,18 +578,6 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
               if (GTK_IS_IMAGE (image))
                 {
                   update_icon (mi, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
-
-                  /* Watch for theme changes because if gicon changes, we want to send a
-                     different pixbuf. */
-                  pdata->theme_changed_sig = g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
-                                   "changed", G_CALLBACK(theme_changed_cb), widget);
-
-                  pdata->image = image;
-                  g_signal_connect (G_OBJECT (image),
-                                    "notify",
-                                    G_CALLBACK (image_notify_cb),
-                                    mi);
-                  g_object_add_weak_pointer(G_OBJECT (image), (gpointer*)&pdata->image);
                 }
             }
 
@@ -754,6 +742,38 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * 
   GIcon * gicon;
   GtkIconInfo * info;
   gint width;
+
+  /* Check to see if we're changing the image.  If so, we need to track
+     that little bugger */
+  /* Why check for gmenuitem being NULL?  Because there are some cases where
+     we can't get it easily, and those mean it's not changed just the icon
+     underneith, so we can ignore these larger impacts */
+  if (image != GTK_IMAGE(pdata->image) && gmenuitem != NULL) {
+    if (pdata->theme_changed_sig != 0) {
+      g_signal_handler_disconnect(gtk_icon_theme_get_default(), pdata->theme_changed_sig);
+      pdata->theme_changed_sig = 0;
+    }
+
+    pdata->theme_changed_sig = g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
+                                                "changed", G_CALLBACK(theme_changed_cb), gmenuitem);
+
+    if (pdata->image != NULL) {
+      g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), menuitem);
+      g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
+    }
+
+    pdata->image = GTK_WIDGET(image);
+
+    if (pdata->image != NULL) {
+      pdata->theme_changed_sig = g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
+                                                  "changed", G_CALLBACK(theme_changed_cb), gmenuitem);
+      g_signal_connect (G_OBJECT (pdata->image),
+                        "notify",
+                        G_CALLBACK (image_notify_cb),
+                        menuitem);
+      g_object_add_weak_pointer(G_OBJECT (pdata->image), (gpointer*)&pdata->image);
+    }
+  }
 
   if (image != NULL && should_show_image (image)) {
     switch (gtk_image_get_storage_type (image)) {
