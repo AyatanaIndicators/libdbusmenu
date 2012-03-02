@@ -61,6 +61,8 @@ static void           accel_changed            (GtkWidget *         widget,
 static void           checkbox_toggled         (GtkWidget *         widget,
                                                 DbusmenuMenuitem *  mi);
 static void           update_icon              (DbusmenuMenuitem *  menuitem,
+                                                ParserData *        pdata,
+                                                GtkImageMenuItem *  gmenuitem,
                                                 GtkImage *          image);
 static GtkWidget *    find_menu_label          (GtkWidget *         widget);
 static void           label_notify_cb          (GtkWidget *         widget,
@@ -575,7 +577,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
               if (GTK_IS_IMAGE (image))
                 {
-                  update_icon (mi, GTK_IMAGE (image));
+                  update_icon (mi, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
 
                   /* Watch for theme changes because if gicon changes, we want to send a
                      different pixbuf. */
@@ -744,7 +746,7 @@ checkbox_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
 }
 
 static void
-update_icon (DbusmenuMenuitem *menuitem, GtkImage *image)
+update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * gmenuitem, GtkImage *image)
 {
   GdkPixbuf * pixbuf = NULL;
   const gchar * icon_name = NULL;
@@ -953,7 +955,8 @@ image_notify_cb (GtkWidget  *widget,
       pspec->name == g_intern_static_string ("stock") ||
       pspec->name == g_intern_static_string ("storage-type"))
     {
-      update_icon (mi, GTK_IMAGE (widget));
+      ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
+      update_icon (mi, pdata, NULL, GTK_IMAGE (widget));
     }
 }
 
@@ -1141,13 +1144,15 @@ widget_notify_cb (GtkWidget  *widget,
     {
       GtkWidget *image = NULL;
       g_object_get(widget, "image", &image, NULL);
-      update_icon (child, GTK_IMAGE(image));
+      ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
+      update_icon (child, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE(image));
     }
   else if (pspec->name == g_intern_static_string ("image"))
     {
       GtkWidget *image;
       image = GTK_WIDGET (g_value_get_object (&prop_value));
-      update_icon (child, GTK_IMAGE (image));
+      ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
+      update_icon (child, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
     }
   else if (pspec->name == g_intern_static_string ("parent"))
     {
@@ -1266,7 +1271,8 @@ theme_changed_cb (GtkIconTheme *theme, gpointer data)
 
   gpointer pmi = g_object_get_data(G_OBJECT(data), CACHED_MENUITEM);
   if (pmi != NULL) {
-    update_icon(DBUSMENU_MENUITEM(pmi), GTK_IMAGE(image));
+    ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(pmi), PARSER_DATA);
+    update_icon(DBUSMENU_MENUITEM(pmi), pdata, NULL, GTK_IMAGE(image));
   }
 
   /* Switch signal to new theme */
