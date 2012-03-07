@@ -83,6 +83,12 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 	object_class->dispose = genericmenuitem_dispose;
 	object_class->finalize = genericmenuitem_finalize;
 
+#ifdef HAVE_GTK3
+	GtkWidgetClass * widget_class = GTK_WIDGET_CLASS(klass);
+
+	gtk_widget_class_set_accessible_role(widget_class, ATK_ROLE_MENU_ITEM);
+#endif
+
 	GtkCheckMenuItemClass * check_class = GTK_CHECK_MENU_ITEM_CLASS (klass);
 
 	parent_draw_indicator = check_class->draw_indicator;
@@ -108,6 +114,13 @@ genericmenuitem_init (Genericmenuitem *self)
 	self->priv->state = GENERICMENUITEM_STATE_UNCHECKED;
 	self->priv->disposition = GENERICMENUITEM_DISPOSITION_NORMAL;
 	self->priv->label_text = NULL;
+
+#ifndef HAVE_GTK3
+	AtkObject * aobj = gtk_widget_get_accessible(GTK_WIDGET(self));
+	if (aobj != NULL) {
+		atk_object_set_role(aobj, ATK_ROLE_MENU_ITEM);
+	}
+#endif
 
 	return;
 }
@@ -347,18 +360,29 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 	}
 
 	item->priv->check_type = check_type;
+	AtkObject * aobj = gtk_widget_get_accessible(GTK_WIDGET(item));
 
 	switch (item->priv->check_type) {
 	case GENERICMENUITEM_CHECK_TYPE_NONE:
 		/* We don't need to do anything here as we're queuing the
 		   draw and then when it draws it'll avoid drawing the
 		   check on the item. */
+
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_MENU_ITEM);
+		}
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_CHECKBOX:
 		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), FALSE);
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_CHECK_MENU_ITEM);
+		}
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_RADIO:
 		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_RADIO_MENU_ITEM);
+		}
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check type: %d", check_type);
