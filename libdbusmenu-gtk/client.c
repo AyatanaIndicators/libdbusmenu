@@ -741,6 +741,14 @@ process_a11y_desc (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant,
 		setname = g_variant_get_string(variant, NULL);
 	}
 
+	/* The atk docs advise to set the name of the atk object to an empty
+	 * string, but GTK doesn't yet do the same, and setting the name to NULL
+	 * causes tests to fail.
+	 */
+	if (setname == NULL) {
+		setname = dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL);
+	}
+
 	atk_object_set_name(aobj, setname);
 	return;
 }
