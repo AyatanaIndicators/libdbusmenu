@@ -43,6 +43,7 @@ struct _GenericmenuitemPrivate {
 	GenericmenuitemCheckType   check_type;
 	GenericmenuitemState       state;
 	GenericmenuitemDisposition disposition;
+	gchar * label_text;
 };
 
 /* Private macro */
@@ -82,6 +83,12 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 	object_class->dispose = genericmenuitem_dispose;
 	object_class->finalize = genericmenuitem_finalize;
 
+#ifdef HAVE_GTK3
+	GtkWidgetClass * widget_class = GTK_WIDGET_CLASS(klass);
+
+	gtk_widget_class_set_accessible_role(widget_class, ATK_ROLE_MENU_ITEM);
+#endif
+
 	GtkCheckMenuItemClass * check_class = GTK_CHECK_MENU_ITEM_CLASS (klass);
 
 	parent_draw_indicator = check_class->draw_indicator;
@@ -106,6 +113,14 @@ genericmenuitem_init (Genericmenuitem *self)
 	self->priv->check_type = GENERICMENUITEM_CHECK_TYPE_NONE;
 	self->priv->state = GENERICMENUITEM_STATE_UNCHECKED;
 	self->priv->disposition = GENERICMENUITEM_DISPOSITION_NORMAL;
+	self->priv->label_text = NULL;
+
+#ifndef HAVE_GTK3
+	AtkObject * aobj = gtk_widget_get_accessible(GTK_WIDGET(self));
+	if (aobj != NULL) {
+		atk_object_set_role(aobj, ATK_ROLE_MENU_ITEM);
+	}
+#endif
 
 	return;
 }
@@ -123,6 +138,8 @@ genericmenuitem_dispose (GObject *object)
 static void
 genericmenuitem_finalize (GObject *object)
 {
+	Genericmenuitem * self = GENERICMENUITEM(object);
+	g_free(self->priv->label_text);
 
 	G_OBJECT_CLASS (genericmenuitem_parent_class)->finalize (object);
 	return;
@@ -204,6 +221,12 @@ static void
 set_label (GtkMenuItem * menu_item, const gchar * in_label)
 {
 	if (in_label == NULL) return;
+
+	Genericmenuitem * item = GENERICMENUITEM(menu_item);
+	if (in_label != item->priv->label_text) {
+		g_free(item->priv->label_text);
+		item->priv->label_text = g_strdup(in_label);
+	}
 
 	/* Build a label that might include the colors of the disposition
 	   so that it gets rendered in the menuitem. */
@@ -308,25 +331,9 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 static const gchar *
 get_label (GtkMenuItem * menu_item)
 {
-	GtkWidget * child = gtk_bin_get_child(GTK_BIN(menu_item));
-	GtkLabel * labelw = NULL;
+	Genericmenuitem * item = GENERICMENUITEM(menu_item);
 
-	/* Try to find if we have a label already */
-	if (child != NULL) {
-		if (GTK_IS_LABEL(child)) {
-			/* We've got a label, let's update it. */
-			labelw = GTK_LABEL(child);
-		} else if (GTK_IS_BOX(child)) {
-			/* Look for the label in the box */
-			gtk_container_foreach(GTK_CONTAINER(child), set_label_helper, &labelw);
-		}
-	}
-
-	if (labelw != NULL) {
-		return gtk_label_get_label(labelw);
-	}
-
-	return NULL;
+	return item->priv->label_text;
 }
 
 /* Make sure we don't toggle when there is an
@@ -353,18 +360,29 @@ genericmenuitem_set_check_type (Genericmenuitem * item, GenericmenuitemCheckType
 	}
 
 	item->priv->check_type = check_type;
+	AtkObject * aobj = gtk_widget_get_accessible(GTK_WIDGET(item));
 
 	switch (item->priv->check_type) {
 	case GENERICMENUITEM_CHECK_TYPE_NONE:
 		/* We don't need to do anything here as we're queuing the
 		   draw and then when it draws it'll avoid drawing the
 		   check on the item. */
+
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_MENU_ITEM);
+		}
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_CHECKBOX:
 		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), FALSE);
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_CHECK_MENU_ITEM);
+		}
 		break;
 	case GENERICMENUITEM_CHECK_TYPE_RADIO:
 		gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
+		if (aobj != NULL) {
+			atk_object_set_role(aobj, ATK_ROLE_RADIO_MENU_ITEM);
+		}
 		break;
 	default:
 		g_warning("Generic Menuitem invalid check type: %d", check_type);
