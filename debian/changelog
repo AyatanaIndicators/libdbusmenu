@@ -1,3 +1,12 @@
+libdbusmenu (0.5.93-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Setting the ATK Role on menu items (LP: #878708)
+    * Cleaning up code paths to avoid goto's (LP: #940651)
+    * Fixing setting an icon multiple times (LP: #934574)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 08 Mar 2012 09:58:26 -0600
+
 libdbusmenu (0.5.92-0ubuntu1) precise; urgency=low
 
   * New upstream release.
