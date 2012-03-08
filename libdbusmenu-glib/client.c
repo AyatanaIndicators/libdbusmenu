@@ -601,64 +601,66 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 			listener->callback(NULL, error, listener->user_data);
 		}
 		g_error_free(error);
-		goto out;
 	}
 
 	/* Callback all the folks we can find */
-	GVariant * parent = g_variant_get_child_value(params, 0);
-	GVariantIter iter;
-	g_variant_iter_init(&iter, parent);
-	GVariant * child;
-	while ((child = g_variant_iter_next_value(&iter)) != NULL) {
-		if (g_strcmp0(g_variant_get_type_string(child), "(ia{sv})") != 0) {
-			g_warning("Properties return signature is not '(ia{sv})' it is '%s'", g_variant_get_type_string(child));
-			g_variant_unref(child);
-			continue;
-		}
+	if (error == NULL) {
+		GVariant * parent = g_variant_get_child_value(params, 0);
+		GVariantIter iter;
+		g_variant_iter_init(&iter, parent);
+		GVariant * child;
+		while ((child = g_variant_iter_next_value(&iter)) != NULL) {
+			if (g_strcmp0(g_variant_get_type_string(child), "(ia{sv})") != 0) {
+				g_warning("Properties return signature is not '(ia{sv})' it is '%s'", g_variant_get_type_string(child));
+				g_variant_unref(child);
+				continue;
+			}
 
-		GVariant * idv = g_variant_get_child_value(child, 0);
-		gint id = g_variant_get_int32(idv);
-		g_variant_unref(idv);
+			GVariant * idv = g_variant_get_child_value(child, 0);
+			gint id = g_variant_get_int32(idv);
+			g_variant_unref(idv);
 
-		GVariant * properties = g_variant_get_child_value(child, 1);
+			GVariant * properties = g_variant_get_child_value(child, 1);
 
-		properties_listener_t * listener = find_listener(listeners, 0, id);
-		if (listener == NULL) {
-			g_warning("Unable to find listener for ID %d", id);
+			properties_listener_t * listener = find_listener(listeners, 0, id);
+			if (listener == NULL) {
+				g_warning("Unable to find listener for ID %d", id);
+				g_variant_unref(properties);
+				g_variant_unref(child);
+				continue;
+			}
+
+			if (!listener->replied) {
+				listener->callback(properties, NULL, listener->user_data);
+				listener->replied = TRUE;
+			} else {
+				g_warning("Odd, we've already replied to the listener on ID %d", id);
+			}
 			g_variant_unref(properties);
 			g_variant_unref(child);
-			continue;
 		}
-
-		if (!listener->replied) {
-			listener->callback(properties, NULL, listener->user_data);
-			listener->replied = TRUE;
-		} else {
-			g_warning("Odd, we've already replied to the listener on ID %d", id);
-		}
-		g_variant_unref(properties);
-		g_variant_unref(child);
+		g_variant_unref(parent);
+		g_variant_unref(params);
 	}
-	g_variant_unref(parent);
-	g_variant_unref(params);
 
 	/* Provide errors for those who we can't */
-	GError * localerror = NULL;
-	for (i = 0; i < listeners->len; i++) {
-		properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
-		if (!listener->replied) {
-			g_warning("Generating properties error for: %d", listener->id);
-			if (localerror == NULL) {
-				g_set_error_literal(&localerror, error_domain(), 0, "Error getting properties for ID");
+	if (error == NULL && listeners->len > 0) {
+		GError * localerror = NULL;
+		for (i = 0; i < listeners->len; i++) {
+			properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
+			if (!listener->replied) {
+				g_warning("Generating properties error for: %d", listener->id);
+				if (localerror == NULL) {
+					g_set_error_literal(&localerror, error_domain(), 0, "Error getting properties for ID");
+				}
+				listener->callback(NULL, localerror, listener->user_data);
 			}
-			listener->callback(NULL, localerror, listener->user_data);
+		}
+		if (localerror != NULL) {
+			g_error_free(localerror);
 		}
 	}
-	if (localerror != NULL) {
-		g_error_free(localerror);
-	}
 
-out:
 	/* Clean up */
 	g_array_free(listeners, TRUE);
 	g_object_unref(cbdata->client);
