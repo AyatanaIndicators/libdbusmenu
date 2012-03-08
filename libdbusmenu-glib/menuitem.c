@@ -1462,8 +1462,8 @@ dbusmenu_menuitem_property_remove (DbusmenuMenuitem * mi, const gchar * property
  * by the menuitem but the list is not and should be freed using
  * g_list_free() when the calling function is done with it.
  * 
- * Return value: (transfer container): A list of strings or NULL if there are
- *     none.
+ * Return value: (transfer container) (element-type utf8): A list of
+ * strings or NULL if there are none.
 */
 GList *
 dbusmenu_menuitem_properties_list (DbusmenuMenuitem * mi)
