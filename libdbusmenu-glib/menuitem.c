@@ -1253,8 +1253,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
 	   becuse it has been unref'd when replaced in the hash
 	   table.  But the fact that there was a value is
 	   the imporant part. */
-	if ((!inhash || replaced) &&
-	    !(!inhash && value == NULL)) {
+	if (replaced) {
 		GVariant * signalval = value;
 
 		if (signalval == NULL) {
