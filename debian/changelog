@@ -1,10 +1,10 @@
-libdbusmenu (0.5.94-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.5.94-0ubuntu1~ppa1) precise; urgency=low
 
   * New upstream release.
     * Fixing setting name of ATK objects
     * Cleaning up a warning on shutdown (LP: #950762)
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 09 Mar 2012 14:21:09 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 09 Mar 2012 14:35:38 -0600
 
 libdbusmenu (0.5.93-0ubuntu1) precise; urgency=low
 
