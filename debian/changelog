@@ -1,4 +1,4 @@
-libdbusmenu (0.5.93-0ubuntu1~ppa1) precise; urgency=low
+libdbusmenu (0.5.93-0ubuntu1) precise; urgency=low
 
   * New upstream release.
     * Setting the ATK Role on menu items (LP: #878708)
