@@ -736,6 +736,7 @@ process_a11y_desc (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant,
 	}
 
 	const gchar * setname = NULL;
+	const gchar * label = NULL;
 
 	if (variant != NULL) {
 		setname = g_variant_get_string(variant, NULL);
@@ -746,7 +747,12 @@ process_a11y_desc (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant,
 	 * causes tests to fail.
 	 */
 	if (setname == NULL) {
-		setname = dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL);
+		/* We don't want the underscore for mnewmonics */
+		label = dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL);
+
+		GRegex * regex = g_regex_new ("_", 0, 0, NULL);
+		setname = g_regex_replace_literal (regex, label, -1, 0, "", 0, NULL);
+		g_regex_unref(regex);
 	}
 
 	atk_object_set_name(aobj, setname);
