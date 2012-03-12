@@ -1137,8 +1137,8 @@ by the menuitem but the list is not and should be freed using
 </para><variablelist role="params">
 <varlistentry><term><parameter>mi</parameter>&#160;:</term>
 <listitem><simpara><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to list the properties on</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A list of strings or NULL if there are
-none. <emphasis role="annotation">[<acronym>transfer container</acronym>]</emphasis></simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A list of
+strings or NULL if there are none. <emphasis role="annotation">[<acronym>transfer container</acronym>][<acronym>element-type</acronym> utf8]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="dbusmenu-menuitem-properties-copy" role="function">
 <title>dbusmenu_menuitem_properties_copy ()</title>

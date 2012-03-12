@@ -229,7 +229,12 @@ parse_data_free (gpointer data)
 static void
 widget_freed (gpointer data, GObject * obj)
 {
-	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), obj);
+	ParserData * pdata = (ParserData *)data;
+
+	if (pdata->theme_changed_sig != 0) {
+		g_signal_handler_disconnect(gtk_icon_theme_get_default(), pdata->theme_changed_sig);
+		pdata->theme_changed_sig = 0;
+	}
 
 	return;
 }
@@ -242,9 +247,12 @@ dbusmenu_item_freed (gpointer data, GObject * obj)
 	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
 
 	if (pdata != NULL && pdata->widget != NULL) {
-		g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), pdata->widget);
+		if (pdata->theme_changed_sig != 0) {
+			g_signal_handler_disconnect(gtk_icon_theme_get_default(), pdata->theme_changed_sig);
+			pdata->theme_changed_sig = 0;
+		}
 		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
-		g_object_weak_unref(G_OBJECT(pdata->widget), widget_freed, NULL);
+		g_object_weak_unref(G_OBJECT(pdata->widget), widget_freed, pdata);
 	}
 }
 
@@ -286,7 +294,7 @@ new_menuitem (GtkWidget * widget)
 	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
 
 	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
-	g_object_weak_ref(G_OBJECT(widget), widget_freed, NULL);
+	g_object_weak_ref(G_OBJECT(widget), widget_freed, pdata);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
