@@ -738,7 +738,7 @@ process_a11y_desc (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant,
 
 	if (variant != NULL) {
 		const gchar * setname = NULL;
-		setname = g_variant_dup_string(variant, NULL);
+		setname = g_variant_get_string(variant, NULL);
 		atk_object_set_name(aobj, setname);
 	} else {
 	/* The atk docs advise to set the name of the atk object to an empty
