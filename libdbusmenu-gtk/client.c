@@ -738,24 +738,27 @@ process_a11y_desc (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant,
 
 	if (variant != NULL) {
 		const gchar * setname = NULL;
-		setname = g_variant_dup_string(variant, NULL);
+		setname = g_variant_get_string(variant, NULL);
 		atk_object_set_name(aobj, setname);
 	} else {
 	/* The atk docs advise to set the name of the atk object to an empty
 	 * string, but GTK doesn't yet do the same, and setting the name to NULL
 	 * causes tests to fail.
 	 */
-		gchar * setname = NULL;
 		const gchar * label = NULL;
-		/* We don't want the underscore for mnewmonics */
 		label = dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL);
 
-		GRegex * regex = g_regex_new ("_", 0, 0, NULL);
-		setname = g_regex_replace_literal (regex, label, -1, 0, "", 0, NULL);
-		g_regex_unref(regex);
+		if (label != NULL) {
+			gchar * setname = NULL;
 
-		atk_object_set_name(aobj, setname);
-		g_free(setname);
+			/* We don't want the underscore for mnewmonics */
+			GRegex * regex = g_regex_new ("_", 0, 0, NULL);
+			setname = g_regex_replace_literal (regex, label, -1, 0, "", 0, NULL);
+			g_regex_unref(regex);
+
+			atk_object_set_name(aobj, setname);
+			g_free(setname);
+		}
 	}
 
 	return;
