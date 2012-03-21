@@ -1,4 +1,4 @@
-libdbusmenu (0.5.94-0ubuntu1~ppa1) precise; urgency=low
+libdbusmenu (0.5.94-0ubuntu1) precise; urgency=low
 
   * New upstream release.
     * Fixing setting name of ATK objects
