@@ -1540,6 +1540,18 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 		variant = g_variant_new_int32(0);
 	}
 
+	/* Don't bother with the reply handling if nobody is watching... */
+	if (!g_signal_has_handler_pending (client, signals[EVENT_RESULT], 0, TRUE)) {
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "Event",
+		                  g_variant_new("(isvu)", id, name, variant, timestamp),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  1000,   /* timeout */
+		                  NULL, /* cancellable */
+		                  NULL, NULL);
+		return;
+	}
+
 	event_data_t * edata = g_new0(event_data_t, 1);
 	edata->client = client;
 	g_object_ref(client);

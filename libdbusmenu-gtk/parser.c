@@ -45,7 +45,6 @@ typedef struct _ParserData
   GtkWidget *image;
   AtkObject *accessible;
 
-  guint theme_changed_sig;
 } ParserData;
 
 typedef struct _RecurseContext
@@ -85,8 +84,6 @@ static void           item_inserted_cb         (GtkContainer *      menu,
                                                 gpointer            data);
 static void           item_removed_cb          (GtkContainer *      menu,
                                                 GtkWidget *         widget,
-                                                gpointer            data);
-static void           theme_changed_cb         (GtkIconTheme *      theme,
                                                 gpointer            data);
 static void           item_activated           (DbusmenuMenuitem *  item,
                                                 guint               timestamp,
@@ -216,25 +213,7 @@ parse_data_free (gpointer data)
                 g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
         }
 
-	if (pdata != NULL && pdata->theme_changed_sig != 0) {
-		g_signal_handler_disconnect(gtk_icon_theme_get_default(), pdata->theme_changed_sig);
-		pdata->theme_changed_sig = 0;
-	}
-
 	g_free(pdata);
-
-	return;
-}
-
-static void
-widget_freed (gpointer data, GObject * obj)
-{
-	ParserData * pdata = (ParserData *)data;
-
-	if (pdata->theme_changed_sig != 0) {
-		g_signal_handler_disconnect(gtk_icon_theme_get_default(), pdata->theme_changed_sig);
-		pdata->theme_changed_sig = 0;
-	}
 
 	return;
 }
@@ -247,12 +226,7 @@ dbusmenu_item_freed (gpointer data, GObject * obj)
 	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
 
 	if (pdata != NULL && pdata->widget != NULL) {
-		if (pdata->theme_changed_sig != 0) {
-			g_signal_handler_disconnect(gtk_icon_theme_get_default(), pdata->theme_changed_sig);
-			pdata->theme_changed_sig = 0;
-		}
 		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
-		g_object_weak_unref(G_OBJECT(pdata->widget), widget_freed, pdata);
 	}
 }
 
@@ -294,7 +268,6 @@ new_menuitem (GtkWidget * widget)
 	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
 
 	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
-	g_object_weak_ref(G_OBJECT(widget), widget_freed, pdata);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
@@ -757,10 +730,6 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * 
      we can't get it easily, and those mean it's not changed just the icon
      underneith, so we can ignore these larger impacts */
   if (image != GTK_IMAGE(pdata->image) && gmenuitem != NULL) {
-    if (pdata->theme_changed_sig != 0) {
-      g_signal_handler_disconnect(gtk_icon_theme_get_default(), pdata->theme_changed_sig);
-      pdata->theme_changed_sig = 0;
-    }
 
     if (pdata->image != NULL) {
       g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), menuitem);
@@ -770,8 +739,6 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * 
     pdata->image = GTK_WIDGET(image);
 
     if (pdata->image != NULL) {
-      pdata->theme_changed_sig = g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
-                                                  "changed", G_CALLBACK(theme_changed_cb), gmenuitem);
       g_signal_connect (G_OBJECT (pdata->image),
                         "notify",
                         G_CALLBACK (image_notify_cb),
@@ -1285,24 +1252,6 @@ item_removed_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 
 	dbusmenu_menuitem_child_delete(parent, child);
 	return;
-}
-
-static void
-theme_changed_cb (GtkIconTheme *theme, gpointer data)
-{
-  GtkWidget *image;
-
-  image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (data));
-
-  gpointer pmi = g_object_get_data(G_OBJECT(data), CACHED_MENUITEM);
-  if (pmi != NULL) {
-    ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(pmi), PARSER_DATA);
-    update_icon(DBUSMENU_MENUITEM(pmi), pdata, NULL, GTK_IMAGE(image));
-  }
-
-  /* Switch signal to new theme */
-  g_signal_handlers_disconnect_by_func(theme, G_CALLBACK(theme_changed_cb), data);
-  g_signal_connect(gtk_icon_theme_get_default(), "changed", G_CALLBACK(theme_changed_cb), data);
 }
 
 static gboolean
