@@ -64,6 +64,8 @@ struct _DbusmenuServerPrivate
 
 	GArray * prop_array;
 	guint property_idle;
+
+	GHashTable * lookup_cache;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) (DBUSMENU_SERVER(o)->priv)
@@ -378,6 +380,8 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->find_server_signal = 0;
 	priv->dbus_registration = 0;
 
+	priv->lookup_cache = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, g_object_unref);
+
 	default_text_direction(self);
 	priv->status = DBUSMENU_STATUS_NORMAL;
 	priv->icon_dirs = NULL;
@@ -450,8 +454,48 @@ dbusmenu_server_finalize (GObject *object)
 		priv->icon_dirs = NULL;
 	}
 
+	if (priv->lookup_cache) {
+		g_hash_table_destroy(priv->lookup_cache);
+		priv->lookup_cache = NULL;
+	}
+
 	G_OBJECT_CLASS (dbusmenu_server_parent_class)->finalize (object);
 	return;
+}
+
+static DbusmenuMenuitem *
+lookup_menuitem_by_id (DbusmenuServer * server, gint id)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	DbusmenuMenuitem *res = (DbusmenuMenuitem *) g_hash_table_lookup(priv->lookup_cache, GINT_TO_POINTER(id));
+	if (!res && id == 0) {
+		return priv->root;
+	}
+
+	return res;
+}
+
+static void
+cache_remove_entries_for_menuitem (GHashTable * cache, DbusmenuMenuitem * item)
+{
+	g_hash_table_remove(cache, GINT_TO_POINTER(dbusmenu_menuitem_get_id(item)));
+
+	GList *child, *children = dbusmenu_menuitem_get_children(item);
+	for (child = children; child != NULL; child = child->next) {
+		cache_remove_entries_for_menuitem(cache, child->data);
+	}
+}
+
+static void
+cache_add_entries_for_menuitem (GHashTable * cache, DbusmenuMenuitem * item)
+{
+	g_hash_table_insert(cache, GINT_TO_POINTER(dbusmenu_menuitem_get_id(item)), g_object_ref(item));
+
+	GList *child, *children = dbusmenu_menuitem_get_children(item);
+	for (child = children; child != NULL; child = child->next) {
+		cache_add_entries_for_menuitem(cache, child->data);
+	}
 }
 
 static void
@@ -480,6 +524,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		if (priv->root != NULL) {
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, obj);
 			dbusmenu_menuitem_set_root(priv->root, FALSE);
+			cache_remove_entries_for_menuitem(priv->lookup_cache, priv->root);
 
 			GList * properties = dbusmenu_menuitem_properties_list(priv->root);
 			GList * iter;
@@ -495,6 +540,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		priv->root = DBUSMENU_MENUITEM(g_value_get_object(value));
 		if (priv->root != NULL) {
 			g_object_ref(G_OBJECT(priv->root));
+			cache_add_entries_for_menuitem(priv->lookup_cache, priv->root);
 			dbusmenu_menuitem_set_root(priv->root, TRUE);
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_create, obj);
 
@@ -1161,6 +1207,7 @@ static void
 menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint pos, DbusmenuServer * server)
 {
 	menuitem_signals_create(child, server);
+	cache_add_entries_for_menuitem(server->priv->lookup_cache, child);
 	g_list_foreach(dbusmenu_menuitem_get_children(child), added_check_children, server);
 
 	layout_update_signal(server);
@@ -1171,6 +1218,7 @@ static void
 menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
 {
 	menuitem_signals_remove(child, server);
+	cache_remove_entries_for_menuitem(server->priv->lookup_cache, child);
 	layout_update_signal(server);
 	return;
 }
@@ -1259,7 +1307,7 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	GVariant * items = NULL;
 
 	if (priv->root != NULL) {
-		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, parent);
+		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, parent);
 
 		if (mi != NULL) {
 			items = dbusmenu_menuitem_build_variant(mi, props, recurse);
@@ -1318,7 +1366,7 @@ bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 
 	g_variant_get(params, "(i&s)", &id, &property);
 
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1361,7 +1409,7 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 	gint32 id;
 	g_variant_get(params, "(i)", &id);
 
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1424,7 +1472,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 
 	gint32 id;
 	while (g_variant_iter_loop(ids, "i", &id)) {
-		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 		if (mi == NULL) continue;
 
 		if (!builder_init) {
@@ -1523,7 +1571,7 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 		return;
 	}
 
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1606,7 +1654,7 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 
 	g_variant_get(params, "(isvu)", &id, &etype, &data, &ts);
 
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1648,7 +1696,7 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 
 	gint32 id;
 	g_variant_get(params, "(i)", &id);
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
