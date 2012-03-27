@@ -208,7 +208,7 @@ test-json: test-json-client test-json-server Makefile.am
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) --task ./test-json-client --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task ./test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
 	@echo diff $(srcdir)/test-json-01.json test-json-01.output.json \> /dev/null >> $@
 	@chmod +x $@
 
