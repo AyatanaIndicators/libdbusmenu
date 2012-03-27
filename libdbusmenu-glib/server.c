@@ -1626,7 +1626,9 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 
 		g_timeout_add(0, event_local_handler, event_data);
 
-		g_dbus_method_invocation_return_value(invocation, NULL);
+		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
+			g_dbus_method_invocation_return_value(invocation, NULL);
+		}
 	}
 
 	return;
