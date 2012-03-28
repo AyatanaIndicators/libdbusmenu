@@ -57,12 +57,14 @@ libdbusmenu_gtk_la_SOURCES = \
 	parser.c
 
 libdbusmenu_gtk_la_LDFLAGS = \
+	$(COVERAGE_LDFLAGS) \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
 	-no-undefined \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_gtk_la_CFLAGS = \
 	$(DBUSMENUGTK_CFLAGS) \
+	$(COVERAGE_CFLAGS) \
 	-I$(top_srcdir) \
 	-Wall -Werror -Wno-error=deprecated-declarations \
 	-DG_LOG_DOMAIN="\"LIBDBUSMENU-GTK\""
@@ -117,7 +119,12 @@ DbusmenuGtk_0_4_gir_INCLUDES = \
 	GObject-2.0 \
 	$(GTKGIR) \
 	Dbusmenu-0.4 
-DbusmenuGtk_0_4_gir_CFLAGS = $(DBUSMENUGTK_CFLAGS) -I$(top_srcdir)
+DbusmenuGtk_0_4_gir_CFLAGS = \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(COVERAGE_CFLAGS) \
+	-I$(top_srcdir)
+DbusmenuGtk_0_4_gir_LDFLAGS = \
+	$(COVERAGE_LDFLAGS)
 DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la \
 	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la
 DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
@@ -127,6 +134,7 @@ DbusmenuGtk_0_4_gir_EXPORT_PACKAGES = dbusmenu-gtk$(VER)-0.4
 # We duplicate these for the same reason as libdbusmenu_gtk3includedir above
 DbusmenuGtk3_0_4_gir_INCLUDES = $(DbusmenuGtk_0_4_gir_INCLUDES)
 DbusmenuGtk3_0_4_gir_CFLAGS = $(DbusmenuGtk_0_4_gir_CFLAGS)
+DbusmenuGtk3_0_4_gir_LDFLAGS = $(DbusmenuGtk_0_4_gir_LDFLAGS)
 DbusmenuGtk3_0_4_gir_LIBS = $(DbusmenuGtk_0_4_gir_LIBS)
 DbusmenuGtk3_0_4_gir_FILES = $(DbusmenuGtk_0_4_gir_FILES)
 DbusmenuGtk3_0_4_gir_NAMESPACE = $(DbusmenuGtk_0_4_gir_NAMESPACE)
