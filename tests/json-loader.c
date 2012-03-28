@@ -24,6 +24,18 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 static GVariant * node2variant (JsonNode * node, const gchar * name);
 
 static void
+array_byte_foreach (JsonArray * array, guint index, JsonNode * node, gpointer user_data)
+{
+	g_return_if_fail(JSON_NODE_TYPE(node) == JSON_NODE_VALUE);
+	g_return_if_fail(json_node_get_value_type(node) == G_TYPE_INT || json_node_get_value_type(node) == G_TYPE_INT64);
+
+	GVariantBuilder * builder = (GVariantBuilder *)user_data;
+
+	g_variant_builder_add_value(builder, g_variant_new_byte(json_node_get_int(node)));
+	return;
+}
+
+static void
 array_foreach (JsonArray * array, guint index, JsonNode * node, gpointer user_data)
 {
 	GVariantBuilder * builder = (GVariantBuilder *)user_data;
@@ -79,11 +91,17 @@ node2variant (JsonNode * node, const gchar * name)
 	}
 
 	if (JSON_NODE_TYPE(node) == JSON_NODE_ARRAY) {
-		GVariantBuilder builder;
-		g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
-
 		JsonArray * array = json_node_get_array(node);
-		json_array_foreach_element(array, array_foreach, &builder);
+		GVariantBuilder builder;
+
+		if (g_strcmp0(name, "icon-data") == 0) {
+			g_variant_builder_init(&builder, G_VARIANT_TYPE("ay"));
+			json_array_foreach_element(array, array_byte_foreach, &builder);
+		} else {
+			g_variant_builder_init(&builder, G_VARIANT_TYPE_ARRAY);
+			json_array_foreach_element(array, array_foreach, &builder);
+		}
+
 
 		return g_variant_builder_end(&builder);
 	}
