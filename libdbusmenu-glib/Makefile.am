@@ -31,8 +31,8 @@ libdbusmenu_glibinclude_HEADERS = \
 	types.h
 
 libdbusmenu_glib_la_SOURCES = \
-	dbus-menu-clean.xml.h \
-	dbus-menu-clean.xml.c \
+	$(top_builddir)/libdbusmenu-glib/dbus-menu-clean.xml.h \
+	$(top_builddir)/libdbusmenu-glib/dbus-menu-clean.xml.c \
 	defaults.h \
 	defaults.c \
 	enum-types.h \
@@ -101,8 +101,8 @@ dbus-menu-clean.xml: dbus-menu.xml
 CLEANFILES += dbus-menu-clean.xml
 
 BUILT_SOURCES += \
-	dbus-menu-clean.xml.c \
-	dbus-menu-clean.xml.h \
+	$(top_builddir)/libdbusmenu-glib/dbus-menu-clean.xml.c \
+	$(top_builddir)/libdbusmenu-glib/dbus-menu-clean.xml.h \
 	client-marshal.h \
 	client-marshal.c \
 	menuitem-marshal.h \
