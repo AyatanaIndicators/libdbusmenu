@@ -44,6 +44,8 @@ timeout_func (gpointer user_data)
 		g_file_replace_contents(ofile, output, g_utf8_strlen(output, -1), NULL, FALSE, 0, NULL, NULL, NULL);
 	}
 
+	g_spawn_command_line_sync("gdbus call --session --dest org.dbusmenu.test --object-path /org/test --method com.canonical.dbusmenu.Event 0 clicked \"<0>\" 0", NULL, NULL, NULL, NULL);
+
 	g_main_loop_quit(mainloop);
 	return TRUE;
 }
@@ -53,7 +55,7 @@ main (int argc, char ** argv)
 {
 	g_type_init();
 
-	g_timeout_add_seconds(2, timeout_func, argv);
+	g_timeout_add_seconds(1, timeout_func, argv);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
