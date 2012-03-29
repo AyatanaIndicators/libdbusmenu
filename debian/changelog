@@ -1,3 +1,13 @@
+libdbusmenu (0.5.96-0ubuntu1~ppa1) precise; urgency=low
+
+  * New upstream release.
+    * Faster menuitem lookups (LP: #801699)
+    * To reduce dbus traffic, only send event replies when the caller requests them
+    * Added support for callgrind-based benchmarks
+    * Minor code cleanup
+
+ -- Charles Kerr <charles.kerr@canonical.com>  Thu, 29 Mar 2012 11:38:40 -0700
+
 libdbusmenu (0.5.95-0ubuntu1) precise; urgency=low
 
   * New upstream release.

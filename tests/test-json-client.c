@@ -27,14 +27,6 @@ GMainLoop * mainloop = NULL;
 gboolean
 timeout_func (gpointer user_data)
 {
-	g_warning("Timeout without getting name");
-	g_main_loop_quit(mainloop);
-	return FALSE;
-}
-
-void
-name_appeared (GDBusConnection * connection, const gchar * name, const gchar * owner, gpointer user_data)
-{
 	char ** argv = (char **)user_data;
 
 	g_usleep(500000);
@@ -52,25 +44,18 @@ name_appeared (GDBusConnection * connection, const gchar * name, const gchar * o
 		g_file_replace_contents(ofile, output, g_utf8_strlen(output, -1), NULL, FALSE, 0, NULL, NULL, NULL);
 	}
 
+	g_spawn_command_line_sync("gdbus call --session --dest org.dbusmenu.test --object-path /org/test --method com.canonical.dbusmenu.Event 0 clicked \"<0>\" 0", NULL, NULL, NULL, NULL);
+
 	g_main_loop_quit(mainloop);
-	return;
+	return TRUE;
 }
 
 int
 main (int argc, char ** argv)
 {
 	g_type_init();
-	g_debug("Wait for friends");
 
-	g_bus_watch_name(G_BUS_TYPE_SESSION,
-	                 "org.dbusmenu.test",
-	                 G_BUS_NAME_WATCHER_FLAGS_NONE,
-	                 name_appeared,
-	                 NULL,
-	                 argv,
-	                 NULL);
-
-	g_timeout_add_seconds(2, timeout_func, NULL);
+	g_timeout_add_seconds(1, timeout_func, argv);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);

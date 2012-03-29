@@ -6,6 +6,7 @@ EXTRA_DIST = \
 	clean-namespaces.xslt \
 	dbusmenu-glib-0.4.pc.in \
 	dbus-menu.xml \
+	dbus-menu-clean.xml \
 	client-marshal.list \
 	menuitem-marshal.list \
 	server-marshal.list

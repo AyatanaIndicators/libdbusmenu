@@ -787,19 +787,10 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, Db
 		process_disposition(mi, gmi, variant, gtkclient);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC)) {
 		process_a11y_desc(mi, gmi, variant, gtkclient);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
+		refresh_shortcut(gtkclient, mi);
 	}
 
-	return;
-}
-
-/* Special handler for the shortcut changing as we need to have the
-   client for that one to get the accel group. */
-static void
-menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * value, DbusmenuGtkClient * client)
-{
-	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
-		refresh_shortcut(client, mi);
-	}
 	return;
 }
 
@@ -918,7 +909,6 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), client);
-	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_shortcut_change_cb), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
 
