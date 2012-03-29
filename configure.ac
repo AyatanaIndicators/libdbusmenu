@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.5.95, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.5.96, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.5.95, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.5.96, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
