@@ -16,7 +16,8 @@ TESTS = \
 
 if WANT_DBUSMENUDUMPER
 TESTS += \
-	test-json
+	test-json \
+	test-json-instruction
 endif
 
 if WANT_LIBDBUSMENUGTK
@@ -241,6 +242,22 @@ test_json_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUTESTS_LIBS) \
 	$(DBUSMENUGLIB_LIBS)
+
+#########################
+# Test JSON Instructions
+#########################
+
+test-json-instruction: test-json-client test-json-server test-json-instruction-count Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo export UBUNTU_MENUPROXY="" >> $@
+	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task $(builddir)/test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter /dev/null --ignore-return --task libtool --parameter --mode=execute --parameter $(srcdir)/test-json-instruction-count --parameter $(builddir)/test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@chmod +x $@
+
+EXTRA_DIST += \
+	test-json-instruction-count
+
 
 ######################
 # Test Glib Submenu
