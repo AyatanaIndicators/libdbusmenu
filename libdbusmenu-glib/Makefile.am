@@ -6,6 +6,7 @@ EXTRA_DIST = \
 	clean-namespaces.xslt \
 	dbusmenu-glib-0.4.pc.in \
 	dbus-menu.xml \
+	dbus-menu-clean.xml \
 	client-marshal.list \
 	menuitem-marshal.list \
 	server-marshal.list
@@ -31,8 +32,8 @@ libdbusmenu_glibinclude_HEADERS = \
 	types.h
 
 libdbusmenu_glib_la_SOURCES = \
-	$(top_builddir)/libdbusmenu-glib/dbus-menu-clean.xml.h \
-	$(top_builddir)/libdbusmenu-glib/dbus-menu-clean.xml.c \
+	dbus-menu-clean.xml.h \
+	dbus-menu-clean.xml.c \
 	defaults.h \
 	defaults.c \
 	enum-types.h \
@@ -101,8 +102,8 @@ dbus-menu-clean.xml: dbus-menu.xml
 CLEANFILES += dbus-menu-clean.xml
 
 BUILT_SOURCES += \
-	$(top_builddir)/libdbusmenu-glib/dbus-menu-clean.xml.c \
-	$(top_builddir)/libdbusmenu-glib/dbus-menu-clean.xml.h \
+	dbus-menu-clean.xml.c \
+	dbus-menu-clean.xml.h \
 	client-marshal.h \
 	client-marshal.c \
 	menuitem-marshal.h \
