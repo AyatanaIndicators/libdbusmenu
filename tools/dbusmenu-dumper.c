@@ -28,6 +28,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-glib/menuitem.h>
+#include <libdbusmenu-glib/menuitem-private.h>
 
 #include <X11/Xlib.h>
 
@@ -77,6 +78,7 @@ print_menuitem (DbusmenuMenuitem * item, int depth)
 	return;
 }
 
+/* Prints the final JSON file recursively */
 static gboolean
 root_timeout (gpointer data)
 {
@@ -90,6 +92,51 @@ root_timeout (gpointer data)
 	return FALSE;
 }
 
+/* Variables to deal with the number of items that we're watching to
+   realized */
+static int realized_count = 0;
+static DbusmenuMenuitem * root = NULL;
+
+/* Decrements the realization count, and if it gets to the end prints
+   out everything. */
+static void
+decrement_count (void)
+{
+	realized_count--;
+
+	if (realized_count == 0) {
+		root_timeout(root);
+	}
+
+	return;
+}
+
+/* Checks whether we need to watch a menu item, and recurses down to
+   it's children as well */
+static void
+check_realizations (DbusmenuMenuitem * item)
+{
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(item));
+
+	if (!dbusmenu_menuitem_realized(item)) {
+		realized_count++;
+
+		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(decrement_count), NULL);
+	}
+
+	GList * children = dbusmenu_menuitem_get_children(item);
+	if (children != NULL) {
+		GList * child;
+		for (child = children; child != NULL; child = g_list_next(child)) {
+			check_realizations(DBUSMENU_MENUITEM(child->data));
+		}
+	}
+
+	return;
+}
+
+/* A setup for when we get our first root.  We set up the basic realization
+   counter and set it to run.  We'll print when it counts down */
 static void
 new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
 {
@@ -99,7 +146,12 @@ new_root_cb (DbusmenuClient * client, DbusmenuMenuitem * newroot)
 		return;
 	}
 
-	g_timeout_add_seconds(2, root_timeout, newroot);
+	root = newroot;
+	check_realizations(root);
+
+	realized_count++;
+	decrement_count();
+
 	return;
 }
 

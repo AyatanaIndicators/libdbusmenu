@@ -348,8 +348,9 @@ CLEANFILES = stamp-enum-types dbus-menu-clean.xml $(BUILT_SOURCES) \
 DISTCLEANFILES = $(glib_enum_h) $(glib_enum_c) enum-types.c \
 	enum-types.h
 EXTRA_DIST = clean-namespaces.xslt dbusmenu-glib-0.4.pc.in \
-	dbus-menu.xml client-marshal.list menuitem-marshal.list \
-	server-marshal.list $(enum_tmpl_h) $(enum_tmpl_c)
+	dbus-menu.xml dbus-menu-clean.xml client-marshal.list \
+	menuitem-marshal.list server-marshal.list $(enum_tmpl_h) \
+	$(enum_tmpl_c)
 enum_tmpl_h = $(glib_enum_h:.h=.h.in)
 enum_tmpl_c = $(glib_enum_c:.c=.c.in)
 lib_LTLIBRARIES = \
