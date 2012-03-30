@@ -673,7 +673,7 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 		for (i = 0; i < listeners->len; i++) {
 			properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
 			if (!listener->replied) {
-				g_warning("Generating properties error for: %d", listener->id);
+				g_debug("Generating properties error for: %d", listener->id);
 				if (localerror == NULL) {
 					g_set_error_literal(&localerror, error_domain(), 0, "Error getting properties for ID");
 				}
@@ -1465,7 +1465,7 @@ menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer 
 	newItemPropData * propdata = (newItemPropData *)data;
 
 	if (error != NULL) {
-		g_warning("Error getting properties on a new menuitem: %s", error->message);
+		g_debug("Error getting properties on a new menuitem: %s", error->message);
 		goto out;
 	}
 
