@@ -1147,6 +1147,25 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		g_variant_unref(icon_dirs);
 	}
 
+	/* Get the icon theme directories if available */
+	GVariant * version = g_dbus_proxy_get_cached_property(priv->menuproxy, "Version");
+	if (version != NULL) {
+		guint32 remote_version = 0;
+
+		if (g_variant_is_of_type(version, G_VARIANT_TYPE_UINT32)) {
+			remote_version = g_variant_get_uint32(version);
+		}
+
+		if (remote_version >= 3) {
+			priv->group_events = TRUE;
+		} else {
+			priv->group_events = FALSE;
+		}
+
+		g_variant_unref(version);
+		version = NULL;
+	}
+
 	/* If we get here, we don't need the DBus proxy */
 	if (priv->dbusproxy != 0) {
 		g_bus_unwatch_name(priv->dbusproxy);
@@ -1225,6 +1244,19 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 			priv->icon_dirs = g_variant_dup_strv(value, NULL);
 			dirs_changed = TRUE;
+		}
+		if (g_strcmp0(key, "Version") == 0) {
+			guint32 remote_version = 0;
+
+			if (g_variant_is_of_type(value, G_VARIANT_TYPE_UINT32)) {
+				remote_version = g_variant_get_uint32(value);
+			}
+
+			if (remote_version >= 3) {
+				priv->group_events = TRUE;
+			} else {
+				priv->group_events = FALSE;
+			}
 		}
 	}
 
