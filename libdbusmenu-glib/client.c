@@ -1688,6 +1688,7 @@ event_idle_cb (gpointer user_data)
 	   in the order they were called incase that matters. */
 	GList * levents = g_list_reverse(priv->events_to_go);
 	priv->events_to_go = NULL;
+	priv->event_idle = 0;
 
 	GVariantBuilder array;
 	g_variant_builder_init(&array, G_VARIANT_TYPE("a(isvu)"));
