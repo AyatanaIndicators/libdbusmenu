@@ -124,6 +124,7 @@ struct _properties_listener_t {
 
 typedef struct _event_data_t event_data_t;
 struct _event_data_t {
+	gint id;
 	DbusmenuClient * client;
 	DbusmenuMenuitem * menuitem;
 	gchar * event;
@@ -1553,12 +1554,64 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	return;
 }
 
+/* Turn an event structure into the variant builder form */
+static void
+events_to_builder (gpointer data, gpointer user_data)
+{
+	event_data_t * edata = (event_data_t *)data;
+	GVariantBuilder * builder = (GVariantBuilder *)user_data;
+
+	GVariantBuilder tuple;
+	g_variant_builder_init(&tuple, G_VARIANT_TYPE_TUPLE);
+
+	g_variant_builder_add_value(&tuple, g_variant_new_int32(edata->id));
+	g_variant_builder_add_value(&tuple, g_variant_new_string(edata->event));
+	g_variant_builder_add_value(&tuple, edata->variant);
+	g_variant_builder_add_value(&tuple, g_variant_new_uint32(edata->timestamp));
+
+	g_variant_builder_add_value(builder, g_variant_builder_end(&tuple));
+	return;
+}
+
 /* Group all the events into a single Dbus message and send
    that out */
 static gboolean
 event_idle_cb (gpointer user_data)
 {
-	/* TODO: DO IT! */
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(user_data), FALSE);
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
+
+	/* We use prepend for speed, but now we want to have them
+	   in the order they were called incase that matters. */
+	GList * levents = g_list_reverse(priv->events_to_go);
+	priv->events_to_go = NULL;
+
+	GVariantBuilder array;
+	g_variant_builder_init(&array, G_VARIANT_TYPE("a(isvu)"));
+	g_list_foreach(levents, events_to_builder, &array);
+	GVariant * vevents = g_variant_builder_end(&array);
+
+	if (g_signal_has_handler_pending (client, signals[EVENT_RESULT], 0, TRUE)) {
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "EventGroup",
+		                  g_variant_new_tuple(&vevents, 1),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  1000,   /* timeout */
+		                  NULL, /* cancellable */
+		                  NULL /* TODO group callback */, levents);
+	} else {
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "EventGroup",
+		                  g_variant_new_tuple(&vevents, 1),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  1000,   /* timeout */
+		                  NULL, /* cancellable */
+		                  NULL, NULL);
+		g_list_foreach(levents, (GFunc)event_data_end, NULL);
+		g_list_free(levents);
+	}
+
 	return FALSE;
 }
 
@@ -1594,6 +1647,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	}
 
 	event_data_t * edata = g_new0(event_data_t, 1);
+	edata->id = id;
 	edata->client = client;
 	g_object_ref(client);
 	edata->menuitem = mi;
