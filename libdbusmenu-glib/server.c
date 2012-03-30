@@ -1723,6 +1723,7 @@ bus_event_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocati
 		return;
 	}
 
+	GVariant * events = g_variant_get_child_value(params, 0);
 	gint32 id;
 	gchar *etype;
 	GVariant *data;
@@ -1730,7 +1731,7 @@ bus_event_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocati
 	GVariantIter iter;
 	GVariantBuilder builder;
 
-	g_variant_iter_init(&iter, params);
+	g_variant_iter_init(&iter, events);
 	g_variant_builder_init(&builder, G_VARIANT_TYPE("ai"));
 	gboolean gotone = FALSE;
 
@@ -1760,6 +1761,7 @@ bus_event_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocati
 	}
 
 	g_variant_unref(errors);
+	g_variant_unref(events);
 
 	return;
 }
