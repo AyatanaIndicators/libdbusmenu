@@ -409,6 +409,7 @@ dbusmenu_client_dispose (GObject *object)
 	}
 
 	if (priv->events_to_go != NULL) {
+		g_warning("Getting to client dispose with events pending.  This is odd.  Probably there's a ref count problem somewhere, but we're going to be cool about it now and clean up.  But there's probably a bug.");
 		GError * error = g_error_new_literal(error_domain(), 1, "Client disposed before event signal returned");
 		g_list_foreach(priv->events_to_go, (GFunc)event_data_end, error);
 		g_list_free(priv->events_to_go);
