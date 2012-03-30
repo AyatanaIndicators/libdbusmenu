@@ -1667,10 +1667,11 @@ events_to_builder (gpointer data, gpointer user_data)
 
 	g_variant_builder_add_value(&tuple, g_variant_new_int32(edata->id));
 	g_variant_builder_add_value(&tuple, g_variant_new_string(edata->event));
-	g_variant_builder_add_value(&tuple, edata->variant);
+	g_variant_builder_add_value(&tuple, g_variant_new_variant(edata->variant));
 	g_variant_builder_add_value(&tuple, g_variant_new_uint32(edata->timestamp));
 
-	g_variant_builder_add_value(builder, g_variant_builder_end(&tuple));
+	GVariant * vtuple = g_variant_builder_end(&tuple);
+	g_variant_builder_add_value(builder, vtuple);
 	return;
 }
 
