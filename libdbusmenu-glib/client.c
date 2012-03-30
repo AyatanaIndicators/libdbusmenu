@@ -103,7 +103,7 @@ struct _DbusmenuClientPrivate
 
 	gboolean group_events;
 	gulong event_idle;
-	GVariantBuilder events_to_go;
+	GList * events_to_go; /* type: event_data_t * */
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -175,6 +175,7 @@ static void menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties
 static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data);
 static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
 static void type_handler_destroy (gpointer user_data);
+static void event_data_end (event_data_t * eventd, GError * error);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
@@ -386,7 +387,7 @@ dbusmenu_client_init (DbusmenuClient *self)
 
 	priv->group_events = FALSE;
 	priv->event_idle = 0;
-	/* Note: Not initing events_to_go */
+	priv->events_to_go = NULL;
 
 	return;
 }
@@ -404,10 +405,14 @@ dbusmenu_client_dispose (GObject *object)
 	if (priv->event_idle != 0) {
 		g_source_remove(priv->event_idle);
 		priv->event_idle = 0;
+	}
 
-		GVariant * data = g_variant_builder_end(&priv->events_to_go);
-		g_variant_ref_sink(data);
-		g_variant_unref(data);
+	if (priv->events_to_go != NULL) {
+		GError * error = g_error_new_literal(error_domain(), 1, "Client disposed before event signal returned");
+		g_list_foreach(priv->events_to_go, (GFunc)event_data_end, error);
+		g_list_free(priv->events_to_go);
+		priv->events_to_go = NULL;
+		g_error_free(error);
 	}
 
 	/* Only used for queueing up a new command, so we can
@@ -1576,27 +1581,8 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 		variant = g_variant_new_int32(0);
 	}
 
-	/* We want to collect as many events as we can */
-	if (priv->group_events) {
-		if (priv->event_idle == 0) {
-			priv->event_idle = g_idle_add(event_idle_cb, client);
-			g_variant_builder_init(&priv->events_to_go, G_VARIANT_TYPE("a(isvu)"));
-		}
-
-		GVariantBuilder tuple;
-		g_variant_builder_init(&tuple, G_VARIANT_TYPE_TUPLE);
-
-		g_variant_builder_add_value(&tuple, g_variant_new_int32(id));
-		g_variant_builder_add_value(&tuple, g_variant_new_string(name));
-		g_variant_builder_add_value(&tuple, variant);
-		g_variant_builder_add_value(&tuple, g_variant_new_uint32(timestamp));
-
-		g_variant_builder_add_value(&priv->events_to_go, g_variant_builder_end(&tuple));
-		return;
-	}
-
 	/* Don't bother with the reply handling if nobody is watching... */
-	if (!g_signal_has_handler_pending (client, signals[EVENT_RESULT], 0, TRUE)) {
+	if (!priv->group_events && !g_signal_has_handler_pending (client, signals[EVENT_RESULT], 0, TRUE)) {
 		g_dbus_proxy_call(priv->menuproxy,
 		                  "Event",
 		                  g_variant_new("(isvu)", id, name, variant, timestamp),
@@ -1617,14 +1603,22 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	edata->variant = variant;
 	g_variant_ref_sink(variant);
 
-	g_dbus_proxy_call(priv->menuproxy,
-	                  "Event",
-	                  g_variant_new("(isvu)", id, name, variant, timestamp),
-	                  G_DBUS_CALL_FLAGS_NONE,
-	                  1000,   /* timeout */
-	                  NULL, /* cancellable */
-	                  menuitem_call_cb,
-	                  edata);
+	if (!priv->group_events) {
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "Event",
+		                  g_variant_new("(isvu)", id, name, variant, timestamp),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  1000,   /* timeout */
+		                  NULL, /* cancellable */
+		                  menuitem_call_cb,
+		                  edata);
+	} else {
+		priv->events_to_go = g_list_prepend(priv->events_to_go, edata);
+
+		if (priv->event_idle == 0) {
+			priv->event_idle = g_idle_add(event_idle_cb, client);
+		}
+	}
 
 	return;
 }
