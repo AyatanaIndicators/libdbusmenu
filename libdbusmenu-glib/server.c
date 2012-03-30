@@ -1647,6 +1647,28 @@ event_local_handler (gpointer user_data)
 	return FALSE;
 }
 
+/* The core menu finding and doing the work part of the two
+   event functions */
+static gboolean
+bus_event_core (DbusmenuServer * server, gint32 id, gchar * event_type, GVariant * data, guint32 timestamp)
+{
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
+
+	if (mi == NULL) {
+		return FALSE;
+	}
+
+	idle_event_t * event_data = g_new0(idle_event_t, 1);
+	event_data->mi = g_object_ref(mi);
+	event_data->eventid = event_type; /* give away our allocation */
+	event_data->timestamp = timestamp;
+	event_data->variant = data; /* give away our reference */
+
+	g_timeout_add(0, event_local_handler, event_data);
+
+	return TRUE;
+}
+
 /* Handles the events coming off of DBus */
 static void
 bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
@@ -1668,9 +1690,7 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 
 	g_variant_get(params, "(isvu)", &id, &etype, &data, &ts);
 
-	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
-
-	if (mi == NULL) {
+	if (!bus_event_core(server, id, etype, data, ts)) {
 		g_dbus_method_invocation_return_error(invocation,
 			                                  error_quark(),
 			                                  INVALID_MENUITEM_ID,
@@ -1678,16 +1698,7 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 			                                  id);
 		g_free(etype);
 		g_variant_unref(data);
-
 	} else {
-		idle_event_t * event_data = g_new0(idle_event_t, 1);
-		event_data->mi = g_object_ref(mi);
-		event_data->eventid = etype; /* give away our allocation */
-		event_data->timestamp = ts;
-		event_data->variant = data; /* give away our reference */
-
-		g_timeout_add(0, event_local_handler, event_data);
-
 		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		}
