@@ -1554,6 +1554,19 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	return;
 }
 
+/* The callback from the dbus message to pass events to the
+   to the server en masse */
+static void
+event_group_cb (GObject * proxy, GAsyncResult * res, gpointer user_data)
+{
+	GList * events = (GList *)user_data;
+
+
+	g_list_foreach(events, (GFunc)event_data_end, NULL);
+	g_list_free(events);
+	return;
+}
+
 /* Turn an event structure into the variant builder form */
 static void
 events_to_builder (gpointer data, gpointer user_data)
@@ -1599,7 +1612,7 @@ event_idle_cb (gpointer user_data)
 		                  G_DBUS_CALL_FLAGS_NONE,
 		                  1000,   /* timeout */
 		                  NULL, /* cancellable */
-		                  NULL /* TODO group callback */, levents);
+		                  event_group_cb, levents);
 	} else {
 		g_dbus_proxy_call(priv->menuproxy,
 		                  "EventGroup",
