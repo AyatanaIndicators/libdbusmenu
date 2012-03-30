@@ -326,6 +326,20 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 		</method>
 
+		<method name="EventGroup">
+			<dox:d>
+				Used to pass a set of events as a single message for possibily several
+				different menuitems.  This is done to optimize DBus traffic.
+			</dox:d>
+			<arg type="a(isvu)" name="events" direction="in">
+				<dox:d>
+					An array of all the events that should be passed.  This tuple should
+					match the parameters of the 'Event' signal.  Which is roughly:
+					id, eventID, data and timestamp.
+				</dox:d>
+			</arg>
+		</method>
+
 		<method name="AboutToShow">
 			<dox:d>
 			This is called by the applet to notify the application that it is about
@@ -339,6 +353,26 @@ License version 3 and version 2.1 along with this program.  If not, see
 			<arg type="b" name="needUpdate" direction="out">
 				<dox:d>
 				Whether this AboutToShow event should result in the menu being updated.
+				</dox:d>
+			</arg>
+		</method>
+
+		<method name="AboutToShowGroup">
+			<dox:d>
+				A function to tell several menus being shown that they are about to
+				be shown to the user.  This is likely only useful for programitc purposes
+				so while the return values are returned, in general, the singular function
+				should be used in most user interacation scenarios.
+			</dox:d>
+			<arg type="ai" name="ids" direction="in">
+				<dox:d>
+					The IDs of the menu items who's submenus are being shown.
+				</dox:d>
+			</arg>
+			<arg type="ai" name="updatesNeeded" direction="out">
+				<dox:d>
+					The IDs of the menus that need updates.  Note: if no update information
+					is needed the DBus message should set the no reply flag.
 				</dox:d>
 			</arg>
 		</method>
