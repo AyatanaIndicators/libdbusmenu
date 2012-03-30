@@ -1764,6 +1764,18 @@ bus_event_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocati
 	return;
 }
 
+/* Does the about-to-show in an idle loop so we don't block things */
+/* NOTE: this only works so easily as we don't return the value, if we
+   were to do that it would get more complex. */
+static gboolean
+bus_about_to_show_idle (gpointer user_data)
+{
+	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(user_data);
+	dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
+	g_object_unref(mi);
+	return FALSE;
+}
+
 /* Recieve the About To Show function.  Pass it to our menu item. */
 static void
 bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
@@ -1791,7 +1803,7 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 		return;
 	}
 
-	dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
+	g_timeout_add(0, bus_about_to_show_idle, g_object_ref(mi));
 
 	/* GTK+ does not support about-to-show concept for now */
 	g_dbus_method_invocation_return_value(invocation,
@@ -1825,7 +1837,7 @@ bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethod
 	while (g_variant_iter_loop(&iter, "(i)", &id)) {
 		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 		if (mi != NULL) {
-			dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
+			g_timeout_add(0, bus_about_to_show_idle, g_object_ref(mi));
 			gotone = TRUE;
 		} else {
 			g_variant_builder_add_value(&builder, g_variant_new_int32(id));
