@@ -22,6 +22,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "callgrind.h"
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 
@@ -29,11 +30,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static GMainLoop * mainloop = NULL;
 
-static gboolean
-timer_func (gpointer data)
+static void
+root_activate (void)
 {
+	g_debug("Dumping callgrind data");
+	CALLGRIND_DUMP_STATS_AT("exported");
+	CALLGRIND_STOP_INSTRUMENTATION;
 	g_main_loop_quit(mainloop);
-	return FALSE;
+	return;
 }
 
 static void
@@ -50,9 +54,13 @@ on_bus (GDBusConnection * connection, const gchar * name, gpointer user_data)
 		return;
 	}
 
-	dbusmenu_server_set_root(server, root);
+	g_signal_connect(G_OBJECT(root), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(root_activate), NULL);
 
-	g_timeout_add(10000, timer_func, NULL);
+	g_debug("Starting Callgrind");
+	CALLGRIND_START_INSTRUMENTATION;
+	CALLGRIND_ZERO_STATS;
+	CALLGRIND_TOGGLE_COLLECT;
+	dbusmenu_server_set_root(server, root);
 
 	return;
 }
