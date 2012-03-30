@@ -1617,7 +1617,7 @@ event_group_cb (GObject * proxy, GAsyncResult * res, gpointer user_data)
 {
 	GList * events = (GList *)user_data;
 
-	GError * error;
+	GError * error = NULL;
 	GVariant * params;
 	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
 
