@@ -116,7 +116,9 @@ enum {
 	METHOD_GET_PROPERTY,
 	METHOD_GET_PROPERTIES,
 	METHOD_EVENT,
+	METHOD_EVENT_GROUP,
 	METHOD_ABOUT_TO_SHOW,
+	METHOD_ABOUT_TO_SHOW_GROUP,
 	/* Counter, do not remove! */
 	METHOD_COUNT
 };
@@ -189,7 +191,13 @@ static void       bus_get_properties          (DbusmenuServer * server,
 static void       bus_event                   (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
+static void       bus_event_group             (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
 static void       bus_about_to_show           (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
+static void       bus_about_to_show_group     (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 static void       find_servers_cb             (GDBusConnection * connection,
@@ -356,8 +364,14 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	dbusmenu_method_table[METHOD_EVENT].interned_name = g_intern_static_string("Event");
 	dbusmenu_method_table[METHOD_EVENT].func          = bus_event;
 
+	dbusmenu_method_table[METHOD_EVENT_GROUP].interned_name = g_intern_static_string("EventGroup");
+	dbusmenu_method_table[METHOD_EVENT_GROUP].func          = bus_event_group;
+
 	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW].interned_name = g_intern_static_string("AboutToShow");
 	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW].func          = bus_about_to_show;
+
+	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW_GROUP].interned_name = g_intern_static_string("AboutToShowGroup");
+	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW_GROUP].func          = bus_about_to_show_group;
 
 	return;
 }
@@ -1634,6 +1648,15 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 	return;
 }
 
+/* Respond to the event group method that will send events to a
+   variety of menuitems */
+static void
+bus_event_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
+{
+	/* TODO: DO THIS */
+	return;
+}
+
 /* Recieve the About To Show function.  Pass it to our menu item. */
 static void
 bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
@@ -1666,6 +1689,15 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 	/* GTK+ does not support about-to-show concept for now */
 	g_dbus_method_invocation_return_value(invocation,
 	                                      g_variant_new("(b)", FALSE));
+	return;
+}
+
+/* Handle the about to show on a set of menus and tell all of them that
+   we love them */
+static void
+bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
+{
+	/* TODO: DO THIS */
 	return;
 }
 
