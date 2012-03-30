@@ -1538,6 +1538,15 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	return;
 }
 
+/* Group all the events into a single Dbus message and send
+   that out */
+static gboolean
+event_idle_cb (gpointer user_data)
+{
+	/* TODO: DO IT! */
+	return FALSE;
+}
+
 /* Sends the event over DBus to the server on the other side
    of the bus. */
 void
@@ -1555,6 +1564,25 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 
 	if (variant == NULL) {
 		variant = g_variant_new_int32(0);
+	}
+
+	/* We want to collect as many events as we can */
+	if (priv->group_events) {
+		if (priv->event_idle == 0) {
+			priv->event_idle = g_idle_add(event_idle_cb, client);
+			g_variant_builder_init(&priv->events_to_go, G_VARIANT_TYPE("a(isvu)"));
+		}
+
+		GVariantBuilder tuple;
+		g_variant_builder_init(&tuple, G_VARIANT_TYPE_TUPLE);
+
+		g_variant_builder_add_value(&tuple, g_variant_new_int32(id));
+		g_variant_builder_add_value(&tuple, g_variant_new_string(name));
+		g_variant_builder_add_value(&tuple, variant);
+		g_variant_builder_add_value(&tuple, g_variant_new_uint32(timestamp));
+
+		g_variant_builder_add_value(&priv->events_to_go, g_variant_builder_end(&tuple));
+		return;
 	}
 
 	/* Don't bother with the reply handling if nobody is watching... */
