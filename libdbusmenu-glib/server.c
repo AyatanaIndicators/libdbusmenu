@@ -1660,9 +1660,9 @@ bus_event_core (DbusmenuServer * server, gint32 id, gchar * event_type, GVariant
 
 	idle_event_t * event_data = g_new0(idle_event_t, 1);
 	event_data->mi = g_object_ref(mi);
-	event_data->eventid = event_type; /* give away our allocation */
+	event_data->eventid = g_strdup(event_type);
 	event_data->timestamp = timestamp;
-	event_data->variant = data; /* give away our reference */
+	event_data->variant = g_variant_ref(data);
 
 	g_timeout_add(0, event_local_handler, event_data);
 
@@ -1696,13 +1696,14 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 			                                  INVALID_MENUITEM_ID,
 			                                  "The ID supplied %d does not refer to a menu item we have",
 			                                  id);
-		g_free(etype);
-		g_variant_unref(data);
 	} else {
 		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		}
 	}
+
+	g_free(etype);
+	g_variant_unref(data);
 
 	return;
 }
