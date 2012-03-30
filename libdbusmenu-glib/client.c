@@ -66,6 +66,12 @@ enum {
 	LAST_SIGNAL
 };
 
+/* Errors */
+enum {
+	ERROR_DISPOSAL,
+	ERROR_ID_NOT_FOUND
+};
+
 typedef void (*properties_func) (GVariant * properties, GError * error, gpointer user_data);
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -410,7 +416,7 @@ dbusmenu_client_dispose (GObject *object)
 
 	if (priv->events_to_go != NULL) {
 		g_warning("Getting to client dispose with events pending.  This is odd.  Probably there's a ref count problem somewhere, but we're going to be cool about it now and clean up.  But there's probably a bug.");
-		GError * error = g_error_new_literal(error_domain(), 1, "Client disposed before event signal returned");
+		GError * error = g_error_new_literal(error_domain(), ERROR_DISPOSAL, "Client disposed before event signal returned");
 		g_list_foreach(priv->events_to_go, (GFunc)event_data_end, error);
 		g_list_free(priv->events_to_go);
 		priv->events_to_go = NULL;
@@ -1555,6 +1561,20 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	return;
 }
 
+/* Looks at event_data_t structs to match an ID */
+gint
+event_data_find (gconstpointer data, gconstpointer user_data)
+{
+	event_data_t * edata = (event_data_t *)data;
+	gint id = GPOINTER_TO_INT(user_data);
+
+	if (edata->id == id) {
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
 /* The callback from the dbus message to pass events to the
    to the server en masse */
 static void
@@ -1562,7 +1582,39 @@ event_group_cb (GObject * proxy, GAsyncResult * res, gpointer user_data)
 {
 	GList * events = (GList *)user_data;
 
+	GError * error;
+	GVariant * params;
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
 
+	if (error != NULL) {
+		/* If we got an actual DBus error, we should just pass that
+		   along and finish up */
+		g_list_foreach(events, (GFunc)event_data_end, error);
+		g_list_free(events);
+		events = NULL;
+		return;
+	}
+
+	gint id = 0;
+	GVariant * array = g_variant_get_child_value(params, 0);
+	GVariantIter iter;
+	g_variant_iter_init(&iter, array);
+
+	while (g_variant_iter_loop(&iter, "i", &id)) {
+		GList * item = g_list_find_custom(events, GINT_TO_POINTER(id), event_data_find);
+
+		if (item != NULL) {
+			GError * iderror = g_error_new(error_domain(), ERROR_ID_NOT_FOUND, "Unable to find ID: %d", id);
+			event_data_end((event_data_t *)item->data, iderror);
+			events = g_list_delete_link(events, item);
+			g_error_free(iderror);
+		}
+	}
+
+	g_variant_unref(array);
+	g_variant_unref(params);
+
+	/* If we have any left send non-error responses */
 	g_list_foreach(events, (GFunc)event_data_end, NULL);
 	g_list_free(events);
 	return;
