@@ -42,7 +42,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 static void layout_update_signal (DbusmenuServer * server);
 
-#define DBUSMENU_VERSION_NUMBER    2
+#define DBUSMENU_VERSION_NUMBER    3
 #define DBUSMENU_INTERFACE         "com.canonical.dbusmenu"
 
 /* Privates, I'll show you mine... */
