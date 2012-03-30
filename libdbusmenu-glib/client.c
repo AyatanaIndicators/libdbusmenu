@@ -1116,6 +1116,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_TEXT_DIRECTION);
 
 		g_variant_unref(textdir);
+		textdir = NULL;
 	}
 
 	/* Check the status if available */
@@ -1131,6 +1132,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
 
 		g_variant_unref(status);
+		status = NULL;
 	}
 
 	/* Get the icon theme directories if available */
@@ -1145,6 +1147,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		g_signal_emit(G_OBJECT(client), signals[ICON_THEME_DIRS], 0, priv->icon_dirs, TRUE);
 
 		g_variant_unref(icon_dirs);
+		icon_dirs = NULL;
 	}
 
 	/* Get the icon theme directories if available */
