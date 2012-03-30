@@ -100,6 +100,10 @@ struct _DbusmenuClientPrivate
 	DbusmenuTextDirection text_direction;
 	DbusmenuStatus status;
 	GStrv icon_dirs;
+
+	gboolean group_events;
+	gulong event_idle;
+	GVariantBuilder events_to_go;
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -380,6 +384,10 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->status = DBUSMENU_STATUS_NORMAL;
 	priv->icon_dirs = NULL;
 
+	priv->group_events = FALSE;
+	priv->event_idle = 0;
+	/* Note: Not initing events_to_go */
+
 	return;
 }
 
@@ -391,6 +399,15 @@ dbusmenu_client_dispose (GObject *object)
 	if (priv->delayed_idle != 0) {
 		g_source_remove(priv->delayed_idle);
 		priv->delayed_idle = 0;
+	}
+
+	if (priv->event_idle != 0) {
+		g_source_remove(priv->event_idle);
+		priv->event_idle = 0;
+
+		GVariant * data = g_variant_builder_end(&priv->events_to_go);
+		g_variant_ref_sink(data);
+		g_variant_unref(data);
 	}
 
 	/* Only used for queueing up a new command, so we can
