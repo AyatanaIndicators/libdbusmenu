@@ -338,6 +338,12 @@ License version 3 and version 2.1 along with this program.  If not, see
 					id, eventID, data and timestamp.
 				</dox:d>
 			</arg>
+			<arg type="ai" name="idErrors" direction="out">
+				<dox:d>
+					I list of menuitem IDs that couldn't be found.  If none of the ones
+					in the list can be found, a DBus error is returned.
+				</dox:d>
+			</arg>
 		</method>
 
 		<method name="AboutToShow">
@@ -373,6 +379,12 @@ License version 3 and version 2.1 along with this program.  If not, see
 				<dox:d>
 					The IDs of the menus that need updates.  Note: if no update information
 					is needed the DBus message should set the no reply flag.
+				</dox:d>
+			</arg>
+			<arg type="ai" name="idErrors" direction="out">
+				<dox:d>
+					I list of menuitem IDs that couldn't be found.  If none of the ones
+					in the list can be found, a DBus error is returned.
 				</dox:d>
 			</arg>
 		</method>
