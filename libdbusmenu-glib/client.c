@@ -1505,6 +1505,22 @@ out:
 	return;
 }
 
+/* A function to work with an event_data_t and make sure it gets
+   free'd and in a terminal state. */
+static void
+event_data_end (event_data_t * edata, GError * error)
+{
+	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->variant, edata->timestamp, error, TRUE);
+
+	g_variant_unref(edata->variant);
+	g_free(edata->event);
+	g_object_unref(edata->menuitem);
+	g_object_unref(edata->client);
+	g_free(edata);
+
+	return;
+}
+
 /* Respond to the call function to make sure that the other side
    got it, or print a warning. */
 static void
@@ -1520,13 +1536,7 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		g_warning("Unable to call event '%s' on menu item %d: %s", edata->event, dbusmenu_menuitem_get_id(edata->menuitem), error->message);
 	}
 
-	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->variant, edata->timestamp, error, TRUE);
-
-	g_variant_unref(edata->variant);
-	g_free(edata->event);
-	g_object_unref(edata->menuitem);
-	g_object_unref(edata->client);
-	g_free(edata);
+	event_data_end(edata, error);
 
 	if (G_UNLIKELY(error != NULL)) {
 		g_error_free(error);
