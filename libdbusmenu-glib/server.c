@@ -1804,7 +1804,61 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 static void
 bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
 {
-	/* TODO: DO THIS */
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	if (priv->root == NULL) {
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
+
+	gint32 id;
+	GVariantIter iter;
+	GVariantBuilder builder;
+	
+	g_variant_iter_init(&iter, params);
+	g_variant_builder_init(&builder, G_VARIANT_TYPE("ai"));
+	gboolean gotone = FALSE;
+
+	while (g_variant_iter_loop(&iter, "(i)", &id)) {
+		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
+		if (mi != NULL) {
+			dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
+			gotone = TRUE;
+		} else {
+			g_variant_builder_add_value(&builder, g_variant_new_int32(id));
+		}
+	}
+
+	GVariant * errors = g_variant_builder_end(&builder);
+	g_variant_ref_sink(errors);
+
+	if (gotone) {
+		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
+			GVariantBuilder tuple;
+			g_variant_builder_init(&tuple, G_VARIANT_TYPE_TUPLE);
+
+			/* Updates needed */
+			g_variant_builder_add_value(&tuple, g_variant_new_array(G_VARIANT_TYPE_INT32, NULL, 0));
+			/* Errors */
+			g_variant_builder_add_value(&tuple, errors);
+
+			g_dbus_method_invocation_return_value(invocation, g_variant_builder_end(&tuple));
+		}
+	} else {
+		gchar * ids = g_variant_print(errors, FALSE);
+		g_dbus_method_invocation_return_error(invocation,
+			                                  error_quark(),
+			                                  INVALID_MENUITEM_ID,
+			                                  "The IDs supplied '%s' do not refer to any menu items we have",
+			                                  ids);
+		g_free(ids);
+	}
+
+	g_variant_unref(errors);
+
 	return;
 }
 
