@@ -1852,6 +1852,19 @@ about_to_show_finish_pntr (gpointer data, gpointer user_data)
 	return about_to_show_finish((about_to_show_t *)data, GPOINTER_TO_INT(user_data));
 }
 
+/* Function that gets called with all the queued about_to_show messages, let's
+   get these guys on the bus! */
+static gboolean
+about_to_show_idle (gpointer user_data)
+{
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	priv->about_to_show_idle = 0;
+
+	return FALSE;
+}
+
 /* Reports errors and responds to update request that were a result
    of sending the about to show signal. */
 static void
@@ -1896,14 +1909,30 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 	data->cb_data = cb_data;
 	g_object_ref(client);
 
-	g_dbus_proxy_call(priv->menuproxy,
-	                  "AboutToShow",
-	                  g_variant_new("(i)", id),
-	                  G_DBUS_CALL_FLAGS_NONE,
-	                  -1,   /* timeout */
-	                  NULL, /* cancellable */
-	                  about_to_show_cb,
-	                  data);
+	if (priv->group_events) {
+		priv->about_to_show_to_go = g_list_prepend(priv->about_to_show_to_go, data);
+
+		if (priv->about_to_show_idle == 0) {
+			priv->about_to_show_idle = g_idle_add(about_to_show_idle, client);
+		}
+	} else {
+		/* If there's no callback we don't need this data, let's
+		   clean it up in a consistent way */
+		if (cb == NULL) {
+			about_to_show_finish(data, FALSE);
+			data = NULL;
+		}
+
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "AboutToShow",
+		                  g_variant_new("(i)", id),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  -1,   /* timeout */
+		                  NULL, /* cancellable */
+		                  about_to_show_cb,
+		                  data);
+	}
+
 	return;
 }
 
