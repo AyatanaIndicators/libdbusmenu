@@ -552,6 +552,9 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			build_proxies(DBUSMENU_CLIENT(obj));
 		}
 		break;
+	case PROP_GROUP_EVENTS:
+		priv->group_events = g_value_get_boolean(value);
+		break;
 	default:
 		g_warning("Unknown property %d.", id);
 		return;
@@ -577,6 +580,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_TEXT_DIRECTION:
 		g_value_set_enum(value, priv->text_direction);
+		break;
+	case PROP_GROUP_EVENTS:
+		g_value_set_boolean(value, priv->group_events);
 		break;
 	default:
 		g_warning("Unknown property %d.", id);
@@ -1164,10 +1170,17 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 			remote_version = g_variant_get_uint32(version);
 		}
 
+		gboolean old_group = priv->group_events;
+		/* Figure out if we can group the events or not */
 		if (remote_version >= 3) {
 			priv->group_events = TRUE;
 		} else {
 			priv->group_events = FALSE;
+		}
+
+		/* Notify listeners if we changed the value */
+		if (old_group != priv->group_events) {
+			g_object_notify(G_OBJECT(client), DBUSMENU_CLIENT_PROP_GROUP_EVENTS);
 		}
 
 		g_variant_unref(version);
