@@ -52,7 +52,8 @@ enum {
 	PROP_DBUSOBJECT,
 	PROP_DBUSNAME,
 	PROP_STATUS,
-	PROP_TEXT_DIRECTION
+	PROP_TEXT_DIRECTION,
+	PROP_GROUP_EVENTS
 };
 
 /* Signals */
@@ -321,6 +322,10 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                              "Signals which direction the default text direction is for the menus",
 	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
 	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_GROUP_EVENTS,
+	                                 g_param_spec_boolean(DBUSMENU_CLIENT_PROP_GROUP_EVENTS, "Whether or not multiple events should be grouped",
+	                                              "Event grouping lowers the number of messages on DBus and will be set automatically based on the version to optimize traffic.  It can be disabled for testing or other purposes.",
+	                                              FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
 		GError * error = NULL;
