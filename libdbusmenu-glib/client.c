@@ -1819,6 +1819,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 
 typedef struct _about_to_show_t about_to_show_t;
 struct _about_to_show_t {
+	gint id;
 	DbusmenuClient * client;
 	void (*cb) (gpointer data);
 	gpointer cb_data;
@@ -1852,6 +1853,44 @@ about_to_show_finish_pntr (gpointer data, gpointer user_data)
 	return about_to_show_finish((about_to_show_t *)data, GPOINTER_TO_INT(user_data));
 }
 
+/* Respond to the DBus message from sending a bunch of about-to-show events
+   to the server */
+static void
+about_to_show_group_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
+{
+
+
+	return;
+}
+
+/* Check to see if this about to show entry has a callback associated
+   with it */
+static void
+about_to_show_idle_callbacks (gpointer data, gpointer user_data)
+{
+	about_to_show_t * abts = (about_to_show_t *)data;
+	gboolean * got_callbacks = (gboolean *)user_data;
+
+	if (abts->cb != NULL) {
+		*got_callbacks = TRUE;
+	}
+
+	return;
+}
+
+/* Take the ID out of the about to show structure and put it into the 
+   variant builder */
+static void
+about_to_show_idle_ids (gpointer data, gpointer user_data)
+{
+	about_to_show_t * abts = (about_to_show_t *)data;
+	GVariantBuilder * builder = (GVariantBuilder *)user_data;
+
+	g_variant_builder_add_value(builder, g_variant_new_int32(abts->id));
+
+	return;
+}
+
 /* Function that gets called with all the queued about_to_show messages, let's
    get these guys on the bus! */
 static gboolean
@@ -1860,7 +1899,41 @@ about_to_show_idle (gpointer user_data)
 	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
+	/* Reset our object global props and take ownership of these entries */
 	priv->about_to_show_idle = 0;
+	GList * showers = g_list_reverse(priv->about_to_show_to_go);
+	priv->about_to_show_to_go = NULL;
+
+	/* Figure out if we've got any callbacks */
+	gboolean got_callbacks = FALSE;
+	g_list_foreach(showers, about_to_show_idle_callbacks, &got_callbacks);
+
+	/* Build a list of the IDs */
+	GVariantBuilder idarray;
+	g_variant_builder_init(&idarray, G_VARIANT_TYPE("ai"));
+	g_list_foreach(showers, about_to_show_idle_ids, &idarray);
+	GVariant * ids = g_variant_builder_end(&idarray);
+
+	/* Setup our callbacks */
+	GAsyncReadyCallback cb = NULL;
+	gpointer cb_data = NULL;
+	if (got_callbacks) {
+		cb = about_to_show_group_cb;
+		cb_data = showers;
+	} else {
+		g_list_foreach(showers, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+		g_list_free(showers);
+	}
+
+	/* Let's call it! */
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "AboutToShowGroup",
+	                  g_variant_new_tuple(&ids, 1),
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  -1,   /* timeout */
+	                  NULL, /* cancellable */
+	                  cb,
+	                  cb_data);
 
 	return FALSE;
 }
@@ -1904,6 +1977,7 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 	g_return_if_fail(priv != NULL);
 
 	about_to_show_t * data = g_new0(about_to_show_t, 1);
+	data->id = id;
 	data->client = client;
 	data->cb = cb;
 	data->cb_data = cb_data;
