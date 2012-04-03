@@ -1805,6 +1805,26 @@ struct _about_to_show_t {
 	gpointer cb_data;
 };
 
+/* Takes an about_to_show_t structure and calls the callback correctly
+   and updates the layout if needed. */
+static void
+about_to_show_finish (about_to_show_t * data, gboolean need_update)
+{
+	/* If we need to update, do that first. */
+	if (need_update) {
+		update_layout(data->client);
+	}
+
+	if (data->cb != NULL) {
+		data->cb(data->cb_data);
+	}
+
+	g_object_unref(data->client);
+	g_free(data);
+
+	return;
+}
+
 /* Reports errors and responds to update request that were a result
    of sending the about to show signal. */
 static void
@@ -1828,18 +1848,7 @@ about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		g_variant_unref(params);
 	}
 
-	/* If we need to update, do that first. */
-	if (need_update) {
-		update_layout(data->client);
-	}
-
-	if (data->cb != NULL) {
-		data->cb(data->cb_data);
-	}
-
-	g_object_unref(data->client);
-	g_free(data);
-
+	about_to_show_finish(data, need_update);
 	return;
 }
 
