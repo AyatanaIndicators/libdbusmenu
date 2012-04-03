@@ -257,3 +257,5 @@ tests/test-json-01.output.json
 genericmenuitem-enum-types.c
 genericmenuitem-enum-types.h
 libdbusmenu_gtk3_la-genericmenuitem-enum-types.lo
+test-glib-events-nogroup
+test-glib-events-nogroup-client
