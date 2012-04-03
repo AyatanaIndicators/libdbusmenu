@@ -109,8 +109,11 @@ struct _DbusmenuClientPrivate
 	GStrv icon_dirs;
 
 	gboolean group_events;
-	gulong event_idle;
+	guint event_idle;
 	GList * events_to_go; /* type: event_data_t * */
+
+	guint about_to_show_idle;
+	GList * about_to_show_to_go; /* type: about_to_show_t * */
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -184,6 +187,7 @@ static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpo
 static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
 static void type_handler_destroy (gpointer user_data);
 static void event_data_end (event_data_t * eventd, GError * error);
+static void about_to_show_finish_pntr (gpointer data, gpointer user_data);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
@@ -401,6 +405,9 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->event_idle = 0;
 	priv->events_to_go = NULL;
 
+	priv->about_to_show_idle = 0;
+	priv->about_to_show_to_go = NULL;
+
 	return;
 }
 
@@ -419,6 +426,11 @@ dbusmenu_client_dispose (GObject *object)
 		priv->event_idle = 0;
 	}
 
+	if (priv->about_to_show_idle != 0) {
+		g_source_remove(priv->about_to_show_idle);
+		priv->about_to_show_idle = 0;
+	}
+
 	if (priv->events_to_go != NULL) {
 		g_warning("Getting to client dispose with events pending.  This is odd.  Probably there's a ref count problem somewhere, but we're going to be cool about it now and clean up.  But there's probably a bug.");
 		GError * error = g_error_new_literal(error_domain(), ERROR_DISPOSAL, "Client disposed before event signal returned");
@@ -426,6 +438,13 @@ dbusmenu_client_dispose (GObject *object)
 		g_list_free(priv->events_to_go);
 		priv->events_to_go = NULL;
 		g_error_free(error);
+	}
+
+	if (priv->about_to_show_to_go != NULL) {
+		g_warning("Getting to client dispose with about_to_show's pending.  This is odd.  Probably there's a ref count problem somewhere, but we're going to be cool about it now and clean up.  But there's probably a bug.");
+		g_list_foreach(priv->about_to_show_to_go, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+		g_list_free(priv->about_to_show_to_go);
+		priv->about_to_show_to_go = NULL;
 	}
 
 	/* Only used for queueing up a new command, so we can
@@ -1823,6 +1842,14 @@ about_to_show_finish (about_to_show_t * data, gboolean need_update)
 	g_free(data);
 
 	return;
+}
+
+/* A little function to match prototypes and make sure to convert from
+   a pointer to an int correctly */
+static void
+about_to_show_finish_pntr (gpointer data, gpointer user_data)
+{
+	return about_to_show_finish((about_to_show_t *)data, GPOINTER_TO_INT(user_data));
 }
 
 /* Reports errors and responds to update request that were a result
