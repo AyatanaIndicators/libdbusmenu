@@ -118,10 +118,10 @@ AM_CONDITIONAL([WANT_TESTS], [test "x$enable_tests" != "xno"])
 
 AS_IF([test "x$enable_tests" != "xno"],[
 PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
-                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION
-                                  valgrind,
+                                  gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION,
                                   [have_tests=yes]
 )
+PKG_CHECK_MODULES(DBUSMENUTESTSVALGRIND, valgrind)
 ])
 
 AC_SUBST(DBUSMENUTESTS_CFLAGS)

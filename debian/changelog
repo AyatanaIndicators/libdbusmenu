@@ -1,3 +1,9 @@
+libdbusmenu (0.5.96-0ubuntu2) precise; urgency=low
+
+  * Cherry pick fix for FTBFS on arm
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 03 Apr 2012 16:43:10 -0400
+
 libdbusmenu (0.5.96-0ubuntu1) precise; urgency=low
 
   [ Charles Kerr ]
