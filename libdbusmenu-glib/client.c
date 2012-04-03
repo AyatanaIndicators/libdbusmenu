@@ -1858,7 +1858,37 @@ about_to_show_finish_pntr (gpointer data, gpointer user_data)
 static void
 about_to_show_group_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 {
+	GError * error = NULL;
+	GList * showers = (GList *)userdata;
+	GVariant * params = NULL;
 
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
+
+	if (error != NULL) {
+		g_warning("Unable to send about_to_show_group: %s", error->message);
+		/* Note: we're just ensuring only the callback gets called */
+		g_error_free(error);
+		error = NULL;
+	} else {
+		GVariant * updates = g_variant_get_child_value(params, 0);
+		GVariantIter iter;
+
+		/* Okay, so this is kinda interesting.  We actually don't care which
+		   entries asked us to update the structure, as it's quite simply a
+		   single structure.  So if we have any ask, we get the update once to
+		   avoid itterating through all the structures. */
+		if (g_variant_iter_init(&iter, updates) > 0) {
+			about_to_show_t * first = (about_to_show_t *)showers->data;
+			update_layout(first->client);
+		}
+
+		g_variant_unref(updates);
+		g_variant_unref(params);
+		params = NULL;
+	}
+
+	g_list_foreach(showers, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+	g_list_free(showers);
 
 	return;
 }
