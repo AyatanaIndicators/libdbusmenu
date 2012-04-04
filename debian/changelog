@@ -1,11 +1,11 @@
-libdbusmenu (0.5.97-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.5.97-0ubuntu1~ppa1) precise; urgency=low
 
   * New upstream release.
     * Reduce the number of messages hud-service sends. (LP: #957022)
     * Fix valgrind tests thanks to a little help from sewardj.
     * Add gcov targets to autotools build for code-coverage reporting.
 
- -- Charles Kerr <charles.kerr@canonical.com>  Wed, 04 Apr 2012 15:03:49 -0500
+ -- Charles Kerr <charles.kerr@canonical.com>  Wed, 04 Apr 2012 15:09:47 -0500
 
 libdbusmenu (0.5.96-0ubuntu2) precise; urgency=low
 
