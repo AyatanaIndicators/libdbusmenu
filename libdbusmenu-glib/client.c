@@ -110,10 +110,10 @@ struct _DbusmenuClientPrivate
 
 	gboolean group_events;
 	guint event_idle;
-	GList * events_to_go; /* type: event_data_t * */
+	GQueue * events_to_go; /* type: event_data_t * */
 
 	guint about_to_show_idle;
-	GList * about_to_show_to_go; /* type: about_to_show_t * */
+	GQueue * about_to_show_to_go; /* type: about_to_show_t * */
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -434,16 +434,16 @@ dbusmenu_client_dispose (GObject *object)
 	if (priv->events_to_go != NULL) {
 		g_warning("Getting to client dispose with events pending.  This is odd.  Probably there's a ref count problem somewhere, but we're going to be cool about it now and clean up.  But there's probably a bug.");
 		GError * error = g_error_new_literal(error_domain(), ERROR_DISPOSAL, "Client disposed before event signal returned");
-		g_list_foreach(priv->events_to_go, (GFunc)event_data_end, error);
-		g_list_free(priv->events_to_go);
+		g_queue_foreach(priv->events_to_go, (GFunc)event_data_end, error);
+		g_queue_free(priv->events_to_go);
 		priv->events_to_go = NULL;
 		g_error_free(error);
 	}
 
 	if (priv->about_to_show_to_go != NULL) {
 		g_warning("Getting to client dispose with about_to_show's pending.  This is odd.  Probably there's a ref count problem somewhere, but we're going to be cool about it now and clean up.  But there's probably a bug.");
-		g_list_foreach(priv->about_to_show_to_go, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
-		g_list_free(priv->about_to_show_to_go);
+		g_queue_foreach(priv->about_to_show_to_go, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+		g_queue_free(priv->about_to_show_to_go);
 		priv->about_to_show_to_go = NULL;
 	}
 
@@ -1652,7 +1652,7 @@ event_data_find (gconstpointer data, gconstpointer user_data)
 static void
 event_group_cb (GObject * proxy, GAsyncResult * res, gpointer user_data)
 {
-	GList * events = (GList *)user_data;
+	GQueue * events = (GQueue *)user_data;
 
 	GError * error = NULL;
 	GVariant * params;
@@ -1661,8 +1661,8 @@ event_group_cb (GObject * proxy, GAsyncResult * res, gpointer user_data)
 	if (error != NULL) {
 		/* If we got an actual DBus error, we should just pass that
 		   along and finish up */
-		g_list_foreach(events, (GFunc)event_data_end, error);
-		g_list_free(events);
+		g_queue_foreach(events, (GFunc)event_data_end, error);
+		g_queue_free(events);
 		events = NULL;
 		return;
 	}
@@ -1673,12 +1673,12 @@ event_group_cb (GObject * proxy, GAsyncResult * res, gpointer user_data)
 	g_variant_iter_init(&iter, array);
 
 	while (g_variant_iter_loop(&iter, "i", &id)) {
-		GList * item = g_list_find_custom(events, GINT_TO_POINTER(id), event_data_find);
+		GList * item = g_queue_find_custom(events, GINT_TO_POINTER(id), event_data_find);
 
 		if (item != NULL) {
 			GError * iderror = g_error_new(error_domain(), ERROR_ID_NOT_FOUND, "Unable to find ID: %d", id);
 			event_data_end((event_data_t *)item->data, iderror);
-			events = g_list_delete_link(events, item);
+			g_queue_delete_link(events, item);
 			g_error_free(iderror);
 		}
 	}
@@ -1687,8 +1687,8 @@ event_group_cb (GObject * proxy, GAsyncResult * res, gpointer user_data)
 	g_variant_unref(params);
 
 	/* If we have any left send non-error responses */
-	g_list_foreach(events, (GFunc)event_data_end, NULL);
-	g_list_free(events);
+	g_queue_foreach(events, (GFunc)event_data_end, NULL);
+	g_queue_free(events);
 	return;
 }
 
@@ -1723,13 +1723,13 @@ event_idle_cb (gpointer user_data)
 
 	/* We use prepend for speed, but now we want to have them
 	   in the order they were called incase that matters. */
-	GList * levents = g_list_reverse(priv->events_to_go);
+	GQueue * levents = priv->events_to_go;
 	priv->events_to_go = NULL;
 	priv->event_idle = 0;
 
 	GVariantBuilder array;
 	g_variant_builder_init(&array, G_VARIANT_TYPE("a(isvu)"));
-	g_list_foreach(levents, events_to_builder, &array);
+	g_queue_foreach(levents, events_to_builder, &array);
 	GVariant * vevents = g_variant_builder_end(&array);
 
 	if (g_signal_has_handler_pending (client, signals[EVENT_RESULT], 0, TRUE)) {
@@ -1748,8 +1748,8 @@ event_idle_cb (gpointer user_data)
 		                  1000,   /* timeout */
 		                  NULL, /* cancellable */
 		                  NULL, NULL);
-		g_list_foreach(levents, (GFunc)event_data_end, NULL);
-		g_list_free(levents);
+		g_queue_foreach(levents, (GFunc)event_data_end, NULL);
+		g_queue_free(levents);
 	}
 
 	return FALSE;
@@ -1807,7 +1807,11 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 		                  menuitem_call_cb,
 		                  edata);
 	} else {
-		priv->events_to_go = g_list_prepend(priv->events_to_go, edata);
+		if (priv->events_to_go == NULL) {
+			priv->events_to_go = g_queue_new();
+		}
+
+		g_queue_push_tail(priv->events_to_go, edata);
 
 		if (priv->event_idle == 0) {
 			priv->event_idle = g_idle_add(event_idle_cb, client);
@@ -1859,7 +1863,7 @@ static void
 about_to_show_group_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 {
 	GError * error = NULL;
-	GList * showers = (GList *)userdata;
+	GQueue * showers = (GQueue *)userdata;
 	GVariant * params = NULL;
 
 	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
@@ -1878,7 +1882,7 @@ about_to_show_group_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		   single structure.  So if we have any ask, we get the update once to
 		   avoid itterating through all the structures. */
 		if (g_variant_iter_init(&iter, updates) > 0) {
-			about_to_show_t * first = (about_to_show_t *)showers->data;
+			about_to_show_t * first = (about_to_show_t *)g_queue_peek_head(showers);
 			update_layout(first->client);
 		}
 
@@ -1887,8 +1891,8 @@ about_to_show_group_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		params = NULL;
 	}
 
-	g_list_foreach(showers, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
-	g_list_free(showers);
+	g_queue_foreach(showers, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+	g_queue_free(showers);
 
 	return;
 }
@@ -1931,17 +1935,17 @@ about_to_show_idle (gpointer user_data)
 
 	/* Reset our object global props and take ownership of these entries */
 	priv->about_to_show_idle = 0;
-	GList * showers = g_list_reverse(priv->about_to_show_to_go);
+	GQueue * showers = priv->about_to_show_to_go;
 	priv->about_to_show_to_go = NULL;
 
 	/* Figure out if we've got any callbacks */
 	gboolean got_callbacks = FALSE;
-	g_list_foreach(showers, about_to_show_idle_callbacks, &got_callbacks);
+	g_queue_foreach(showers, about_to_show_idle_callbacks, &got_callbacks);
 
 	/* Build a list of the IDs */
 	GVariantBuilder idarray;
 	g_variant_builder_init(&idarray, G_VARIANT_TYPE("ai"));
-	g_list_foreach(showers, about_to_show_idle_ids, &idarray);
+	g_queue_foreach(showers, about_to_show_idle_ids, &idarray);
 	GVariant * ids = g_variant_builder_end(&idarray);
 
 	/* Setup our callbacks */
@@ -1951,8 +1955,8 @@ about_to_show_idle (gpointer user_data)
 		cb = about_to_show_group_cb;
 		cb_data = showers;
 	} else {
-		g_list_foreach(showers, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
-		g_list_free(showers);
+		g_queue_foreach(showers, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+		g_queue_free(showers);
 	}
 
 	/* Let's call it! */
@@ -2014,7 +2018,11 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 	g_object_ref(client);
 
 	if (priv->group_events) {
-		priv->about_to_show_to_go = g_list_prepend(priv->about_to_show_to_go, data);
+		if (priv->about_to_show_to_go == NULL) {
+			priv->about_to_show_to_go = g_queue_new();
+		}
+
+		g_queue_push_tail(priv->about_to_show_to_go, data);
 
 		if (priv->about_to_show_idle == 0) {
 			priv->about_to_show_idle = g_idle_add(about_to_show_idle, client);
