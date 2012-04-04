@@ -84,12 +84,35 @@
 			</arg>
 		</method>
 
+		<method name="EventGroup">
+			
+			<arg type="a(isvu)" name="events" direction="in">
+				
+			</arg>
+			<arg type="ai" name="idErrors" direction="out">
+				
+			</arg>
+		</method>
+
 		<method name="AboutToShow">
 			
 			<arg type="i" name="id" direction="in">
 				
 			</arg>
 			<arg type="b" name="needUpdate" direction="out">
+				
+			</arg>
+		</method>
+
+		<method name="AboutToShowGroup">
+			
+			<arg type="ai" name="ids" direction="in">
+				
+			</arg>
+			<arg type="ai" name="updatesNeeded" direction="out">
+				
+			</arg>
+			<arg type="ai" name="idErrors" direction="out">
 				
 			</arg>
 		</method>

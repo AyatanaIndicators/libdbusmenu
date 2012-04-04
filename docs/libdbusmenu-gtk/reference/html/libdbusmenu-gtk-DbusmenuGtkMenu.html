@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DbusmenuGtkMenu</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="libdbusmenu-gtk Reference Manual">
+<link rel="up" href="ch01.html" title="API">
+<link rel="prev" href="ch01.html" title="API">
+<link rel="next" href="libdbusmenu-gtk-menuitem.html" title="menuitem">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="ch01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">libdbusmenu-gtk Reference Manual</th>
+<td><a accesskey="n" href="libdbusmenu-gtk-menuitem.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#libdbusmenu-gtk-DbusmenuGtkMenu.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#libdbusmenu-gtk-DbusmenuGtkMenu.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="libdbusmenu-gtk-DbusmenuGtkMenu"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="libdbusmenu-gtk-DbusmenuGtkMenu.top_of_page"></a>DbusmenuGtkMenu</span></h2>
+<p>DbusmenuGtkMenu — A GTK Menu Object that syncronizes over DBus</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="libdbusmenu-gtk-DbusmenuGtkMenu.stability-level"></a><h2>Stability Level</h2>
+Unstable, unless otherwise indicated
+</div>
+<div class="refsynopsisdiv">
+<a name="libdbusmenu-gtk-DbusmenuGtkMenu.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+#include &lt;libdbusmenu-gtk/menu.h&gt;
+
+struct              <a class="link" href="libdbusmenu-gtk-DbusmenuGtkMenu.html#DbusmenuGtkMenuClass" title="struct DbusmenuGtkMenuClass">DbusmenuGtkMenuClass</a>;
+<span class="returnvalue">DbusmenuGtkMenu</span> *   <a class="link" href="libdbusmenu-gtk-DbusmenuGtkMenu.html#dbusmenu-gtkmenu-new" title="dbusmenu_gtkmenu_new ()">dbusmenu_gtkmenu_new</a>                (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_object</code></em>);
+<a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#DbusmenuGtkClient" title="DbusmenuGtkClient"><span class="returnvalue">DbusmenuGtkClient</span></a> * <a class="link" href="libdbusmenu-gtk-DbusmenuGtkMenu.html#dbusmenu-gtkmenu-get-client" title="dbusmenu_gtkmenu_get_client ()">dbusmenu_gtkmenu_get_client</a>         (<em class="parameter"><code><span class="type">DbusmenuGtkMenu</span> *menu</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="libdbusmenu-gtk-DbusmenuGtkMenu.description"></a><h2>Description</h2>
+<p>
+In general, this is just a <a href="http://developer.gnome.org/devel/gtk/GtkMenu.html"><span class="type">GtkMenu</span></a>, why else would you care?  Oh,
+	because this menu is created by someone else on a server that exists
+	on the other side of DBus.  You need a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a> to be able
+	push the data into this menu.
+</p>
+<p>
+	The first thing you need to know is how to find that <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a>
+	on DBus.  This involves both the DBus name and the DBus object that
+	the menu interface can be found on.  Those two value should be set
+	when creating the object using <a class="link" href="libdbusmenu-gtk-DbusmenuGtkMenu.html#dbusmenu-gtkmenu-new" title="dbusmenu_gtkmenu_new ()"><code class="function">dbusmenu_gtkmenu_new()</code></a>.  They are then
+	stored on two properties <span class="type">"dbus-name"</span> and <span class="type">"dbus-object"</span>.
+</p>
+<p>
+	After creation the <span class="type">DbusmenuGtkMenu</span> it will continue to keep in
+	synchronization with the <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a> object across Dbus.  If the
+	number of entries change, the menus change, if they change thier
+	properties change, they update in the items.  All of this should
+	be handled transparently to the user of this object.
+</p>
+</div>
+<div class="refsect1">
+<a name="libdbusmenu-gtk-DbusmenuGtkMenu.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="DbusmenuGtkMenuClass"></a><h3>struct DbusmenuGtkMenuClass</h3>
+<pre class="programlisting">struct DbusmenuGtkMenuClass {
+	GtkMenuClass parent_class;
+
+	/*&lt; Private &gt;*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
+};
+</pre>
+<p>
+All of the subclassable functions and signal slots for a
+<span class="type">DbusmenuGtkMenu</span>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><span class="type">GtkMenuClass</span> <em class="structfield"><code><a name="DbusmenuGtkMenuClass.parent-class"></a>parent_class</code></em>;</span></p></td>
+<td><span class="type">GtkMenuClass</span></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuGtkMenuClass.reserved1"></a>reserved1</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuGtkMenuClass.reserved2"></a>reserved2</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuGtkMenuClass.reserved3"></a>reserved3</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuGtkMenuClass.reserved4"></a>reserved4</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuGtkMenuClass.reserved5"></a>reserved5</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="DbusmenuGtkMenuClass.reserved6"></a>reserved6</code></em> ()</span></p></td>
+<td>Reserved for future use.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-gtkmenu-new"></a><h3>dbusmenu_gtkmenu_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">DbusmenuGtkMenu</span> *   dbusmenu_gtkmenu_new                (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *dbus_object</code></em>);</pre>
+<p>
+Creates a new <span class="type">DbusmenuGtkMenu</span> object and creates a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuClient.html#DbusmenuClient"><span class="type">DbusmenuClient</span></a>
+that connects across DBus to a <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dbus_name</code></em> :</span></p></td>
+<td>Name of the <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a> on DBus</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dbus_object</code></em> :</span></p></td>
+<td>Name of the object on the <a href="/usr/share/gtk-doc/html/libdbusmenu-glib/libdbusmenu-glib-DbusmenuServer.html#DbusmenuServer"><span class="type">DbusmenuServer</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A new <span class="type">DbusmenuGtkMenu</span> sync'd with a server</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="dbusmenu-gtkmenu-get-client"></a><h3>dbusmenu_gtkmenu_get_client ()</h3>
+<pre class="programlisting"><a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#DbusmenuGtkClient" title="DbusmenuGtkClient"><span class="returnvalue">DbusmenuGtkClient</span></a> * dbusmenu_gtkmenu_get_client         (<em class="parameter"><code><span class="type">DbusmenuGtkMenu</span> *menu</code></em>);</pre>
+<p>
+An accessor for the client that this menu is using to
+communicate with the server.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>menu</code></em> :</span></p></td>
+<td>The <span class="type">DbusmenuGtkMenu</span> to get the client from</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A valid <a class="link" href="libdbusmenu-gtk-DbusmenuGtkClient.html#DbusmenuGtkClient" title="DbusmenuGtkClient"><span class="type">DbusmenuGtkClient</span></a> or NULL on error. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.18</div>
+</body>
+</html>

@@ -8,6 +8,7 @@ EXTRA_DIST =
 TESTS = \
 	test-glib-objects-test \
 	test-glib-events \
+	test-glib-events-nogroup \
 	test-glib-layout \
 	test-glib-properties \
 	test-glib-proxy \
@@ -45,6 +46,7 @@ check_PROGRAMS = \
 	test-glib-objects \
 	test-glib-events-client \
 	test-glib-events-server \
+	test-glib-events-nogroup-client \
 	test-glib-layout-client \
 	test-glib-layout-server \
 	test-glib-properties-client \
@@ -200,6 +202,28 @@ test_glib_events_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+################################
+# Test Glib Events No Grouping
+################################
+
+test-glib-events-nogroup: test-glib-events-nogroup-client test-glib-events-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo export UBUNTU_MENUPROXY="" >> $@
+	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-events-nogroup-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test_glib_events_nogroup_client_SOURCES = \
+	test-glib-events-nogroup-client.c
+
+test_glib_events_nogroup_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_events_nogroup_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
 ######################
 # Test JSON
 ######################
@@ -223,6 +247,7 @@ test_json_server_CFLAGS = \
 	-I $(srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUTESTSVALGRIND_CFLAGS) \
 	-Wall -Werror
 
 test_json_server_LDADD = \
