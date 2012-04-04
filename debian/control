@@ -22,6 +22,7 @@ Build-Depends: debhelper (>= 8.1.3),
                libgirepository1.0-dev (>= 0.9.3),
                libx11-dev (>= 1.3), 
                dh-autoreconf,
+               valgrind,
                valac-0.16
 Standards-Version: 3.9.2
 Homepage: https://launchpad.net/dbusmenu

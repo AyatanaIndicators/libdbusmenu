@@ -223,6 +223,7 @@ test_json_server_CFLAGS = \
 	-I $(srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUTESTSVALGRIND_CFLAGS) \
 	-Wall -Werror
 
 test_json_server_LDADD = \
