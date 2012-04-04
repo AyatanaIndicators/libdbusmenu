@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="libdbusmenu-glib-Types">
+<refmeta>
+<refentrytitle role="top_of_page" id="libdbusmenu-glib-Types.top_of_page">Types</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GLIB Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>Types</refname>
+<refpurpose>Types that are used by both client and
+		server.</refpurpose>
+</refnamediv>
+<refsect1 id="libdbusmenu-glib-Types.stability-level">
+<title>Stability Level</title>
+Unstable, unless otherwise indicated
+</refsect1>
+
+<refsynopsisdiv id="libdbusmenu-glib-Types.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+#include &lt;libdbusmenu-glib/types.h&gt;
+
+#define             <link linkend="DBUSMENU-TYPE-STATUS:CAPS">DBUSMENU_TYPE_STATUS</link>
+#define             <link linkend="DBUSMENU-TYPE-TEXT-DIRECTION:CAPS">DBUSMENU_TYPE_TEXT_DIRECTION</link>
+enum                <link linkend="DbusmenuStatus">DbusmenuStatus</link>;
+enum                <link linkend="DbusmenuTextDirection">DbusmenuTextDirection</link>;
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="dbusmenu-status-get-nick">dbusmenu_status_get_nick</link>            (<parameter><link linkend="DbusmenuStatus"><type>DbusmenuStatus</type></link> value</parameter>);
+<link linkend="GType"><returnvalue>GType</returnvalue></link>               <link linkend="dbusmenu-status-get-type">dbusmenu_status_get_type</link>            (<parameter><type>void</type></parameter>);
+<link linkend="DbusmenuStatus"><returnvalue>DbusmenuStatus</returnvalue></link>      <link linkend="dbusmenu-status-get-value-from-nick">dbusmenu_status_get_value_from_nick</link> (<parameter>const <link linkend="gchar"><type>gchar</type></link> *nick</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="dbusmenu-text-direction-get-nick">dbusmenu_text_direction_get_nick</link>    (<parameter><link linkend="DbusmenuTextDirection"><type>DbusmenuTextDirection</type></link> value</parameter>);
+<link linkend="GType"><returnvalue>GType</returnvalue></link>               <link linkend="dbusmenu-text-direction-get-type">dbusmenu_text_direction_get_type</link>    (<parameter><type>void</type></parameter>);
+<link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> <link linkend="dbusmenu-text-direction-get-value-from-nick">dbusmenu_text_direction_get_value_from_nick</link>
+                                                        (<parameter>const <link linkend="gchar"><type>gchar</type></link> *nick</parameter>);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="libdbusmenu-glib-Types.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+Enums that are used to describe states of the server across the
+	bus.  They are sent over dbus using their nicks but then turned
+	back into enums by the client.
+</para>
+</refsect1>
+<refsect1 id="libdbusmenu-glib-Types.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="DBUSMENU-TYPE-STATUS:CAPS" role="macro">
+<title>DBUSMENU_TYPE_STATUS</title>
+<indexterm zone="DBUSMENU-TYPE-STATUS:CAPS"><primary>DBUSMENU_TYPE_STATUS</primary></indexterm>
+<programlisting>#define DBUSMENU_TYPE_STATUS (dbusmenu_status_get_type())
+</programlisting>
+<para>
+Gets the <link linkend="GType"><type>GType</type></link> value for the type associated with the
+	<link linkend="DbusmenuStatus"><type>DbusmenuStatus</type></link> enumerated type.
+</para></refsect2>
+<refsect2 id="DBUSMENU-TYPE-TEXT-DIRECTION:CAPS" role="macro">
+<title>DBUSMENU_TYPE_TEXT_DIRECTION</title>
+<indexterm zone="DBUSMENU-TYPE-TEXT-DIRECTION:CAPS"><primary>DBUSMENU_TYPE_TEXT_DIRECTION</primary></indexterm>
+<programlisting>#define DBUSMENU_TYPE_TEXT_DIRECTION (dbusmenu_text_direction_get_type())
+</programlisting>
+<para>
+Gets the <link linkend="GType"><type>GType</type></link> value for the type associated with the
+	<link linkend="DbusmenuTextDirection"><type>DbusmenuTextDirection</type></link> enumerated type.
+</para></refsect2>
+<refsect2 id="DbusmenuStatus" role="enum">
+<title>enum DbusmenuStatus</title>
+<indexterm zone="DbusmenuStatus"><primary>DbusmenuStatus</primary></indexterm>
+<programlisting>typedef enum {
+ /*&lt; prefix=DBUSMENU_STATUS &gt;*/
+	DBUSMENU_STATUS_NORMAL,   /*&lt; nick=normal &gt;*/
+	DBUSMENU_STATUS_NOTICE    /*&lt; nick=notice &gt;*/
+} DbusmenuStatus;
+</programlisting>
+<para>
+Tracks how the menus should be presented to the user.
+</para><variablelist role="enum">
+<varlistentry id="DBUSMENU-STATUS-NORMAL:CAPS" role="constant">
+<term><literal>DBUSMENU_STATUS_NORMAL</literal></term>
+<listitem><simpara>Everything is normal
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="DBUSMENU-STATUS-NOTICE:CAPS" role="constant">
+<term><literal>DBUSMENU_STATUS_NOTICE</literal></term>
+<listitem><simpara>The menus should be shown at a higher priority
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="DbusmenuTextDirection" role="enum">
+<title>enum DbusmenuTextDirection</title>
+<indexterm zone="DbusmenuTextDirection"><primary>DbusmenuTextDirection</primary></indexterm>
+<programlisting>typedef enum {
+ /*&lt; prefix=DBUSMENU_TEXT_DIRECTION &gt;*/
+	DBUSMENU_TEXT_DIRECTION_NONE, /*&lt; nick=none &gt;*/
+	DBUSMENU_TEXT_DIRECTION_LTR,  /*&lt; nick=ltr  &gt;*/
+	DBUSMENU_TEXT_DIRECTION_RTL   /*&lt; nick=rtl  &gt;*/
+} DbusmenuTextDirection;
+</programlisting>
+<para>
+The direction of text that the strings that this server
+	will be sending strings as.
+</para><variablelist role="enum">
+<varlistentry id="DBUSMENU-TEXT-DIRECTION-NONE:CAPS" role="constant">
+<term><literal>DBUSMENU_TEXT_DIRECTION_NONE</literal></term>
+<listitem><simpara>Unspecified text direction
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="DBUSMENU-TEXT-DIRECTION-LTR:CAPS" role="constant">
+<term><literal>DBUSMENU_TEXT_DIRECTION_LTR</literal></term>
+<listitem><simpara>Left-to-right text direction
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="DBUSMENU-TEXT-DIRECTION-RTL:CAPS" role="constant">
+<term><literal>DBUSMENU_TEXT_DIRECTION_RTL</literal></term>
+<listitem><simpara>Right-to-left text direction
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-status-get-nick" role="function">
+<title>dbusmenu_status_get_nick ()</title>
+<indexterm zone="dbusmenu-status-get-nick"><primary>dbusmenu_status_get_nick</primary></indexterm>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       dbusmenu_status_get_nick            (<parameter><link linkend="DbusmenuStatus"><type>DbusmenuStatus</type></link> value</parameter>);</programlisting>
+<para>
+Looks up in the enum table for the nick of <parameter>value</parameter>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&#160;:</term>
+<listitem><simpara>The value of DbusmenuStatus to get the nick of</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The nick for the given value or <link linkend="NULL:CAPS"><type>NULL</type></link> on error</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-status-get-type" role="function">
+<title>dbusmenu_status_get_type ()</title>
+<indexterm zone="dbusmenu-status-get-type"><primary>dbusmenu_status_get_type</primary></indexterm>
+<programlisting><link linkend="GType"><returnvalue>GType</returnvalue></link>               dbusmenu_status_get_type            (<parameter><type>void</type></parameter>);</programlisting>
+<para>
+Builds a GLib type for the <link linkend="DbusmenuStatus"><type>DbusmenuStatus</type></link> enumeration.
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A unique <link linkend="GType"><type>GType</type></link> for the <link linkend="DbusmenuStatus"><type>DbusmenuStatus</type></link> enum.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-status-get-value-from-nick" role="function">
+<title>dbusmenu_status_get_value_from_nick ()</title>
+<indexterm zone="dbusmenu-status-get-value-from-nick"><primary>dbusmenu_status_get_value_from_nick</primary></indexterm>
+<programlisting><link linkend="DbusmenuStatus"><returnvalue>DbusmenuStatus</returnvalue></link>      dbusmenu_status_get_value_from_nick (<parameter>const <link linkend="gchar"><type>gchar</type></link> *nick</parameter>);</programlisting>
+<para>
+Looks up in the enum table for the value of <parameter>nick</parameter>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>nick</parameter>&#160;:</term>
+<listitem><simpara>The enum nick to lookup</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The value for the given <parameter>nick</parameter></simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-text-direction-get-nick" role="function">
+<title>dbusmenu_text_direction_get_nick ()</title>
+<indexterm zone="dbusmenu-text-direction-get-nick"><primary>dbusmenu_text_direction_get_nick</primary></indexterm>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       dbusmenu_text_direction_get_nick    (<parameter><link linkend="DbusmenuTextDirection"><type>DbusmenuTextDirection</type></link> value</parameter>);</programlisting>
+<para>
+Looks up in the enum table for the nick of <parameter>value</parameter>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&#160;:</term>
+<listitem><simpara>The value of DbusmenuTextDirection to get the nick of</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The nick for the given value or <link linkend="NULL:CAPS"><type>NULL</type></link> on error</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-text-direction-get-type" role="function">
+<title>dbusmenu_text_direction_get_type ()</title>
+<indexterm zone="dbusmenu-text-direction-get-type"><primary>dbusmenu_text_direction_get_type</primary></indexterm>
+<programlisting><link linkend="GType"><returnvalue>GType</returnvalue></link>               dbusmenu_text_direction_get_type    (<parameter><type>void</type></parameter>);</programlisting>
+<para>
+Builds a GLib type for the <link linkend="DbusmenuTextDirection"><type>DbusmenuTextDirection</type></link> enumeration.
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A unique <link linkend="GType"><type>GType</type></link> for the <link linkend="DbusmenuTextDirection"><type>DbusmenuTextDirection</type></link> enum.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-text-direction-get-value-from-nick" role="function">
+<title>dbusmenu_text_direction_get_value_from_nick ()</title>
+<indexterm zone="dbusmenu-text-direction-get-value-from-nick"><primary>dbusmenu_text_direction_get_value_from_nick</primary></indexterm>
+<programlisting><link linkend="DbusmenuTextDirection"><returnvalue>DbusmenuTextDirection</returnvalue></link> dbusmenu_text_direction_get_value_from_nick
+                                                        (<parameter>const <link linkend="gchar"><type>gchar</type></link> *nick</parameter>);</programlisting>
+<para>
+Looks up in the enum table for the value of <parameter>nick</parameter>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>nick</parameter>&#160;:</term>
+<listitem><simpara>The enum nick to lookup</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The value for the given <parameter>nick</parameter></simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>
