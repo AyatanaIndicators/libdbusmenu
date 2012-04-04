@@ -52,7 +52,8 @@ enum {
 	PROP_DBUSOBJECT,
 	PROP_DBUSNAME,
 	PROP_STATUS,
-	PROP_TEXT_DIRECTION
+	PROP_TEXT_DIRECTION,
+	PROP_GROUP_EVENTS
 };
 
 /* Signals */
@@ -64,6 +65,12 @@ enum {
 	EVENT_RESULT,
 	ICON_THEME_DIRS,
 	LAST_SIGNAL
+};
+
+/* Errors */
+enum {
+	ERROR_DISPOSAL,
+	ERROR_ID_NOT_FOUND
 };
 
 typedef void (*properties_func) (GVariant * properties, GError * error, gpointer user_data);
@@ -100,6 +107,13 @@ struct _DbusmenuClientPrivate
 	DbusmenuTextDirection text_direction;
 	DbusmenuStatus status;
 	GStrv icon_dirs;
+
+	gboolean group_events;
+	guint event_idle;
+	GQueue * events_to_go; /* type: event_data_t * */
+
+	guint about_to_show_idle;
+	GQueue * about_to_show_to_go; /* type: about_to_show_t * */
 };
 
 typedef struct _newItemPropData newItemPropData;
@@ -120,6 +134,7 @@ struct _properties_listener_t {
 
 typedef struct _event_data_t event_data_t;
 struct _event_data_t {
+	gint id;
 	DbusmenuClient * client;
 	DbusmenuMenuitem * menuitem;
 	gchar * event;
@@ -171,6 +186,8 @@ static void menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties
 static void menuproxy_name_changed_cb (GObject * object, GParamSpec * pspec, gpointer user_data);
 static void menuproxy_signal_cb (GDBusProxy * proxy, gchar * sender, gchar * signal, GVariant * params, gpointer user_data);
 static void type_handler_destroy (gpointer user_data);
+static void event_data_end (event_data_t * eventd, GError * error);
+static void about_to_show_finish_pntr (gpointer data, gpointer user_data);
 
 /* Globals */
 static GDBusNodeInfo *            dbusmenu_node_info = NULL;
@@ -309,6 +326,10 @@ dbusmenu_client_class_init (DbusmenuClientClass *klass)
 	                                              "Signals which direction the default text direction is for the menus",
 	                                              DBUSMENU_TYPE_TEXT_DIRECTION, DBUSMENU_TEXT_DIRECTION_NONE,
 	                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class, PROP_GROUP_EVENTS,
+	                                 g_param_spec_boolean(DBUSMENU_CLIENT_PROP_GROUP_EVENTS, "Whether or not multiple events should be grouped",
+	                                              "Event grouping lowers the number of messages on DBus and will be set automatically based on the version to optimize traffic.  It can be disabled for testing or other purposes.",
+	                                              FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	if (dbusmenu_node_info == NULL) {
 		GError * error = NULL;
@@ -380,6 +401,13 @@ dbusmenu_client_init (DbusmenuClient *self)
 	priv->status = DBUSMENU_STATUS_NORMAL;
 	priv->icon_dirs = NULL;
 
+	priv->group_events = FALSE;
+	priv->event_idle = 0;
+	priv->events_to_go = NULL;
+
+	priv->about_to_show_idle = 0;
+	priv->about_to_show_to_go = NULL;
+
 	return;
 }
 
@@ -391,6 +419,32 @@ dbusmenu_client_dispose (GObject *object)
 	if (priv->delayed_idle != 0) {
 		g_source_remove(priv->delayed_idle);
 		priv->delayed_idle = 0;
+	}
+
+	if (priv->event_idle != 0) {
+		g_source_remove(priv->event_idle);
+		priv->event_idle = 0;
+	}
+
+	if (priv->about_to_show_idle != 0) {
+		g_source_remove(priv->about_to_show_idle);
+		priv->about_to_show_idle = 0;
+	}
+
+	if (priv->events_to_go != NULL) {
+		g_warning("Getting to client dispose with events pending.  This is odd.  Probably there's a ref count problem somewhere, but we're going to be cool about it now and clean up.  But there's probably a bug.");
+		GError * error = g_error_new_literal(error_domain(), ERROR_DISPOSAL, "Client disposed before event signal returned");
+		g_queue_foreach(priv->events_to_go, (GFunc)event_data_end, error);
+		g_queue_free(priv->events_to_go);
+		priv->events_to_go = NULL;
+		g_error_free(error);
+	}
+
+	if (priv->about_to_show_to_go != NULL) {
+		g_warning("Getting to client dispose with about_to_show's pending.  This is odd.  Probably there's a ref count problem somewhere, but we're going to be cool about it now and clean up.  But there's probably a bug.");
+		g_queue_foreach(priv->about_to_show_to_go, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+		g_queue_free(priv->about_to_show_to_go);
+		priv->about_to_show_to_go = NULL;
 	}
 
 	/* Only used for queueing up a new command, so we can
@@ -517,6 +571,9 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 			build_proxies(DBUSMENU_CLIENT(obj));
 		}
 		break;
+	case PROP_GROUP_EVENTS:
+		priv->group_events = g_value_get_boolean(value);
+		break;
 	default:
 		g_warning("Unknown property %d.", id);
 		return;
@@ -542,6 +599,9 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 		break;
 	case PROP_TEXT_DIRECTION:
 		g_value_set_enum(value, priv->text_direction);
+		break;
+	case PROP_GROUP_EVENTS:
+		g_value_set_boolean(value, priv->group_events);
 		break;
 	default:
 		g_warning("Unknown property %d.", id);
@@ -649,7 +709,7 @@ get_properties_callback (GObject *obj, GAsyncResult * res, gpointer user_data)
 		for (i = 0; i < listeners->len; i++) {
 			properties_listener_t * listener = &g_array_index(listeners, properties_listener_t, i);
 			if (!listener->replied) {
-				g_warning("Generating properties error for: %d", listener->id);
+				g_debug("Generating properties error for: %d", listener->id);
 				if (localerror == NULL) {
 					g_set_error_literal(&localerror, error_domain(), 0, "Error getting properties for ID");
 				}
@@ -1086,6 +1146,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_TEXT_DIRECTION);
 
 		g_variant_unref(textdir);
+		textdir = NULL;
 	}
 
 	/* Check the status if available */
@@ -1101,6 +1162,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		g_object_notify(G_OBJECT(user_data), DBUSMENU_CLIENT_PROP_STATUS);
 
 		g_variant_unref(status);
+		status = NULL;
 	}
 
 	/* Get the icon theme directories if available */
@@ -1115,6 +1177,33 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		g_signal_emit(G_OBJECT(client), signals[ICON_THEME_DIRS], 0, priv->icon_dirs, TRUE);
 
 		g_variant_unref(icon_dirs);
+		icon_dirs = NULL;
+	}
+
+	/* Get the dbusmenu protocol version if available */
+	GVariant * version = g_dbus_proxy_get_cached_property(priv->menuproxy, "Version");
+	if (version != NULL) {
+		guint32 remote_version = 0;
+
+		if (g_variant_is_of_type(version, G_VARIANT_TYPE_UINT32)) {
+			remote_version = g_variant_get_uint32(version);
+		}
+
+		gboolean old_group = priv->group_events;
+		/* Figure out if we can group the events or not */
+		if (remote_version >= 3) {
+			priv->group_events = TRUE;
+		} else {
+			priv->group_events = FALSE;
+		}
+
+		/* Notify listeners if we changed the value */
+		if (old_group != priv->group_events) {
+			g_object_notify(G_OBJECT(client), DBUSMENU_CLIENT_PROP_GROUP_EVENTS);
+		}
+
+		g_variant_unref(version);
+		version = NULL;
 	}
 
 	/* If we get here, we don't need the DBus proxy */
@@ -1195,6 +1284,19 @@ menuproxy_prop_changed_cb (GDBusProxy * proxy, GVariant * properties, GStrv inva
 
 			priv->icon_dirs = g_variant_dup_strv(value, NULL);
 			dirs_changed = TRUE;
+		}
+		if (g_strcmp0(key, "Version") == 0) {
+			guint32 remote_version = 0;
+
+			if (g_variant_is_of_type(value, G_VARIANT_TYPE_UINT32)) {
+				remote_version = g_variant_get_uint32(value);
+			}
+
+			if (remote_version >= 3) {
+				priv->group_events = TRUE;
+			} else {
+				priv->group_events = FALSE;
+			}
 		}
 	}
 
@@ -1441,7 +1543,7 @@ menuitem_get_properties_new_cb (GVariant * properties, GError * error, gpointer 
 	newItemPropData * propdata = (newItemPropData *)data;
 
 	if (error != NULL) {
-		g_warning("Error getting properties on a new menuitem: %s", error->message);
+		g_debug("Error getting properties on a new menuitem: %s", error->message);
 		goto out;
 	}
 
@@ -1488,6 +1590,22 @@ out:
 	return;
 }
 
+/* A function to work with an event_data_t and make sure it gets
+   free'd and in a terminal state. */
+static void
+event_data_end (event_data_t * edata, GError * error)
+{
+	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->variant, edata->timestamp, error, TRUE);
+
+	g_variant_unref(edata->variant);
+	g_free(edata->event);
+	g_object_unref(edata->menuitem);
+	g_object_unref(edata->client);
+	g_free(edata);
+
+	return;
+}
+
 /* Respond to the call function to make sure that the other side
    got it, or print a warning. */
 static void
@@ -1503,13 +1621,7 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		g_warning("Unable to call event '%s' on menu item %d: %s", edata->event, dbusmenu_menuitem_get_id(edata->menuitem), error->message);
 	}
 
-	g_signal_emit(edata->client, signals[EVENT_RESULT], 0, edata->menuitem, edata->event, edata->variant, edata->timestamp, error, TRUE);
-
-	g_variant_unref(edata->variant);
-	g_free(edata->event);
-	g_object_unref(edata->menuitem);
-	g_object_unref(edata->client);
-	g_free(edata);
+	event_data_end(edata, error);
 
 	if (G_UNLIKELY(error != NULL)) {
 		g_error_free(error);
@@ -1519,6 +1631,128 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 	}
 
 	return;
+}
+
+/* Looks at event_data_t structs to match an ID */
+gint
+event_data_find (gconstpointer data, gconstpointer user_data)
+{
+	event_data_t * edata = (event_data_t *)data;
+	gint id = GPOINTER_TO_INT(user_data);
+
+	if (edata->id == id) {
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
+/* The callback from the dbus message to pass events to the
+   to the server en masse */
+static void
+event_group_cb (GObject * proxy, GAsyncResult * res, gpointer user_data)
+{
+	GQueue * events = (GQueue *)user_data;
+
+	GError * error = NULL;
+	GVariant * params;
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
+
+	if (error != NULL) {
+		/* If we got an actual DBus error, we should just pass that
+		   along and finish up */
+		g_queue_foreach(events, (GFunc)event_data_end, error);
+		g_queue_free(events);
+		events = NULL;
+		return;
+	}
+
+	gint id = 0;
+	GVariant * array = g_variant_get_child_value(params, 0);
+	GVariantIter iter;
+	g_variant_iter_init(&iter, array);
+
+	while (g_variant_iter_loop(&iter, "i", &id)) {
+		GList * item = g_queue_find_custom(events, GINT_TO_POINTER(id), event_data_find);
+
+		if (item != NULL) {
+			GError * iderror = g_error_new(error_domain(), ERROR_ID_NOT_FOUND, "Unable to find ID: %d", id);
+			event_data_end((event_data_t *)item->data, iderror);
+			g_queue_delete_link(events, item);
+			g_error_free(iderror);
+		}
+	}
+
+	g_variant_unref(array);
+	g_variant_unref(params);
+
+	/* If we have any left send non-error responses */
+	g_queue_foreach(events, (GFunc)event_data_end, NULL);
+	g_queue_free(events);
+	return;
+}
+
+/* Turn an event structure into the variant builder form */
+static void
+events_to_builder (gpointer data, gpointer user_data)
+{
+	event_data_t * edata = (event_data_t *)data;
+	GVariantBuilder * builder = (GVariantBuilder *)user_data;
+
+	GVariantBuilder tuple;
+	g_variant_builder_init(&tuple, G_VARIANT_TYPE_TUPLE);
+
+	g_variant_builder_add_value(&tuple, g_variant_new_int32(edata->id));
+	g_variant_builder_add_value(&tuple, g_variant_new_string(edata->event));
+	g_variant_builder_add_value(&tuple, g_variant_new_variant(edata->variant));
+	g_variant_builder_add_value(&tuple, g_variant_new_uint32(edata->timestamp));
+
+	GVariant * vtuple = g_variant_builder_end(&tuple);
+	g_variant_builder_add_value(builder, vtuple);
+	return;
+}
+
+/* Group all the events into a single Dbus message and send
+   that out */
+static gboolean
+event_idle_cb (gpointer user_data)
+{
+	g_return_val_if_fail(DBUSMENU_IS_CLIENT(user_data), FALSE);
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(user_data);
+
+	/* We use prepend for speed, but now we want to have them
+	   in the order they were called incase that matters. */
+	GQueue * levents = priv->events_to_go;
+	priv->events_to_go = NULL;
+	priv->event_idle = 0;
+
+	GVariantBuilder array;
+	g_variant_builder_init(&array, G_VARIANT_TYPE("a(isvu)"));
+	g_queue_foreach(levents, events_to_builder, &array);
+	GVariant * vevents = g_variant_builder_end(&array);
+
+	if (g_signal_has_handler_pending (client, signals[EVENT_RESULT], 0, TRUE)) {
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "EventGroup",
+		                  g_variant_new_tuple(&vevents, 1),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  1000,   /* timeout */
+		                  NULL, /* cancellable */
+		                  event_group_cb, levents);
+	} else {
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "EventGroup",
+		                  g_variant_new_tuple(&vevents, 1),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  1000,   /* timeout */
+		                  NULL, /* cancellable */
+		                  NULL, NULL);
+		g_queue_foreach(levents, (GFunc)event_data_end, NULL);
+		g_queue_free(levents);
+	}
+
+	return FALSE;
 }
 
 /* Sends the event over DBus to the server on the other side
@@ -1541,7 +1775,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	}
 
 	/* Don't bother with the reply handling if nobody is watching... */
-	if (!g_signal_has_handler_pending (client, signals[EVENT_RESULT], 0, TRUE)) {
+	if (!priv->group_events && !g_signal_has_handler_pending (client, signals[EVENT_RESULT], 0, TRUE)) {
 		g_dbus_proxy_call(priv->menuproxy,
 		                  "Event",
 		                  g_variant_new("(isvu)", id, name, variant, timestamp),
@@ -1553,6 +1787,7 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	}
 
 	event_data_t * edata = g_new0(event_data_t, 1);
+	edata->id = id;
 	edata->client = client;
 	g_object_ref(client);
 	edata->menuitem = mi;
@@ -1562,24 +1797,180 @@ dbusmenu_client_send_event (DbusmenuClient * client, gint id, const gchar * name
 	edata->variant = variant;
 	g_variant_ref_sink(variant);
 
-	g_dbus_proxy_call(priv->menuproxy,
-	                  "Event",
-	                  g_variant_new("(isvu)", id, name, variant, timestamp),
-	                  G_DBUS_CALL_FLAGS_NONE,
-	                  1000,   /* timeout */
-	                  NULL, /* cancellable */
-	                  menuitem_call_cb,
-	                  edata);
+	if (!priv->group_events) {
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "Event",
+		                  g_variant_new("(isvu)", id, name, variant, timestamp),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  1000,   /* timeout */
+		                  NULL, /* cancellable */
+		                  menuitem_call_cb,
+		                  edata);
+	} else {
+		if (priv->events_to_go == NULL) {
+			priv->events_to_go = g_queue_new();
+		}
+
+		g_queue_push_tail(priv->events_to_go, edata);
+
+		if (priv->event_idle == 0) {
+			priv->event_idle = g_idle_add(event_idle_cb, client);
+		}
+	}
 
 	return;
 }
 
 typedef struct _about_to_show_t about_to_show_t;
 struct _about_to_show_t {
+	gint id;
 	DbusmenuClient * client;
 	void (*cb) (gpointer data);
 	gpointer cb_data;
 };
+
+/* Takes an about_to_show_t structure and calls the callback correctly
+   and updates the layout if needed. */
+static void
+about_to_show_finish (about_to_show_t * data, gboolean need_update)
+{
+	/* If we need to update, do that first. */
+	if (need_update) {
+		update_layout(data->client);
+	}
+
+	if (data->cb != NULL) {
+		data->cb(data->cb_data);
+	}
+
+	g_object_unref(data->client);
+	g_free(data);
+
+	return;
+}
+
+/* A little function to match prototypes and make sure to convert from
+   a pointer to an int correctly */
+static void
+about_to_show_finish_pntr (gpointer data, gpointer user_data)
+{
+	return about_to_show_finish((about_to_show_t *)data, GPOINTER_TO_INT(user_data));
+}
+
+/* Respond to the DBus message from sending a bunch of about-to-show events
+   to the server */
+static void
+about_to_show_group_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
+{
+	GError * error = NULL;
+	GQueue * showers = (GQueue *)userdata;
+	GVariant * params = NULL;
+
+	params = g_dbus_proxy_call_finish(G_DBUS_PROXY(proxy), res, &error);
+
+	if (error != NULL) {
+		g_warning("Unable to send about_to_show_group: %s", error->message);
+		/* Note: we're just ensuring only the callback gets called */
+		g_error_free(error);
+		error = NULL;
+	} else {
+		GVariant * updates = g_variant_get_child_value(params, 0);
+		GVariantIter iter;
+
+		/* Okay, so this is kinda interesting.  We actually don't care which
+		   entries asked us to update the structure, as it's quite simply a
+		   single structure.  So if we have any ask, we get the update once to
+		   avoid itterating through all the structures. */
+		if (g_variant_iter_init(&iter, updates) > 0) {
+			about_to_show_t * first = (about_to_show_t *)g_queue_peek_head(showers);
+			update_layout(first->client);
+		}
+
+		g_variant_unref(updates);
+		g_variant_unref(params);
+		params = NULL;
+	}
+
+	g_queue_foreach(showers, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+	g_queue_free(showers);
+
+	return;
+}
+
+/* Check to see if this about to show entry has a callback associated
+   with it */
+static void
+about_to_show_idle_callbacks (gpointer data, gpointer user_data)
+{
+	about_to_show_t * abts = (about_to_show_t *)data;
+	gboolean * got_callbacks = (gboolean *)user_data;
+
+	if (abts->cb != NULL) {
+		*got_callbacks = TRUE;
+	}
+
+	return;
+}
+
+/* Take the ID out of the about to show structure and put it into the 
+   variant builder */
+static void
+about_to_show_idle_ids (gpointer data, gpointer user_data)
+{
+	about_to_show_t * abts = (about_to_show_t *)data;
+	GVariantBuilder * builder = (GVariantBuilder *)user_data;
+
+	g_variant_builder_add_value(builder, g_variant_new_int32(abts->id));
+
+	return;
+}
+
+/* Function that gets called with all the queued about_to_show messages, let's
+   get these guys on the bus! */
+static gboolean
+about_to_show_idle (gpointer user_data)
+{
+	DbusmenuClient * client = DBUSMENU_CLIENT(user_data);
+	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
+
+	/* Reset our object global props and take ownership of these entries */
+	priv->about_to_show_idle = 0;
+	GQueue * showers = priv->about_to_show_to_go;
+	priv->about_to_show_to_go = NULL;
+
+	/* Figure out if we've got any callbacks */
+	gboolean got_callbacks = FALSE;
+	g_queue_foreach(showers, about_to_show_idle_callbacks, &got_callbacks);
+
+	/* Build a list of the IDs */
+	GVariantBuilder idarray;
+	g_variant_builder_init(&idarray, G_VARIANT_TYPE("ai"));
+	g_queue_foreach(showers, about_to_show_idle_ids, &idarray);
+	GVariant * ids = g_variant_builder_end(&idarray);
+
+	/* Setup our callbacks */
+	GAsyncReadyCallback cb = NULL;
+	gpointer cb_data = NULL;
+	if (got_callbacks) {
+		cb = about_to_show_group_cb;
+		cb_data = showers;
+	} else {
+		g_queue_foreach(showers, about_to_show_finish_pntr, GINT_TO_POINTER(FALSE));
+		g_queue_free(showers);
+	}
+
+	/* Let's call it! */
+	g_dbus_proxy_call(priv->menuproxy,
+	                  "AboutToShowGroup",
+	                  g_variant_new_tuple(&ids, 1),
+	                  G_DBUS_CALL_FLAGS_NONE,
+	                  -1,   /* timeout */
+	                  NULL, /* cancellable */
+	                  cb,
+	                  cb_data);
+
+	return FALSE;
+}
 
 /* Reports errors and responds to update request that were a result
    of sending the about to show signal. */
@@ -1604,18 +1995,7 @@ about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		g_variant_unref(params);
 	}
 
-	/* If we need to update, do that first. */
-	if (need_update) {
-		update_layout(data->client);
-	}
-
-	if (data->cb != NULL) {
-		data->cb(data->cb_data);
-	}
-
-	g_object_unref(data->client);
-	g_free(data);
-
+	about_to_show_finish(data, need_update);
 	return;
 }
 
@@ -1631,19 +2011,40 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 	g_return_if_fail(priv != NULL);
 
 	about_to_show_t * data = g_new0(about_to_show_t, 1);
+	data->id = id;
 	data->client = client;
 	data->cb = cb;
 	data->cb_data = cb_data;
 	g_object_ref(client);
 
-	g_dbus_proxy_call(priv->menuproxy,
-	                  "AboutToShow",
-	                  g_variant_new("(i)", id),
-	                  G_DBUS_CALL_FLAGS_NONE,
-	                  -1,   /* timeout */
-	                  NULL, /* cancellable */
-	                  about_to_show_cb,
-	                  data);
+	if (priv->group_events) {
+		if (priv->about_to_show_to_go == NULL) {
+			priv->about_to_show_to_go = g_queue_new();
+		}
+
+		g_queue_push_tail(priv->about_to_show_to_go, data);
+
+		if (priv->about_to_show_idle == 0) {
+			priv->about_to_show_idle = g_idle_add(about_to_show_idle, client);
+		}
+	} else {
+		/* If there's no callback we don't need this data, let's
+		   clean it up in a consistent way */
+		if (cb == NULL) {
+			about_to_show_finish(data, FALSE);
+			data = NULL;
+		}
+
+		g_dbus_proxy_call(priv->menuproxy,
+		                  "AboutToShow",
+		                  g_variant_new("(i)", id),
+		                  G_DBUS_CALL_FLAGS_NONE,
+		                  -1,   /* timeout */
+		                  NULL, /* cancellable */
+		                  about_to_show_cb,
+		                  data);
+	}
+
 	return;
 }
 
