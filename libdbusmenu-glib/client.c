@@ -1180,7 +1180,7 @@ menuproxy_build_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 		icon_dirs = NULL;
 	}
 
-	/* Get the icon theme directories if available */
+	/* Get the dbusmenu protocol version if available */
 	GVariant * version = g_dbus_proxy_get_cached_property(priv->menuproxy, "Version");
 	if (version != NULL) {
 		guint32 remote_version = 0;
