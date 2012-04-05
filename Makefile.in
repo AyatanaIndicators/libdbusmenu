@@ -14,6 +14,8 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
+# Coverage targets
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -33,19 +35,19 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	compile config.guess config.sub depcomp install-sh ltmain.sh \
-	missing mkinstalldirs
+	$(top_srcdir)/Makefile.am.coverage $(top_srcdir)/configure \
+	AUTHORS COPYING ChangeLog INSTALL NEWS compile config.guess \
+	config.sub depcomp install-sh ltmain.sh missing mkinstalldirs
+subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
 	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/intltool.m4 \
 	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/gcov.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -131,6 +133,8 @@ CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+COVERAGE_CFLAGS = @COVERAGE_CFLAGS@
+COVERAGE_LDFLAGS = @COVERAGE_LDFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -141,6 +145,8 @@ DBUSMENUGLIB_CFLAGS = @DBUSMENUGLIB_CFLAGS@
 DBUSMENUGLIB_LIBS = @DBUSMENUGLIB_LIBS@
 DBUSMENUGTK_CFLAGS = @DBUSMENUGTK_CFLAGS@
 DBUSMENUGTK_LIBS = @DBUSMENUGTK_LIBS@
+DBUSMENUTESTSVALGRIND_CFLAGS = @DBUSMENUTESTSVALGRIND_CFLAGS@
+DBUSMENUTESTSVALGRIND_LIBS = @DBUSMENUTESTSVALGRIND_LIBS@
 DBUSMENUTESTS_CFLAGS = @DBUSMENUTESTS_CFLAGS@
 DBUSMENUTESTS_LIBS = @DBUSMENUTESTS_LIBS@
 DEFS = @DEFS@
@@ -156,6 +162,8 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GCOVR = @GCOVR@
+GENHTML = @GENHTML@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
@@ -191,6 +199,7 @@ INTROSPECTION_LIBS = @INTROSPECTION_LIBS@
 INTROSPECTION_MAKEFILE = @INTROSPECTION_MAKEFILE@
 INTROSPECTION_SCANNER = @INTROSPECTION_SCANNER@
 INTROSPECTION_TYPELIBDIR = @INTROSPECTION_TYPELIBDIR@
+LCOV = @LCOV@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDBUSMENU_AGE = @LIBDBUSMENU_AGE@
@@ -236,6 +245,7 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHTOOL = @SHTOOL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VALA_API_GEN = @VALA_API_GEN@
@@ -318,7 +328,7 @@ all: config.h
 .SUFFIXES:
 am--refresh: Makefile
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/Makefile.am.coverage $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -341,6 +351,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe);; \
 	esac;
+$(top_srcdir)/Makefile.am.coverage:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
@@ -740,7 +751,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool mostlyclean-am
+clean-am: clean-generic clean-libtool clean-local mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -813,20 +824,20 @@ uninstall-am:
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am am--refresh check check-am clean clean-generic \
-	clean-libtool ctags ctags-recursive dist dist-all dist-bzip2 \
-	dist-gzip dist-hook dist-lzip dist-lzma dist-shar dist-tarZ \
-	dist-xz dist-zip distcheck distclean distclean-generic \
-	distclean-hdr distclean-libtool distclean-tags distcleancheck \
-	distdir distuninstallcheck dvi dvi-am html html-am info \
-	info-am install install-am install-data install-data-am \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am
+	clean-libtool clean-local ctags ctags-recursive dist dist-all \
+	dist-bzip2 dist-gzip dist-hook dist-lzip dist-lzma dist-shar \
+	dist-tarZ dist-xz dist-zip distcheck distclean \
+	distclean-generic distclean-hdr distclean-libtool \
+	distclean-tags distcleancheck distdir distuninstallcheck dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-recursive uninstall uninstall-am
 
 
 #
@@ -857,6 +868,44 @@ dist-hook:
         else \
 			echo Failed to generate AUTHORS: not a branch >&2; \
 	fi
+
+.PHONY: clean-gcno clean-gcda \
+	coverage-html generate-coverage-html clean-coverage-html \
+	coverage-gcovr generate-coverage-gcovr clean-coverage-gcovr
+
+clean-local: clean-gcno clean-coverage-html clean-coverage-gcovr
+
+@HAVE_GCOV_TRUE@clean-gcno:
+@HAVE_GCOV_TRUE@	@echo Removing old coverage instrumentation
+@HAVE_GCOV_TRUE@	-find -name '*.gcno' -print | xargs -r rm
+
+@HAVE_GCOV_TRUE@clean-gcda:
+@HAVE_GCOV_TRUE@	@echo Removing old coverage results
+@HAVE_GCOV_TRUE@	-find -name '*.gcda' -print | xargs -r rm
+
+@HAVE_GCOV_TRUE@coverage-html: clean-gcda
+@HAVE_GCOV_TRUE@	-$(MAKE) $(AM_MAKEFLAGS) -k check
+@HAVE_GCOV_TRUE@	$(MAKE) $(AM_MAKEFLAGS) generate-coverage-html
+
+@HAVE_GCOV_TRUE@generate-coverage-html:
+@HAVE_GCOV_TRUE@	@echo Collecting coverage data
+@HAVE_GCOV_TRUE@	$(LCOV) --directory $(top_builddir) --capture --output-file coverage.info --no-checksum --compat-libtool
+@HAVE_GCOV_TRUE@	LANG=C $(GENHTML) --prefix $(top_builddir) --output-directory coveragereport --title "Code Coverage" --legend --show-details coverage.info
+
+@HAVE_GCOV_TRUE@clean-coverage-html: clean-gcda
+@HAVE_GCOV_TRUE@	-$(LCOV) --directory $(top_builddir) -z
+@HAVE_GCOV_TRUE@	-rm -rf coverage.info coveragereport
+
+@HAVE_GCOVR_TRUE@@HAVE_GCOV_TRUE@coverage-gcovr: clean-gcda
+@HAVE_GCOVR_TRUE@@HAVE_GCOV_TRUE@	-$(MAKE) $(AM_MAKEFLAGS) -k check
+@HAVE_GCOVR_TRUE@@HAVE_GCOV_TRUE@	$(MAKE) $(AM_MAKEFLAGS) generate-coverage-gcovr
+
+@HAVE_GCOVR_TRUE@@HAVE_GCOV_TRUE@generate-coverage-gcovr:
+@HAVE_GCOVR_TRUE@@HAVE_GCOV_TRUE@	@echo Generating coverage GCOVR report
+@HAVE_GCOVR_TRUE@@HAVE_GCOV_TRUE@	$(GCOVR) -x -r $(top_builddir) -o $(top_builddir)/coverage.xml
+
+@HAVE_GCOVR_TRUE@@HAVE_GCOV_TRUE@clean-coverage-gcovr: clean-gcda
+@HAVE_GCOVR_TRUE@@HAVE_GCOV_TRUE@	-rm -rf $(top_builddir)/coverage.xml
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

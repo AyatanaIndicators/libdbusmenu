@@ -36,10 +36,10 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-TESTS = test-glib-objects-test test-glib-events test-glib-layout \
-	test-glib-properties test-glib-proxy \
-	test-glib-simple-items$(EXEEXT) test-glib-submenu \
-	$(am__append_1) $(am__append_2)
+TESTS = test-glib-objects-test test-glib-events \
+	test-glib-events-nogroup test-glib-layout test-glib-properties \
+	test-glib-proxy test-glib-simple-items$(EXEEXT) \
+	test-glib-submenu $(am__append_1) $(am__append_2)
 @WANT_DBUSMENUDUMPER_TRUE@am__append_1 = \
 @WANT_DBUSMENUDUMPER_TRUE@	test-json \
 @WANT_DBUSMENUDUMPER_TRUE@	test-json-instruction
@@ -54,6 +54,7 @@ TESTS = test-glib-objects-test test-glib-events test-glib-layout \
 check_PROGRAMS = glib-server-nomenu$(EXEEXT) \
 	test-glib-objects$(EXEEXT) test-glib-events-client$(EXEEXT) \
 	test-glib-events-server$(EXEEXT) \
+	test-glib-events-nogroup-client$(EXEEXT) \
 	test-glib-layout-client$(EXEEXT) \
 	test-glib-layout-server$(EXEEXT) \
 	test-glib-properties-client$(EXEEXT) \
@@ -89,7 +90,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/gnome-doc-utils.m4 \
 	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/gcov.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -172,6 +173,15 @@ test_glib_events_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_glib_events_client_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am_test_glib_events_nogroup_client_OBJECTS = test_glib_events_nogroup_client-test-glib-events-nogroup-client.$(OBJEXT)
+test_glib_events_nogroup_client_OBJECTS =  \
+	$(am_test_glib_events_nogroup_client_OBJECTS)
+test_glib_events_nogroup_client_DEPENDENCIES =  \
+	../libdbusmenu-glib/libdbusmenu-glib.la $(am__DEPENDENCIES_1)
+test_glib_events_nogroup_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_glib_events_nogroup_client_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_test_glib_events_server_OBJECTS =  \
 	test_glib_events_server-test-glib-events-server.$(OBJEXT)
 test_glib_events_server_OBJECTS =  \
@@ -440,6 +450,7 @@ am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(glib_server_nomenu_SOURCES) \
 	$(test_glib_events_client_SOURCES) \
+	$(test_glib_events_nogroup_client_SOURCES) \
 	$(test_glib_events_server_SOURCES) \
 	$(test_glib_layout_client_SOURCES) \
 	$(test_glib_layout_server_SOURCES) \
@@ -463,6 +474,7 @@ SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 DIST_SOURCES = $(libdbusmenu_jsonloader_la_SOURCES) \
 	$(glib_server_nomenu_SOURCES) \
 	$(test_glib_events_client_SOURCES) \
+	$(test_glib_events_nogroup_client_SOURCES) \
 	$(test_glib_events_server_SOURCES) \
 	$(test_glib_layout_client_SOURCES) \
 	$(test_glib_layout_server_SOURCES) \
@@ -504,6 +516,8 @@ CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+COVERAGE_CFLAGS = @COVERAGE_CFLAGS@
+COVERAGE_LDFLAGS = @COVERAGE_LDFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -514,6 +528,8 @@ DBUSMENUGLIB_CFLAGS = @DBUSMENUGLIB_CFLAGS@
 DBUSMENUGLIB_LIBS = @DBUSMENUGLIB_LIBS@
 DBUSMENUGTK_CFLAGS = @DBUSMENUGTK_CFLAGS@
 DBUSMENUGTK_LIBS = @DBUSMENUGTK_LIBS@
+DBUSMENUTESTSVALGRIND_CFLAGS = @DBUSMENUTESTSVALGRIND_CFLAGS@
+DBUSMENUTESTSVALGRIND_LIBS = @DBUSMENUTESTSVALGRIND_LIBS@
 DBUSMENUTESTS_CFLAGS = @DBUSMENUTESTS_CFLAGS@
 DBUSMENUTESTS_LIBS = @DBUSMENUTESTS_LIBS@
 DEFS = @DEFS@
@@ -529,6 +545,8 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GCOVR = @GCOVR@
+GENHTML = @GENHTML@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
@@ -564,6 +582,7 @@ INTROSPECTION_LIBS = @INTROSPECTION_LIBS@
 INTROSPECTION_MAKEFILE = @INTROSPECTION_MAKEFILE@
 INTROSPECTION_SCANNER = @INTROSPECTION_SCANNER@
 INTROSPECTION_TYPELIBDIR = @INTROSPECTION_TYPELIBDIR@
+LCOV = @LCOV@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDBUSMENU_AGE = @LIBDBUSMENU_AGE@
@@ -609,6 +628,7 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHTOOL = @SHTOOL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VALA_API_GEN = @VALA_API_GEN@
@@ -807,6 +827,17 @@ test_glib_events_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+test_glib_events_nogroup_client_SOURCES = \
+	test-glib-events-nogroup-client.c
+
+test_glib_events_nogroup_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_events_nogroup_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
 test_json_server_SOURCES = \
 	test-json-server.c
 
@@ -815,6 +846,7 @@ test_json_server_CFLAGS = \
 	-I $(srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUTESTSVALGRIND_CFLAGS) \
 	-Wall -Werror
 
 test_json_server_LDADD = \
@@ -1196,6 +1228,9 @@ glib-server-nomenu$(EXEEXT): $(glib_server_nomenu_OBJECTS) $(glib_server_nomenu_
 test-glib-events-client$(EXEEXT): $(test_glib_events_client_OBJECTS) $(test_glib_events_client_DEPENDENCIES) $(EXTRA_test_glib_events_client_DEPENDENCIES) 
 	@rm -f test-glib-events-client$(EXEEXT)
 	$(AM_V_CCLD)$(test_glib_events_client_LINK) $(test_glib_events_client_OBJECTS) $(test_glib_events_client_LDADD) $(LIBS)
+test-glib-events-nogroup-client$(EXEEXT): $(test_glib_events_nogroup_client_OBJECTS) $(test_glib_events_nogroup_client_DEPENDENCIES) $(EXTRA_test_glib_events_nogroup_client_DEPENDENCIES) 
+	@rm -f test-glib-events-nogroup-client$(EXEEXT)
+	$(AM_V_CCLD)$(test_glib_events_nogroup_client_LINK) $(test_glib_events_nogroup_client_OBJECTS) $(test_glib_events_nogroup_client_LDADD) $(LIBS)
 test-glib-events-server$(EXEEXT): $(test_glib_events_server_OBJECTS) $(test_glib_events_server_DEPENDENCIES) $(EXTRA_test_glib_events_server_DEPENDENCIES) 
 	@rm -f test-glib-events-server$(EXEEXT)
 	$(AM_V_CCLD)$(test_glib_events_server_LINK) $(test_glib_events_server_OBJECTS) $(test_glib_events_server_LDADD) $(LIBS)
@@ -1275,6 +1310,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glib_server_nomenu-glib-server-nomenu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbusmenu_jsonloader_la-json-loader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_events_client-test-glib-events-client.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_events_nogroup_client-test-glib-events-nogroup-client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_events_server-test-glib-events-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_layout_client-test-glib-layout-client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_glib_layout_server-test-glib-layout-server.Po@am__quote@
@@ -1354,6 +1390,20 @@ test_glib_events_client-test-glib-events-client.obj: test-glib-events-client.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-glib-events-client.c' object='test_glib_events_client-test-glib-events-client.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_client_CFLAGS) $(CFLAGS) -c -o test_glib_events_client-test-glib-events-client.obj `if test -f 'test-glib-events-client.c'; then $(CYGPATH_W) 'test-glib-events-client.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-events-client.c'; fi`
+
+test_glib_events_nogroup_client-test-glib-events-nogroup-client.o: test-glib-events-nogroup-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_nogroup_client_CFLAGS) $(CFLAGS) -MT test_glib_events_nogroup_client-test-glib-events-nogroup-client.o -MD -MP -MF $(DEPDIR)/test_glib_events_nogroup_client-test-glib-events-nogroup-client.Tpo -c -o test_glib_events_nogroup_client-test-glib-events-nogroup-client.o `test -f 'test-glib-events-nogroup-client.c' || echo '$(srcdir)/'`test-glib-events-nogroup-client.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_events_nogroup_client-test-glib-events-nogroup-client.Tpo $(DEPDIR)/test_glib_events_nogroup_client-test-glib-events-nogroup-client.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-glib-events-nogroup-client.c' object='test_glib_events_nogroup_client-test-glib-events-nogroup-client.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_nogroup_client_CFLAGS) $(CFLAGS) -c -o test_glib_events_nogroup_client-test-glib-events-nogroup-client.o `test -f 'test-glib-events-nogroup-client.c' || echo '$(srcdir)/'`test-glib-events-nogroup-client.c
+
+test_glib_events_nogroup_client-test-glib-events-nogroup-client.obj: test-glib-events-nogroup-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_nogroup_client_CFLAGS) $(CFLAGS) -MT test_glib_events_nogroup_client-test-glib-events-nogroup-client.obj -MD -MP -MF $(DEPDIR)/test_glib_events_nogroup_client-test-glib-events-nogroup-client.Tpo -c -o test_glib_events_nogroup_client-test-glib-events-nogroup-client.obj `if test -f 'test-glib-events-nogroup-client.c'; then $(CYGPATH_W) 'test-glib-events-nogroup-client.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-events-nogroup-client.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_glib_events_nogroup_client-test-glib-events-nogroup-client.Tpo $(DEPDIR)/test_glib_events_nogroup_client-test-glib-events-nogroup-client.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-glib-events-nogroup-client.c' object='test_glib_events_nogroup_client-test-glib-events-nogroup-client.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_nogroup_client_CFLAGS) $(CFLAGS) -c -o test_glib_events_nogroup_client-test-glib-events-nogroup-client.obj `if test -f 'test-glib-events-nogroup-client.c'; then $(CYGPATH_W) 'test-glib-events-nogroup-client.c'; else $(CYGPATH_W) '$(srcdir)/test-glib-events-nogroup-client.c'; fi`
 
 test_glib_events_server-test-glib-events-server.o: test-glib-events-server.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_glib_events_server_CFLAGS) $(CFLAGS) -MT test_glib_events_server-test-glib-events-server.o -MD -MP -MF $(DEPDIR)/test_glib_events_server-test-glib-events-server.Tpo -c -o test_glib_events_server-test-glib-events-server.o `test -f 'test-glib-events-server.c' || echo '$(srcdir)/'`test-glib-events-server.c
@@ -2090,6 +2140,17 @@ test-glib-events: test-glib-events-client test-glib-events-server Makefile.am
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-events-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+################################
+# Test Glib Events No Grouping
+################################
+
+test-glib-events-nogroup: test-glib-events-nogroup-client test-glib-events-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo export UBUNTU_MENUPROXY="" >> $@
+	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-events-nogroup-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
 ######################

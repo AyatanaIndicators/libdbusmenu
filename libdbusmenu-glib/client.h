@@ -105,6 +105,12 @@ G_BEGIN_DECLS
  * String to access property #DbusmenuClient:text-direction
  */
 #define DBUSMENU_CLIENT_PROP_TEXT_DIRECTION "text-direction"
+/**
+ * DBUSMENU_CLIENT_PROP_GROUP_EVENTS:
+ *
+ * String to access property #DbusmenuClient:group-events
+ */
+#define DBUSMENU_CLIENT_PROP_GROUP_EVENTS "group-events"
 
 /**
  * DBUSMENU_CLIENT_TYPES_DEFAULT:
