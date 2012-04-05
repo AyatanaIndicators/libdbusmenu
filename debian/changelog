@@ -1,9 +1,9 @@
-libdbusmenu (0.5.99-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.5.99-0ubuntu1~ppa1) precise; urgency=low
 
   * New upstream release.
     * Make private two impl functions that were accidentally public
 
- -- Charles Kerr <charles.kerr@canonical.com>  Thu, 05 Apr 2012 14:08:18 -0500
+ -- Charles Kerr <charles.kerr@canonical.com>  Thu, 05 Apr 2012 14:22:33 -0500
 
 libdbusmenu (0.5.98-0ubuntu1~ppa1) precise; urgency=low
 
