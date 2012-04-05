@@ -2035,11 +2035,15 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 			priv->about_to_show_idle = g_idle_add(about_to_show_idle, client);
 		}
 	} else {
+		GAsyncReadyCallback dbuscb = NULL;
+
 		/* If there's no callback we don't need this data, let's
 		   clean it up in a consistent way */
 		if (cb == NULL) {
 			about_to_show_finish(data, FALSE);
 			data = NULL;
+		} else {
+			dbuscb = about_to_show_cb;
 		}
 
 		g_dbus_proxy_call(priv->menuproxy,
@@ -2048,7 +2052,7 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 		                  G_DBUS_CALL_FLAGS_NONE,
 		                  -1,   /* timeout */
 		                  NULL, /* cancellable */
-		                  about_to_show_cb,
+		                  dbuscb,
 		                  data);
 	}
 
