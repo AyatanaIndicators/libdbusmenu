@@ -1023,7 +1023,7 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 
 /* Respond to us getting the session bus (hopefully) or handle
    the error if not */
-void
+static void
 session_bus_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 {
 	GError * error = NULL;
@@ -1634,7 +1634,7 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 }
 
 /* Looks at event_data_t structs to match an ID */
-gint
+static gint
 event_data_find (gconstpointer data, gconstpointer user_data)
 {
 	event_data_t * edata = (event_data_t *)data;
