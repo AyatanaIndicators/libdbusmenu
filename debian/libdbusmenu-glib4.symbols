@@ -79,4 +79,3 @@ libdbusmenu-glib.so.4 libdbusmenu-glib4 #MINVER#
  dbusmenu_text_direction_get_nick@Base 0.4.2
  dbusmenu_text_direction_get_type@Base 0.4.2
  dbusmenu_text_direction_get_value_from_nick@Base 0.4.2
- session_bus_cb@Base 0.4.2
