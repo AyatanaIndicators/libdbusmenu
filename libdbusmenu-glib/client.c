@@ -1834,6 +1834,8 @@ struct _about_to_show_t {
 static void
 about_to_show_finish (about_to_show_t * data, gboolean need_update)
 {
+	g_return_if_fail(data != NULL);
+
 	/* If we need to update, do that first. */
 	if (need_update) {
 		update_layout(data->client);
@@ -1938,6 +1940,8 @@ about_to_show_idle (gpointer user_data)
 	GQueue * showers = priv->about_to_show_to_go;
 	priv->about_to_show_to_go = NULL;
 
+	g_return_val_if_fail(showers != NULL, FALSE);
+
 	/* Figure out if we've got any callbacks */
 	gboolean got_callbacks = FALSE;
 	g_queue_foreach(showers, about_to_show_idle_callbacks, &got_callbacks);
@@ -1995,7 +1999,10 @@ about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		g_variant_unref(params);
 	}
 
-	about_to_show_finish(data, need_update);
+	if (data != NULL) {
+		about_to_show_finish(data, need_update);
+	}
+
 	return;
 }
 
