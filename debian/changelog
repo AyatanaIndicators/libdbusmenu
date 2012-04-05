@@ -1,25 +1,12 @@
-libdbusmenu (0.5.99-0ubuntu1~ppa1) precise; urgency=low
-
-  * New upstream release.
-    * Make private two impl functions that were accidentally public
-
- -- Charles Kerr <charles.kerr@canonical.com>  Thu, 05 Apr 2012 14:22:33 -0500
-
-libdbusmenu (0.5.98-0ubuntu1~ppa1) precise; urgency=low
-
-  * New upstream release.
-    * Fix a regresssion introduced in 0.5.97's fix for (LP: #957022)
-
- -- Charles Kerr <charles.kerr@canonical.com>  Thu, 05 Apr 2012 10:53:15 -0500
-
-libdbusmenu (0.5.97-0ubuntu1~ppa1) precise; urgency=low
+libdbusmenu (0.5.99-0ubuntu1) precise; urgency=low
 
   * New upstream release.
     * Reduce the number of messages hud-service sends. (LP: #957022)
     * Fix valgrind tests thanks to a little help from sewardj.
     * Add gcov targets to autotools build for code-coverage reporting.
+    * Make private two impl functions that were accidentally public
 
- -- Charles Kerr <charles.kerr@canonical.com>  Wed, 04 Apr 2012 15:09:47 -0500
+ -- Charles Kerr <charles.kerr@canonical.com>  Thu, 05 Apr 2012 14:22:33 -0500
 
 libdbusmenu (0.5.96-0ubuntu2) precise; urgency=low
 
