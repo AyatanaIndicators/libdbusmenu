@@ -105,6 +105,61 @@ static void           menuitem_notify_cb       (GtkWidget *         widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
 
+/***
+****
+***/
+
+static const char * interned_str_accessible_name   = NULL;
+static const char * interned_str_active            = NULL;   
+static const char * interned_str_always_show_image = NULL;
+static const char * interned_str_file              = NULL;
+static const char * interned_str_gicon             = NULL;
+static const char * interned_str_icon_name         = NULL;      
+static const char * interned_str_icon_set          = NULL;     
+static const char * interned_str_image             = NULL;  
+static const char * interned_str_label             = NULL;  
+static const char * interned_str_mask              = NULL; 
+static const char * interned_str_parent            = NULL;   
+static const char * interned_str_pixbuf_animation  = NULL;             
+static const char * interned_str_pixbuf            = NULL;   
+static const char * interned_str_pixmap            = NULL;   
+static const char * interned_str_sensitive         = NULL;      
+static const char * interned_str_stock             = NULL;  
+static const char * interned_str_storage_type      = NULL;         
+static const char * interned_str_submenu           = NULL;
+static const char * interned_str_visible           = NULL;    
+
+static void
+ensure_interned_strings_loaded (void)
+{
+  if (G_UNLIKELY(interned_str_file == NULL))
+  {
+    interned_str_accessible_name    = g_intern_static_string ("accessible-name");
+    interned_str_active             = g_intern_static_string ("active");
+    interned_str_always_show_image  = g_intern_static_string ("always-show-image");
+    interned_str_file               = g_intern_static_string ("file");
+    interned_str_gicon              = g_intern_static_string ("gicon");
+    interned_str_icon_name          = g_intern_static_string ("icon-name");
+    interned_str_icon_set           = g_intern_static_string ("icon-set");
+    interned_str_image              = g_intern_static_string ("image");
+    interned_str_label              = g_intern_static_string ("label");
+    interned_str_mask               = g_intern_static_string ("mask");
+    interned_str_parent             = g_intern_static_string ("parent");
+    interned_str_pixbuf_animation   = g_intern_static_string ("pixbuf-animation");
+    interned_str_pixbuf             = g_intern_static_string ("pixbuf");
+    interned_str_pixmap             = g_intern_static_string ("pixmap");
+    interned_str_sensitive          = g_intern_static_string ("sensitive");
+    interned_str_stock              = g_intern_static_string ("stock");
+    interned_str_storage_type       = g_intern_static_string ("storage-type");
+    interned_str_submenu            = g_intern_static_string ("submenu");
+    interned_str_visible            = g_intern_static_string ("visible");
+  }
+}
+
+/***
+****
+***/
+
 /**
  * dbusmenu_gtk_parse_menu_structure:
  * @widget: A #GtkMenuItem or #GtkMenuShell to turn into a #DbusmenuMenuitem
@@ -669,7 +724,9 @@ menuitem_notify_cb (GtkWidget  *widget,
                     GParamSpec *pspec,
                     gpointer    data)
 {
-  if (pspec->name == g_intern_static_string ("visible"))
+  ensure_interned_strings_loaded ();
+
+  if (pspec->name == interned_str_visible)
     {
       GtkWidget * new_toplevel = gtk_widget_get_toplevel (widget);
 	  GtkWidget * old_toplevel = GTK_WIDGET(data);
@@ -877,10 +934,12 @@ label_notify_cb (GtkWidget  *widget,
   DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
   GValue prop_value = {0};
 
+  ensure_interned_strings_loaded ();
+
   g_value_init (&prop_value, pspec->value_type); 
   g_object_get_property (G_OBJECT (widget), pspec->name, &prop_value);
 
-  if (pspec->name == g_intern_static_string ("label"))
+  if (pspec->name == interned_str_label)
     {
       gchar * text = sanitize_label (GTK_LABEL (widget));
       dbusmenu_menuitem_property_set (child,
@@ -888,7 +947,7 @@ label_notify_cb (GtkWidget  *widget,
                                       text);
       g_free (text);
     }
-  else if (pspec->name == g_intern_static_string ("parent"))
+  else if (pspec->name == interned_str_parent)
     {
       if (GTK_WIDGET (g_value_get_object (&prop_value)) == NULL)
         {
@@ -912,55 +971,53 @@ label_notify_cb (GtkWidget  *widget,
 }
 
 static void
-image_notify_cb (GtkWidget  *widget,
-                 GParamSpec *pspec,
-                 gpointer    data)
+image_notify_cb (GtkWidget * image, GParamSpec * pspec, gpointer data)
 {
-  DbusmenuMenuitem *mi = (DbusmenuMenuitem *)data;
+  ensure_interned_strings_loaded();
 
-  if (pspec->name == g_intern_static_string ("file") ||
-      pspec->name == g_intern_static_string ("gicon") ||
-      pspec->name == g_intern_static_string ("icon-name") ||
-      pspec->name == g_intern_static_string ("icon-set") ||
-      pspec->name == g_intern_static_string ("image") ||
-      pspec->name == g_intern_static_string ("mask") ||
-      pspec->name == g_intern_static_string ("pixbuf") ||
-      pspec->name == g_intern_static_string ("pixbuf-animation") ||
-      pspec->name == g_intern_static_string ("pixmap") ||
-      pspec->name == g_intern_static_string ("stock") ||
-      pspec->name == g_intern_static_string ("storage-type"))
+  if (pspec->name == interned_str_file ||
+      pspec->name == interned_str_gicon ||
+      pspec->name == interned_str_icon_name ||
+      pspec->name == interned_str_icon_set ||
+      pspec->name == interned_str_image ||
+      pspec->name == interned_str_mask ||
+      pspec->name == interned_str_pixbuf ||
+      pspec->name == interned_str_pixbuf_animation ||
+      pspec->name == interned_str_pixmap ||
+      pspec->name == interned_str_stock ||
+      pspec->name == interned_str_storage_type)
     {
+      DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
-      update_icon (mi, pdata, GTK_IMAGE (widget));
+      update_icon (mi, pdata, GTK_IMAGE (image));
     }
 }
 
 static void
-action_notify_cb (GtkAction  *action,
-                  GParamSpec *pspec,
-                  gpointer    data)
+action_notify_cb (GtkAction *action, GParamSpec * pspec, gpointer data)
 {
-  DbusmenuMenuitem *mi = (DbusmenuMenuitem *)data;
+  DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
+  ensure_interned_strings_loaded ();
 
-  if (pspec->name == g_intern_static_string ("sensitive"))
+  if (pspec->name == interned_str_sensitive)
     {
       dbusmenu_menuitem_property_set_bool (mi,
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
                                            gtk_action_is_sensitive (action));
     }
-  else if (pspec->name == g_intern_static_string ("visible"))
+  else if (pspec->name == interned_str_visible)
     {
       dbusmenu_menuitem_property_set_bool (mi,
                                            DBUSMENU_MENUITEM_PROP_VISIBLE,
                                            gtk_action_is_visible (action));
     }
-  else if (pspec->name == g_intern_static_string ("active"))
+  else if (pspec->name == interned_str_active)
     {
       dbusmenu_menuitem_property_set_int (mi,
                                           DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
                                           gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
     }
-  else if (pspec->name == g_intern_static_string ("label"))
+  else if (pspec->name == interned_str_label)
     {
       gchar * text = sanitize_label_text (gtk_action_get_label (action));
       dbusmenu_menuitem_property_set (mi,
@@ -971,23 +1028,23 @@ action_notify_cb (GtkAction  *action,
 }
 
 static void
-a11y_name_notify_cb (AtkObject  *accessible,
-                     GParamSpec *pspec,
-                     gpointer    data)
+a11y_name_notify_cb (AtkObject * accessible, GParamSpec * pspec, gpointer data)
 {
-  DbusmenuMenuitem *item = (DbusmenuMenuitem *)data;
-  GtkWidget *widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible));
-  GtkWidget *label = find_menu_label (widget);
-  const gchar *label_text = gtk_label_get_text (GTK_LABEL (label));
-  const gchar *name = atk_object_get_name (accessible);
+  ensure_interned_strings_loaded ();
 
   /* If an application sets the accessible name to NULL, then a subsequent
    * call to get the accessible name from the Atk object should return the same
    * string as the text of the menu item label, in which case, we want to clear
    * the accessible description property of the dbusmenu item.
    */
-  if (pspec->name == g_intern_static_string ("accessible-name"))
+  if (pspec->name == interned_str_accessible_name)
     {
+      DbusmenuMenuitem * item = DBUSMENU_MENUITEM(data);
+      GtkWidget *widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible));
+      GtkWidget *label = find_menu_label (widget);
+      const gchar *label_text = gtk_label_get_text (GTK_LABEL (label));
+      const gchar *name = atk_object_get_name (accessible);
+
       if (!g_strcmp0 (name, label_text))
         dbusmenu_menuitem_property_set (item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC, NULL);
       else
@@ -1082,23 +1139,24 @@ handle_first_label (DbusmenuMenuitem *mi)
 }
 
 static void
-widget_notify_cb (GtkWidget  *widget,
-                  GParamSpec *pspec,
-                  gpointer    data)
+widget_notify_cb (GtkWidget * widget, GParamSpec * pspec, gpointer data)
 {
-  DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
   GValue prop_value = {0};
+  DbusmenuMenuitem * child = DBUSMENU_MENUITEM(data);
+  g_return_if_fail (child != NULL);
+
+  ensure_interned_strings_loaded ();
 
   g_value_init (&prop_value, pspec->value_type); 
   g_object_get_property (G_OBJECT (widget), pspec->name, &prop_value);
 
-  if (pspec->name == g_intern_static_string ("sensitive"))
+  if (pspec->name == interned_str_sensitive)
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
                                            g_value_get_boolean (&prop_value));
     }
-  else if (pspec->name == g_intern_static_string ("label"))
+  else if (pspec->name == interned_str_label)
     {
       if (!handle_first_label (child))
         {
@@ -1106,29 +1164,27 @@ widget_notify_cb (GtkWidget  *widget,
                                           DBUSMENU_MENUITEM_PROP_LABEL,
                                           g_value_get_string (&prop_value));
         }
-
     }
-  else if (pspec->name == g_intern_static_string ("visible"))
+  else if (pspec->name == interned_str_visible)
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_VISIBLE,
                                            g_value_get_boolean (&prop_value));
     }
-  else if (pspec->name == g_intern_static_string ("always-show-image"))
+  else if (pspec->name == interned_str_always_show_image)
     {
       GtkWidget *image = NULL;
       g_object_get(widget, "image", &image, NULL);
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
       update_icon (child, pdata, GTK_IMAGE(image));
     }
-  else if (pspec->name == g_intern_static_string ("image"))
+  else if (pspec->name == interned_str_image)
     {
-      GtkWidget *image;
-      image = GTK_WIDGET (g_value_get_object (&prop_value));
+      GtkWidget * image = GTK_WIDGET (g_value_get_object (&prop_value));
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
       update_icon (child, pdata, GTK_IMAGE (image));
     }
-  else if (pspec->name == g_intern_static_string ("parent"))
+  else if (pspec->name == interned_str_parent)
     {
       /*
         * We probably should have added a 'remove' method to the
@@ -1148,7 +1204,7 @@ widget_notify_cb (GtkWidget  *widget,
             }
         }
     }
-  else if (pspec->name == g_intern_static_string ("submenu"))
+  else if (pspec->name == interned_str_submenu)
     {
       /* The underlying submenu got swapped out.  Let's see what it is now. */
       /* First, delete any children that may exist currently. */
