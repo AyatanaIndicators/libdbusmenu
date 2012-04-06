@@ -61,7 +61,6 @@ static void           checkbox_toggled         (GtkWidget *         widget,
                                                 DbusmenuMenuitem *  mi);
 static void           update_icon              (DbusmenuMenuitem *  menuitem,
                                                 ParserData *        pdata,
-                                                GtkImageMenuItem *  gmenuitem,
                                                 GtkImage *          image);
 static GtkWidget *    find_menu_label          (GtkWidget *         widget);
 static void           label_notify_cb          (GtkWidget *         widget,
@@ -546,7 +545,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
               if (GTK_IS_IMAGE (image))
                 {
-                  update_icon (mi, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
+                  update_icon (mi, pdata, GTK_IMAGE (image));
                 }
             }
 
@@ -703,7 +702,7 @@ checkbox_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
 }
 
 static void
-update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * gmenuitem, GtkImage *image)
+update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImage *image)
 {
   GdkPixbuf * pixbuf = NULL;
   const gchar * icon_name = NULL;
@@ -712,12 +711,8 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * 
   GtkIconInfo * info;
   gint width;
 
-  /* Check to see if we're changing the image.  If so, we need to track
-     that little bugger */
-  /* Why check for gmenuitem being NULL?  Because there are some cases where
-     we can't get it easily, and those mean it's not changed just the icon
-     underneith, so we can ignore these larger impacts */
-  if (image != GTK_IMAGE(pdata->image) && gmenuitem != NULL) {
+  /* Check to see if we're changing the image.  If so, we need to track that little bugger */
+  if (image != GTK_IMAGE(pdata->image)) {
 
     if (pdata->image != NULL) {
       g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), menuitem);
@@ -936,7 +931,7 @@ image_notify_cb (GtkWidget  *widget,
       pspec->name == g_intern_static_string ("storage-type"))
     {
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
-      update_icon (mi, pdata, NULL, GTK_IMAGE (widget));
+      update_icon (mi, pdata, GTK_IMAGE (widget));
     }
 }
 
@@ -1125,14 +1120,14 @@ widget_notify_cb (GtkWidget  *widget,
       GtkWidget *image = NULL;
       g_object_get(widget, "image", &image, NULL);
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
-      update_icon (child, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE(image));
+      update_icon (child, pdata, GTK_IMAGE(image));
     }
   else if (pspec->name == g_intern_static_string ("image"))
     {
       GtkWidget *image;
       image = GTK_WIDGET (g_value_get_object (&prop_value));
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
-      update_icon (child, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
+      update_icon (child, pdata, GTK_IMAGE (image));
     }
   else if (pspec->name == g_intern_static_string ("parent"))
     {
