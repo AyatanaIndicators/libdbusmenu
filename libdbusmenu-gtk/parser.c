@@ -163,23 +163,23 @@ dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget)
 }
 
 static void
-parse_data_free (gpointer data)
+parse_data_free (ParserData * pdata)
 {
-	ParserData *pdata = (ParserData *)data;
+	g_return_if_fail (pdata != NULL);
 
-	if (pdata != NULL && pdata->label != NULL) {
+	if (pdata->label != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->label, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(label_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->label), (gpointer*)&pdata->label);
 	}
 
-	if (pdata != NULL && pdata->action != NULL) {
+	if (pdata->action != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->action, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(action_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->action), (gpointer*)&pdata->action);
 	}
 
-	if (pdata != NULL && pdata->widget != NULL) {
+	if (pdata->widget != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
 		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
@@ -191,9 +191,11 @@ parse_data_free (gpointer data)
 		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(menuitem_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->widget), (gpointer*)&pdata->widget);
+		/* since the DbusmenuMenuitem is being destroyed, uncache it from the GtkWidget */
+		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
 	}
 
-	if (pdata != NULL && pdata->shell != NULL) {
+	if (pdata->shell != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(item_inserted_cb), NULL);
 		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
@@ -201,13 +203,13 @@ parse_data_free (gpointer data)
 		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
 	}
 
-	if (pdata != NULL && pdata->image != NULL) {
+	if (pdata->image != NULL) {
 		g_signal_handlers_disconnect_matched(pdata->image, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
 						     0, 0, NULL, G_CALLBACK(image_notify_cb), NULL);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
 	}
 
-        if (pdata != NULL && pdata->accessible != NULL) {
+        if (pdata->accessible != NULL) {
                 g_signal_handlers_disconnect_matched(pdata->accessible, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
                                                      0, 0, NULL, G_CALLBACK(a11y_name_notify_cb), NULL);
                 g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
@@ -216,18 +218,6 @@ parse_data_free (gpointer data)
 	g_free(pdata);
 
 	return;
-}
-
-/* Called when the dbusmenu item that we're keeping around
-   is finalized */
-static void
-dbusmenu_item_freed (gpointer data, GObject * obj)
-{
-	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
-
-	if (pdata != NULL && pdata->widget != NULL) {
-		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
-	}
 }
 
 /* Gets the positon of the child with its' parent if it has one.
@@ -265,9 +255,7 @@ new_menuitem (GtkWidget * widget)
 	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
 
 	ParserData *pdata = g_new0 (ParserData, 1);
-	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
-
-	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
+	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, (GDestroyNotify)parse_data_free);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
