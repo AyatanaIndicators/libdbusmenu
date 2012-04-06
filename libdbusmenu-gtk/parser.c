@@ -1100,14 +1100,13 @@ widget_notify_cb (GtkWidget  *widget,
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
-      if (handle_first_label (child))
+      if (!handle_first_label (child))
         {
-          return;
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          g_value_get_string (&prop_value));
         }
 
-      dbusmenu_menuitem_property_set (child,
-                                      DBUSMENU_MENUITEM_PROP_LABEL,
-                                      g_value_get_string (&prop_value));
     }
   else if (pspec->name == g_intern_static_string ("visible"))
     {
