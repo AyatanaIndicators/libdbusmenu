@@ -338,7 +338,13 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 			   getting in. */
 			suppress_update = TRUE;
 		} else {
-			gtk_label_set_markup_with_mnemonic(labelw, local_label);
+			if (has_mnemonic(in_label, FALSE)) {
+				gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
+				gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
+				gtk_label_set_markup_with_mnemonic(labelw, local_label);
+			} else {
+				gtk_label_set_markup(labelw, local_label);
+			}
 		}
 	}
 
