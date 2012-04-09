@@ -217,57 +217,70 @@ dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget)
 }
 
 static void
-parse_data_free (ParserData * pdata)
+parser_data_free (ParserData * pdata)
 {
 	g_return_if_fail (pdata != NULL);
 
 	if (pdata->label != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->label, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(label_notify_cb), NULL);
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->label, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(label_notify_cb), NULL);
+		g_warn_if_fail (i != 1);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->label), (gpointer*)&pdata->label);
 	}
 
 	if (pdata->action != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->action, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(action_notify_cb), NULL);
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->action, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(action_notify_cb), NULL);
+		g_warn_if_fail (i != 1);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->action), (gpointer*)&pdata->action);
 	}
 
 	if (pdata->widget != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(widget_add_cb), NULL);
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(accel_changed), NULL);
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(checkbox_toggled), NULL);
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(menuitem_notify_cb), NULL);
-		g_object_remove_weak_pointer(G_OBJECT(pdata->widget), (gpointer*)&pdata->widget);
+		GObject * o = G_OBJECT(pdata->widget);
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(widget_add_cb), NULL);
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(accel_changed), NULL);
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(checkbox_toggled), NULL);
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(menuitem_notify_cb), NULL);
+		g_warn_if_fail (i != 5);
+		g_object_remove_weak_pointer(o, (gpointer*)&pdata->widget);
 		/* since the DbusmenuMenuitem is being destroyed, uncache it from the GtkWidget */
-		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
+		g_object_steal_data(o, CACHED_MENUITEM);
 	}
 
 	if (pdata->shell != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(item_inserted_cb), NULL);
-		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(item_removed_cb), NULL);
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(item_inserted_cb), NULL);
+		i += g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(item_removed_cb), NULL);
+		g_warn_if_fail (i != 2);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
 	}
 
 	if (pdata->image != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->image, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(image_notify_cb), NULL);
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->image, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(image_notify_cb), NULL);
+		g_warn_if_fail (i != 1);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
 	}
 
-        if (pdata->accessible != NULL) {
-                g_signal_handlers_disconnect_matched(pdata->accessible, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-                                                     0, 0, NULL, G_CALLBACK(a11y_name_notify_cb), NULL);
-                g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
-        }
+	if (pdata->accessible != NULL) {
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->accessible, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(a11y_name_notify_cb), NULL);
+		g_warn_if_fail (i != 1);
+		g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
+	}
 
 	g_free(pdata);
 
@@ -309,7 +322,7 @@ new_menuitem (GtkWidget * widget)
 	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
 
 	ParserData *pdata = g_new0 (ParserData, 1);
-	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, (GDestroyNotify)parse_data_free);
+	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, (GDestroyNotify)parser_data_free);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
