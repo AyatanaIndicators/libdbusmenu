@@ -1837,7 +1837,7 @@ bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethod
 	g_variant_builder_init(&builder, G_VARIANT_TYPE("ai"));
 	gboolean gotone = FALSE;
 
-	while (g_variant_iter_loop(&iter, "(i)", &id)) {
+	while (g_variant_iter_loop(&iter, "i", &id)) {
 		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 		if (mi != NULL) {
 			g_timeout_add(0, bus_about_to_show_idle, g_object_ref(mi));
