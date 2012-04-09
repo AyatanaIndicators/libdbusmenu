@@ -3,9 +3,12 @@ libdbusmenu (0.5.99-0ubuntu2) UNRELEASED; urgency=low
   * libdbusmenu-glib/server.c
     - Cherry picked a fix for a regression in about-to-show grouping
   * libdbusmenu-gtk/genericmenuitem.c
-    - Fix underscore on menu items change on switching focus (LP: #903200)
+    - Fixed: underscore on menu items change on switching focus (LP: #903200)
+  * libdbusmenu-gtk/parser.c
+    - Fixed: nautilus crashed with SIGSEGV in 
+      dbusmenu_menuitem_property_remove() (LP: #959821)
 
- -- Ken VanDine <ken.vandine@canonical.com>  Mon, 09 Apr 2012 13:33:45 -0400
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 09 Apr 2012 13:36:39 -0400
 
 libdbusmenu (0.5.99-0ubuntu1) precise; urgency=low
 
