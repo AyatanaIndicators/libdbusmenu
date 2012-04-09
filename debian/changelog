@@ -1,3 +1,10 @@
+libdbusmenu (0.5.99-0ubuntu2) UNRELEASED; urgency=low
+
+  * libdbusmenu-glib/server.c
+    - Cherry picked a fix for a regression in about-to-show grouping
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 09 Apr 2012 12:29:12 -0400
+
 libdbusmenu (0.5.99-0ubuntu1) precise; urgency=low
 
   * New upstream release.
