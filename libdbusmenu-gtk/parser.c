@@ -44,6 +44,7 @@ typedef struct _ParserData
   GtkWidget *shell;
   GtkWidget *image;
   AtkObject *accessible;
+
 } ParserData;
 
 typedef struct _RecurseContext
@@ -59,6 +60,8 @@ static void           accel_changed            (GtkWidget *         widget,
 static void           checkbox_toggled         (GtkWidget *         widget,
                                                 DbusmenuMenuitem *  mi);
 static void           update_icon              (DbusmenuMenuitem *  menuitem,
+                                                ParserData *        pdata,
+                                                GtkImageMenuItem *  gmenuitem,
                                                 GtkImage *          image);
 static GtkWidget *    find_menu_label          (GtkWidget *         widget);
 static void           label_notify_cb          (GtkWidget *         widget,
@@ -81,8 +84,6 @@ static void           item_inserted_cb         (GtkContainer *      menu,
                                                 gpointer            data);
 static void           item_removed_cb          (GtkContainer *      menu,
                                                 GtkWidget *         widget,
-                                                gpointer            data);
-static void           theme_changed_cb         (GtkIconTheme *      theme,
                                                 gpointer            data);
 static void           item_activated           (DbusmenuMenuitem *  item,
                                                 guint               timestamp,
@@ -217,14 +218,6 @@ parse_data_free (gpointer data)
 	return;
 }
 
-static void
-widget_freed (gpointer data, GObject * obj)
-{
-	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), obj);
-
-	return;
-}
-
 /* Called when the dbusmenu item that we're keeping around
    is finalized */
 static void
@@ -233,9 +226,7 @@ dbusmenu_item_freed (gpointer data, GObject * obj)
 	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
 
 	if (pdata != NULL && pdata->widget != NULL) {
-		g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), pdata->widget);
 		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
-		g_object_weak_unref(G_OBJECT(pdata->widget), widget_freed, NULL);
 	}
 }
 
@@ -277,7 +268,6 @@ new_menuitem (GtkWidget * widget)
 	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
 
 	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
-	g_object_weak_ref(G_OBJECT(widget), widget_freed, NULL);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
@@ -568,19 +558,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
               if (GTK_IS_IMAGE (image))
                 {
-                  update_icon (mi, GTK_IMAGE (image));
-
-                  /* Watch for theme changes because if gicon changes, we want to send a
-                     different pixbuf. */
-                  g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
-                                   "changed", G_CALLBACK(theme_changed_cb), widget);
-
-                  pdata->image = image;
-                  g_signal_connect (G_OBJECT (image),
-                                    "notify",
-                                    G_CALLBACK (image_notify_cb),
-                                    mi);
-                  g_object_add_weak_pointer(G_OBJECT (image), (gpointer*)&pdata->image);
+                  update_icon (mi, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
                 }
             }
 
@@ -737,7 +715,7 @@ checkbox_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
 }
 
 static void
-update_icon (DbusmenuMenuitem *menuitem, GtkImage *image)
+update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * gmenuitem, GtkImage *image)
 {
   GdkPixbuf * pixbuf = NULL;
   const gchar * icon_name = NULL;
@@ -745,6 +723,29 @@ update_icon (DbusmenuMenuitem *menuitem, GtkImage *image)
   GIcon * gicon;
   GtkIconInfo * info;
   gint width;
+
+  /* Check to see if we're changing the image.  If so, we need to track
+     that little bugger */
+  /* Why check for gmenuitem being NULL?  Because there are some cases where
+     we can't get it easily, and those mean it's not changed just the icon
+     underneith, so we can ignore these larger impacts */
+  if (image != GTK_IMAGE(pdata->image) && gmenuitem != NULL) {
+
+    if (pdata->image != NULL) {
+      g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), menuitem);
+      g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
+    }
+
+    pdata->image = GTK_WIDGET(image);
+
+    if (pdata->image != NULL) {
+      g_signal_connect (G_OBJECT (pdata->image),
+                        "notify",
+                        G_CALLBACK (image_notify_cb),
+                        menuitem);
+      g_object_add_weak_pointer(G_OBJECT (pdata->image), (gpointer*)&pdata->image);
+    }
+  }
 
   if (image != NULL && should_show_image (image)) {
     switch (gtk_image_get_storage_type (image)) {
@@ -946,7 +947,8 @@ image_notify_cb (GtkWidget  *widget,
       pspec->name == g_intern_static_string ("stock") ||
       pspec->name == g_intern_static_string ("storage-type"))
     {
-      update_icon (mi, GTK_IMAGE (widget));
+      ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
+      update_icon (mi, pdata, NULL, GTK_IMAGE (widget));
     }
 }
 
@@ -1134,13 +1136,15 @@ widget_notify_cb (GtkWidget  *widget,
     {
       GtkWidget *image = NULL;
       g_object_get(widget, "image", &image, NULL);
-      update_icon (child, GTK_IMAGE(image));
+      ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
+      update_icon (child, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE(image));
     }
   else if (pspec->name == g_intern_static_string ("image"))
     {
       GtkWidget *image;
       image = GTK_WIDGET (g_value_get_object (&prop_value));
-      update_icon (child, GTK_IMAGE (image));
+      ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
+      update_icon (child, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
     }
   else if (pspec->name == g_intern_static_string ("parent"))
     {
@@ -1248,23 +1252,6 @@ item_removed_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
 
 	dbusmenu_menuitem_child_delete(parent, child);
 	return;
-}
-
-static void
-theme_changed_cb (GtkIconTheme *theme, gpointer data)
-{
-  GtkWidget *image;
-
-  image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (data));
-
-  gpointer pmi = g_object_get_data(G_OBJECT(data), CACHED_MENUITEM);
-  if (pmi != NULL) {
-    update_icon(DBUSMENU_MENUITEM(pmi), GTK_IMAGE(image));
-  }
-
-  /* Switch signal to new theme */
-  g_signal_handlers_disconnect_by_func(theme, G_CALLBACK(theme_changed_cb), data);
-  g_signal_connect(gtk_icon_theme_get_default(), "changed", G_CALLBACK(theme_changed_cb), data);
 }
 
 static gboolean

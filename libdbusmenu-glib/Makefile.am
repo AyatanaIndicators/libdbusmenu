@@ -6,6 +6,7 @@ EXTRA_DIST = \
 	clean-namespaces.xslt \
 	dbusmenu-glib-0.4.pc.in \
 	dbus-menu.xml \
+	dbus-menu-clean.xml \
 	client-marshal.list \
 	menuitem-marshal.list \
 	server-marshal.list
@@ -57,12 +58,14 @@ libdbusmenu_glib_la_SOURCES = \
 	client.c
 
 libdbusmenu_glib_la_LDFLAGS = \
+	$(COVERAGE_LDFLAGS) \
 	-version-info $(LIBDBUSMENU_CURRENT):$(LIBDBUSMENU_REVISION):$(LIBDBUSMENU_AGE) \
 	-no-undefined \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_glib_la_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) \
+	$(COVERAGE_CFLAGS) \
 	-Wall -Werror -Wno-error=deprecated-declarations \
 	-DG_LOG_DOMAIN="\"LIBDBUSMENU-GLIB\""
 
@@ -180,7 +183,12 @@ introspection_sources = \
 Dbusmenu-0.4.gir: libdbusmenu-glib.la
 Dbusmenu_0_4_gir_INCLUDES = \
 	GObject-2.0
-Dbusmenu_0_4_gir_CFLAGS = $(DBUSMENUGLIB_CFLAGS) -I$(top_srcdir)
+Dbusmenu_0_4_gir_CFLAGS = \
+	$(DBUSMENUGLIB_CFLAGS) \
+	$(COVERAGE_CFLAGS) \
+	-I$(top_srcdir)
+Dbusmenu_0_4_gir_LDFLAGS = \
+	$(COVERAGE_LDFLAGS)
 Dbusmenu_0_4_gir_LIBS = libdbusmenu-glib.la
 Dbusmenu_0_4_gir_FILES = $(introspection_sources)
 Dbusmenu_0_4_gir_NAMESPACE = Dbusmenu

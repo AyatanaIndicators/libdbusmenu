@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.5.92, ted@canonical.com)
+AC_INIT(libdbusmenu, 0.5.97, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.5.92, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 0.5.97, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -121,6 +121,7 @@ PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
                                   gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION,
                                   [have_tests=yes]
 )
+PKG_CHECK_MODULES(DBUSMENUTESTSVALGRIND, valgrind)
 ])
 
 AC_SUBST(DBUSMENUTESTS_CFLAGS)
@@ -165,7 +166,7 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 ###########################
 
 LIBDBUSMENU_CURRENT=4
-LIBDBUSMENU_REVISION=9
+LIBDBUSMENU_REVISION=12
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)
@@ -191,6 +192,18 @@ AC_ARG_ENABLE(massivedebugging, AS_HELP_STRING([--enable-massivedebugging], [Pri
 if test "x$with_massivedebugging" = "xyes"; then
 	AC_DEFINE([MASSIVEDEBUGGING], [1], [Print everyting])
 fi
+
+###########################
+# gcov coverage reporting
+###########################
+
+m4_include([m4/gcov.m4])
+AC_TDD_GCOV
+AM_CONDITIONAL([HAVE_GCOV], [test "x$ac_cv_check_gcov" = xyes])
+AM_CONDITIONAL([HAVE_LCOV], [test "x$ac_cv_check_lcov" = xyes])
+AM_CONDITIONAL([HAVE_GCOVR], [test "x$ac_cv_check_gcovr" = xyes])
+AC_SUBST(COVERAGE_CFLAGS)
+AC_SUBST(COVERAGE_LDFLAGS)
 
 ###########################
 # Files
@@ -250,3 +263,7 @@ AS_IF([test "x$have_dumper" = "xyes"],
    AC_MSG_NOTICE([	Dumper:                 no])
 )
 
+AS_IF([test "x$use_gcov" = "xyes"],
+	AC_MSG_NOTICE([	Coverage reporting:     yes]),
+	AC_MSG_NOTICE([	Coverage reporting:     no])
+)

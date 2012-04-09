@@ -735,17 +735,32 @@ process_a11y_desc (DbusmenuMenuitem * mi, GtkMenuItem * gmi, GVariant * variant,
 		return;
 	}
 
-	const gchar * setname = NULL;
 
 	if (variant != NULL) {
+		const gchar * setname = NULL;
 		setname = g_variant_get_string(variant, NULL);
+		atk_object_set_name(aobj, setname);
+	} else {
+	/* The atk docs advise to set the name of the atk object to an empty
+	 * string, but GTK doesn't yet do the same, and setting the name to NULL
+	 * causes tests to fail.
+	 */
+		const gchar * label = NULL;
+		label = dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_LABEL);
+
+		if (label != NULL) {
+			gchar * setname = NULL;
+
+			/* We don't want the underscore for mnewmonics */
+			GRegex * regex = g_regex_new ("_", 0, 0, NULL);
+			setname = g_regex_replace_literal (regex, label, -1, 0, "", 0, NULL);
+			g_regex_unref(regex);
+
+			atk_object_set_name(aobj, setname);
+			g_free(setname);
+		}
 	}
 
-	if (setname == NULL) {
-		setname = "";
-	}
-
-	atk_object_set_name(aobj, setname);
 	return;
 }
 
@@ -772,19 +787,10 @@ menu_prop_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * variant, Db
 		process_disposition(mi, gmi, variant, gtkclient);
 	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC)) {
 		process_a11y_desc(mi, gmi, variant, gtkclient);
+	} else if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
+		refresh_shortcut(gtkclient, mi);
 	}
 
-	return;
-}
-
-/* Special handler for the shortcut changing as we need to have the
-   client for that one to get the accel group. */
-static void
-menu_shortcut_change_cb (DbusmenuMenuitem * mi, gchar * prop, GVariant * value, DbusmenuGtkClient * client)
-{
-	if (!g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_SHORTCUT)) {
-		refresh_shortcut(client, mi);
-	}
 	return;
 }
 
@@ -903,7 +909,6 @@ dbusmenu_gtkclient_newitem_base (DbusmenuGtkClient * client, DbusmenuMenuitem * 
 
 	/* DbusmenuMenuitem signals */
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_prop_change_cb), client);
-	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(menu_shortcut_change_cb), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(delete_child), client);
 	g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(move_child),   client);
 

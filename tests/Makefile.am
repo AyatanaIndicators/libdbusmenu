@@ -8,6 +8,7 @@ EXTRA_DIST =
 TESTS = \
 	test-glib-objects-test \
 	test-glib-events \
+	test-glib-events-nogroup \
 	test-glib-layout \
 	test-glib-properties \
 	test-glib-proxy \
@@ -16,7 +17,8 @@ TESTS = \
 
 if WANT_DBUSMENUDUMPER
 TESTS += \
-	test-json
+	test-json \
+	test-json-instruction
 endif
 
 if WANT_LIBDBUSMENUGTK
@@ -44,6 +46,7 @@ check_PROGRAMS = \
 	test-glib-objects \
 	test-glib-events-client \
 	test-glib-events-server \
+	test-glib-events-nogroup-client \
 	test-glib-layout-client \
 	test-glib-layout-server \
 	test-glib-properties-client \
@@ -199,6 +202,28 @@ test_glib_events_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
+################################
+# Test Glib Events No Grouping
+################################
+
+test-glib-events-nogroup: test-glib-events-nogroup-client test-glib-events-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo export UBUNTU_MENUPROXY="" >> $@
+	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo $(DBUS_RUNNER) --task ./test-glib-events-nogroup-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
+	@chmod +x $@
+
+test_glib_events_nogroup_client_SOURCES = \
+	test-glib-events-nogroup-client.c
+
+test_glib_events_nogroup_client_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_glib_events_nogroup_client_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS)
+
 ######################
 # Test JSON
 ######################
@@ -208,7 +233,7 @@ test-json: test-json-client test-json-server Makefile.am
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) --task ./test-json-client --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task ./test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
 	@echo diff $(srcdir)/test-json-01.json test-json-01.output.json \> /dev/null >> $@
 	@chmod +x $@
 
@@ -222,6 +247,7 @@ test_json_server_CFLAGS = \
 	-I $(srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUTESTSVALGRIND_CFLAGS) \
 	-Wall -Werror
 
 test_json_server_LDADD = \
@@ -241,6 +267,22 @@ test_json_client_LDADD = \
 	../libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUTESTS_LIBS) \
 	$(DBUSMENUGLIB_LIBS)
+
+#########################
+# Test JSON Instructions
+#########################
+
+test-json-instruction: test-json-client test-json-server test-json-instruction-count Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo export UBUNTU_MENUPROXY="" >> $@
+	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task $(builddir)/test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter /dev/null --ignore-return --task libtool --parameter --mode=execute --parameter $(srcdir)/test-json-instruction-count --parameter $(builddir)/test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@chmod +x $@
+
+EXTRA_DIST += \
+	test-json-instruction-count
+
 
 ######################
 # Test Glib Submenu

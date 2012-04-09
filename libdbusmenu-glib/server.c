@@ -42,7 +42,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 static void layout_update_signal (DbusmenuServer * server);
 
-#define DBUSMENU_VERSION_NUMBER    2
+#define DBUSMENU_VERSION_NUMBER    3
 #define DBUSMENU_INTERFACE         "com.canonical.dbusmenu"
 
 /* Privates, I'll show you mine... */
@@ -64,6 +64,8 @@ struct _DbusmenuServerPrivate
 
 	GArray * prop_array;
 	guint property_idle;
+
+	GHashTable * lookup_cache;
 };
 
 #define DBUSMENU_SERVER_GET_PRIVATE(o) (DBUSMENU_SERVER(o)->priv)
@@ -116,7 +118,9 @@ enum {
 	METHOD_GET_PROPERTY,
 	METHOD_GET_PROPERTIES,
 	METHOD_EVENT,
+	METHOD_EVENT_GROUP,
 	METHOD_ABOUT_TO_SHOW,
+	METHOD_ABOUT_TO_SHOW_GROUP,
 	/* Counter, do not remove! */
 	METHOD_COUNT
 };
@@ -189,7 +193,13 @@ static void       bus_get_properties          (DbusmenuServer * server,
 static void       bus_event                   (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
+static void       bus_event_group             (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
 static void       bus_about_to_show           (DbusmenuServer * server,
+                                               GVariant * params,
+                                               GDBusMethodInvocation * invocation);
+static void       bus_about_to_show_group     (DbusmenuServer * server,
                                                GVariant * params,
                                                GDBusMethodInvocation * invocation);
 static void       find_servers_cb             (GDBusConnection * connection,
@@ -356,8 +366,14 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 	dbusmenu_method_table[METHOD_EVENT].interned_name = g_intern_static_string("Event");
 	dbusmenu_method_table[METHOD_EVENT].func          = bus_event;
 
+	dbusmenu_method_table[METHOD_EVENT_GROUP].interned_name = g_intern_static_string("EventGroup");
+	dbusmenu_method_table[METHOD_EVENT_GROUP].func          = bus_event_group;
+
 	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW].interned_name = g_intern_static_string("AboutToShow");
 	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW].func          = bus_about_to_show;
+
+	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW_GROUP].interned_name = g_intern_static_string("AboutToShowGroup");
+	dbusmenu_method_table[METHOD_ABOUT_TO_SHOW_GROUP].func          = bus_about_to_show_group;
 
 	return;
 }
@@ -377,6 +393,8 @@ dbusmenu_server_init (DbusmenuServer *self)
 	priv->bus_lookup = NULL;
 	priv->find_server_signal = 0;
 	priv->dbus_registration = 0;
+
+	priv->lookup_cache = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, g_object_unref);
 
 	default_text_direction(self);
 	priv->status = DBUSMENU_STATUS_NORMAL;
@@ -450,8 +468,48 @@ dbusmenu_server_finalize (GObject *object)
 		priv->icon_dirs = NULL;
 	}
 
+	if (priv->lookup_cache) {
+		g_hash_table_destroy(priv->lookup_cache);
+		priv->lookup_cache = NULL;
+	}
+
 	G_OBJECT_CLASS (dbusmenu_server_parent_class)->finalize (object);
 	return;
+}
+
+static DbusmenuMenuitem *
+lookup_menuitem_by_id (DbusmenuServer * server, gint id)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	DbusmenuMenuitem *res = (DbusmenuMenuitem *) g_hash_table_lookup(priv->lookup_cache, GINT_TO_POINTER(id));
+	if (!res && id == 0) {
+		return priv->root;
+	}
+
+	return res;
+}
+
+static void
+cache_remove_entries_for_menuitem (GHashTable * cache, DbusmenuMenuitem * item)
+{
+	g_hash_table_remove(cache, GINT_TO_POINTER(dbusmenu_menuitem_get_id(item)));
+
+	GList *child, *children = dbusmenu_menuitem_get_children(item);
+	for (child = children; child != NULL; child = child->next) {
+		cache_remove_entries_for_menuitem(cache, child->data);
+	}
+}
+
+static void
+cache_add_entries_for_menuitem (GHashTable * cache, DbusmenuMenuitem * item)
+{
+	g_hash_table_insert(cache, GINT_TO_POINTER(dbusmenu_menuitem_get_id(item)), g_object_ref(item));
+
+	GList *child, *children = dbusmenu_menuitem_get_children(item);
+	for (child = children; child != NULL; child = child->next) {
+		cache_add_entries_for_menuitem(cache, child->data);
+	}
 }
 
 static void
@@ -480,6 +538,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		if (priv->root != NULL) {
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_remove, obj);
 			dbusmenu_menuitem_set_root(priv->root, FALSE);
+			cache_remove_entries_for_menuitem(priv->lookup_cache, priv->root);
 
 			GList * properties = dbusmenu_menuitem_properties_list(priv->root);
 			GList * iter;
@@ -495,6 +554,7 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 		priv->root = DBUSMENU_MENUITEM(g_value_get_object(value));
 		if (priv->root != NULL) {
 			g_object_ref(G_OBJECT(priv->root));
+			cache_add_entries_for_menuitem(priv->lookup_cache, priv->root);
 			dbusmenu_menuitem_set_root(priv->root, TRUE);
 			dbusmenu_menuitem_foreach(priv->root, menuitem_signals_create, obj);
 
@@ -1161,6 +1221,7 @@ static void
 menuitem_child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint pos, DbusmenuServer * server)
 {
 	menuitem_signals_create(child, server);
+	cache_add_entries_for_menuitem(server->priv->lookup_cache, child);
 	g_list_foreach(dbusmenu_menuitem_get_children(child), added_check_children, server);
 
 	layout_update_signal(server);
@@ -1171,6 +1232,7 @@ static void
 menuitem_child_removed (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, DbusmenuServer * server)
 {
 	menuitem_signals_remove(child, server);
+	cache_remove_entries_for_menuitem(server->priv->lookup_cache, child);
 	layout_update_signal(server);
 	return;
 }
@@ -1259,7 +1321,7 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 	GVariant * items = NULL;
 
 	if (priv->root != NULL) {
-		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, parent);
+		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, parent);
 
 		if (mi != NULL) {
 			items = dbusmenu_menuitem_build_variant(mi, props, recurse);
@@ -1318,7 +1380,7 @@ bus_get_property (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 
 	g_variant_get(params, "(i&s)", &id, &property);
 
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1361,7 +1423,7 @@ bus_get_properties (DbusmenuServer * server, GVariant * params, GDBusMethodInvoc
 	gint32 id;
 	g_variant_get(params, "(i)", &id);
 
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1424,7 +1486,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 
 	gint32 id;
 	while (g_variant_iter_loop(ids, "i", &id)) {
-		DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 		if (mi == NULL) continue;
 
 		if (!builder_init) {
@@ -1523,7 +1585,7 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 		return;
 	}
 
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1585,6 +1647,28 @@ event_local_handler (gpointer user_data)
 	return FALSE;
 }
 
+/* The core menu finding and doing the work part of the two
+   event functions */
+static gboolean
+bus_event_core (DbusmenuServer * server, gint32 id, gchar * event_type, GVariant * data, guint32 timestamp)
+{
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
+
+	if (mi == NULL) {
+		return FALSE;
+	}
+
+	idle_event_t * event_data = g_new0(idle_event_t, 1);
+	event_data->mi = g_object_ref(mi);
+	event_data->eventid = g_strdup(event_type);
+	event_data->timestamp = timestamp;
+	event_data->variant = g_variant_ref(data);
+
+	g_timeout_add(0, event_local_handler, event_data);
+
+	return TRUE;
+}
+
 /* Handles the events coming off of DBus */
 static void
 bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
@@ -1606,30 +1690,92 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 
 	g_variant_get(params, "(isvu)", &id, &etype, &data, &ts);
 
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
-
-	if (mi == NULL) {
+	if (!bus_event_core(server, id, etype, data, ts)) {
 		g_dbus_method_invocation_return_error(invocation,
 			                                  error_quark(),
 			                                  INVALID_MENUITEM_ID,
 			                                  "The ID supplied %d does not refer to a menu item we have",
 			                                  id);
-		g_free(etype);
-		g_variant_unref(data);
-
 	} else {
-		idle_event_t * event_data = g_new0(idle_event_t, 1);
-		event_data->mi = g_object_ref(mi);
-		event_data->eventid = etype; /* give away our allocation */
-		event_data->timestamp = ts;
-		event_data->variant = data; /* give away our reference */
-
-		g_timeout_add(0, event_local_handler, event_data);
-
-		g_dbus_method_invocation_return_value(invocation, NULL);
+		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
+			g_dbus_method_invocation_return_value(invocation, NULL);
+		}
 	}
 
+	g_free(etype);
+	g_variant_unref(data);
+
 	return;
+}
+
+/* Respond to the event group method that will send events to a
+   variety of menuitems */
+static void
+bus_event_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	if (priv->root == NULL) {
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
+
+	GVariant * events = g_variant_get_child_value(params, 0);
+	gint32 id;
+	gchar *etype;
+	GVariant *data;
+	guint32 ts;
+	GVariantIter iter;
+	GVariantBuilder builder;
+
+	g_variant_iter_init(&iter, events);
+	g_variant_builder_init(&builder, G_VARIANT_TYPE("ai"));
+	gboolean gotone = FALSE;
+
+	while (g_variant_iter_loop(&iter, "(isvu)", &id, &etype, &data, &ts)) {
+		if (bus_event_core(server, id, etype, data, ts)) {
+			gotone = TRUE;
+		} else {
+			g_variant_builder_add_value(&builder, g_variant_new_int32(id));
+		}
+	}
+
+	GVariant * errors = g_variant_builder_end(&builder);
+	g_variant_ref_sink(errors);
+
+	if (gotone) {
+		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
+			g_dbus_method_invocation_return_value(invocation, g_variant_new_tuple(&errors, 1));
+		}
+	} else {
+		gchar * ids = g_variant_print(errors, FALSE);
+		g_dbus_method_invocation_return_error(invocation,
+			                                  error_quark(),
+			                                  INVALID_MENUITEM_ID,
+			                                  "The IDs supplied '%s' do not refer to any menu items we have",
+			                                  ids);
+		g_free(ids);
+	}
+
+	g_variant_unref(errors);
+	g_variant_unref(events);
+
+	return;
+}
+
+/* Does the about-to-show in an idle loop so we don't block things */
+/* NOTE: this only works so easily as we don't return the value, if we
+   were to do that it would get more complex. */
+static gboolean
+bus_about_to_show_idle (gpointer user_data)
+{
+	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(user_data);
+	dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
+	g_object_unref(mi);
+	return FALSE;
 }
 
 /* Recieve the About To Show function.  Pass it to our menu item. */
@@ -1648,7 +1794,7 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 
 	gint32 id;
 	g_variant_get(params, "(i)", &id);
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_find_id(priv->root, id);
+	DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 
 	if (mi == NULL) {
 		g_dbus_method_invocation_return_error(invocation,
@@ -1659,11 +1805,74 @@ bus_about_to_show (DbusmenuServer * server, GVariant * params, GDBusMethodInvoca
 		return;
 	}
 
-	dbusmenu_menuitem_send_about_to_show(mi, NULL, NULL);
+	g_timeout_add(0, bus_about_to_show_idle, g_object_ref(mi));
 
 	/* GTK+ does not support about-to-show concept for now */
 	g_dbus_method_invocation_return_value(invocation,
 	                                      g_variant_new("(b)", FALSE));
+	return;
+}
+
+/* Handle the about to show on a set of menus and tell all of them that
+   we love them */
+static void
+bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * invocation)
+{
+	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(server);
+
+	if (priv->root == NULL) {
+		g_dbus_method_invocation_return_error(invocation,
+			            error_quark(),
+			            NO_VALID_LAYOUT,
+			            "There currently isn't a layout in this server");
+		return;
+	}
+
+	gint32 id;
+	GVariantIter iter;
+	GVariantBuilder builder;
+	
+	g_variant_iter_init(&iter, params);
+	g_variant_builder_init(&builder, G_VARIANT_TYPE("ai"));
+	gboolean gotone = FALSE;
+
+	while (g_variant_iter_loop(&iter, "(i)", &id)) {
+		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
+		if (mi != NULL) {
+			g_timeout_add(0, bus_about_to_show_idle, g_object_ref(mi));
+			gotone = TRUE;
+		} else {
+			g_variant_builder_add_value(&builder, g_variant_new_int32(id));
+		}
+	}
+
+	GVariant * errors = g_variant_builder_end(&builder);
+	g_variant_ref_sink(errors);
+
+	if (gotone) {
+		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
+			GVariantBuilder tuple;
+			g_variant_builder_init(&tuple, G_VARIANT_TYPE_TUPLE);
+
+			/* Updates needed */
+			g_variant_builder_add_value(&tuple, g_variant_new_array(G_VARIANT_TYPE_INT32, NULL, 0));
+			/* Errors */
+			g_variant_builder_add_value(&tuple, errors);
+
+			g_dbus_method_invocation_return_value(invocation, g_variant_builder_end(&tuple));
+		}
+	} else {
+		gchar * ids = g_variant_print(errors, FALSE);
+		g_dbus_method_invocation_return_error(invocation,
+			                                  error_quark(),
+			                                  INVALID_MENUITEM_ID,
+			                                  "The IDs supplied '%s' do not refer to any menu items we have",
+			                                  ids);
+		g_free(ids);
+	}
+
+	g_variant_unref(errors);
+
 	return;
 }
 
