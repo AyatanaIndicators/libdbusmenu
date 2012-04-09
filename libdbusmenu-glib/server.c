@@ -1831,8 +1831,9 @@ bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethod
 	gint32 id;
 	GVariantIter iter;
 	GVariantBuilder builder;
-	
-	g_variant_iter_init(&iter, params);
+
+	GVariant * items = g_variant_get_child_value(params, 0);
+	g_variant_iter_init(&iter, items);
 	g_variant_builder_init(&builder, G_VARIANT_TYPE("ai"));
 	gboolean gotone = FALSE;
 
@@ -1872,6 +1873,7 @@ bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethod
 	}
 
 	g_variant_unref(errors);
+	g_variant_unref(items);
 
 	return;
 }
