@@ -39,11 +39,27 @@ License version 3 and version 2.1 along with this program.  If not, see
 typedef struct _ParserData
 {
   GtkWidget *label;
+  gulong label_notify_handler_id;
+
   GtkAction *action;
-  GtkWidget *widget;
+  gulong action_notify_handler_id;
+
   GtkWidget *shell;
+  gulong item_inserted_handler_id;
+  gulong item_removed_handler_id;
+
   GtkWidget *image;
+  gulong image_notify_handler_id;
+
   AtkObject *accessible;
+  gulong a11y_handler_id;
+
+  GtkWidget *widget;
+  gulong widget_notify_handler_id;
+  gulong widget_add_handler_id;
+  gulong widget_accel_handler_id;
+  gulong widget_toggle_handler_id;
+  gulong widget_visible_handler_id;
 
 } ParserData;
 
@@ -160,6 +176,41 @@ ensure_interned_strings_loaded (void)
 ****
 ***/
 
+static void
+dbusmenu_gtk_clear_signal_handler (gpointer instance, gulong *handler_id)
+{
+	if (handler_id && *handler_id) {
+		/* complain if we thought we were connected but aren't */
+		if (!g_signal_handler_is_connected (instance, *handler_id)) {
+			g_debug ("%s tried to disconnect signal handler %lu from disconnected %p", G_STRLOC, *handler_id, instance);
+		} else {
+			g_signal_handler_disconnect (instance, *handler_id);
+			*handler_id = 0;
+		}
+	}
+}
+
+/* get the ParserData associated with the specified DbusmenuMenuitem */
+static ParserData*
+parser_data_get_from_menuitem (DbusmenuMenuitem * item)
+{
+      return (ParserData *) g_object_get_data(G_OBJECT(item), PARSER_DATA);
+}
+
+/* get the ParserData associated with the specified widget */
+static ParserData*
+parser_data_get_from_widget (GtkWidget * widget)
+{
+	DbusmenuMenuitem * item = dbusmenu_gtk_parse_get_cached_item (widget);
+	if (item != NULL)
+		return parser_data_get_from_menuitem (item);
+	return NULL;
+}
+
+/***
+****
+***/
+
 /**
  * dbusmenu_gtk_parse_menu_structure:
  * @widget: A #GtkMenuItem or #GtkMenuShell to turn into a #DbusmenuMenuitem
@@ -222,64 +273,47 @@ parser_data_free (ParserData * pdata)
 	g_return_if_fail (pdata != NULL);
 
 	if (pdata->label != NULL) {
-		gint i = 0;
-		i += g_signal_handlers_disconnect_matched(pdata->label, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(label_notify_cb), NULL);
-		g_warn_if_fail (i != 1);
-		g_object_remove_weak_pointer(G_OBJECT(pdata->label), (gpointer*)&pdata->label);
+		GObject * o = G_OBJECT(pdata->label);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->label_notify_handler_id);
+		g_object_remove_weak_pointer(o, (gpointer*)&pdata->label);
 	}
 
 	if (pdata->action != NULL) {
-		gint i = 0;
-		i += g_signal_handlers_disconnect_matched(pdata->action, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(action_notify_cb), NULL);
-		g_warn_if_fail (i != 1);
-		g_object_remove_weak_pointer(G_OBJECT(pdata->action), (gpointer*)&pdata->action);
+		GObject * o = G_OBJECT(pdata->action);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->action_notify_handler_id);
+		g_object_remove_weak_pointer(o, (gpointer*)&pdata->action);
 	}
 
 	if (pdata->widget != NULL) {
 		GObject * o = G_OBJECT(pdata->widget);
-		gint i = 0;
-		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
-		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(widget_add_cb), NULL);
-		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(accel_changed), NULL);
-		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(checkbox_toggled), NULL);
-		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(menuitem_notify_cb), NULL);
-		g_warn_if_fail (i != 5);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_notify_handler_id);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_add_handler_id);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_accel_handler_id);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_toggle_handler_id);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_visible_handler_id);
 		g_object_remove_weak_pointer(o, (gpointer*)&pdata->widget);
+
 		/* since the DbusmenuMenuitem is being destroyed, uncache it from the GtkWidget */
 		g_object_steal_data(o, CACHED_MENUITEM);
 	}
 
 	if (pdata->shell != NULL) {
-		gint i = 0;
-		i += g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(item_inserted_cb), NULL);
-		i += g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(item_removed_cb), NULL);
-		g_warn_if_fail (i != 2);
-		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
+		GObject * o = G_OBJECT(pdata->shell);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->item_inserted_handler_id);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->item_removed_handler_id);
+		g_object_remove_weak_pointer(o, (gpointer*)&pdata->shell);
 	}
 
 	if (pdata->image != NULL) {
-		gint i = 0;
-		i += g_signal_handlers_disconnect_matched(pdata->image, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(image_notify_cb), NULL);
-		g_warn_if_fail (i != 1);
-		g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
+		GObject * o = G_OBJECT(pdata->image);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->image_notify_handler_id);
+		g_object_remove_weak_pointer(o, (gpointer*)&pdata->image);
 	}
 
 	if (pdata->accessible != NULL) {
-		gint i = 0;
-		i += g_signal_handlers_disconnect_matched(pdata->accessible, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-		                                          0, 0, NULL, G_CALLBACK(a11y_name_notify_cb), NULL);
-		g_warn_if_fail (i != 1);
-		g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
+		GObject * o = G_OBJECT(pdata->accessible);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->a11y_handler_id);
+		g_object_remove_weak_pointer(o, (gpointer*)&pdata->accessible);
 	}
 
 	g_free(pdata);
@@ -347,10 +381,10 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 	g_return_if_fail(GTK_IS_MENU_SHELL(menu));
 
-	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
+	ParserData *pdata = parser_data_get_from_menuitem (mi);
 
 	pdata->shell = menu;
-	g_signal_connect (G_OBJECT (menu),
+	pdata->item_inserted_handler_id = g_signal_connect (G_OBJECT (menu),
 #ifdef HAVE_GTK3
                           "insert",
 #else
@@ -358,10 +392,10 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 #endif
 		          G_CALLBACK (item_inserted_cb),
 		          mi);
-	g_signal_connect (G_OBJECT (menu),
-		          "remove",
-		          G_CALLBACK (item_removed_cb),
-		          mi);
+	pdata->item_removed_handler_id = g_signal_connect (G_OBJECT (menu),
+	                                                   "remove",
+	                                                   G_CALLBACK (item_removed_cb),
+	                                                   mi);
 	g_object_add_weak_pointer(G_OBJECT (menu), (gpointer*)&pdata->shell);
 
 	/* Some apps (notably Eclipse RCP apps) don't fill contents of submenus
@@ -447,17 +481,18 @@ parse_menu_structure_helper (GtkWidget * widget, RecurseContext * recurse)
 			thisitem = construct_dbusmenu_for_widget (widget);
 
 			if (!gtk_widget_get_visible (widget)) {
-				g_signal_connect (G_OBJECT (widget),
-				                  "notify::visible",
-				                  G_CALLBACK (menuitem_notify_cb),
-				                  recurse->toplevel);
-            }
+				ParserData *pdata = parser_data_get_from_menuitem (thisitem);
+				pdata->widget_visible_handler_id = g_signal_connect (G_OBJECT (widget),
+				                                                     "notify::visible",
+				                                                     G_CALLBACK (menuitem_notify_cb),
+				                                                     recurse->toplevel);
+			}
 
 			if (GTK_IS_TEAROFF_MENU_ITEM (widget)) {
 				dbusmenu_menuitem_property_set_bool (thisitem,
 				                                     DBUSMENU_MENUITEM_PROP_VISIBLE,
 				                                     FALSE);
-            }
+			}
 		}
 
 		/* Check to see if we're in our parents list of children, if we have
@@ -584,10 +619,8 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
         }
       else
         {
-          g_signal_connect (widget,
-                            "accel-closures-changed",
-                            G_CALLBACK (accel_changed),
-                            mi);
+          pdata->widget_accel_handler_id = g_signal_connect (widget, "accel-closures-changed",
+                                                             G_CALLBACK (accel_changed), mi);
 
           if (GTK_IS_CHECK_MENU_ITEM (widget))
             {
@@ -599,10 +632,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                                                   DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
                                                   gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
 
-              g_signal_connect (widget,
-                                "activate",
-                                G_CALLBACK (checkbox_toggled),
-                                mi);
+              pdata->widget_toggle_handler_id = g_signal_connect (widget, "activate", G_CALLBACK (checkbox_toggled), mi);
             }
 
           if (GTK_IS_IMAGE_MENU_ITEM (widget))
@@ -626,10 +656,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
           g_free (text);
 
           pdata->label = label;
-          g_signal_connect (G_OBJECT (label),
-                            "notify",
-                            G_CALLBACK (label_notify_cb),
-                            mi);
+          pdata->label_notify_handler_id = g_signal_connect (G_OBJECT (label), "notify", G_CALLBACK(label_notify_cb), mi);
           g_object_add_weak_pointer(G_OBJECT (label), (gpointer*)&pdata->label);
 
           AtkObject *accessible = gtk_widget_get_accessible (widget);
@@ -646,10 +673,10 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
               // An application may set an alternate accessible name in the future,
               // so we had better watch out for it.
               pdata->accessible = accessible;
-              g_signal_connect (G_OBJECT (accessible),
-                                "notify::accessible-name",
-                                G_CALLBACK (a11y_name_notify_cb),
-                                mi);
+              pdata->a11y_handler_id = g_signal_connect (G_OBJECT (accessible),
+                                                         "notify::accessible-name",
+                                                         G_CALLBACK (a11y_name_notify_cb),
+                                                         mi);
               g_object_add_weak_pointer(G_OBJECT (accessible), (gpointer*)&pdata->accessible);
             }
 
@@ -667,10 +694,9 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                       sensitive = gtk_action_is_sensitive (action);
 
                       pdata->action = action;
-                      g_signal_connect_object (action, "notify",
-                                               G_CALLBACK (action_notify_cb),
-                                               mi,
-                                               G_CONNECT_AFTER);
+                      pdata->action_notify_handler_id = g_signal_connect_object (action, "notify",
+                                                                                 G_CALLBACK (action_notify_cb), mi,
+                                                                                 G_CONNECT_AFTER);
                       g_object_add_weak_pointer(G_OBJECT (action), (gpointer*)&pdata->action);
                     }
                 }
@@ -714,15 +740,11 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
                                            sensitive);
 
-      g_signal_connect (widget,
-                        "notify",
-                        G_CALLBACK (widget_notify_cb),
-                        mi);
+      pdata->widget_notify_handler_id = g_signal_connect (widget, "notify",
+                                                          G_CALLBACK (widget_notify_cb), mi);
 
-      g_signal_connect (widget,
-                        "add",
-                        G_CALLBACK (widget_add_cb),
-                        mi);
+      pdata->widget_add_handler_id = g_signal_connect (widget, "add",
+                                                       G_CALLBACK (widget_add_cb), mi);
 
       return mi;
     }
@@ -742,16 +764,15 @@ menuitem_notify_cb (GtkWidget  *widget,
   if (pspec->name == interned_str_visible)
     {
       GtkWidget * new_toplevel = gtk_widget_get_toplevel (widget);
-	  GtkWidget * old_toplevel = GTK_WIDGET(data);
+      GtkWidget * old_toplevel = GTK_WIDGET(data);
 
       if (new_toplevel == old_toplevel) {
           /* TODO: Figure this out -> rebuild (context->bridge, window); */
       }
 
       /* We only care about this once, so let's disconnect now. */
-      g_signal_handlers_disconnect_by_func (widget,
-                                            G_CALLBACK (menuitem_notify_cb),
-                                            data);
+      ParserData * pdata = parser_data_get_from_widget (widget);
+      dbusmenu_gtk_clear_signal_handler (widget, &pdata->widget_visible_handler_id);
     }
 }
 
@@ -785,17 +806,18 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImage *image)
   if (image != GTK_IMAGE(pdata->image)) {
 
     if (pdata->image != NULL) {
-      g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), menuitem);
-      g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
+      GObject * o = G_OBJECT(pdata->image);
+      dbusmenu_gtk_clear_signal_handler (o, &pdata->image_notify_handler_id);
+      g_object_remove_weak_pointer(o, (gpointer*)&pdata->image);
     }
 
     pdata->image = GTK_WIDGET(image);
 
     if (pdata->image != NULL) {
-      g_signal_connect (G_OBJECT (pdata->image),
-                        "notify",
-                        G_CALLBACK (image_notify_cb),
-                        menuitem);
+      pdata->image_notify_handler_id = g_signal_connect (G_OBJECT (pdata->image),
+                                                         "notify",
+                                                         G_CALLBACK (image_notify_cb),
+                                                         menuitem);
       g_object_add_weak_pointer(G_OBJECT (pdata->image), (gpointer*)&pdata->image);
     }
   }
@@ -1205,9 +1227,8 @@ widget_notify_cb (GtkWidget * widget, GParamSpec * pspec, gpointer data)
         */
       if (GTK_WIDGET (g_value_get_object (&prop_value)) == NULL) 
         {
-          g_signal_handlers_disconnect_by_func (widget,
-                                                G_CALLBACK (widget_notify_cb),
-                                                child);
+          ParserData *pdata = parser_data_get_from_menuitem (child);
+          dbusmenu_gtk_clear_signal_handler (widget, &pdata->widget_notify_handler_id);
 
           DbusmenuMenuitem *parent = dbusmenu_menuitem_get_parent (child);
 
