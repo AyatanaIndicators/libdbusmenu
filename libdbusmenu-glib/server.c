@@ -1288,6 +1288,7 @@ menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data)
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_removed), data);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_moved), data);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_property_changed), data);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_shown), data);
 	return;
 }
 
