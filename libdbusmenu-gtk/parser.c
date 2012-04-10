@@ -179,13 +179,14 @@ ensure_interned_strings_loaded (void)
 static void
 dbusmenu_gtk_clear_signal_handler (gpointer instance, gulong *handler_id)
 {
-	if (handler_id && *handler_id)
-	{
+	if (handler_id && *handler_id) {
 		/* complain if we thought we were connected but aren't */
-		g_return_if_fail (g_signal_handler_is_connected (instance, *handler_id));
-
-		g_signal_handler_disconnect (instance, *handler_id);
-		*handler_id = 0;
+		if (!g_signal_handler_is_connected (instance, *handler_id)) {
+			g_debug ("%s tried to disconnect signal handler %lu from disconnected %p", G_STRLOC, *handler_id, instance);
+		} else {
+			g_signal_handler_disconnect (instance, *handler_id);
+			*handler_id = 0;
+		}
 	}
 }
 
