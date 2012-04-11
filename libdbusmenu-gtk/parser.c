@@ -61,7 +61,6 @@ static void           checkbox_toggled         (GtkWidget *         widget,
                                                 DbusmenuMenuitem *  mi);
 static void           update_icon              (DbusmenuMenuitem *  menuitem,
                                                 ParserData *        pdata,
-                                                GtkImageMenuItem *  gmenuitem,
                                                 GtkImage *          image);
 static GtkWidget *    find_menu_label          (GtkWidget *         widget);
 static void           label_notify_cb          (GtkWidget *         widget,
@@ -105,6 +104,61 @@ static gboolean       should_show_image        (GtkImage *          image);
 static void           menuitem_notify_cb       (GtkWidget *         widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
+
+/***
+****
+***/
+
+static const char * interned_str_accessible_name   = NULL;
+static const char * interned_str_active            = NULL;   
+static const char * interned_str_always_show_image = NULL;
+static const char * interned_str_file              = NULL;
+static const char * interned_str_gicon             = NULL;
+static const char * interned_str_icon_name         = NULL;      
+static const char * interned_str_icon_set          = NULL;     
+static const char * interned_str_image             = NULL;  
+static const char * interned_str_label             = NULL;  
+static const char * interned_str_mask              = NULL; 
+static const char * interned_str_parent            = NULL;   
+static const char * interned_str_pixbuf_animation  = NULL;             
+static const char * interned_str_pixbuf            = NULL;   
+static const char * interned_str_pixmap            = NULL;   
+static const char * interned_str_sensitive         = NULL;      
+static const char * interned_str_stock             = NULL;  
+static const char * interned_str_storage_type      = NULL;         
+static const char * interned_str_submenu           = NULL;
+static const char * interned_str_visible           = NULL;    
+
+static void
+ensure_interned_strings_loaded (void)
+{
+  if (G_UNLIKELY(interned_str_file == NULL))
+  {
+    interned_str_accessible_name    = g_intern_static_string ("accessible-name");
+    interned_str_active             = g_intern_static_string ("active");
+    interned_str_always_show_image  = g_intern_static_string ("always-show-image");
+    interned_str_file               = g_intern_static_string ("file");
+    interned_str_gicon              = g_intern_static_string ("gicon");
+    interned_str_icon_name          = g_intern_static_string ("icon-name");
+    interned_str_icon_set           = g_intern_static_string ("icon-set");
+    interned_str_image              = g_intern_static_string ("image");
+    interned_str_label              = g_intern_static_string ("label");
+    interned_str_mask               = g_intern_static_string ("mask");
+    interned_str_parent             = g_intern_static_string ("parent");
+    interned_str_pixbuf_animation   = g_intern_static_string ("pixbuf-animation");
+    interned_str_pixbuf             = g_intern_static_string ("pixbuf");
+    interned_str_pixmap             = g_intern_static_string ("pixmap");
+    interned_str_sensitive          = g_intern_static_string ("sensitive");
+    interned_str_stock              = g_intern_static_string ("stock");
+    interned_str_storage_type       = g_intern_static_string ("storage-type");
+    interned_str_submenu            = g_intern_static_string ("submenu");
+    interned_str_visible            = g_intern_static_string ("visible");
+  }
+}
+
+/***
+****
+***/
 
 /**
  * dbusmenu_gtk_parse_menu_structure:
@@ -163,71 +217,74 @@ dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget)
 }
 
 static void
-parse_data_free (gpointer data)
+parser_data_free (ParserData * pdata)
 {
-	ParserData *pdata = (ParserData *)data;
+	g_return_if_fail (pdata != NULL);
 
-	if (pdata != NULL && pdata->label != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->label, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(label_notify_cb), NULL);
+	if (pdata->label != NULL) {
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->label, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(label_notify_cb), NULL);
+		g_warn_if_fail (i != 1);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->label), (gpointer*)&pdata->label);
 	}
 
-	if (pdata != NULL && pdata->action != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->action, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(action_notify_cb), NULL);
+	if (pdata->action != NULL) {
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->action, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(action_notify_cb), NULL);
+		g_warn_if_fail (i != 1);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->action), (gpointer*)&pdata->action);
 	}
 
-	if (pdata != NULL && pdata->widget != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(widget_add_cb), NULL);
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(accel_changed), NULL);
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(checkbox_toggled), NULL);
-		g_signal_handlers_disconnect_matched(pdata->widget, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(menuitem_notify_cb), NULL);
-		g_object_remove_weak_pointer(G_OBJECT(pdata->widget), (gpointer*)&pdata->widget);
+	if (pdata->widget != NULL) {
+		GObject * o = G_OBJECT(pdata->widget);
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(widget_notify_cb), NULL);
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(widget_add_cb), NULL);
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(accel_changed), NULL);
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(checkbox_toggled), NULL);
+		i += g_signal_handlers_disconnect_matched(o, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(menuitem_notify_cb), NULL);
+		g_warn_if_fail (i != 5);
+		g_object_remove_weak_pointer(o, (gpointer*)&pdata->widget);
+		/* since the DbusmenuMenuitem is being destroyed, uncache it from the GtkWidget */
+		g_object_steal_data(o, CACHED_MENUITEM);
 	}
 
-	if (pdata != NULL && pdata->shell != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(item_inserted_cb), NULL);
-		g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(item_removed_cb), NULL);
+	if (pdata->shell != NULL) {
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(item_inserted_cb), NULL);
+		i += g_signal_handlers_disconnect_matched(pdata->shell, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(item_removed_cb), NULL);
+		g_warn_if_fail (i != 2);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->shell), (gpointer*)&pdata->shell);
 	}
 
-	if (pdata != NULL && pdata->image != NULL) {
-		g_signal_handlers_disconnect_matched(pdata->image, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-						     0, 0, NULL, G_CALLBACK(image_notify_cb), NULL);
+	if (pdata->image != NULL) {
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->image, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(image_notify_cb), NULL);
+		g_warn_if_fail (i != 1);
 		g_object_remove_weak_pointer(G_OBJECT(pdata->image), (gpointer*)&pdata->image);
 	}
 
-        if (pdata != NULL && pdata->accessible != NULL) {
-                g_signal_handlers_disconnect_matched(pdata->accessible, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
-                                                     0, 0, NULL, G_CALLBACK(a11y_name_notify_cb), NULL);
-                g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
-        }
+	if (pdata->accessible != NULL) {
+		gint i = 0;
+		i += g_signal_handlers_disconnect_matched(pdata->accessible, (GSignalMatchType)G_SIGNAL_MATCH_FUNC,
+		                                          0, 0, NULL, G_CALLBACK(a11y_name_notify_cb), NULL);
+		g_warn_if_fail (i != 1);
+		g_object_remove_weak_pointer(G_OBJECT(pdata->accessible), (gpointer*)&pdata->accessible);
+	}
 
 	g_free(pdata);
 
 	return;
-}
-
-/* Called when the dbusmenu item that we're keeping around
-   is finalized */
-static void
-dbusmenu_item_freed (gpointer data, GObject * obj)
-{
-	ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(obj), PARSER_DATA);
-
-	if (pdata != NULL && pdata->widget != NULL) {
-		g_object_steal_data(G_OBJECT(pdata->widget), CACHED_MENUITEM);
-	}
 }
 
 /* Gets the positon of the child with its' parent if it has one.
@@ -265,9 +322,7 @@ new_menuitem (GtkWidget * widget)
 	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
 
 	ParserData *pdata = g_new0 (ParserData, 1);
-	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, parse_data_free);
-
-	g_object_weak_ref(G_OBJECT(item), dbusmenu_item_freed, NULL);
+	g_object_set_data_full(G_OBJECT(item), PARSER_DATA, pdata, (GDestroyNotify)parser_data_free);
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
@@ -558,7 +613,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
               if (GTK_IS_IMAGE (image))
                 {
-                  update_icon (mi, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
+                  update_icon (mi, pdata, GTK_IMAGE (image));
                 }
             }
 
@@ -682,7 +737,9 @@ menuitem_notify_cb (GtkWidget  *widget,
                     GParamSpec *pspec,
                     gpointer    data)
 {
-  if (pspec->name == g_intern_static_string ("visible"))
+  ensure_interned_strings_loaded ();
+
+  if (pspec->name == interned_str_visible)
     {
       GtkWidget * new_toplevel = gtk_widget_get_toplevel (widget);
 	  GtkWidget * old_toplevel = GTK_WIDGET(data);
@@ -715,7 +772,7 @@ checkbox_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
 }
 
 static void
-update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * gmenuitem, GtkImage *image)
+update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImage *image)
 {
   GdkPixbuf * pixbuf = NULL;
   const gchar * icon_name = NULL;
@@ -724,12 +781,8 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImageMenuItem * 
   GtkIconInfo * info;
   gint width;
 
-  /* Check to see if we're changing the image.  If so, we need to track
-     that little bugger */
-  /* Why check for gmenuitem being NULL?  Because there are some cases where
-     we can't get it easily, and those mean it's not changed just the icon
-     underneith, so we can ignore these larger impacts */
-  if (image != GTK_IMAGE(pdata->image) && gmenuitem != NULL) {
+  /* Check to see if we're changing the image.  If so, we need to track that little bugger */
+  if (image != GTK_IMAGE(pdata->image)) {
 
     if (pdata->image != NULL) {
       g_signal_handlers_disconnect_by_func(pdata->image, G_CALLBACK(image_notify_cb), menuitem);
@@ -894,10 +947,12 @@ label_notify_cb (GtkWidget  *widget,
   DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
   GValue prop_value = {0};
 
+  ensure_interned_strings_loaded ();
+
   g_value_init (&prop_value, pspec->value_type); 
   g_object_get_property (G_OBJECT (widget), pspec->name, &prop_value);
 
-  if (pspec->name == g_intern_static_string ("label"))
+  if (pspec->name == interned_str_label)
     {
       gchar * text = sanitize_label (GTK_LABEL (widget));
       dbusmenu_menuitem_property_set (child,
@@ -905,7 +960,7 @@ label_notify_cb (GtkWidget  *widget,
                                       text);
       g_free (text);
     }
-  else if (pspec->name == g_intern_static_string ("parent"))
+  else if (pspec->name == interned_str_parent)
     {
       if (GTK_WIDGET (g_value_get_object (&prop_value)) == NULL)
         {
@@ -929,55 +984,53 @@ label_notify_cb (GtkWidget  *widget,
 }
 
 static void
-image_notify_cb (GtkWidget  *widget,
-                 GParamSpec *pspec,
-                 gpointer    data)
+image_notify_cb (GtkWidget * image, GParamSpec * pspec, gpointer data)
 {
-  DbusmenuMenuitem *mi = (DbusmenuMenuitem *)data;
+  ensure_interned_strings_loaded();
 
-  if (pspec->name == g_intern_static_string ("file") ||
-      pspec->name == g_intern_static_string ("gicon") ||
-      pspec->name == g_intern_static_string ("icon-name") ||
-      pspec->name == g_intern_static_string ("icon-set") ||
-      pspec->name == g_intern_static_string ("image") ||
-      pspec->name == g_intern_static_string ("mask") ||
-      pspec->name == g_intern_static_string ("pixbuf") ||
-      pspec->name == g_intern_static_string ("pixbuf-animation") ||
-      pspec->name == g_intern_static_string ("pixmap") ||
-      pspec->name == g_intern_static_string ("stock") ||
-      pspec->name == g_intern_static_string ("storage-type"))
+  if (pspec->name == interned_str_file ||
+      pspec->name == interned_str_gicon ||
+      pspec->name == interned_str_icon_name ||
+      pspec->name == interned_str_icon_set ||
+      pspec->name == interned_str_image ||
+      pspec->name == interned_str_mask ||
+      pspec->name == interned_str_pixbuf ||
+      pspec->name == interned_str_pixbuf_animation ||
+      pspec->name == interned_str_pixmap ||
+      pspec->name == interned_str_stock ||
+      pspec->name == interned_str_storage_type)
     {
+      DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
-      update_icon (mi, pdata, NULL, GTK_IMAGE (widget));
+      update_icon (mi, pdata, GTK_IMAGE (image));
     }
 }
 
 static void
-action_notify_cb (GtkAction  *action,
-                  GParamSpec *pspec,
-                  gpointer    data)
+action_notify_cb (GtkAction *action, GParamSpec * pspec, gpointer data)
 {
-  DbusmenuMenuitem *mi = (DbusmenuMenuitem *)data;
+  DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
+  ensure_interned_strings_loaded ();
 
-  if (pspec->name == g_intern_static_string ("sensitive"))
+  if (pspec->name == interned_str_sensitive)
     {
       dbusmenu_menuitem_property_set_bool (mi,
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
                                            gtk_action_is_sensitive (action));
     }
-  else if (pspec->name == g_intern_static_string ("visible"))
+  else if (pspec->name == interned_str_visible)
     {
       dbusmenu_menuitem_property_set_bool (mi,
                                            DBUSMENU_MENUITEM_PROP_VISIBLE,
                                            gtk_action_is_visible (action));
     }
-  else if (pspec->name == g_intern_static_string ("active"))
+  else if (pspec->name == interned_str_active)
     {
       dbusmenu_menuitem_property_set_int (mi,
                                           DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
                                           gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
     }
-  else if (pspec->name == g_intern_static_string ("label"))
+  else if (pspec->name == interned_str_label)
     {
       gchar * text = sanitize_label_text (gtk_action_get_label (action));
       dbusmenu_menuitem_property_set (mi,
@@ -988,23 +1041,23 @@ action_notify_cb (GtkAction  *action,
 }
 
 static void
-a11y_name_notify_cb (AtkObject  *accessible,
-                     GParamSpec *pspec,
-                     gpointer    data)
+a11y_name_notify_cb (AtkObject * accessible, GParamSpec * pspec, gpointer data)
 {
-  DbusmenuMenuitem *item = (DbusmenuMenuitem *)data;
-  GtkWidget *widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible));
-  GtkWidget *label = find_menu_label (widget);
-  const gchar *label_text = gtk_label_get_text (GTK_LABEL (label));
-  const gchar *name = atk_object_get_name (accessible);
+  ensure_interned_strings_loaded ();
 
   /* If an application sets the accessible name to NULL, then a subsequent
    * call to get the accessible name from the Atk object should return the same
    * string as the text of the menu item label, in which case, we want to clear
    * the accessible description property of the dbusmenu item.
    */
-  if (pspec->name == g_intern_static_string ("accessible-name"))
+  if (pspec->name == interned_str_accessible_name)
     {
+      DbusmenuMenuitem * item = DBUSMENU_MENUITEM(data);
+      GtkWidget *widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible));
+      GtkWidget *label = find_menu_label (widget);
+      const gchar *label_text = gtk_label_get_text (GTK_LABEL (label));
+      const gchar *name = atk_object_get_name (accessible);
+
       if (!g_strcmp0 (name, label_text))
         dbusmenu_menuitem_property_set (item, DBUSMENU_MENUITEM_PROP_ACCESSIBLE_DESC, NULL);
       else
@@ -1099,54 +1152,52 @@ handle_first_label (DbusmenuMenuitem *mi)
 }
 
 static void
-widget_notify_cb (GtkWidget  *widget,
-                  GParamSpec *pspec,
-                  gpointer    data)
+widget_notify_cb (GtkWidget * widget, GParamSpec * pspec, gpointer data)
 {
-  DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
   GValue prop_value = {0};
+  DbusmenuMenuitem * child = DBUSMENU_MENUITEM(data);
+  g_return_if_fail (child != NULL);
+
+  ensure_interned_strings_loaded ();
 
   g_value_init (&prop_value, pspec->value_type); 
   g_object_get_property (G_OBJECT (widget), pspec->name, &prop_value);
 
-  if (pspec->name == g_intern_static_string ("sensitive"))
+  if (pspec->name == interned_str_sensitive)
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
                                            g_value_get_boolean (&prop_value));
     }
-  else if (pspec->name == g_intern_static_string ("label"))
+  else if (pspec->name == interned_str_label)
     {
-      if (handle_first_label (child))
+      if (!handle_first_label (child))
         {
-          return;
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          g_value_get_string (&prop_value));
         }
-
-      dbusmenu_menuitem_property_set (child,
-                                      DBUSMENU_MENUITEM_PROP_LABEL,
-                                      g_value_get_string (&prop_value));
     }
-  else if (pspec->name == g_intern_static_string ("visible"))
+  else if (pspec->name == interned_str_visible)
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_VISIBLE,
                                            g_value_get_boolean (&prop_value));
     }
-  else if (pspec->name == g_intern_static_string ("always-show-image"))
+  else if (pspec->name == interned_str_always_show_image)
     {
       GtkWidget *image = NULL;
       g_object_get(widget, "image", &image, NULL);
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
-      update_icon (child, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE(image));
+      update_icon (child, pdata, GTK_IMAGE(image));
     }
-  else if (pspec->name == g_intern_static_string ("image"))
+  else if (pspec->name == interned_str_image)
     {
-      GtkWidget *image;
-      image = GTK_WIDGET (g_value_get_object (&prop_value));
+      GtkWidget * image = GTK_WIDGET (g_value_get_object (&prop_value));
       ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(child), PARSER_DATA);
-      update_icon (child, pdata, GTK_IMAGE_MENU_ITEM(widget), GTK_IMAGE (image));
+      update_icon (child, pdata, GTK_IMAGE (image));
     }
-  else if (pspec->name == g_intern_static_string ("parent"))
+  else if (pspec->name == interned_str_parent)
     {
       /*
         * We probably should have added a 'remove' method to the
@@ -1166,7 +1217,7 @@ widget_notify_cb (GtkWidget  *widget,
             }
         }
     }
-  else if (pspec->name == g_intern_static_string ("submenu"))
+  else if (pspec->name == interned_str_submenu)
     {
       /* The underlying submenu got swapped out.  Let's see what it is now. */
       /* First, delete any children that may exist currently. */
