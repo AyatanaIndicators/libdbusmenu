@@ -216,6 +216,31 @@ get_text_color (GenericmenuitemDisposition disposition, GtkWidget * widget)
 	return g_strdup(values[disposition].default_color);
 }
 
+/* Check to see if we've got mnemonic stuff goin' on */
+static gboolean
+has_mnemonic (const gchar * string, gboolean previous_underscore)
+{
+	if (string == NULL || string[0] == '\0') {
+		return FALSE;
+	}
+
+	if (g_utf8_get_char(string) == '_') {
+		if (previous_underscore) {
+			return has_mnemonic(g_utf8_next_char(string), FALSE);
+		} else {
+			return has_mnemonic(g_utf8_next_char(string), TRUE);
+		}
+	} else {
+		if (previous_underscore) {
+			return TRUE;
+		} else {
+			return has_mnemonic(g_utf8_next_char(string), FALSE);
+		}
+	}
+
+	return FALSE;
+}
+
 /* Set the label on the item */
 static void
 set_label (GtkMenuItem * menu_item, const gchar * in_label)
@@ -287,11 +312,15 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 	if (labelw == NULL) {
 		/* Build it */
 		labelw = GTK_LABEL(gtk_accel_label_new(local_label));
-		gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
 		gtk_label_set_use_markup(GTK_LABEL(labelw), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
-		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
-		gtk_label_set_markup_with_mnemonic(labelw, local_label);
+
+		if (has_mnemonic(in_label, FALSE)) {
+			gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
+			gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
+			gtk_label_set_markup_with_mnemonic(labelw, local_label);
+		}
+
 		gtk_widget_show(GTK_WIDGET(labelw));
 
 		/* Check to see if it needs to be in the bin for this
@@ -309,7 +338,13 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 			   getting in. */
 			suppress_update = TRUE;
 		} else {
-			gtk_label_set_markup_with_mnemonic(labelw, local_label);
+			if (has_mnemonic(in_label, FALSE)) {
+				gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
+				gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
+				gtk_label_set_markup_with_mnemonic(labelw, local_label);
+			} else {
+				gtk_label_set_markup(labelw, local_label);
+			}
 		}
 	}
 
