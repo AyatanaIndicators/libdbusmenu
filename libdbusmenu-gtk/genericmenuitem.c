@@ -241,12 +241,12 @@ has_mnemonic (const gchar * string, gboolean previous_underscore)
 	return FALSE;
 }
 
-static GRegex * underscore_regex = NULL;
-
 /* Sanitize the label by removing "__" meaning "_" */
 gchar *
 sanitize_label (const gchar * in_label)
 {
+	static GRegex * underscore_regex = NULL;
+
 	g_return_val_if_fail(in_label != NULL, NULL);
 
 	if (underscore_regex == NULL) {
