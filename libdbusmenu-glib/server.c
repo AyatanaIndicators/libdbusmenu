@@ -1288,6 +1288,7 @@ menuitem_signals_remove (DbusmenuMenuitem * mi, gpointer data)
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_removed), data);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_child_moved), data);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_property_changed), data);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(mi), G_CALLBACK(menuitem_shown), data);
 	return;
 }
 
@@ -1831,12 +1832,13 @@ bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethod
 	gint32 id;
 	GVariantIter iter;
 	GVariantBuilder builder;
-	
-	g_variant_iter_init(&iter, params);
+
+	GVariant * items = g_variant_get_child_value(params, 0);
+	g_variant_iter_init(&iter, items);
 	g_variant_builder_init(&builder, G_VARIANT_TYPE("ai"));
 	gboolean gotone = FALSE;
 
-	while (g_variant_iter_loop(&iter, "(i)", &id)) {
+	while (g_variant_iter_loop(&iter, "i", &id)) {
 		DbusmenuMenuitem * mi = lookup_menuitem_by_id(server, id);
 		if (mi != NULL) {
 			g_timeout_add(0, bus_about_to_show_idle, g_object_ref(mi));
@@ -1872,6 +1874,7 @@ bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethod
 	}
 
 	g_variant_unref(errors);
+	g_variant_unref(items);
 
 	return;
 }

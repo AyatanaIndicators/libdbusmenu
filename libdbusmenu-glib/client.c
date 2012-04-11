@@ -1023,7 +1023,7 @@ proxy_destroyed (GObject * gobj_proxy, gpointer userdata)
 
 /* Respond to us getting the session bus (hopefully) or handle
    the error if not */
-void
+static void
 session_bus_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 {
 	GError * error = NULL;
@@ -1634,7 +1634,7 @@ menuitem_call_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 }
 
 /* Looks at event_data_t structs to match an ID */
-gint
+static gint
 event_data_find (gconstpointer data, gconstpointer user_data)
 {
 	event_data_t * edata = (event_data_t *)data;
@@ -1834,6 +1834,8 @@ struct _about_to_show_t {
 static void
 about_to_show_finish (about_to_show_t * data, gboolean need_update)
 {
+	g_return_if_fail(data != NULL);
+
 	/* If we need to update, do that first. */
 	if (need_update) {
 		update_layout(data->client);
@@ -1938,6 +1940,8 @@ about_to_show_idle (gpointer user_data)
 	GQueue * showers = priv->about_to_show_to_go;
 	priv->about_to_show_to_go = NULL;
 
+	g_return_val_if_fail(showers != NULL, FALSE);
+
 	/* Figure out if we've got any callbacks */
 	gboolean got_callbacks = FALSE;
 	g_queue_foreach(showers, about_to_show_idle_callbacks, &got_callbacks);
@@ -1995,7 +1999,10 @@ about_to_show_cb (GObject * proxy, GAsyncResult * res, gpointer userdata)
 		g_variant_unref(params);
 	}
 
-	about_to_show_finish(data, need_update);
+	if (data != NULL) {
+		about_to_show_finish(data, need_update);
+	}
+
 	return;
 }
 
@@ -2028,11 +2035,15 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 			priv->about_to_show_idle = g_idle_add(about_to_show_idle, client);
 		}
 	} else {
+		GAsyncReadyCallback dbuscb = NULL;
+
 		/* If there's no callback we don't need this data, let's
 		   clean it up in a consistent way */
 		if (cb == NULL) {
 			about_to_show_finish(data, FALSE);
 			data = NULL;
+		} else {
+			dbuscb = about_to_show_cb;
 		}
 
 		g_dbus_proxy_call(priv->menuproxy,
@@ -2041,7 +2052,7 @@ dbusmenu_client_send_about_to_show(DbusmenuClient * client, gint id, void (*cb)(
 		                  G_DBUS_CALL_FLAGS_NONE,
 		                  -1,   /* timeout */
 		                  NULL, /* cancellable */
-		                  about_to_show_cb,
+		                  dbuscb,
 		                  data);
 	}
 
