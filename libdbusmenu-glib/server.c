@@ -463,6 +463,11 @@ dbusmenu_server_finalize (GObject *object)
 {
 	DbusmenuServerPrivate * priv = DBUSMENU_SERVER_GET_PRIVATE(object);
 
+	if (priv->dbusobject != NULL) {
+		g_free (priv->dbusobject);
+		priv->dbusobject = NULL;
+	}
+
 	if (priv->icon_dirs != NULL) {
 		g_strfreev(priv->icon_dirs);
 		priv->icon_dirs = NULL;
