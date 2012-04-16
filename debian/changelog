@@ -1,3 +1,9 @@
+libdbusmenu (0.6.1-0ubuntu3) UNRELEASED; urgency=low
+
+  * Backport fix for keybindings not showing in menus bug (lp: #982656)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 16 Apr 2012 21:25:44 +0200
+
 libdbusmenu (0.6.1-0ubuntu2) precise; urgency=low
 
   * libdbusmenu-gtk/genericmenuitem.c
