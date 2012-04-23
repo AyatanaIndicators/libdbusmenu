@@ -242,7 +242,7 @@ has_mnemonic (const gchar * string, gboolean previous_underscore)
 }
 
 /* Sanitize the label by removing "__" meaning "_" */
-G_INLINE_FUNC gchar *
+static gchar *
 sanitize_label (const gchar * in_label)
 {
 	static GRegex * underscore_regex = NULL;
