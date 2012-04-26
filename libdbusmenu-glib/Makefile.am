@@ -216,10 +216,10 @@ if HAVE_VALA
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
-vapi_DATA = Dbusmenu-0.4.vapi
+vapi_DATA = dbusmenu-glib-0.4.vapi
 
-Dbusmenu-0.4.vapi: Dbusmenu-0.4.gir
-	$(VALA_API_GEN) --library=Dbusmenu-0.4 $<
+dbusmenu-glib-0.4.vapi: Dbusmenu-0.4.gir
+	$(VALA_API_GEN) --library=dbusmenu-glib-0.4 $<
 
 CLEANFILES += $(vapi_DATA)
 
