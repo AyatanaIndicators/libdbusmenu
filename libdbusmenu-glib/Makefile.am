@@ -185,10 +185,7 @@ Dbusmenu_0_4_gir_INCLUDES = \
 	GObject-2.0
 Dbusmenu_0_4_gir_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) \
-	$(COVERAGE_CFLAGS) \
 	-I$(top_srcdir)
-Dbusmenu_0_4_gir_LDFLAGS = \
-	$(COVERAGE_LDFLAGS)
 Dbusmenu_0_4_gir_LIBS = libdbusmenu-glib.la
 Dbusmenu_0_4_gir_FILES = $(introspection_sources)
 Dbusmenu_0_4_gir_NAMESPACE = Dbusmenu
