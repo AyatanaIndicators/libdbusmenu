@@ -262,6 +262,27 @@ sanitize_label (const gchar * in_label)
 	                               NULL); /* error */
 }
 
+/* Replace '&' with '&amp' in the label */
+static gchar *
+replace_amps (const gchar * in_label)
+{
+    static GRegex * amp_regex = NULL;
+
+    g_return_val_if_fail(in_label != NULL, NULL);
+
+    if (amp_regex == NULL) {
+        amp_regex = g_regex_new("&", 0, 0, NULL);
+    }
+
+    return g_regex_replace_literal(amp_regex,
+                                   in_label,
+                                   -1,    /* length */
+                                   0,     /* start */
+                                   "&amp;",   /* replacement */
+                                   0,     /* flags */
+                                   NULL); /* error */
+}
+
 /* Set the label on the item */
 static void
 set_label (GtkMenuItem * menu_item, const gchar * in_label)
@@ -338,11 +359,15 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 
 		if (has_mnemonic(in_label, FALSE)) {
+			gchar * amp_replaced = replace_amps (local_label);
 			gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
-			gtk_label_set_markup_with_mnemonic(labelw, local_label);
+			gtk_label_set_markup_with_mnemonic(labelw, amp_replaced);
+			g_free(amp_replaced);
 		} else {
 			gchar * sanitized = sanitize_label(local_label);
-			gtk_label_set_markup(labelw, sanitized);
+			gchar * amp_replaced = replace_amps (sanitized);
+			gtk_label_set_markup(labelw, amp_replaced);
+			g_free(amp_replaced);
 			g_free(sanitized);
 		}
 
