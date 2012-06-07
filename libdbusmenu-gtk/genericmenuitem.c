@@ -279,7 +279,7 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 	gchar * local_label = NULL;
 	switch (GENERICMENUITEM(menu_item)->priv->disposition) {
 	case GENERICMENUITEM_DISPOSITION_NORMAL:
-		local_label = g_strdup(in_label);
+		local_label = g_markup_escape_text(in_label, -1);
 		break;
 	case GENERICMENUITEM_DISPOSITION_INFORMATIONAL:
 	case GENERICMENUITEM_DISPOSITION_WARNING:
