@@ -16,9 +16,11 @@ TESTS = \
 	test-glib-submenu
 
 if WANT_DBUSMENUDUMPER
+if HAVE_VALGRIND
 TESTS += \
 	test-json \
 	test-json-instruction
+endif
 endif
 
 if WANT_LIBDBUSMENUGTK
@@ -59,9 +61,11 @@ check_PROGRAMS = \
 	test-glib-simple-items
 
 if WANT_DBUSMENUDUMPER
+if HAVE_VALGRIND
 check_PROGRAMS += \
 	test-json-client \
 	test-json-server
+endif
 endif
 
 if WANT_LIBDBUSMENUGTK
