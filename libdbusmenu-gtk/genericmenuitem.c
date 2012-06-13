@@ -241,6 +241,27 @@ has_mnemonic (const gchar * string, gboolean previous_underscore)
 	return FALSE;
 }
 
+/* Sanitize the label by removing "__" meaning "_" */
+gchar *
+sanitize_label (const gchar * in_label)
+{
+	static GRegex * underscore_regex = NULL;
+
+	g_return_val_if_fail(in_label != NULL, NULL);
+
+	if (underscore_regex == NULL) {
+		underscore_regex = g_regex_new("__", 0, 0, NULL);
+	}
+
+	return g_regex_replace_literal(underscore_regex,
+	                               in_label,
+	                               -1,    /* length */
+	                               0,     /* start */
+	                               "_",   /* replacement */
+	                               0,     /* flags */
+	                               NULL); /* error */
+}
+
 /* Set the label on the item */
 static void
 set_label (GtkMenuItem * menu_item, const gchar * in_label)
@@ -258,7 +279,7 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 	gchar * local_label = NULL;
 	switch (GENERICMENUITEM(menu_item)->priv->disposition) {
 	case GENERICMENUITEM_DISPOSITION_NORMAL:
-		local_label = g_strdup(in_label);
+		local_label = g_markup_escape_text(in_label, -1);
 		break;
 	case GENERICMENUITEM_DISPOSITION_INFORMATIONAL:
 	case GENERICMENUITEM_DISPOSITION_WARNING:
@@ -319,6 +340,10 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 			gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
 			gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 			gtk_label_set_markup_with_mnemonic(labelw, local_label);
+		} else {
+			gchar * sanitized = sanitize_label(local_label);
+			gtk_label_set_markup(labelw, sanitized);
+			g_free(sanitized);
 		}
 
 		gtk_widget_show(GTK_WIDGET(labelw));
@@ -343,7 +368,9 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 				gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 				gtk_label_set_markup_with_mnemonic(labelw, local_label);
 			} else {
-				gtk_label_set_markup(labelw, local_label);
+				gchar * sanitized = sanitize_label(local_label);
+				gtk_label_set_markup(labelw, sanitized);
+				g_free(sanitized);
 			}
 		}
 	}
