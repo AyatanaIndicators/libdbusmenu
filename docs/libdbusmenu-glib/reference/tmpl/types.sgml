@@ -1,0 +1,109 @@
+<!-- ##### SECTION Title ##### -->
+Types
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### MACRO DBUSMENU_TYPE_STATUS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO DBUSMENU_TYPE_TEXT_DIRECTION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM DbusmenuStatus ##### -->
+<para>
+
+</para>
+
+@DBUSMENU_STATUS_NORMAL: 
+@DBUSMENU_STATUS_NOTICE: 
+
+<!-- ##### ENUM DbusmenuTextDirection ##### -->
+<para>
+
+</para>
+
+@DBUSMENU_TEXT_DIRECTION_NONE: 
+@DBUSMENU_TEXT_DIRECTION_LTR: 
+@DBUSMENU_TEXT_DIRECTION_RTL: 
+
+<!-- ##### FUNCTION dbusmenu_status_get_nick ##### -->
+<para>
+
+</para>
+
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_status_get_type ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_status_get_value_from_nick ##### -->
+<para>
+
+</para>
+
+@nick: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_text_direction_get_nick ##### -->
+<para>
+
+</para>
+
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_text_direction_get_type ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION dbusmenu_text_direction_get_value_from_nick ##### -->
+<para>
+
+</para>
+
+@nick: 
+@Returns: 
+
+

@@ -35,7 +35,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
-/* Enumerations from file: "./types.h" */
+/* Enumerations from file: "types.h" */
 #include "types.h"
 
 
