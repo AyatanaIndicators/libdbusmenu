@@ -1,0 +1,238 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<refentry id="libdbusmenu-gtk-DbusmenuGtkClient">
+<refmeta>
+<refentrytitle role="top_of_page" id="libdbusmenu-gtk-DbusmenuGtkClient.top_of_page">DbusmenuGtkClient</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  LIBDBUSMENU-GTK Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>DbusmenuGtkClient</refname>
+<refpurpose>A subclass of <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> adding GTK level features</refpurpose>
+</refnamediv>
+<refsect1 id="libdbusmenu-gtk-DbusmenuGtkClient.stability-level">
+<title>Stability Level</title>
+Unstable, unless otherwise indicated
+</refsect1>
+
+<refsynopsisdiv id="libdbusmenu-gtk-DbusmenuGtkClient.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+#include &lt;libdbusmenu-gtk/client.h&gt;
+
+#define             <link linkend="DBUSMENU-GTKCLIENT-SIGNAL-ROOT-CHANGED:CAPS">DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED</link>
+                    <link linkend="DbusmenuGtkClient">DbusmenuGtkClient</link>;
+struct              <link linkend="DbusmenuGtkClientClass">DbusmenuGtkClientClass</link>;
+<link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> * <link linkend="dbusmenu-gtkclient-new">dbusmenu_gtkclient_new</link>              (<parameter><link linkend="gchar"><type>gchar</type></link> *dbus_name</parameter>,
+                                                         <parameter><link linkend="gchar"><type>gchar</type></link> *dbus_object</parameter>);
+<link linkend="GtkMenuItem"><returnvalue>GtkMenuItem</returnvalue></link> *       <link linkend="dbusmenu-gtkclient-menuitem-get">dbusmenu_gtkclient_menuitem_get</link>     (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>);
+<link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *           <link linkend="dbusmenu-gtkclient-menuitem-get-submenu">dbusmenu_gtkclient_menuitem_get_submenu</link>
+                                                        (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-gtkclient-set-accel-group">dbusmenu_gtkclient_set_accel_group</link>  (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="GtkAccelGroup"><type>GtkAccelGroup</type></link> *agroup</parameter>);
+<link linkend="GtkAccelGroup"><returnvalue>GtkAccelGroup</returnvalue></link> *     <link linkend="dbusmenu-gtkclient-get-accel-group">dbusmenu_gtkclient_get_accel_group</link>  (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="dbusmenu-gtkclient-newitem-base">dbusmenu_gtkclient_newitem_base</link>     (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>,
+                                                         <parameter><link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> *gmi</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *parent</parameter>);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="libdbusmenu-gtk-DbusmenuGtkClient.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+In general, this is just a <link linkend="GtkMenu"><type>GtkMenu</type></link>, why else would you care?  Oh,
+	because this menu is created by someone else on a server that exists
+	on the other side of DBus.  You need a <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> to be able
+	push the data into this menu.
+</para>
+<para>
+	The first thing you need to know is how to find that <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>
+	on DBus.  This involves both the DBus name and the DBus object that
+	the menu interface can be found on.  Those two value should be set
+	when creating the object using <link linkend="dbusmenu-gtkmenu-new"><function>dbusmenu_gtkmenu_new()</function></link>.  They are then
+	stored on two properties <link linkend="DbusmenuGtkClient--dbus-name"><type>"dbus-name"</type></link> and <link linkend="DbusmenuGtkClient--dbus-object"><type>"dbus-object"</type></link>.
+</para>
+<para>
+	After creation the <link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> it will continue to keep in
+	synchronization with the <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> object across Dbus.  If the
+	number of entries change, the menus change, if they change thier
+	properties change, they update in the items.  All of this should
+	be handled transparently to the user of this object.
+</para>
+</refsect1>
+<refsect1 id="libdbusmenu-gtk-DbusmenuGtkClient.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="DBUSMENU-GTKCLIENT-SIGNAL-ROOT-CHANGED:CAPS" role="macro">
+<title>DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED</title>
+<indexterm zone="DBUSMENU-GTKCLIENT-SIGNAL-ROOT-CHANGED:CAPS"><primary>DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED</primary></indexterm>
+<programlisting>#define DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED  DBUSMENU_CLIENT_SIGNAL_ROOT_CHANGED
+</programlisting>
+<para>
+String to attach to signal <link linkend="DbusmenuClient-root-changed"><type>"root-changed"</type></link>
+</para></refsect2>
+<refsect2 id="DbusmenuGtkClient" role="struct">
+<title>DbusmenuGtkClient</title>
+<indexterm zone="DbusmenuGtkClient"><primary>DbusmenuGtkClient</primary></indexterm>
+<programlisting>typedef struct _DbusmenuGtkClient DbusmenuGtkClient;</programlisting>
+<para>
+A subclass of <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link> to add functionality with regarding
+building GTK items out of the abstract tree.
+</para></refsect2>
+<refsect2 id="DbusmenuGtkClientClass" role="struct">
+<title>struct DbusmenuGtkClientClass</title>
+<indexterm zone="DbusmenuGtkClientClass"><primary>DbusmenuGtkClientClass</primary></indexterm>
+<programlisting>struct DbusmenuGtkClientClass {
+	DbusmenuClientClass parent_class;
+
+	/* Signals */
+	void (*root_changed) (DbusmenuMenuitem * newroot);
+
+	/*&lt; Private &gt;*/
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
+};
+</programlisting>
+<para>
+Functions and signal slots for using a <link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link>
+</para><variablelist role="struct">
+<varlistentry><term><link linkend="DbusmenuClientClass"><type>DbusmenuClientClass</type></link>&#160;<structfield id="DbusmenuGtkClientClass.parent-class">parent_class</structfield>;</term>
+<listitem><simpara><link linkend="GtkMenuClass"><type>GtkMenuClass</type></link></simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuGtkClientClass.root-changed">root_changed</structfield>&#160;()</term>
+<listitem><simpara>Slot for signal <link linkend="DbusmenuGtkClient-root-changed"><type>"root-changed"</type></link></simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuGtkClientClass.reserved1">reserved1</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuGtkClientClass.reserved2">reserved2</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuGtkClientClass.reserved3">reserved3</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuGtkClientClass.reserved4">reserved4</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuGtkClientClass.reserved5">reserved5</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
+</varlistentry>
+<varlistentry><term><structfield id="DbusmenuGtkClientClass.reserved6">reserved6</structfield>&#160;()</term>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-gtkclient-new" role="function">
+<title>dbusmenu_gtkclient_new ()</title>
+<indexterm zone="dbusmenu-gtkclient-new"><primary>dbusmenu_gtkclient_new</primary></indexterm>
+<programlisting><link linkend="DbusmenuGtkClient"><returnvalue>DbusmenuGtkClient</returnvalue></link> * dbusmenu_gtkclient_new              (<parameter><link linkend="gchar"><type>gchar</type></link> *dbus_name</parameter>,
+                                                         <parameter><link linkend="gchar"><type>gchar</type></link> *dbus_object</parameter>);</programlisting>
+<para>
+Creates a new <link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> object and creates a <link linkend="DbusmenuClient"><type>DbusmenuClient</type></link>
+that connects across DBus to a <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>dbus_name</parameter>&#160;:</term>
+<listitem><simpara>Name of the <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link> on DBus</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dbus_object</parameter>&#160;:</term>
+<listitem><simpara>Name of the object on the <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A new <link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> sync'd with a server</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-gtkclient-menuitem-get" role="function">
+<title>dbusmenu_gtkclient_menuitem_get ()</title>
+<indexterm zone="dbusmenu-gtkclient-menuitem-get"><primary>dbusmenu_gtkclient_menuitem_get</primary></indexterm>
+<programlisting><link linkend="GtkMenuItem"><returnvalue>GtkMenuItem</returnvalue></link> *       dbusmenu_gtkclient_menuitem_get     (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>);</programlisting>
+<para>
+This grabs the <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> that is associated with the
+<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>A <link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> with the item in it.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>item</parameter>&#160;:</term>
+<listitem><simpara><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to get associated <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> on.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> that can be played with. <emphasis role="annotation">[<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-gtkclient-menuitem-get-submenu" role="function">
+<title>dbusmenu_gtkclient_menuitem_get_submenu ()</title>
+<indexterm zone="dbusmenu-gtkclient-menuitem-get-submenu"><primary>dbusmenu_gtkclient_menuitem_get_submenu</primary></indexterm>
+<programlisting><link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *           dbusmenu_gtkclient_menuitem_get_submenu
+                                                        (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>);</programlisting>
+<para>
+This grabs the submenu associated with the menuitem.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>A <link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> with the item in it.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>item</parameter>&#160;:</term>
+<listitem><simpara><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to get associated <link linkend="GtkMenu"><type>GtkMenu</type></link> on.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The <link linkend="GtkMenu"><type>GtkMenu</type></link> if there is one. <emphasis role="annotation">[<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-gtkclient-set-accel-group" role="function">
+<title>dbusmenu_gtkclient_set_accel_group ()</title>
+<indexterm zone="dbusmenu-gtkclient-set-accel-group"><primary>dbusmenu_gtkclient_set_accel_group</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbusmenu_gtkclient_set_accel_group  (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="GtkAccelGroup"><type>GtkAccelGroup</type></link> *agroup</parameter>);</programlisting>
+<para>
+Sets the acceleration group for the menu items with accelerators
+on this client.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>To set the group on</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>agroup</parameter>&#160;:</term>
+<listitem><simpara>The new acceleration group</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-gtkclient-get-accel-group" role="function">
+<title>dbusmenu_gtkclient_get_accel_group ()</title>
+<indexterm zone="dbusmenu-gtkclient-get-accel-group"><primary>dbusmenu_gtkclient_get_accel_group</primary></indexterm>
+<programlisting><link linkend="GtkAccelGroup"><returnvalue>GtkAccelGroup</returnvalue></link> *     dbusmenu_gtkclient_get_accel_group  (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>);</programlisting>
+<para>
+Gets the accel group for this client.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>Client to query for an accelerator group</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>Either a valid group or <link linkend="NULL:CAPS"><type>NULL</type></link> on error or
+none set. <emphasis role="annotation">[<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="dbusmenu-gtkclient-newitem-base" role="function">
+<title>dbusmenu_gtkclient_newitem_base ()</title>
+<indexterm zone="dbusmenu-gtkclient-newitem-base"><primary>dbusmenu_gtkclient_newitem_base</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                dbusmenu_gtkclient_newitem_base     (<parameter><link linkend="DbusmenuGtkClient"><type>DbusmenuGtkClient</type></link> *client</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *item</parameter>,
+                                                         <parameter><link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> *gmi</parameter>,
+                                                         <parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *parent</parameter>);</programlisting>
+<para>
+This function provides some of the basic connectivity for being in
+the GTK world.  Things like visibility and sensitivity of the item are
+handled here so that the subclasses don't have to.  If you're building
+your on GTK menu item you can use this function to apply those basic
+attributes so that you don't have to deal with them either.
+</para>
+<para>
+This also handles passing the "activate" signal back to the
+<link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> side of thing.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&#160;:</term>
+<listitem><simpara>The client handling everything on this connection</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>item</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> to attach the GTK-isms to</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>gmi</parameter>&#160;:</term>
+<listitem><simpara>A <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> representing the GTK world's view of this menuitem</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&#160;:</term>
+<listitem><simpara>The parent <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link></simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+</refentry>
