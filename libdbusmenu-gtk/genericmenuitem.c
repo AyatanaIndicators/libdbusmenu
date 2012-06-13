@@ -241,6 +241,27 @@ has_mnemonic (const gchar * string, gboolean previous_underscore)
 	return FALSE;
 }
 
+/* Sanitize the label by removing "__" meaning "_" */
+G_INLINE_FUNC gchar *
+sanitize_label (const gchar * in_label)
+{
+	static GRegex * underscore_regex = NULL;
+
+	g_return_val_if_fail(in_label != NULL, NULL);
+
+	if (underscore_regex == NULL) {
+		underscore_regex = g_regex_new("__", 0, 0, NULL);
+	}
+
+	return g_regex_replace_literal(underscore_regex,
+	                               in_label,
+	                               -1,    /* length */
+	                               0,     /* start */
+	                               "_",   /* replacement */
+	                               0,     /* flags */
+	                               NULL); /* error */
+}
+
 /* Set the label on the item */
 static void
 set_label (GtkMenuItem * menu_item, const gchar * in_label)
@@ -314,11 +335,15 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 		labelw = GTK_LABEL(gtk_accel_label_new(local_label));
 		gtk_label_set_use_markup(GTK_LABEL(labelw), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
+		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 
 		if (has_mnemonic(in_label, FALSE)) {
 			gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
-			gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 			gtk_label_set_markup_with_mnemonic(labelw, local_label);
+		} else {
+			gchar * sanitized = sanitize_label(local_label);
+			gtk_label_set_markup(labelw, sanitized);
+			g_free(sanitized);
 		}
 
 		gtk_widget_show(GTK_WIDGET(labelw));
@@ -340,10 +365,11 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 		} else {
 			if (has_mnemonic(in_label, FALSE)) {
 				gtk_label_set_use_underline(GTK_LABEL(labelw), TRUE);
-				gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 				gtk_label_set_markup_with_mnemonic(labelw, local_label);
 			} else {
-				gtk_label_set_markup(labelw, local_label);
+				gchar * sanitized = sanitize_label(local_label);
+				gtk_label_set_markup(labelw, sanitized);
+				g_free(sanitized);
 			}
 		}
 	}
