@@ -1,4 +1,4 @@
-libdbusmenu (0.6.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libdbusmenu (0.6.2-0ubuntu1~ppa1) precise; urgency=low
 
   * New upstream release.
     * Fixed duplicated underscores in menus (LP: #979301)
@@ -6,7 +6,7 @@ libdbusmenu (0.6.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * DbusmenuServer leaks private string (LP: #981766)
     * Ensure menuitems with '&' show them properly (LP: #994564)
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 13 Jun 2012 14:30:02 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 13 Jun 2012 14:44:52 -0500
 
 libdbusmenu (0.6.1-0ubuntu3) precise-proposed; urgency=low
 
