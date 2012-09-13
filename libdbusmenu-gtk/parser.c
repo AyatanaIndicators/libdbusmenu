@@ -60,6 +60,9 @@ typedef struct _ParserData
   gulong widget_accel_handler_id;
   gulong widget_toggle_handler_id;
   gulong widget_visible_handler_id;
+  gulong widget_screen_changed_handler_id;
+
+  gulong settings_notify_handler_id;
 
 } ParserData;
 
@@ -116,6 +119,12 @@ static void           widget_notify_cb         (GtkWidget  *        widget,
 static void           widget_add_cb            (GtkWidget *         widget,
                                                 GtkWidget *         child,
                                                 gpointer            data);
+static void           widget_screen_changed_cb (GtkWidget *         widget,
+                                                GdkScreen *         old_screen,
+                                                gpointer            data);
+static void           settings_notify_cb       (GtkSettings *       settings,
+                                                GParamSpec *        pspec,
+                                                gpointer            data);
 static gboolean       should_show_image        (GtkImage *          image);
 static void           menuitem_notify_cb       (GtkWidget *         widget,
                                                 GParamSpec *        pspec,
@@ -130,6 +139,7 @@ static const char * interned_str_active            = NULL;
 static const char * interned_str_always_show_image = NULL;
 static const char * interned_str_file              = NULL;
 static const char * interned_str_gicon             = NULL;
+static const char * interned_str_gtk_menu_images   = NULL;
 static const char * interned_str_icon_name         = NULL;      
 static const char * interned_str_icon_set          = NULL;     
 static const char * interned_str_image             = NULL;  
@@ -155,6 +165,7 @@ ensure_interned_strings_loaded (void)
     interned_str_always_show_image  = g_intern_static_string ("always-show-image");
     interned_str_file               = g_intern_static_string ("file");
     interned_str_gicon              = g_intern_static_string ("gicon");
+    interned_str_gtk_menu_images    = g_intern_static_string ("gtk-menu-images");
     interned_str_icon_name          = g_intern_static_string ("icon-name");
     interned_str_icon_set           = g_intern_static_string ("icon-set");
     interned_str_image              = g_intern_static_string ("image");
@@ -291,6 +302,9 @@ parser_data_free (ParserData * pdata)
 		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_accel_handler_id);
 		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_toggle_handler_id);
 		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_visible_handler_id);
+		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_screen_changed_handler_id);
+		dbusmenu_gtk_clear_signal_handler (gtk_widget_get_settings (GTK_WIDGET (o)),
+		                                   &pdata->settings_notify_handler_id);
 		g_object_remove_weak_pointer(o, (gpointer*)&pdata->widget);
 
 		/* since the DbusmenuMenuitem is being destroyed, uncache it from the GtkWidget */
@@ -745,6 +759,10 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
       pdata->widget_add_handler_id = g_signal_connect (widget, "add",
                                                        G_CALLBACK (widget_add_cb), mi);
+
+      pdata->widget_screen_changed_handler_id = g_signal_connect (widget, "screen-changed",
+                                                                  G_CALLBACK (widget_screen_changed_cb), mi);
+      widget_screen_changed_cb (widget, NULL, mi);
 
       return mi;
     }
@@ -1280,6 +1298,51 @@ widget_add_cb (GtkWidget *widget,
 {
   if (find_menu_label (child) != NULL)
     handle_first_label (data);
+}
+
+/* Pass NULL for pspec to update all settings at once */
+static void
+widget_screen_changed_cb (GtkWidget * widget, GdkScreen * old_screen, gpointer data)
+{
+  DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
+  g_return_if_fail (mi != NULL);
+
+  ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
+
+  if (old_screen != NULL)
+    dbusmenu_gtk_clear_signal_handler (gtk_settings_get_for_screen (old_screen),
+                                       &pdata->settings_notify_handler_id);
+  pdata->settings_notify_handler_id = g_signal_connect (gtk_widget_get_settings (widget), "notify",
+                                                        G_CALLBACK (settings_notify_cb), mi);
+
+  /* And update widget now that we have a new GtkSettings */
+  settings_notify_cb (gtk_widget_get_settings (widget), NULL, mi);
+}
+
+/* Pass NULL for pspec to update all settings at once */
+static void
+settings_notify_cb (GtkSettings * settings, GParamSpec * pspec, gpointer data)
+{
+  GValue prop_value = {0};
+  DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(data);
+  g_return_if_fail (mi != NULL);
+
+  ensure_interned_strings_loaded ();
+
+  if (pspec != NULL)
+    {
+      g_value_init (&prop_value, pspec->value_type); 
+      g_object_get_property (G_OBJECT (settings), pspec->name, &prop_value);
+    }
+
+  if (pspec == NULL || pspec->name == interned_str_gtk_menu_images)
+    {
+      ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
+      update_icon (mi, pdata, GTK_IMAGE(pdata->image));
+    }
+
+  if (pspec != NULL)
+    g_value_unset (&prop_value);
 }
 
 /* A child item was added to a menu we're watching.  Let's try to integrate it. */
