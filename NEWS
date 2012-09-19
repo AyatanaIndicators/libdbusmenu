@@ -1,0 +1,8 @@
+12.10.0
+ - Honor changes to GtkSettings' gtk-menu-images value (lp: #927236)
+ - don't display an underscore on menuitimes containing a '&' (lp: #994564)
+ - set the widget for the accelerator even if there isn't a mnemonic (lp: #982656)
+ - make the vala bindings use pkg-config names, rather than gir ones
+ - Some platforms don't have valgrind, so treat those unit tests separately
+ - make headers match independent of the build directory
+ - constify some public API calls
