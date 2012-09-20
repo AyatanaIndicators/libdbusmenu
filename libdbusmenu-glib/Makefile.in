@@ -502,7 +502,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 # VAPI Files
 #########################
 @HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@vapi_DATA = dbusmenu-glib-0.4.vapi
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@vapi_DATA = Dbusmenu-0.4.vapi
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1094,8 +1094,8 @@ menuitem-marshal.c: $(srcdir)/menuitem-marshal.list
 
 @HAVE_INTROSPECTION_TRUE@Dbusmenu-0.4.gir: libdbusmenu-glib.la
 
-@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@dbusmenu-glib-0.4.vapi: Dbusmenu-0.4.gir
-@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@	$(VALA_API_GEN) --library=dbusmenu-glib-0.4 $<
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@Dbusmenu-0.4.vapi: Dbusmenu-0.4.gir
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@	$(VALA_API_GEN) --library=Dbusmenu-0.4 $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
