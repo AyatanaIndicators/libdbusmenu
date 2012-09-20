@@ -160,14 +160,14 @@ if HAVE_VALA
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
-vapi_DATA = dbusmenu-gtk$(VER)-0.4.vapi
+vapi_DATA = DbusmenuGtk$(VER)-0.4.vapi
 
-dbusmenu-gtk$(VER)-0.4.vapi: DbusmenuGtk$(VER)-0.4.tmp.gir Makefile.am
-	$(VALA_API_GEN) --library=dbusmenu-gtk$(VER)-0.4 \
+DbusmenuGtk$(VER)-0.4.vapi: DbusmenuGtk$(VER)-0.4.tmp.gir Makefile.am
+	$(VALA_API_GEN) --library=DbusmenuGtk$(VER)-0.4 \
 		--pkg gdk-pixbuf-2.0 \
 		--pkg $(GTKVALA) \
 		--pkg atk \
-		--pkg dbusmenu-glib-0.4 \
+		--pkg Dbusmenu-0.4 \
 		--vapidir=$(top_builddir)/libdbusmenu-glib \
 		$<
 

@@ -516,7 +516,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir) --includedir=$(top_buildd
 # VAPI Files
 #########################
 @HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@vapi_DATA = dbusmenu-gtk$(VER)-0.4.vapi
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@vapi_DATA = DbusmenuGtk$(VER)-0.4.vapi
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1104,12 +1104,12 @@ $(glib_enum_c): $(builddir)/$(glib_enum_h)
 
 @HAVE_INTROSPECTION_TRUE@DbusmenuGtk$(VER)-0.4.gir: libdbusmenu-gtk$(VER).la
 
-@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@dbusmenu-gtk$(VER)-0.4.vapi: DbusmenuGtk$(VER)-0.4.tmp.gir Makefile.am
-@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@	$(VALA_API_GEN) --library=dbusmenu-gtk$(VER)-0.4 \
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@DbusmenuGtk$(VER)-0.4.vapi: DbusmenuGtk$(VER)-0.4.tmp.gir Makefile.am
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@	$(VALA_API_GEN) --library=DbusmenuGtk$(VER)-0.4 \
 @HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@		--pkg gdk-pixbuf-2.0 \
 @HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@		--pkg $(GTKVALA) \
 @HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@		--pkg atk \
-@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@		--pkg dbusmenu-glib-0.4 \
+@HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@		--pkg Dbusmenu-0.4 \
 @HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@		--vapidir=$(top_builddir)/libdbusmenu-glib \
 @HAVE_INTROSPECTION_TRUE@@HAVE_VALA_TRUE@		$<
 

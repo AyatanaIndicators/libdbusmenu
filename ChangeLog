@@ -2,6 +2,14 @@
 
 2012-09-20  Charles Kerr  <charles.kerr@canonical.com>
 
+	12.10.1
+
+2012-09-20  Charles Kerr  <charles.kerr@canonical.com>
+
+	revert r417 so that we don't change the vapi name at the last minute for 12.10 (LP: #978687)
+
+2012-09-20  Charles Kerr  <charles.kerr@canonical.com>
+
 	12.10.0
 
 2012-09-20  Charles Kerr  <charles.kerr@canonical.com>
