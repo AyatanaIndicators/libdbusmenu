@@ -16,9 +16,11 @@ TESTS = \
 	test-glib-submenu
 
 if WANT_DBUSMENUDUMPER
+if HAVE_VALGRIND
 TESTS += \
 	test-json \
 	test-json-instruction
+endif
 endif
 
 if WANT_LIBDBUSMENUGTK
@@ -59,9 +61,11 @@ check_PROGRAMS = \
 	test-glib-simple-items
 
 if WANT_DBUSMENUDUMPER
+if HAVE_VALGRIND
 check_PROGRAMS += \
 	test-json-client \
 	test-json-server
+endif
 endif
 
 if WANT_LIBDBUSMENUGTK
@@ -233,7 +237,7 @@ test-json: test-json-client test-json-server Makefile.am
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) --task ./test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --ignore-return --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task ./test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json >> $@
 	@echo diff $(srcdir)/test-json-01.json test-json-01.output.json \> /dev/null >> $@
 	@chmod +x $@
 
@@ -277,7 +281,7 @@ test-json-instruction: test-json-client test-json-server test-json-instruction-c
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo $(XVFB_RUN) >> $@
-	@echo $(DBUS_RUNNER) --task $(builddir)/test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter /dev/null --ignore-return --task libtool --parameter --mode=execute --parameter $(srcdir)/test-json-instruction-count --parameter $(builddir)/test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json --ignore-return >> $@
+	@echo $(DBUS_RUNNER) --task $(builddir)/test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter /dev/null --task libtool --parameter --mode=execute --parameter $(srcdir)/test-json-instruction-count --parameter $(builddir)/test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json >> $@
 	@chmod +x $@
 
 EXTRA_DIST += \
