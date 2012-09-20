@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 0.6.2, ted@canonical.com)
+AC_INIT(libdbusmenu, 12.10.0, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009,2010 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 0.6.2, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 12.10.0, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -121,7 +121,8 @@ PKG_CHECK_MODULES(DBUSMENUTESTS,  json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
                                   gio-unix-2.0  >= $GIO_UNIX_REQUIRED_VERSION,
                                   [have_tests=yes]
 )
-PKG_CHECK_MODULES(DBUSMENUTESTSVALGRIND, valgrind)
+PKG_CHECK_MODULES(DBUSMENUTESTSVALGRIND, valgrind, have_valgrind=yes, have_valgrind=no)
+AM_CONDITIONAL([HAVE_VALGRIND], [test "x$have_valgrind" = "xyes"])
 ])
 
 AC_SUBST(DBUSMENUTESTS_CFLAGS)
@@ -166,7 +167,7 @@ AC_PATH_PROG([XSLT_PROC], [xsltproc])
 ###########################
 
 LIBDBUSMENU_CURRENT=4
-LIBDBUSMENU_REVISION=13
+LIBDBUSMENU_REVISION=12
 LIBDBUSMENU_AGE=0
 
 AC_SUBST(LIBDBUSMENU_CURRENT)

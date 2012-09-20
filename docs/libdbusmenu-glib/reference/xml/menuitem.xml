@@ -120,20 +120,20 @@ struct              <link linkend="DbusmenuMenuitemClass">DbusmenuMenuitemClass<
                                                         (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
                                                          <parameter><link linkend="GVariant"><type>GVariant</type></link> *value</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="dbusmenu-menuitem-property-get">dbusmenu_menuitem_property_get</link>      (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="dbusmenu-menuitem-property-get">dbusmenu_menuitem_property_get</link>      (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
-<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-get-bool">dbusmenu_menuitem_property_get_bool</link> (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-get-bool">dbusmenu_menuitem_property_get_bool</link> (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
 const <link linkend="guchar"><returnvalue>guchar</returnvalue></link> *      <link linkend="dbusmenu-menuitem-property-get-byte-array">dbusmenu_menuitem_property_get_byte_array</link>
-                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+                                                        (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
                                                          <parameter><link linkend="gsize"><type>gsize</type></link> *nelements</parameter>);
-<link linkend="gint"><returnvalue>gint</returnvalue></link>                <link linkend="dbusmenu-menuitem-property-get-int">dbusmenu_menuitem_property_get_int</link>  (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+<link linkend="gint"><returnvalue>gint</returnvalue></link>                <link linkend="dbusmenu-menuitem-property-get-int">dbusmenu_menuitem_property_get_int</link>  (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
 <link linkend="GVariant"><returnvalue>GVariant</returnvalue></link> *          <link linkend="dbusmenu-menuitem-property-get-variant">dbusmenu_menuitem_property_get_variant</link>
-                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+                                                        (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
-<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-exist">dbusmenu_menuitem_property_exist</link>    (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+<link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            <link linkend="dbusmenu-menuitem-property-exist">dbusmenu_menuitem_property_exist</link>    (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);
 <link linkend="GList"><returnvalue>GList</returnvalue></link> *             <link linkend="dbusmenu-menuitem-properties-list">dbusmenu_menuitem_properties_list</link>   (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>);
 <link linkend="GHashTable"><returnvalue>GHashTable</returnvalue></link> *        <link linkend="dbusmenu-menuitem-properties-copy">dbusmenu_menuitem_properties_copy</link>   (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>);
@@ -1026,7 +1026,7 @@ emitted by this function.
 <refsect2 id="dbusmenu-menuitem-property-get" role="function">
 <title>dbusmenu_menuitem_property_get ()</title>
 <indexterm zone="dbusmenu-menuitem-property-get"><primary>dbusmenu_menuitem_property_get</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       dbusmenu_menuitem_property_get      (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       dbusmenu_menuitem_property_get      (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);</programlisting>
 <para>
 Look up a property on <parameter>mi</parameter> and return the value of it if
@@ -1044,7 +1044,7 @@ is not set or is not a string. <emphasis role="annotation">[<acronym>transfer no
 <refsect2 id="dbusmenu-menuitem-property-get-bool" role="function">
 <title>dbusmenu_menuitem_property_get_bool ()</title>
 <indexterm zone="dbusmenu-menuitem-property-get-bool"><primary>dbusmenu_menuitem_property_get_bool</primary></indexterm>
-<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            dbusmenu_menuitem_property_get_bool (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            dbusmenu_menuitem_property_get_bool (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);</programlisting>
 <para>
 Look up a property on <parameter>mi</parameter> and return the value of it if
@@ -1060,7 +1060,7 @@ it exits.  Returns <link linkend="FALSE:CAPS"><type>FALSE</type></link> if the p
 <title>dbusmenu_menuitem_property_get_byte_array ()</title>
 <indexterm zone="dbusmenu-menuitem-property-get-byte-array"><primary>dbusmenu_menuitem_property_get_byte_array</primary></indexterm>
 <programlisting>const <link linkend="guchar"><returnvalue>guchar</returnvalue></link> *      dbusmenu_menuitem_property_get_byte_array
-                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+                                                        (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>,
                                                          <parameter><link linkend="gsize"><type>gsize</type></link> *nelements</parameter>);</programlisting>
 <para>
@@ -1081,7 +1081,7 @@ is not set or is not a byte array. <emphasis role="annotation">[<acronym>array</
 <refsect2 id="dbusmenu-menuitem-property-get-int" role="function">
 <title>dbusmenu_menuitem_property_get_int ()</title>
 <indexterm zone="dbusmenu-menuitem-property-get-int"><primary>dbusmenu_menuitem_property_get_int</primary></indexterm>
-<programlisting><link linkend="gint"><returnvalue>gint</returnvalue></link>                dbusmenu_menuitem_property_get_int  (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+<programlisting><link linkend="gint"><returnvalue>gint</returnvalue></link>                dbusmenu_menuitem_property_get_int  (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);</programlisting>
 <para>
 Look up a property on <parameter>mi</parameter> and return the value of it if
@@ -1097,7 +1097,7 @@ it exits.  Returns zero if the property doesn't exist.
 <title>dbusmenu_menuitem_property_get_variant ()</title>
 <indexterm zone="dbusmenu-menuitem-property-get-variant"><primary>dbusmenu_menuitem_property_get_variant</primary></indexterm>
 <programlisting><link linkend="GVariant"><returnvalue>GVariant</returnvalue></link> *          dbusmenu_menuitem_property_get_variant
-                                                        (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+                                                        (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);</programlisting>
 <para>
 Look up a property on <parameter>mi</parameter> and return the value of it if
@@ -1113,7 +1113,7 @@ exist.
 <refsect2 id="dbusmenu-menuitem-property-exist" role="function">
 <title>dbusmenu_menuitem_property_exist ()</title>
 <indexterm zone="dbusmenu-menuitem-property-exist"><primary>dbusmenu_menuitem_property_exist</primary></indexterm>
-<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            dbusmenu_menuitem_property_exist    (<parameter><link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
+<programlisting><link linkend="gboolean"><returnvalue>gboolean</returnvalue></link>            dbusmenu_menuitem_property_exist    (<parameter>const <link linkend="DbusmenuMenuitem"><type>DbusmenuMenuitem</type></link> *mi</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *property</parameter>);</programlisting>
 <para>
 Checkes to see if a particular property exists on <parameter>mi</parameter> and 

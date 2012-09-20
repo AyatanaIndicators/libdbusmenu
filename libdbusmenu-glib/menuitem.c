@@ -463,7 +463,7 @@ send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gp
 /* A helper function to get the type of the menuitem, this might
    be a candidate for optimization in the future. */
 static const gchar *
-menuitem_get_type (DbusmenuMenuitem * mi)
+menuitem_get_type (const DbusmenuMenuitem * mi)
 {
 	DbusmenuMenuitemPrivate * priv = DBUSMENU_MENUITEM_GET_PRIVATE(mi);
 	GVariant * currentval = (GVariant *)g_hash_table_lookup(priv->properties, DBUSMENU_MENUITEM_PROP_TYPE);
@@ -1287,7 +1287,7 @@ dbusmenu_menuitem_property_set_variant (DbusmenuMenuitem * mi, const gchar * pro
  * 	is not set or is not a string.
  */
 const gchar *
-dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
+dbusmenu_menuitem_property_get (const DbusmenuMenuitem * mi, const gchar * property)
 {
 	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
 	if (variant == NULL) return NULL;
@@ -1307,7 +1307,7 @@ dbusmenu_menuitem_property_get (DbusmenuMenuitem * mi, const gchar * property)
  * Return value: (transfer none): A GVariant for the property.
  */
 GVariant *
-dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * property)
+dbusmenu_menuitem_property_get_variant (const DbusmenuMenuitem * mi, const gchar * property)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), NULL);
 	g_return_val_if_fail(property != NULL, NULL);
@@ -1334,7 +1334,7 @@ dbusmenu_menuitem_property_get_variant (DbusmenuMenuitem * mi, const gchar * pro
  * Return value: The value of the property or #FALSE.
  */
 gboolean
-dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * property)
+dbusmenu_menuitem_property_get_bool (const DbusmenuMenuitem * mi, const gchar * property)
 {
 	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
 	if (variant == NULL) return FALSE;
@@ -1368,7 +1368,7 @@ dbusmenu_menuitem_property_get_bool (DbusmenuMenuitem * mi, const gchar * proper
  * Return value: The value of the property or zero.
  */
 gint
-dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * property)
+dbusmenu_menuitem_property_get_int (const DbusmenuMenuitem * mi, const gchar * property)
 {
 	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
 	if (variant == NULL) return 0;
@@ -1401,7 +1401,7 @@ dbusmenu_menuitem_property_get_int (DbusmenuMenuitem * mi, const gchar * propert
  * 	is not set or is not a byte array.
  */
 const guchar *
-dbusmenu_menuitem_property_get_byte_array (DbusmenuMenuitem * mi, const gchar * property, gsize * nelements)
+dbusmenu_menuitem_property_get_byte_array (const DbusmenuMenuitem * mi, const gchar * property, gsize * nelements)
 {
 	GVariant * variant = dbusmenu_menuitem_property_get_variant(mi, property);
 	if (variant == NULL) {
@@ -1423,7 +1423,7 @@ dbusmenu_menuitem_property_get_byte_array (DbusmenuMenuitem * mi, const gchar * 
  * Return value: A boolean checking to see if the property is available
  */
 gboolean
-dbusmenu_menuitem_property_exist (DbusmenuMenuitem * mi, const gchar * property)
+dbusmenu_menuitem_property_exist (const DbusmenuMenuitem * mi, const gchar * property)
 {
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(mi), FALSE);
 	g_return_val_if_fail(property != NULL, FALSE);
