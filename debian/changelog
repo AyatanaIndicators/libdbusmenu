@@ -1,4 +1,4 @@
-libdbusmenu (12.10.1-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (12.10.1-0ubuntu1) quantal; urgency=low
 
   * New upstream release.
     - Honor changes to GtkSettings' gtk-menu-images value (LP: #927236)
@@ -8,9 +8,8 @@ libdbusmenu (12.10.1-0ubuntu1) UNRELEASED; urgency=low
     - Some platforms don't have valgrind, so treat those unit tests separately
     - make headers match independent of the build directory
     - constify some public API calls
-  * New upstream release.
 
- -- Didier Roche <didrocks@ubuntu.com>  Thu, 20 Sep 2012 19:15:24 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 20 Sep 2012 19:22:52 +0200
 
 libdbusmenu (0.6.2-0ubuntu1) quantal; urgency=low
 
