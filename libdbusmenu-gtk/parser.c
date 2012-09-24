@@ -62,6 +62,7 @@ typedef struct _ParserData
   gulong widget_visible_handler_id;
   gulong widget_screen_changed_handler_id;
 
+  GtkSettings *settings;
   gulong settings_notify_handler_id;
 
 } ParserData;
@@ -303,12 +304,16 @@ parser_data_free (ParserData * pdata)
 		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_toggle_handler_id);
 		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_visible_handler_id);
 		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_screen_changed_handler_id);
-		dbusmenu_gtk_clear_signal_handler (gtk_widget_get_settings (GTK_WIDGET (o)),
-		                                   &pdata->settings_notify_handler_id);
 		g_object_remove_weak_pointer(o, (gpointer*)&pdata->widget);
 
 		/* since the DbusmenuMenuitem is being destroyed, uncache it from the GtkWidget */
 		g_object_steal_data(o, CACHED_MENUITEM);
+	}
+
+	if (pdata->settings != NULL) {
+		dbusmenu_gtk_clear_signal_handler (pdata->settings,
+						   &pdata->settings_notify_handler_id);
+		g_object_unref (pdata->settings);
 	}
 
 	if (pdata->shell != NULL) {
@@ -1309,10 +1314,15 @@ widget_screen_changed_cb (GtkWidget * widget, GdkScreen * old_screen, gpointer d
 
   ParserData *pdata = (ParserData *)g_object_get_data(G_OBJECT(mi), PARSER_DATA);
 
-  if (old_screen != NULL)
-    dbusmenu_gtk_clear_signal_handler (gtk_settings_get_for_screen (old_screen),
-                                       &pdata->settings_notify_handler_id);
-  pdata->settings_notify_handler_id = g_signal_connect (gtk_widget_get_settings (widget), "notify",
+  if (pdata->settings != NULL)
+    {
+      dbusmenu_gtk_clear_signal_handler (pdata->settings,
+                                         &pdata->settings_notify_handler_id);
+      g_object_unref (pdata->settings);
+    }
+
+  pdata->settings = g_object_ref (gtk_widget_get_settings (widget));
+  pdata->settings_notify_handler_id = g_signal_connect (pdata->settings, "notify",
                                                         G_CALLBACK (settings_notify_cb), mi);
 
   /* And update widget now that we have a new GtkSettings */
