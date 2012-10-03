@@ -1,8 +1,8 @@
-libdbusmenu (12.10.2-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (12.10.2-0ubuntu1) quantal; urgency=low
 
   * New upstream release.
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 03 Oct 2012 21:22:56 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 03 Oct 2012 21:23:18 +0200
 
 libdbusmenu (12.10.1-0ubuntu2) quantal-proposed; urgency=low
 
