@@ -1,3 +1,9 @@
+libdbusmenu (12.10.2-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 03 Oct 2012 21:22:56 +0200
+
 libdbusmenu (12.10.1-0ubuntu2) quantal-proposed; urgency=low
 
   * Backport upstream fix for segfault issue (lp: #1053670)
