@@ -112,7 +112,7 @@ decrement_count (void)
 }
 
 /* Checks whether we need to watch a menu item, and recurses down to
-   it's children as well */
+   its children as well */
 static void
 check_realizations (DbusmenuMenuitem * item)
 {

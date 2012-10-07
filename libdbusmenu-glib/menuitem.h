@@ -409,9 +409,9 @@ typedef void (*dbusmenu_menuitem_about_to_show_cb) (DbusmenuMenuitem * mi, gpoin
  * @properties: (allow-none): A list of properties that should be the only ones in the resulting variant structure
  * 
  * This is the function that is called to represent this menu item
- * as a variant.  Should call it's own children.
+ * as a variant.  Should call its own children.
  *
- * Return value: (transfer full): A variant representing this item and it's children
+ * Return value: (transfer full): A variant representing this item and its children
  */
 typedef GVariant * (*dbusmenu_menuitem_buildvariant_slot_t) (DbusmenuMenuitem * mi, gchar ** properties);
 
@@ -528,7 +528,7 @@ void dbusmenu_menuitem_show_to_user (DbusmenuMenuitem * mi, guint timestamp);
  * and copied over to the client side where it gets rendered.  As
  * the server starts to change it, and grow it, and do all kinds
  * of fun stuff that information is transfered over DBus and the
- * client updates it's understanding of the object model.
+ * client updates its understanding of the object model.
  * 
  * Most people using either the client or the server should be
  * able to deal mostly with #DbusmenuMenuitem objects.  These

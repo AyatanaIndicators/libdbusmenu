@@ -296,7 +296,7 @@ root_child_delete (DbusmenuMenuitem * root, DbusmenuMenuitem * child, DbusmenuGt
 	return;
 }
 
-/* Called when the child is realized, and thus has all of it's
+/* Called when the child is realized, and thus has all of its
    properties and GTK-isms.  We can put it in our menu here. */
 static void
 child_realized (DbusmenuMenuitem * child, gpointer userdata)

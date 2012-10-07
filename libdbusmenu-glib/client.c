@@ -2511,7 +2511,7 @@ type_handler_destroy (gpointer user_data)
  *     items when they come in.
  * 
  * This function connects into the type handling of the #DbusmenuClient.
- * Every new menuitem that comes in immediately gets asked for it's
+ * Every new menuitem that comes in immediately gets asked for its
  * properties.  When we get those properties we check the 'type'
  * property and look to see if it matches a handler that is known
  * by the client.  If so, the @newfunc function is executed on that
@@ -2542,7 +2542,7 @@ dbusmenu_client_add_type_handler (DbusmenuClient * client, const gchar * type, D
  * 	the resources in @user_data.
  * 
  * This function connects into the type handling of the #DbusmenuClient.
- * Every new menuitem that comes in immediately gets asked for it's
+ * Every new menuitem that comes in immediately gets asked for its
  * properties.  When we get those properties we check the 'type'
  * property and look to see if it matches a handler that is known
  * by the client.  If so, the @newfunc function is executed on that
