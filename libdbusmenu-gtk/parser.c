@@ -1123,11 +1123,11 @@ item_activated (DbusmenuMenuitem *item, guint timestamp, gpointer user_data)
         {
           GtkWidget *parent = gtk_widget_get_parent(child);
           if (GTK_IS_MENU (parent))
-          {
-            gint pos = get_child_position (child);
-            if (pos >= 0)
-              gtk_menu_set_active (GTK_MENU(parent), pos);
-          }
+            {
+              gint pos = get_child_position (child);
+              if (pos >= 0)
+                gtk_menu_set_active (GTK_MENU(parent), pos);
+            }
 
           gdk_threads_enter ();
           gtk_menu_item_activate (GTK_MENU_ITEM (child));
