@@ -292,7 +292,7 @@ dbusmenu_server_class_init (DbusmenuServerClass *class)
 		@arg2: The timestamp of when the event happened
 
 		This is signaled when a menuitem under this server
-		sends it's activate signal.
+		sends its activate signal.
 	*/
 	signals[ITEM_ACTIVATION] =  g_signal_new(DBUSMENU_SERVER_SIGNAL_ITEM_ACTIVATION,
 	                                         G_TYPE_FROM_CLASS(class),

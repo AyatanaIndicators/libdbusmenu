@@ -340,7 +340,7 @@ parser_data_free (ParserData * pdata)
 	return;
 }
 
-/* Gets the positon of the child with its' parent if it has one.
+/* Gets the positon of the child with its parent if it has one.
    Returns -1 if the position is unable to be calculated. */
 static gint
 get_child_position (GtkWidget * child)

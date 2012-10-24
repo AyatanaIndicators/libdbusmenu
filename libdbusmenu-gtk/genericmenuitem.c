@@ -1,6 +1,6 @@
 /*
 A menuitem subclass that has the ability to do lots of different
-things depending on it's settings.
+things depending on its settings.
 
 Copyright 2009 Canonical Ltd.
 

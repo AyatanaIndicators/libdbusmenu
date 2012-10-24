@@ -192,7 +192,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 		@arg2: The position that the child is being moved to.
 		@arg3: The position that the child is was in.
 
-		Signaled when the child menuitem has had it's location
+		Signaled when the child menuitem has had its location
 		in the list change.
 	*/
 	signals[CHILD_MOVED] =        g_signal_new(DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,
@@ -800,7 +800,7 @@ dbusmenu_menuitem_child_delete (DbusmenuMenuitem * mi, DbusmenuMenuitem * child)
 	g_return_val_if_fail(DBUSMENU_IS_MENUITEM(child), FALSE);
 
 	if (dbusmenu_menuitem_get_parent(child) != mi) {
-		g_warning("Trying to remove a child that doesn't believe we're it's parent.");
+		g_warning("Trying to remove a child that doesn't believe we're its parent.");
 		return FALSE;
 	}
 
@@ -1628,7 +1628,7 @@ dbusmenu_menuitem_get_root (DbusmenuMenuitem * mi)
  * 
  * This function will put at least one entry if this menu item has no children.
  * If it has children it will put two for this entry, one representing the
- * start tag and one that is a closing tag.  It will allow it's
+ * start tag and one that is a closing tag.  It will allow its
  * children to place their own tags in the array in between those two.
  *
  * Return value: (transfer full): Variant representing @properties

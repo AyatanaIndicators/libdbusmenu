@@ -193,7 +193,7 @@ theme_dir_ref (GtkIconTheme * theme, GHashTable * db, const gchar * dir)
 	return;
 }
 
-/* Unreference the theme directory, and if it's count goes to zero then
+/* Unreference the theme directory, and if its count goes to zero then
    we need to remove it from the search path. */
 static void
 theme_dir_unref (GtkIconTheme * theme, GHashTable * db, const gchar * dir)
@@ -462,7 +462,7 @@ static const gchar * data_delayed_close = "dbusmenugtk-data-delayed-close";
 static void
 menu_item_start_activating(DbusmenuMenuitem * mi)
 {
-	/* Mark this item and all it's parents as activating */
+	/* Mark this item and all its parents as activating */
 	DbusmenuMenuitem * parent = mi;
 	do {
 		g_object_set_data(G_OBJECT(parent), data_activating,
@@ -485,7 +485,7 @@ menu_item_stop_activating(DbusmenuMenuitem * mi)
 	if (!menu_item_is_activating(mi))
 		return;
 
-	/* Mark this item and all it's parents as not activating and finally
+	/* Mark this item and all its parents as not activating and finally
 	   send their queued close event. */
 	g_object_set_data(G_OBJECT(mi), data_activating, GINT_TO_POINTER(FALSE));
 

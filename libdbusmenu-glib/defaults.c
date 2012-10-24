@@ -228,7 +228,7 @@ dbusmenu_defaults_default_set (DbusmenuDefaults * defaults, const gchar * type, 
  * Gets an entry in the database for a give @property and @type.
  *
  * Return value: (transfer none): Returns a variant that does not
- * have it's ref count increased.  If you want to keep it, you should
+ * have its ref count increased.  If you want to keep it, you should
  * do that.
  */
 GVariant *
