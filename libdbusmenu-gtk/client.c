@@ -1180,7 +1180,11 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 		/* If we have an image already built from a name that is
 		   way better than a pixbuf.  Keep it. */
 		if (gtkimage != NULL && (gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_ICON_NAME || gtk_image_get_storage_type(GTK_IMAGE(gtkimage)) == GTK_IMAGE_EMPTY)) {
-			return;
+			const gchar *icon_name = NULL;
+			gtk_image_get_icon_name (GTK_IMAGE(gtkimage), &icon_name, NULL);
+			if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), icon_name)) {
+				return;
+			}
 		}
 	}
 
