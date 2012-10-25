@@ -2160,8 +2160,29 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 		for (childsearch = oldchildren; childsearch != NULL; childsearch = g_list_next(childsearch)) {
 			DbusmenuMenuitem * cs_mi = DBUSMENU_MENUITEM(childsearch->data);
 			if (childid == dbusmenu_menuitem_get_id(cs_mi)) {
-				oldchildren = g_list_remove(oldchildren, cs_mi);
-				childmi = cs_mi;
+				GVariantIter iter;
+				gchar * prop;
+				GVariant * value;
+				GVariant * child_props;
+				GVariant * new_type = NULL;
+				GVariant * old_type = NULL;
+
+				child_props = g_variant_get_child_value(child, 1);
+				g_variant_iter_init(&iter, child_props);
+				while (g_variant_iter_loop(&iter, "{sv}", &prop, &value)) {
+					if (g_strcmp0(prop, DBUSMENU_MENUITEM_PROP_TYPE) == 0) {
+						new_type = value;
+						break;
+					}
+				}
+				g_variant_unref(child_props);
+				
+				old_type = dbusmenu_menuitem_property_get_variant(cs_mi, DBUSMENU_MENUITEM_PROP_TYPE);
+				if ((old_type == new_type) || (old_type != NULL && new_type != NULL && g_strcmp0(g_variant_get_string (old_type, NULL), g_variant_get_string (new_type, NULL)) == 0)) {
+					// Only recycle the menu item if it's of the same type
+					oldchildren = g_list_remove(oldchildren, cs_mi);
+					childmi = cs_mi;
+				}
 				break;
 			}
 		}
