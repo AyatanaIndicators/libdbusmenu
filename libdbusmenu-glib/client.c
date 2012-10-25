@@ -2178,7 +2178,7 @@ parse_layout_xml(DbusmenuClient * client, GVariant * layout, DbusmenuMenuitem * 
 				g_variant_unref(child_props);
 				
 				old_type = dbusmenu_menuitem_property_get_variant(cs_mi, DBUSMENU_MENUITEM_PROP_TYPE);
-				if ((old_type == new_type) || (old_type != NULL && new_type != NULL && g_strcmp0(g_variant_get_string (old_type, NULL), g_variant_get_string (new_type, NULL)) == 0)) {
+				if ((old_type == new_type) || (old_type != NULL && new_type != NULL && g_variant_compare(old_type, new_type) == 0)) {
 					// Only recycle the menu item if it's of the same type
 					oldchildren = g_list_remove(oldchildren, cs_mi);
 					childmi = cs_mi;
