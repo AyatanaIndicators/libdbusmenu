@@ -974,7 +974,7 @@ dbusmenu_menuitem_find_id (DbusmenuMenuitem * mi, gint id)
 		}
 		return mi;
 	}
-	find_id_t find_id = {mi: NULL, id: id};
+	find_id_t find_id = {.mi=NULL, .id=id};
 	find_id_helper(mi, &find_id);
 	return find_id.mi;
 }
@@ -1712,7 +1712,7 @@ dbusmenu_menuitem_foreach (DbusmenuMenuitem * mi, void (*func) (DbusmenuMenuitem
 
 	func(mi, data);
 	GList * children = dbusmenu_menuitem_get_children(mi);
-	foreach_struct_t foreach_data = {func: func, data: data};
+	foreach_struct_t foreach_data = {.func=func, .data=data};
 	g_list_foreach(children, foreach_helper, &foreach_data);
 	return;
 }
