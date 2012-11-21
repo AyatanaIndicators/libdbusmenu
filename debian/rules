@@ -1,44 +1,55 @@
 #!/usr/bin/make -f
 
-DEB_BUILDDIR = build
-DEB_MAKE_FLAVORS = gtk2 gtk3
+FLAVORS = gtk2 gtk3
 
-include /usr/share/cdbs/1/class/gnome.mk
-include /usr/share/cdbs/1/rules/autoreconf.mk
-include /usr/share/cdbs/1/rules/patchsys-quilt.mk
-include /usr/share/cdbs/1/rules/debhelper.mk
+CONFIGURE_FLAGS_gtk2 = --with-gtk=2
+CONFIGURE_FLAGS_gtk3 = --with-gtk=3
 
-DEB_MAKE_DESTDIRSKEL = $(CURDIR)/debian/tmp/@FLAVOR@
-DEB_DESTDIR = $(CURDIR)/debian/tmp/$(cdbs_make_curflavor)/
+CONFIGURE_COMMON_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection  --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
 
-DEB_DH_INSTALL_ARGS_libdbusmenu-gtk4 += --sourcedir=debian/tmp/gtk2
-DEB_DH_INSTALL_ARGS_libdbusmenu-gtk-dev += --sourcedir=debian/tmp/gtk2
-DEB_DH_INSTALL_ARGS_libdbusmenu-gtk-doc += --sourcedir=debian/tmp/gtk2
-DEB_DH_INSTALL_ARGS_gir1.2-dbusmenu-gtk-0.4 += --sourcedir=debian/tmp/gtk2
-
-DEB_DH_INSTALL_ARGS_gir1.2-dbusmenu-glib-0.4 += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_gir1.2-dbusmenu-gtk3-0.4 += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_libdbusmenu-glib4 += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_libdbusmenu-glib-dev += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_libdbusmenu-glib-doc += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_libdbusmenu-gtk3-4 += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_libdbusmenu-gtk3-dev += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_libdbusmenu-jsonloader4 += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_libdbusmenu-jsonloader-dev += --sourcedir=debian/tmp/gtk3
-DEB_DH_INSTALL_ARGS_libdbusmenu-tools += --sourcedir=debian/tmp/gtk3
-
-DEB_CONFIGURE_FLAGS_gtk2 = --with-gtk=2
-DEB_CONFIGURE_FLAGS_gtk3 = --with-gtk=3
-
-DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection  --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
-
-DEB_DH_SHLIBDEPS_ARGS_libdbusmenu-gtk4 = -- -xlibgtk2.0-0
-DEB_DH_SHLIBDEPS_ARGS_libdbusmenu-gtk3-4 = -- -xlibgtk-3-0
+INSTALL_COMMON_FLAGS = --fail-missing
 
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
-debian/stamp-autotools/gtk2: cdbs_configure_flags += $(DEB_CONFIGURE_FLAGS_gtk2)
-debian/stamp-autotools/gtk3: cdbs_configure_flags += $(DEB_CONFIGURE_FLAGS_gtk3)
+%:
+	dh $@ --with autoreconf
 
-common-install-arch::
+override_dh_autoreconf:
+	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
+
+override_dh_auto_configure: $(FLAVORS:%=doconfigure-%)
+
+doconfigure-%:
+	DH_VERBOSE=1 dh_auto_configure --builddirectory=builddir/$* -- $(CONFIGURE_FLAGS_$*) $(CONFIGURE_COMMON_FLAGS)
+
+override_dh_auto_build: $(FLAVORS:%=dobuild-%)
+
+dobuild-%:
+	dh_auto_build --builddirectory=builddir/$*
+
+override_dh_auto_install: $(FLAVORS:%=doinstall-%)
+
+doinstall-%:
+	dh_auto_install --builddirectory=builddir/$* --destdir=debian/tmp/$*
+
+override_dh_install:
 	find debian/tmp -name \*.la -delete
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk4 --sourcedir=debian/tmp/gtk2
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk-dev --sourcedir=debian/tmp/gtk2
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk-doc --sourcedir=debian/tmp/gtk2
+	dh_install $(INSTALL_COMMON_FLAGS) -pgir1.2-dbusmenu-gtk-0.4 --sourcedir=debian/tmp/gtk2
+	dh_install $(INSTALL_COMMON_FLAGS) -pgir1.2-dbusmenu-glib-0.4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -pgir1.2-dbusmenu-gtk3-0.4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-glib4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-glib-dev --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-glib-doc --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk3-4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk3-dev --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-jsonloader4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-jsonloader-dev --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-tools --sourcedir=debian/tmp/gtk3
+
+override_dh_shlibdeps:
+	dh_shlibdeps -plibdbusmenu-gtk4 -- -xlibgtk2.0-0
+	dh_shlibdeps -plibdbusmenu-gtk3-4 -- -xlibgtk-3-0
+
