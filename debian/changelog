@@ -1,3 +1,10 @@
+libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
+
+  * debian/control:
+    - Reorganize Build-Depends for clarity.
+
+ -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Wed, 21 Nov 2012 13:17:02 -0500
+
 libdbusmenu (12.10.2-0ubuntu1) quantal; urgency=low
 
   * New upstream release.
