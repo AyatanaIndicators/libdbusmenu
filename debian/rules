@@ -34,6 +34,10 @@ doinstall-%:
 
 override_dh_install:
 	find debian/tmp -name \*.la -delete
+	# Remove gtk2 copies of dbusmenu-tools (we use the gtk3 build)
+	rm -f debian/tmp/gtk2/usr/lib/x86_64-linux-gnu/dbusmenu-testapp
+	rm -f debian/tmp/gtk2/usr/lib/x86_64-linux-gnu/dbusmenu-dumper
+	rm -f debian/tmp/gtk2/usr/lib/x86_64-linux-gnu/dbusmenu-bench
 	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk4 --sourcedir=debian/tmp/gtk2
 	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk-dev --sourcedir=debian/tmp/gtk2
 	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk-doc --sourcedir=debian/tmp/gtk2

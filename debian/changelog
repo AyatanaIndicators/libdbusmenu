@@ -10,6 +10,8 @@ libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
     - Convert to dh9; some variables where kept but renamed to brevity.
     - Override dh_autoreconf to make sure it calls autogen.sh, and doesn't run
       configure.
+    - Clean up unnecessary files we don't want to install, so that dh_install
+      can complete.
   * debian/compat: bump to compat level 9.
   * debian/libdbusmenu-gtk-doc.install: add the glib-server-nomenu.c example.
 
