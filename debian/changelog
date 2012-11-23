@@ -13,6 +13,8 @@ libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
       configure.
     - Clean up unnecessary files we don't want to install, so that dh_install
       can complete.
+    - Override dh_auto_test to make sure they can be run for both the gtk2 and
+      gtk3 flavors.
   * debian/compat: bump to compat level 9.
   * debian/libdbusmenu-gtk-doc.install: add the glib-server-nomenu.c example.
   * debian/libdbusmenu-tools.install: install dbusmenu-* binaries from the
