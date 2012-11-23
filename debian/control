@@ -36,11 +36,6 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-Breaks: indicator-messages (<< 0.3.0),
-        indicator-session (<< 0.2.0),
-        libdbusmenu-glib0,
-        gir1.2-unity-3.0 (<< 3.8.4-0ubuntu2),
-        gir1.2-indicate-0.5 (<< 0.5.0-0ubuntu4),
 Pre-Depends: ${misc:Pre-Depends},
 Multi-Arch: same
 Description: library for passing menus over DBus
@@ -119,8 +114,6 @@ Architecture: any
 Depends: ${misc:Depends},
          libdbusmenu-glib4 (= ${binary:Version}),
          ${gir:Depends},
-Breaks: gir1.2-unity-3.0 (<< 3.8.4-0ubuntu2),
-        gir1.2-indicate-0.5 (<< 0.5.0-0ubuntu4),
 Description: typelib file for libdbusmenu-glib4
  libdbusmenu passes a menu structure across DBus so that a program can
  create a menu simply without worrying about how it is displayed on the
