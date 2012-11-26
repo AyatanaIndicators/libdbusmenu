@@ -1203,7 +1203,6 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 			   'rtl' depending on what we're doing. */
 			gchar * finaliconname = g_strdup_printf("%s-%s", iconname,
 						gtk_widget_get_direction(GTK_WIDGET(gimi)) == GTK_TEXT_DIR_RTL ? "rtl" : "ltr");
-g_message (G_STRLOC" icon_name %p %s", finaliconname, finaliconname);
 			if (!gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), finaliconname)) {
 				/* If we don't have that icon, fall back to having one
 				   without the extra bits. */
