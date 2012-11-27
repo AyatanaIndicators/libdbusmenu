@@ -35,8 +35,7 @@ doinstall-%:
 override_dh_auto_test: $(FLAVORS:%=dotest-%)
 
 dotest-%:
-	# Tests temporarily disabled; test-gtk-label fails. See http://pad.lv/1082516
-	#dh_auto_test --builddirectory=builddir/$*
+	dh_auto_test --builddirectory=builddir/$*
 
 override_dh_install:
 	find debian/tmp -name \*.la -delete
