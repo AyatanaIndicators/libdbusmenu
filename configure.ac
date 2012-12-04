@@ -27,7 +27,7 @@ AC_PATH_PROG([GLIB_MKENUMS], [glib-mkenums])
 # GTK Doc 
 ###########################
 
-GTK_DOC_CHECK([1.4])
+GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
 GNOME_DOC_INIT
 
 ###########################
