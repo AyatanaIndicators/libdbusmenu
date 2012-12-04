@@ -1590,8 +1590,6 @@ dbusmenu_menuitem_properties_variant (DbusmenuMenuitem * mi, const gchar ** prop
  * 
  * This function sets the internal value of whether this is a
  * root node or not.
- * 
- * Return value: None
  */
 void
 dbusmenu_menuitem_set_root (DbusmenuMenuitem * mi, gboolean root)
