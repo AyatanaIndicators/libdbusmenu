@@ -8,6 +8,7 @@ libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
     - Update Vcs-Bzr, Vcs-Browser and add a notice to uploaders.
     - Remove outdated Breaks:.
     - Add dbus-test-runner to Build-Depends.
+    - Add xvfb to Build-Depends.
   * debian/rules:
     - Convert to dh9; some variables where kept but renamed to brevity.
     - Override dh_autoreconf to make sure it calls autogen.sh, and doesn't run
@@ -16,6 +17,7 @@ libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
       can complete.
     - Override dh_auto_test to make sure they can be run for both the gtk2 and
       gtk3 flavors.
+    - Run dh_auto_test through xvfb-run.
   * debian/compat: bump to compat level 9.
   * debian/libdbusmenu-gtk-doc.install: add the glib-server-nomenu.c example.
   * debian/libdbusmenu-tools.install: install dbusmenu-* binaries from the
