@@ -18,7 +18,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting the functions and macros.
 # e.g. DOC_SOURCE_DIR=../../../gtk
-DOC_SOURCE_DIR=../../../libdbusmenu-glib
+DOC_SOURCE_DIR=$(abs_top_srcdir)/libdbusmenu-glib $(abs_top_builddir)/libdbusmenu-glib
 
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
 SCANGOBJ_OPTIONS=--nogtkinit --type-init-func="g_type_init()"
@@ -95,5 +95,5 @@ if ENABLE_GTK_DOC
  TESTS_ENVIRONMENT = cd $(srcdir) && \
    DOC_MODULE=$(DOC_MODULE) DOC_MAIN_SGML_FILE=$(DOC_MAIN_SGML_FILE) \
    SRCDIR=$(abs_srcdir) BUILDDIR=$(abs_builddir)
-#TESTS = $(GTKDOC_CHECK)
+TESTS = $(GTKDOC_CHECK)
 endif
