@@ -1,0 +1,64 @@
+#!/usr/bin/make -f
+
+FLAVORS = gtk2 gtk3
+
+CONFIGURE_FLAGS_gtk2 = --with-gtk=2
+CONFIGURE_FLAGS_gtk3 = --with-gtk=3
+
+CONFIGURE_COMMON_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection  --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
+
+INSTALL_COMMON_FLAGS = --fail-missing
+
+LDFLAGS += -Wl,-z,defs -Wl,--as-needed
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_autoreconf:
+	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
+
+override_dh_auto_configure: $(FLAVORS:%=doconfigure-%)
+
+doconfigure-%:
+	DH_VERBOSE=1 dh_auto_configure --builddirectory=builddir/$* -- $(CONFIGURE_FLAGS_$*) $(CONFIGURE_COMMON_FLAGS)
+
+override_dh_auto_build: $(FLAVORS:%=dobuild-%)
+
+dobuild-%:
+	dh_auto_build --builddirectory=builddir/$*
+
+override_dh_auto_install: $(FLAVORS:%=doinstall-%)
+
+doinstall-%:
+	dh_auto_install --builddirectory=builddir/$* --destdir=debian/tmp/$*
+
+override_dh_auto_test: $(FLAVORS:%=dotest-%)
+
+dotest-%:
+	xvfb-run dh_auto_test --builddirectory=builddir/$*
+
+override_dh_install:
+	find debian/tmp -name \*.la -delete
+	# Remove gtk2 copies of dbusmenu-tools (we use the gtk3 build)
+	rm -f debian/tmp/gtk2/usr/lib/x86_64-linux-gnu/dbusmenu-testapp
+	rm -f debian/tmp/gtk2/usr/lib/x86_64-linux-gnu/dbusmenu-dumper
+	rm -f debian/tmp/gtk2/usr/lib/x86_64-linux-gnu/dbusmenu-bench
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk4 --sourcedir=debian/tmp/gtk2
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk-dev --sourcedir=debian/tmp/gtk2
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk-doc --sourcedir=debian/tmp/gtk2
+	dh_install $(INSTALL_COMMON_FLAGS) -pgir1.2-dbusmenu-gtk-0.4 --sourcedir=debian/tmp/gtk2
+	dh_install $(INSTALL_COMMON_FLAGS) -pgir1.2-dbusmenu-glib-0.4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -pgir1.2-dbusmenu-gtk3-0.4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-glib4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-glib-dev --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-glib-doc --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk3-4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-gtk3-dev --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-jsonloader4 --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-jsonloader-dev --sourcedir=debian/tmp/gtk3
+	dh_install $(INSTALL_COMMON_FLAGS) -plibdbusmenu-tools --sourcedir=debian/tmp/gtk3
+
+override_dh_shlibdeps:
+	dh_shlibdeps -plibdbusmenu-gtk4 -- -xlibgtk2.0-0
+	dh_shlibdeps -plibdbusmenu-gtk3-4 -- -xlibgtk-3-0
+
