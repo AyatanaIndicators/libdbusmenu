@@ -455,7 +455,7 @@ struct _DbusmenuMenuitemClass
 	/* Virtual functions */
 	dbusmenu_menuitem_buildvariant_slot_t buildvariant;
 	void (*handle_event) (DbusmenuMenuitem * mi, const gchar * name, GVariant * variant, guint timestamp);
-	void (*send_about_to_show) (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gpointer user_data), gpointer cb_data);
+	void (*send_about_to_show) (DbusmenuMenuitem * mi, dbusmenu_menuitem_about_to_show_cb cb, gpointer cb_data);
 
 	void (*show_to_user) (DbusmenuMenuitem * mi, guint timestamp, gpointer cb_data);
 	gboolean (*about_to_show) (void);
