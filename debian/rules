@@ -35,7 +35,7 @@ doinstall-%:
 override_dh_auto_test: $(FLAVORS:%=dotest-%)
 
 dotest-%:
-	xvfb-run dh_auto_test --builddirectory=builddir/$*
+	xvfb-run -a dh_auto_test --builddirectory=builddir/$*
 
 override_dh_install:
 	find debian/tmp -name \*.la -delete
