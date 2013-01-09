@@ -1,5 +1,6 @@
 libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
 
+  [ Mathieu Trudel-Lapierre ]
   * debian/control:
     - Reorganize Build-Depends for clarity.
     - Update style to match other indicator stack packages. 
@@ -22,6 +23,13 @@ libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
   * debian/libdbusmenu-gtk-doc.install: add the glib-server-nomenu.c example.
   * debian/libdbusmenu-tools.install: install dbusmenu-* binaries from the
     multiarch triplet rather than usr/lib/libdbusmenu.
+
+  [ Didier Roche ]
+  * Automatic snapshot from revision 435 (bootstrap):
+    - Confirm that icon_name is non-NULL before passing it to
+      gtk_icon_theme_has_icon(). (LP: #1082516)
+    - Do not reuse menu items if their type is different (LP: #1071321)
+    - Fixes interaction with GtkRecentChooserMenu (LP: #752674)
 
  -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Wed, 21 Nov 2012 13:17:02 -0500
 
