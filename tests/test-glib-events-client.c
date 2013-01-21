@@ -114,8 +114,6 @@ timer_func (gpointer data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT, G_CALLBACK(event_status), GINT_TO_POINTER(USER_VALUE));

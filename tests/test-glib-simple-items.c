@@ -32,8 +32,6 @@ quititall (gpointer data)
 int
 main (int argc, char ** argv)
 {
-    g_type_init();
-
     DbusmenuServer * server = dbusmenu_server_new("/test/object");
     root_menuitem = dbusmenu_menuitem_new();
     dbusmenu_server_set_root(server, root_menuitem);

@@ -27,8 +27,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	DbusmenuServer * server = dbusmenu_server_new("/org/test");
 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(menuitem, "test", "test");

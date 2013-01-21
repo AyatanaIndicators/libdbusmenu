@@ -120,8 +120,6 @@ name_lost (GDBusConnection * connection, const gchar * name, gpointer user_data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	g_bus_own_name(G_BUS_TYPE_SESSION,
 	               "test.proxy.server",
 	               G_BUS_NAME_OWNER_FLAGS_NONE,

@@ -86,8 +86,6 @@ timer_func (gpointer data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	server = dbusmenu_server_new("/org/test");
 
 	timer_func(NULL);

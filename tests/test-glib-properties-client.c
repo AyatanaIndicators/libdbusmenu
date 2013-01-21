@@ -152,8 +152,6 @@ layout_verify_timer (gpointer data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	/* Make sure the server starts up and all that */
 	g_usleep(500000);
 

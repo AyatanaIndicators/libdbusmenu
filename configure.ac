@@ -34,7 +34,7 @@ GNOME_DOC_INIT
 # Dependencies - GLib
 ###########################
 
-GLIB_REQUIRED_VERSION=2.26
+GLIB_REQUIRED_VERSION=2.35.4
 
 PKG_CHECK_MODULES(DBUSMENUGLIB, glib-2.0 >= $GLIB_REQUIRED_VERSION
                                 gio-2.0 >= $GLIB_REQUIRED_VERSION)
