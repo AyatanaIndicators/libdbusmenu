@@ -388,7 +388,6 @@ static GOptionEntry general_options[] = {
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
 	GError * error = NULL;
 	GOptionContext * context;
 

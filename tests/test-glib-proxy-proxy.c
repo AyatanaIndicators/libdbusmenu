@@ -49,8 +49,6 @@ name_lost (GDBusConnection * connection, const gchar * name, gpointer user_data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	if (argc != 3) {
 		g_error ("Need two params");
 		return 1;

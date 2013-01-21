@@ -135,8 +135,6 @@ name_lost (GDBusConnection * connection, const gchar * name, gpointer user_data)
 
 int main (int argc, char ** argv)
 {
-	g_type_init();
-
 	if (argc != 2) {
 		g_warning(USAGE);
 		return 1;

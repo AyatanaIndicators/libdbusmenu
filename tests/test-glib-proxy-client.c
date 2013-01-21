@@ -159,8 +159,6 @@ layout_verify_timer (gpointer data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	DbusmenuClient * client = dbusmenu_client_new("test.proxy.first_proxy", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 

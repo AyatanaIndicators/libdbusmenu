@@ -21,7 +21,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 DOC_SOURCE_DIR=$(abs_top_srcdir)/libdbusmenu-glib $(abs_top_builddir)/libdbusmenu-glib
 
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
-SCANGOBJ_OPTIONS=--nogtkinit --type-init-func="g_type_init()"
+SCANGOBJ_OPTIONS=--nogtkinit
 
 # Extra options to supply to gtkdoc-scan.
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED"

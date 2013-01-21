@@ -71,8 +71,6 @@ name_lost (GDBusConnection * connection, const gchar * name, gpointer user_data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	JsonParser * parser = json_parser_new();
 	GError * error = NULL;
 	if (!json_parser_load_from_file(parser, argv[1], &error)) {

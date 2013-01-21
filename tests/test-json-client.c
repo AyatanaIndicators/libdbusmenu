@@ -53,8 +53,6 @@ timeout_func (gpointer user_data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	g_timeout_add_seconds(1, timeout_func, argv);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
