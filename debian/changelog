@@ -23,6 +23,9 @@ libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
   * debian/libdbusmenu-gtk-doc.install: add the glib-server-nomenu.c example.
   * debian/libdbusmenu-tools.install: install dbusmenu-* binaries from the
     multiarch triplet rather than usr/lib/libdbusmenu.
+  * Update main sgml documentation files to remove the xml includes we don't
+    generate anymore. (LP: #1102468)
+  * Drop deprecated calls to g_type_init(). (LP: #1102471)
 
   [ Didier Roche ]
   * Automatic snapshot from revision 435 (bootstrap):
