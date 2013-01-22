@@ -1705,6 +1705,8 @@ bus_event (DbusmenuServer * server, GVariant * params, GDBusMethodInvocation * i
 	} else {
 		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
 			g_dbus_method_invocation_return_value(invocation, NULL);
+		} else {
+			g_object_unref(invocation);
 		}
 	}
 
@@ -1755,6 +1757,8 @@ bus_event_group (DbusmenuServer * server, GVariant * params, GDBusMethodInvocati
 	if (gotone) {
 		if (~g_dbus_message_get_flags (g_dbus_method_invocation_get_message (invocation)) & G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED) {
 			g_dbus_method_invocation_return_value(invocation, g_variant_new_tuple(&errors, 1));
+		} else {
+			g_object_unref(invocation);
 		}
 	} else {
 		gchar * ids = g_variant_print(errors, FALSE);
@@ -1867,6 +1871,8 @@ bus_about_to_show_group (DbusmenuServer * server, GVariant * params, GDBusMethod
 			g_variant_builder_add_value(&tuple, errors);
 
 			g_dbus_method_invocation_return_value(invocation, g_variant_builder_end(&tuple));
+		} else {
+			g_object_unref(invocation);
 		}
 	} else {
 		gchar * ids = g_variant_print(errors, FALSE);
