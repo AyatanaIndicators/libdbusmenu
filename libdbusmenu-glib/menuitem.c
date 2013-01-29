@@ -1656,7 +1656,9 @@ dbusmenu_menuitem_build_variant (DbusmenuMenuitem * mi, const gchar ** propertie
 	if (props != NULL) {
 		g_variant_builder_add_value(&tupleb, props);
 	} else {
-		g_variant_builder_add_value(&tupleb, g_variant_parse(G_VARIANT_TYPE("a{sv}"), "[ ]", NULL, NULL, NULL));
+		GVariant *empty_props = g_variant_parse(G_VARIANT_TYPE("a{sv}"), "[ ]", NULL, NULL, NULL);
+		g_variant_builder_add_value(&tupleb, empty_props);
+		g_variant_unref(empty_props);
 	}
 
 	/* Pillage the children */

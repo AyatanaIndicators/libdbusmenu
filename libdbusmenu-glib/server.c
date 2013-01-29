@@ -1070,8 +1070,6 @@ menuitem_property_idle (gpointer user_data)
 			g_error_free(error);
 			megadata[0] = NULL;
 			error_nosend = TRUE;
-		} else {
-			g_variant_ref_sink(megadata[0]);
 		}
 	}
 
@@ -1088,8 +1086,6 @@ menuitem_property_idle (gpointer user_data)
 			g_error_free(error);
 			megadata[1] = NULL;
 			error_nosend = TRUE;
-		} else {
-			g_variant_ref_sink(megadata[1]);
 		}
 	}
 
@@ -1331,6 +1327,9 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 
 		if (mi != NULL) {
 			items = dbusmenu_menuitem_build_variant(mi, props, recurse);
+			if (items) {
+				g_variant_ref_sink(items);
+			}
 		}
 	}
 	g_free(props);
@@ -1359,6 +1358,8 @@ bus_get_layout (DbusmenuServer * server, GVariant * params, GDBusMethodInvocatio
 
 	g_variant_builder_add_value(&tuplebuilder, g_variant_new_uint32(revision));
 	g_variant_builder_add_value(&tuplebuilder, items);
+
+	g_variant_unref(items);
 
 	GVariant * retval = g_variant_builder_end(&tuplebuilder);
 	// g_debug("Sending layout type: %s", g_variant_get_type_string(retval));
@@ -1504,6 +1505,9 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		g_variant_builder_init(&wbuilder, G_VARIANT_TYPE_TUPLE);
 		g_variant_builder_add(&wbuilder, "i", id);
 		GVariant * props = dbusmenu_menuitem_properties_variant(mi, NULL);
+		if (props != NULL) {
+			g_variant_ref(props);
+		}
 
 		if (props == NULL) {
 			GError * error = NULL;
@@ -1516,6 +1520,7 @@ bus_get_group_properties (DbusmenuServer * server, GVariant * params, GDBusMetho
 		}
 
 		g_variant_builder_add_value(&wbuilder, props);
+		g_variant_unref(props);
 		GVariant * mi_data = g_variant_builder_end(&wbuilder);
 
 		g_variant_builder_add_value(&builder, mi_data);
@@ -1613,6 +1618,7 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 
 		GVariant * end = g_variant_builder_end(&builder);
 		ret = g_variant_new_tuple(&end, 1);
+		g_variant_ref_sink(ret);
 	} else {
 		GError * error = NULL;
 		ret = g_variant_parse(G_VARIANT_TYPE("(a(ia{sv}))"), "([(0, {})],)", NULL, NULL, &error);
@@ -1624,6 +1630,7 @@ bus_get_children (DbusmenuServer * server, GVariant * params, GDBusMethodInvocat
 	}
 
 	g_dbus_method_invocation_return_value(invocation, ret);
+	g_variant_unref(ret);
 	return;
 }
 
