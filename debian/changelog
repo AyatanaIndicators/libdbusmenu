@@ -1,4 +1,4 @@
-libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
+libdbusmenu (12.10.3daily13.02.01-0ubuntu1) raring; urgency=low
 
   [ Mathieu Trudel-Lapierre ]
   * debian/control:
@@ -34,7 +34,20 @@ libdbusmenu (12.10.3-0ubuntu1) UNRELEASED; urgency=low
     - Do not reuse menu items if their type is different (LP: #1071321)
     - Fixes interaction with GtkRecentChooserMenu (LP: #752674)
 
- -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Wed, 21 Nov 2012 13:17:02 -0500
+  [ Mathieu Trudel-Lapierre ]
+  * libdbusmenu uses deprecated calls to g_type_init() (LP: #1102471)
+  * libdbusmenu fails to build due to missing xml documentation include
+    files (LP: #1102468)
+
+  [ Chris Coulson ]
+  * Leaks GVariant's in multiple places (LP: #1104136)
+  * Leak in method call handlers for calls that don't require a reply
+    (LP: #1103050)
+
+  [ Automatic PS uploader ]
+  * Automatic snapshot from revision 440
+
+ -- Automatic PS uploader <ps-jenkins@lists.canonical.com>  Fri, 01 Feb 2013 02:01:01 +0000
 
 libdbusmenu (12.10.2-0ubuntu1) quantal; urgency=low
 
