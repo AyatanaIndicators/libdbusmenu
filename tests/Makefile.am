@@ -29,6 +29,7 @@ TESTS += \
 	test-gtk-label \
 	test-gtk-shortcut \
 	test-gtk-reorder \
+	test-gtk-remove \
 	test-gtk-parser-test
 # Not working with GTK3 and a critical grab that is in
 # the GTK3 code.
@@ -71,6 +72,7 @@ endif
 if WANT_LIBDBUSMENUGTK
 check_PROGRAMS += \
 	test-gtk-objects \
+	test-gtk-remove \
 	test-gtk-label-client \
 	test-gtk-label-server \
 	test-gtk-shortcut-client \
@@ -619,6 +621,25 @@ test-gtk-shortcut-python: test-gtk-shortcut-server test-gtk-shortcut-client.py M
 
 EXTRA_DIST += test-gtk-shortcut-client.py
 CLEANFILES += test-gtk-shortcut-client.pyc
+
+#########################
+# Test GTK Remove
+#########################
+
+test_gtk_remove_SOURCES = \
+	test-gtk-remove.c
+
+test_gtk_remove_CFLAGS = \
+	-I $(srcdir)/.. \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+
+test_gtk_remove_LDADD = \
+	../libdbusmenu-glib/libdbusmenu-glib.la \
+	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
 
 #########################
 # Test GTK Reorder
