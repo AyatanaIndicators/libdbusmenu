@@ -154,7 +154,6 @@ dbusmenu_gtkclient_dispose (GObject *object)
 
 	if ((root = dbusmenu_client_get_root (DBUSMENU_CLIENT(object))))
 		dbusmenu_menuitem_foreach (root, clear_shortcut_foreach, object);
-	g_message ("hello world 6");
 	g_clear_object (&priv->agroup);
 
 	if (priv->old_themedirs) {
