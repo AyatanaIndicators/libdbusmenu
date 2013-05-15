@@ -1,3 +1,18 @@
+libdbusmenu (12.10.3daily13.05.15-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * In gtkclient's destructor, balance client's earlier
+    gtk_widget_add_accelerator() calls with
+    gtk_widget_remove_accelerator() calls. (LP: #1173262)
+
+  [ Mathieu Trudel-Lapierre ]
+  * Remove stray g_message().
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 443
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 15 May 2013 12:44:56 +0000
+
 libdbusmenu (12.10.3daily13.02.01-0ubuntu1) raring; urgency=low
 
   [ Mathieu Trudel-Lapierre ]
