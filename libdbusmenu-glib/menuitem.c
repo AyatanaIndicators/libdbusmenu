@@ -270,7 +270,7 @@ dbusmenu_menuitem_class_init (DbusmenuMenuitemClass *klass)
 	g_object_class_install_property (object_class, PROP_ID,
 	                                 g_param_spec_int(PROP_ID_S, "ID for the menu item",
 	                                              "This is a unique indentifier for the menu item.",
-												  -1, 30000, -1,
+												  -1, G_MAXINT, -1,
 	                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/* Check transfer functions for GValue */
@@ -391,7 +391,8 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 	case PROP_ID:
 		priv->id = g_value_get_int(value);
 		if (priv->id > menuitem_next_id) {
-			menuitem_next_id = priv->id + 1;
+			menuitem_next_id = (priv->id + 1) % G_MAXINT;
+			if (menuitem_next_id == 0) menuitem_next_id++;
 		}
 		break;
 	default:
@@ -411,6 +412,8 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	case PROP_ID:
 		if (priv->id == -1) {
 			priv->id = menuitem_next_id++;
+			menuitem_next_id &= G_MAXINT;
+			if (menuitem_next_id == 0) menuitem_next_id++;
 		}
 		if (dbusmenu_menuitem_get_root(DBUSMENU_MENUITEM(obj))) {
 			g_value_set_int(value, 0);
