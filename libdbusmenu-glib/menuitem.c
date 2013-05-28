@@ -391,8 +391,11 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 	case PROP_ID:
 		priv->id = g_value_get_int(value);
 		if (priv->id > menuitem_next_id) {
-			menuitem_next_id = (priv->id + 1) % G_MAXINT;
-			if (menuitem_next_id == 0) menuitem_next_id++;
+			if (priv->id == G_MAXINT) {
+				menuitem_next_id = 1;
+			} else {
+				menuitem_next_id = priv->id + 1;
+			}
 		}
 		break;
 	default:
@@ -411,9 +414,12 @@ get_property (GObject * obj, guint id, GValue * value, GParamSpec * pspec)
 	switch (id) {
 	case PROP_ID:
 		if (priv->id == -1) {
-			priv->id = menuitem_next_id++;
-			menuitem_next_id &= G_MAXINT;
-			if (menuitem_next_id == 0) menuitem_next_id++;
+			priv->id = menuitem_next_id;
+			if (menuitem_next_id == G_MAXINT) {
+				menuitem_next_id = 1;
+			} else {
+				menuitem_next_id += 1;
+			}
 		}
 		if (dbusmenu_menuitem_get_root(DBUSMENU_MENUITEM(obj))) {
 			g_value_set_int(value, 0);
