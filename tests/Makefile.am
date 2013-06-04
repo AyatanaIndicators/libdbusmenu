@@ -35,6 +35,12 @@ TESTS += \
 #	test-gtk-submenu 
 endif
 
+if ENABLE_GTK_DOC
+TESTS += \
+	test_libdbusmenu_glib_gtkdoc \
+	test_libdbusmenu_gtk_gtkdoc
+endif
+
 # The Python test only work on the system copy of
 # dbusmenu, so while they can be usefule they're not
 # good tests of what you're currently building.  Handy
@@ -709,6 +715,18 @@ test-mago: test-gtk-label-client test-gtk-label-server $(srcdir)/dbusmenu-gtk/ma
 #########################
 # Other
 #########################
+
+test_libdbusmenu_glib_gtkdoc:
+	@echo "#!/bin/bash" > $@
+	@echo cd $(abs_top_builddir)/docs/libdbusmenu-glib/reference >> $@
+	@echo gtester --verbose -k $(GTKDOC_CHECK) >> $@
+	@chmod +x $@
+
+test_libdbusmenu_gtk_gtkdoc:
+	@echo "#!/bin/bash" > $@
+	@echo cd $(abs_top_builddir)/docs/libdbusmenu-gtk/reference >> $@
+	@echo gtester --verbose -k $(GTKDOC_CHECK) >> $@
+	@chmod +x $@
 
 examplesdir = $(docdir)/examples/
 
