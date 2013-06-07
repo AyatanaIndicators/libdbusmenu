@@ -1,3 +1,18 @@
+libdbusmenu (12.10.3daily13.06.07-0ubuntu1) saucy; urgency=low
+
+  [ Mathieu Trudel-Lapierre ]
+  * Fix gtkdoc-check tests, and move them to tests subdirectory.
+
+  [ Chris Coulson ]
+  * Fix the long-standing "nm-applet stops working after a few days /
+    hours" issue; properly handle "unique" IDs for indicator menuitems.
+    (LP: #1011073)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 446
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 07 Jun 2013 02:02:59 +0000
+
 libdbusmenu (12.10.3daily13.05.15-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]
