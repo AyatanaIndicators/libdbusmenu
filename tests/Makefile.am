@@ -78,11 +78,11 @@ endif
 if WANT_LIBDBUSMENUGTK
 check_PROGRAMS += \
 	test-gtk-objects \
-	test-gtk-remove \
 	test-gtk-label-client \
 	test-gtk-label-server \
 	test-gtk-shortcut-client \
 	test-gtk-shortcut-server \
+	test-gtk-remove-server \
 	test-gtk-reorder-server \
 	test-gtk-submenu-server \
 	test-gtk-submenu-client \
@@ -632,20 +632,29 @@ CLEANFILES += test-gtk-shortcut-client.pyc
 # Test GTK Remove
 #########################
 
-test_gtk_remove_SOURCES = \
-	test-gtk-remove.c
+test-gtk-remove: test-gtk-remove-server Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo export UBUNTU_MENUPROXY="" >> $@
+	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo $(XVFB_RUN) >> $@
+	@echo $(DBUS_RUNNER) --task ./test-gtk-remove-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
+	@chmod +x $@
 
-test_gtk_remove_CFLAGS = \
+test_gtk_remove_server_SOURCES = \
+	test-gtk-remove-server.c
+
+test_gtk_remove_server_CFLAGS = \
 	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
-test_gtk_remove_LDADD = \
+test_gtk_remove_server_LDADD = \
 	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
+
 
 #########################
 # Test GTK Reorder
