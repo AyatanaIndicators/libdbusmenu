@@ -130,16 +130,31 @@ dbusmenu_gtkclient_init (DbusmenuGtkClient *self)
 	return;
 }
 
+static void
+clear_shortcut_foreach (DbusmenuMenuitem *mi, gpointer gclient)
+{
+	guint key = 0;
+	GtkMenuItem * gmi;
+	GdkModifierType mod = 0;
+	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT (gclient);
+
+	gmi = dbusmenu_gtkclient_menuitem_get (client, mi);
+	dbusmenu_gtkclient_menuitem_get (client, mi);
+	dbusmenu_menuitem_property_get_shortcut (mi, &key, &mod);
+	if (key)
+		gtk_widget_remove_accelerator (GTK_WIDGET (gmi), client->priv->agroup, key, mod);
+}
+
 /* Just calling the super class.  Future use. */
 static void
 dbusmenu_gtkclient_dispose (GObject *object)
 {
-	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT_GET_PRIVATE(object);
+	DbusmenuMenuitem * root;
+	DbusmenuGtkClientPrivate * priv = DBUSMENU_GTKCLIENT(object)->priv;
 
-	if (priv->agroup != NULL) {
-		g_object_unref(priv->agroup);
-		priv->agroup = NULL;
-	}
+	if ((root = dbusmenu_client_get_root (DBUSMENU_CLIENT(object))))
+		dbusmenu_menuitem_foreach (root, clear_shortcut_foreach, object);
+	g_clear_object (&priv->agroup);
 
 	if (priv->old_themedirs) {
 		remove_theme_dirs(gtk_icon_theme_get_default(), priv->old_themedirs);
@@ -161,7 +176,6 @@ dbusmenu_gtkclient_dispose (GObject *object)
 static void
 dbusmenu_gtkclient_finalize (GObject *object)
 {
-
 	G_OBJECT_CLASS (dbusmenu_gtkclient_parent_class)->finalize (object);
 	return;
 }
@@ -361,8 +375,6 @@ do_swap_agroup (DbusmenuMenuitem * mi, gpointer userdata) {
 static void
 swap_agroup (DbusmenuMenuitem *mi, gpointer userdata) {
         do_swap_agroup (mi, userdata);
-
-        return;  /* See what I did here, Ted? :)  */
 }
 
 /* Refresh the shortcut for an entry */
