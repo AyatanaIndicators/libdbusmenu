@@ -117,14 +117,14 @@ libdbusmenu_jsonloader_la_LDFLAGS = \
 libdbusmenu_jsonloader_la_CFLAGS = \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	-Wall \
 	-Werror \
 	-DG_DISABLE_DEPRECATED \
 	-DG_LOG_DOMAIN="\"LIBDBUSMENU-JSONLOADER\""
 
 libdbusmenu_jsonloader_la_LIBADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -139,11 +139,11 @@ glib_server_nomenu_SOURCES = \
 	glib-server-nomenu.c
 
 glib_server_nomenu_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 glib_server_nomenu_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 ######################
@@ -162,11 +162,11 @@ test_glib_layout_server_SOURCES = \
 	test-glib-layout-server.c
 
 test_glib_layout_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_layout_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 test_glib_layout_client_SOURCES = \
@@ -174,11 +174,11 @@ test_glib_layout_client_SOURCES = \
 	test-glib-layout-client.c
 
 test_glib_layout_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_layout_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 ######################
@@ -196,22 +196,22 @@ test_glib_events_server_SOURCES = \
 	test-glib-events-server.c
 
 test_glib_events_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_events_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 test_glib_events_client_SOURCES = \
 	test-glib-events-client.c
 
 test_glib_events_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_events_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 ################################
@@ -229,11 +229,11 @@ test_glib_events_nogroup_client_SOURCES = \
 	test-glib-events-nogroup-client.c
 
 test_glib_events_nogroup_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_events_nogroup_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 ######################
@@ -255,7 +255,7 @@ test_json_server_SOURCES = \
 	test-json-server.c
 
 test_json_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	-I $(srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
@@ -263,7 +263,7 @@ test_json_server_CFLAGS = \
 	-Wall -Werror
 
 test_json_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	libdbusmenu-jsonloader.la \
 	$(DBUSMENUTESTS_LIBS) \
 	$(DBUSMENUGLIB_LIBS)
@@ -272,11 +272,11 @@ test_json_client_SOURCES = \
 	test-json-client.c
 
 test_json_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_json_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUTESTS_LIBS) \
 	$(DBUSMENUGLIB_LIBS)
 
@@ -315,11 +315,11 @@ test_glib_submenu_server_SOURCES = \
 	test-glib-submenu-server.c
 
 test_glib_submenu_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_submenu_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 test_glib_submenu_client_SOURCES = \
@@ -327,11 +327,11 @@ test_glib_submenu_client_SOURCES = \
 	test-glib-submenu-client.c
 
 test_glib_submenu_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_submenu_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 ######################
@@ -351,11 +351,11 @@ test_glib_objects_SOURCES = \
 	test-glib-objects.c
 
 test_glib_objects_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_objects_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 DISTCLEANFILES += $(OBJECT_XML_REPORT)
@@ -376,11 +376,11 @@ test_glib_properties_server_SOURCES = \
 	test-glib-properties-server.c
 
 test_glib_properties_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_properties_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 test_glib_properties_client_SOURCES = \
@@ -388,11 +388,11 @@ test_glib_properties_client_SOURCES = \
 	test-glib-properties-client.c
 
 test_glib_properties_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_properties_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 ######################
@@ -416,11 +416,11 @@ test_glib_proxy_server_SOURCES = \
 	test-glib-proxy-server.c
 
 test_glib_proxy_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_proxy_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 test_glib_proxy_client_SOURCES = \
@@ -428,11 +428,11 @@ test_glib_proxy_client_SOURCES = \
 	test-glib-proxy-client.c
 
 test_glib_proxy_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_proxy_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 test_glib_proxy_proxy_SOURCES = \
@@ -440,11 +440,11 @@ test_glib_proxy_proxy_SOURCES = \
 	test-glib-proxy-proxy.c
 
 test_glib_proxy_proxy_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_proxy_proxy_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 #########################
@@ -455,11 +455,11 @@ test_glib_simple_items_SOURCES = \
 	test-glib-simple-items.c
 
 test_glib_simple_items_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_glib_simple_items_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	$(DBUSMENUGLIB_LIBS)
 
 EXTRA_DIST += test-glib-simple-items.py
@@ -482,15 +482,15 @@ test_gtk_objects_SOURCES = \
 	test-gtk-objects.c
 
 test_gtk_objects_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUGTK_CFLAGS) \
 	-DSRCDIR="\"$(srcdir)\"" \
 	-Wall -Werror
 
 test_gtk_objects_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
@@ -514,15 +514,15 @@ test_gtk_parser_SOURCES = \
 	test-gtk-parser.c
 
 test_gtk_parser_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGLIB_CFLAGS) \
 	$(DBUSMENUGTK_CFLAGS) \
 	-DSRCDIR="\"$(srcdir)\"" \
 	-Wall -Werror
 
 test_gtk_parser_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGLIB_LIBS) \
 	$(DBUSMENUGTK_LIBS)
 
@@ -544,14 +544,14 @@ test_gtk_label_server_SOURCES = \
 	test-gtk-label-server.c
 
 test_gtk_label_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	libdbusmenu-jsonloader.la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
@@ -560,14 +560,14 @@ test_gtk_label_client_SOURCES = \
 	test-gtk-label-client.c
 
 test_gtk_label_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_label_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -587,14 +587,14 @@ test_gtk_shortcut_server_SOURCES = \
 	test-gtk-shortcut-server.c
 
 test_gtk_shortcut_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_shortcut_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -602,14 +602,14 @@ test_gtk_shortcut_client_SOURCES = \
 	test-gtk-shortcut-client.c
 
 test_gtk_shortcut_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_shortcut_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -636,14 +636,14 @@ test_gtk_remove_SOURCES = \
 	test-gtk-remove.c
 
 test_gtk_remove_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_remove_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -663,14 +663,14 @@ test_gtk_reorder_server_SOURCES = \
 	test-gtk-reorder-server.c
 
 test_gtk_reorder_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_reorder_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -690,14 +690,14 @@ test_gtk_submenu_server_SOURCES = \
 	test-gtk-submenu-server.c
 
 test_gtk_submenu_server_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_submenu_server_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
@@ -705,14 +705,14 @@ test_gtk_submenu_client_SOURCES = \
 	test-gtk-submenu-client.c
 
 test_gtk_submenu_client_CFLAGS = \
-	-I $(srcdir)/.. \
+	-I $(top_srcdir) \
 	$(DBUSMENUGTK_CFLAGS) \
 	$(DBUSMENUTESTS_CFLAGS) \
 	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
 
 test_gtk_submenu_client_LDADD = \
-	../libdbusmenu-glib/libdbusmenu-glib.la \
-	../libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
 	$(DBUSMENUGTK_LIBS) \
 	$(DBUSMENUTESTS_LIBS)
 
