@@ -1,4 +1,3 @@
-
 DBUS_RUNNER=dbus-test-runner --max-wait=0
 
 CLEANFILES=
@@ -94,6 +93,22 @@ XVFB_RUN=". $(srcdir)/run-xvfb.sh"
 # for the GI tests, prefer/use the typelibs from the local build tree
 TESTS_ENVIRONMENT = env GI_TYPELIB_PATH=$(top_builddir)/libdbusmenu-glib:$(top_builddir)/libdbusmenu-gtk:$(GI_TYPELIB_PATH)
 
+############################################
+# Shared vars for the dbusmenu-glib tests
+############################################
+
+DBUSMENU_GLIB_TEST_CFLAGS = \
+	-Wall -Werror \
+	-DG_DISABLE_DEPRECATED \
+	-I$(top_srcdir) \
+	$(DBUSMENUTESTS_CFLAGS) \
+	$(DBUSMENUGLIB_CFLAGS)
+
+DBUSMENU_GLIB_TEST_LDADD = \
+	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
+	$(DBUSMENUGLIB_LIBS) \
+	$(DBUSMENUTESTS_LIBS)
+
 ######################
 # JSON Loader lib
 ######################
@@ -115,18 +130,11 @@ libdbusmenu_jsonloader_la_LDFLAGS = \
 	-export-symbols-regex "^[^_].*"
 
 libdbusmenu_jsonloader_la_CFLAGS = \
-	$(DBUSMENUGLIB_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	-I $(top_srcdir) \
-	-Wall \
-	-Werror \
-	-DG_DISABLE_DEPRECATED \
+	$(DBUSMENU_GLIB_TEST_CFLAGS) \
 	-DG_LOG_DOMAIN="\"LIBDBUSMENU-JSONLOADER\""
 
 libdbusmenu_jsonloader_la_LIBADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
+	$(DBUSMENU_GLIB_TEST_LDADD)
 
 pkgconfig_DATA = dbusmenu-jsonloader-0.4.pc
 pkgconfigdir = $(libdir)/pkgconfig
@@ -135,16 +143,9 @@ pkgconfigdir = $(libdir)/pkgconfig
 # Test GLib server
 ######################
 
-glib_server_nomenu_SOURCES = \
-	glib-server-nomenu.c
-
-glib_server_nomenu_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-glib_server_nomenu_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+glib_server_nomenu_SOURCES = glib-server-nomenu.c
+glib_server_nomenu_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+glib_server_nomenu_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 ######################
 # Test Glib Layout
@@ -157,29 +158,13 @@ test-glib-layout: test-glib-layout-client test-glib-layout-server Makefile.am
 	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_glib_layout_server_SOURCES = \
-	test-glib-layout.h \
-	test-glib-layout-server.c
+test_glib_layout_server_SOURCES = test-glib-layout.h test-glib-layout-server.c
+test_glib_layout_server_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_layout_server_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
-test_glib_layout_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_layout_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
-
-test_glib_layout_client_SOURCES = \
-	test-glib-layout.h \
-	test-glib-layout-client.c
-
-test_glib_layout_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_layout_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+test_glib_layout_client_SOURCES = test-glib-layout.h test-glib-layout-client.c
+test_glib_layout_client_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_layout_client_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 ######################
 # Test Glib Events
@@ -192,27 +177,13 @@ test-glib-events: test-glib-events-client test-glib-events-server Makefile.am
 	@echo $(DBUS_RUNNER) --task ./test-glib-events-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_glib_events_server_SOURCES = \
-	test-glib-events-server.c
+test_glib_events_server_SOURCES = test-glib-events-server.c
+test_glib_events_server_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_events_server_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
-test_glib_events_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_events_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
-
-test_glib_events_client_SOURCES = \
-	test-glib-events-client.c
-
-test_glib_events_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_events_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+test_glib_events_client_SOURCES = test-glib-events-client.c
+test_glib_events_client_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_events_client_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 ################################
 # Test Glib Events No Grouping
@@ -225,16 +196,9 @@ test-glib-events-nogroup: test-glib-events-nogroup-client test-glib-events-serve
 	@echo $(DBUS_RUNNER) --task ./test-glib-events-nogroup-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_glib_events_nogroup_client_SOURCES = \
-	test-glib-events-nogroup-client.c
-
-test_glib_events_nogroup_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_events_nogroup_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+test_glib_events_nogroup_client_SOURCES = test-glib-events-nogroup-client.c
+test_glib_events_nogroup_client_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_events_nogroup_client_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 ######################
 # Test JSON
@@ -255,30 +219,17 @@ test_json_server_SOURCES = \
 	test-json-server.c
 
 test_json_server_CFLAGS = \
-	-I $(top_srcdir) \
-	-I $(srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUTESTSVALGRIND_CFLAGS) \
-	-Wall -Werror
+	$(DBUSMENU_GLIB_TEST_CFLAGS) \
+	-I$(srcdir) \
+	$(DBUSMENUTESTSVALGRIND_CFLAGS)
 
 test_json_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
 	libdbusmenu-jsonloader.la \
-	$(DBUSMENUTESTS_LIBS) \
-	$(DBUSMENUGLIB_LIBS)
+	$(DBUSMENU_GLIB_TEST_LDADD)
 
-test_json_client_SOURCES = \
-	test-json-client.c
-
-test_json_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_json_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUTESTS_LIBS) \
-	$(DBUSMENUGLIB_LIBS)
+test_json_client_SOURCES = test-json-client.c
+test_json_client_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_json_client_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 #########################
 # Test JSON Instructions
@@ -310,29 +261,13 @@ test-glib-submenu: test-glib-submenu-client test-glib-submenu-server Makefile.am
 	@echo $(DBUS_RUNNER) --task ./test-glib-submenu-client --task-name Client --task ./test-glib-submenu-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_glib_submenu_server_SOURCES = \
-	test-glib-submenu.h \
-	test-glib-submenu-server.c
+test_glib_submenu_server_SOURCES = test-glib-submenu.h test-glib-submenu-server.c
+test_glib_submenu_server_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_submenu_server_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
-test_glib_submenu_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_submenu_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
-
-test_glib_submenu_client_SOURCES = \
-	test-glib-submenu.h \
-	test-glib-submenu-client.c
-
-test_glib_submenu_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_submenu_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+test_glib_submenu_client_SOURCES = test-glib-submenu.h test-glib-submenu-client.c
+test_glib_submenu_client_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_submenu_client_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 ######################
 # Test Glib Object
@@ -347,16 +282,9 @@ test-glib-objects-test: test-glib-objects Makefile.am
 	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
 	@chmod +x $@
 
-test_glib_objects_SOURCES = \
-	test-glib-objects.c
-
-test_glib_objects_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_objects_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+test_glib_objects_SOURCES = test-glib-objects.c
+test_glib_objects_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_objects_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 DISTCLEANFILES += $(OBJECT_XML_REPORT)
 
@@ -371,29 +299,13 @@ test-glib-properties: test-glib-properties-client test-glib-properties-server Ma
 	@echo $(DBUS_RUNNER) --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_glib_properties_server_SOURCES = \
-	test-glib-properties.h \
-	test-glib-properties-server.c
+test_glib_properties_server_SOURCES = test-glib-properties.h test-glib-properties-server.c
+test_glib_properties_server_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_properties_server_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
-test_glib_properties_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_properties_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
-
-test_glib_properties_client_SOURCES = \
-	test-glib-properties.h \
-	test-glib-properties-client.c
-
-test_glib_properties_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_properties_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+test_glib_properties_client_SOURCES = test-glib-properties.h test-glib-properties-client.c
+test_glib_properties_client_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_properties_client_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 ######################
 # Test Glib Proxy
@@ -411,58 +323,40 @@ test-glib-proxy: test-glib-proxy-client test-glib-proxy-server test-glib-proxy-p
 	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.last_proxy --parameter test.proxy.server --task-name Proxy05 --ignore-return >> $@
 	@chmod +x $@
 
-test_glib_proxy_server_SOURCES = \
-	test-glib-proxy.h \
-	test-glib-proxy-server.c
+test_glib_proxy_server_SOURCES = test-glib-proxy.h test-glib-proxy-server.c
+test_glib_proxy_server_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_proxy_server_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
-test_glib_proxy_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
+test_glib_proxy_client_SOURCES = test-glib-proxy.h test-glib-proxy-client.c
+test_glib_proxy_client_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_proxy_client_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
-test_glib_proxy_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
-
-test_glib_proxy_client_SOURCES = \
-	test-glib-proxy.h \
-	test-glib-proxy-client.c
-
-test_glib_proxy_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_proxy_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
-
-test_glib_proxy_proxy_SOURCES = \
-	test-glib-proxy.h \
-	test-glib-proxy-proxy.c
-
-test_glib_proxy_proxy_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_proxy_proxy_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+test_glib_proxy_proxy_SOURCES = test-glib-proxy.h test-glib-proxy-proxy.c
+test_glib_proxy_proxy_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_proxy_proxy_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 #########################
 # Test Glib Simple Items
 #########################
 
-test_glib_simple_items_SOURCES = \
-	test-glib-simple-items.c
-
-test_glib_simple_items_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_glib_simple_items_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(DBUSMENUGLIB_LIBS)
+test_glib_simple_items_SOURCES = test-glib-simple-items.c
+test_glib_simple_items_CFLAGS = $(DBUSMENU_GLIB_TEST_CFLAGS)
+test_glib_simple_items_LDADD = $(DBUSMENU_GLIB_TEST_LDADD)
 
 EXTRA_DIST += test-glib-simple-items.py
+
+############################################
+# Shared vars for the dbusmenu-gtk tests
+############################################
+
+DBUSMENU_GTK_TEST_CFLAGS = \
+	$(DBUSMENUGTK_CFLAGS) \
+	$(DBUSMENU_GLIB_TEST_CFLAGS)
+
+DBUSMENU_GTK_TEST_LDADD = \
+	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
+	$(DBUSMENUGTK_LIBS) \
+	$(DBUSMENU_GLIB_TEST_LDADD)
 
 ######################
 # Test GTK Object
@@ -478,21 +372,9 @@ test-gtk-objects-test: test-gtk-objects Makefile.am
 	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_OBJECT_XML_REPORT) --parameter ./test-gtk-objects >> $@
 	@chmod +x $@
 
-test_gtk_objects_SOURCES = \
-	test-gtk-objects.c
-
-test_gtk_objects_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) \
-	$(DBUSMENUGTK_CFLAGS) \
-	-DSRCDIR="\"$(srcdir)\"" \
-	-Wall -Werror
-
-test_gtk_objects_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGLIB_LIBS) \
-	$(DBUSMENUGTK_LIBS)
+test_gtk_objects_SOURCES = test-gtk-objects.c
+test_gtk_objects_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS) -DSRCDIR="\"$(srcdir)\""
+test_gtk_objects_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
 DISTCLEANFILES += $(GTK_OBJECT_XML_REPORT)
 
@@ -510,21 +392,9 @@ test-gtk-parser-test: test-gtk-parser Makefile.am
 	@echo gtester --verbose -k -o $(GTK_PARSER_XML_REPORT) ./test-gtk-parser >> $@
 	@chmod +x $@
 
-test_gtk_parser_SOURCES = \
-	test-gtk-parser.c
-
-test_gtk_parser_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGLIB_CFLAGS) \
-	$(DBUSMENUGTK_CFLAGS) \
-	-DSRCDIR="\"$(srcdir)\"" \
-	-Wall -Werror
-
-test_gtk_parser_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGLIB_LIBS) \
-	$(DBUSMENUGTK_LIBS)
+test_gtk_parser_SOURCES = test-gtk-parser.c
+test_gtk_parser_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS) -DSRCDIR="\"$(srcdir)\""
+test_gtk_parser_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
 DISTCLEANFILES += $(GTK_PARSER_XML_REPORT)
 
@@ -540,36 +410,13 @@ test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json 
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_gtk_label_server_SOURCES = \
-	test-gtk-label-server.c
+test_gtk_label_server_SOURCES = test-gtk-label-server.c
+test_gtk_label_server_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS)
+test_gtk_label_server_LDADD = libdbusmenu-jsonloader.la $(DBUSMENU_GTK_TEST_LDADD)
 
-test_gtk_label_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGTK_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_gtk_label_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	libdbusmenu-jsonloader.la \
-	$(DBUSMENUGTK_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
-
-test_gtk_label_client_SOURCES = \
-	test-gtk-label-client.c
-
-test_gtk_label_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGTK_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_gtk_label_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGTK_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
+test_gtk_label_client_SOURCES = test-gtk-label-client.c
+test_gtk_label_client_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS)
+test_gtk_label_client_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
 #########################
 # Test GTK Shortcut
@@ -583,35 +430,13 @@ test-gtk-shortcut: test-gtk-shortcut-client test-gtk-shortcut-server Makefile.am
 	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_gtk_shortcut_server_SOURCES = \
-	test-gtk-shortcut-server.c
+test_gtk_shortcut_server_SOURCES = test-gtk-shortcut-server.c
+test_gtk_shortcut_server_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS)
+test_gtk_shortcut_server_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
-test_gtk_shortcut_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGTK_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_gtk_shortcut_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGTK_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
-
-test_gtk_shortcut_client_SOURCES = \
-	test-gtk-shortcut-client.c
-
-test_gtk_shortcut_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGTK_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_gtk_shortcut_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGTK_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
+test_gtk_shortcut_client_SOURCES = test-gtk-shortcut-client.c
+test_gtk_shortcut_client_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS)
+test_gtk_shortcut_client_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
 #########################
 # Test GTK Shortcut Python
@@ -640,21 +465,9 @@ test-gtk-remove: test-gtk-remove-server Makefile.am
 	@echo $(DBUS_RUNNER) --task ./test-gtk-remove-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_gtk_remove_server_SOURCES = \
-	test-gtk-remove-server.c
-
-test_gtk_remove_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGTK_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_gtk_remove_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGTK_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
-
+test_gtk_remove_server_SOURCES = test-gtk-remove-server.c
+test_gtk_remove_server_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS)
+test_gtk_remove_server_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
 #########################
 # Test GTK Reorder
@@ -668,20 +481,9 @@ test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server Makefile.am
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_gtk_reorder_server_SOURCES = \
-	test-gtk-reorder-server.c
-
-test_gtk_reorder_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGTK_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_gtk_reorder_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGTK_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
+test_gtk_reorder_server_SOURCES = test-gtk-reorder-server.c
+test_gtk_reorder_server_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS)
+test_gtk_reorder_server_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
 #########################
 # Test GTK Submenu
@@ -695,35 +497,13 @@ test-gtk-submenu: test-gtk-submenu-client test-gtk-submenu-server Makefile.am
 	@echo $(DBUS_RUNNER) --task ./test-gtk-submenu-client --task-name Client --task ./test-gtk-submenu-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
-test_gtk_submenu_server_SOURCES = \
-	test-gtk-submenu-server.c
+test_gtk_submenu_server_SOURCES = test-gtk-submenu-server.c
+test_gtk_submenu_server_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS)
+test_gtk_submenu_server_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
-test_gtk_submenu_server_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGTK_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_gtk_submenu_server_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGTK_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
-
-test_gtk_submenu_client_SOURCES = \
-	test-gtk-submenu-client.c
-
-test_gtk_submenu_client_CFLAGS = \
-	-I $(top_srcdir) \
-	$(DBUSMENUGTK_CFLAGS) \
-	$(DBUSMENUTESTS_CFLAGS) \
-	$(DBUSMENUGLIB_CFLAGS) -Wall -Werror
-
-test_gtk_submenu_client_LDADD = \
-	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la \
-	$(top_builddir)/libdbusmenu-gtk/libdbusmenu-gtk$(VER).la \
-	$(DBUSMENUGTK_LIBS) \
-	$(DBUSMENUTESTS_LIBS)
+test_gtk_submenu_client_SOURCES = test-gtk-submenu-client.c
+test_gtk_submenu_client_CFLAGS = $(DBUSMENU_GTK_TEST_CFLAGS)
+test_gtk_submenu_client_LDADD = $(DBUSMENU_GTK_TEST_LDADD)
 
 #########################
 # Test Mago
