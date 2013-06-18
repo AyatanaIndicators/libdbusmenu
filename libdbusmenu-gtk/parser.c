@@ -312,7 +312,7 @@ disconnect_from_widget (GtkWidget * widget)
       pdata->widget = NULL;
 
       /* clear the widget's menuitem pointer */
-      g_object_steal_data(o, CACHED_MENUITEM);
+      g_object_set_data(o, CACHED_MENUITEM, NULL);
     }
 }
 
@@ -406,7 +406,7 @@ new_menuitem (GtkWidget * widget)
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
-	g_object_set_data(G_OBJECT(widget), CACHED_MENUITEM, item);
+	g_object_set_data_full(G_OBJECT(widget), CACHED_MENUITEM, g_object_ref(item), g_object_unref);
 
 	return item;
 }
