@@ -121,10 +121,7 @@ DbusmenuGtk_0_4_gir_INCLUDES = \
 	Dbusmenu-0.4 
 DbusmenuGtk_0_4_gir_CFLAGS = \
 	$(DBUSMENUGTK_CFLAGS) \
-	$(COVERAGE_CFLAGS) \
 	-I$(top_srcdir)
-DbusmenuGtk_0_4_gir_LDFLAGS = \
-	$(COVERAGE_LDFLAGS)
 DbusmenuGtk_0_4_gir_LIBS = libdbusmenu-gtk$(VER).la \
 	$(top_builddir)/libdbusmenu-glib/libdbusmenu-glib.la
 DbusmenuGtk_0_4_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
