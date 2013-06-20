@@ -52,7 +52,7 @@ static gboolean
 timer_func (gpointer data)
 {
 	if (test == NUMBER_TESTS) {
-		g_main_quit(mainloop);
+		g_main_loop_quit(mainloop);
 		return FALSE;
 	}
 

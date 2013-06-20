@@ -273,10 +273,47 @@ dbusmenu_gtk_parse_menu_structure (GtkWidget * widget)
 DbusmenuMenuitem *
 dbusmenu_gtk_parse_get_cached_item (GtkWidget * widget)
 {
-	if (!GTK_IS_MENU_ITEM(widget)) {
-		return NULL;
-	}
-	return DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM));
+  GObject * o = NULL;
+  DbusmenuMenuitem * ret = NULL;
+
+  if (GTK_IS_MENU_ITEM (widget))
+    o = g_object_get_data (G_OBJECT(widget), CACHED_MENUITEM);
+ 
+  if (o && DBUSMENU_IS_MENUITEM(o))
+    ret = DBUSMENU_MENUITEM (o);
+
+  return ret;
+}
+
+/* remove our dbusmenuitem's hooks to a GtkWidget,
+   such as when either of them are being destroyed */
+static void
+disconnect_from_widget (GtkWidget * widget)
+{
+  ParserData * pdata = parser_data_get_from_widget (widget);
+
+  if (pdata && pdata->widget)
+    {
+      GObject * o;
+
+      g_assert (pdata->widget == widget);
+
+      /* stop listening to signals from the widget */
+      o = G_OBJECT (pdata->widget);
+      dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_notify_handler_id);
+      dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_add_handler_id);
+      dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_accel_handler_id);
+      dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_toggle_handler_id);
+      dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_visible_handler_id);
+      dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_screen_changed_handler_id);
+
+      /* clear the menuitem's widget pointer */
+      g_object_remove_weak_pointer (o, (gpointer*)&pdata->widget);
+      pdata->widget = NULL;
+
+      /* clear the widget's menuitem pointer */
+      g_object_set_data(o, CACHED_MENUITEM, NULL);
+    }
 }
 
 static void
@@ -297,17 +334,7 @@ parser_data_free (ParserData * pdata)
 	}
 
 	if (pdata->widget != NULL) {
-		GObject * o = G_OBJECT(pdata->widget);
-		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_notify_handler_id);
-		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_add_handler_id);
-		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_accel_handler_id);
-		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_toggle_handler_id);
-		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_visible_handler_id);
-		dbusmenu_gtk_clear_signal_handler (o, &pdata->widget_screen_changed_handler_id);
-		g_object_remove_weak_pointer(o, (gpointer*)&pdata->widget);
-
-		/* since the DbusmenuMenuitem is being destroyed, uncache it from the GtkWidget */
-		g_object_steal_data(o, CACHED_MENUITEM);
+		disconnect_from_widget (pdata->widget);
 	}
 
 	if (pdata->settings != NULL) {
@@ -379,7 +406,7 @@ new_menuitem (GtkWidget * widget)
 
 	pdata->widget = widget;
 	g_object_add_weak_pointer(G_OBJECT (widget), (gpointer*)&pdata->widget);
-	g_object_set_data(G_OBJECT(widget), CACHED_MENUITEM, item);
+	g_object_set_data_full(G_OBJECT(widget), CACHED_MENUITEM, g_object_ref(item), g_object_unref);
 
 	return item;
 }
@@ -1387,24 +1414,19 @@ item_inserted_cb (GtkContainer *menu,
 
 /* A child item was removed from a menu we're watching. */
 static void
-item_removed_cb (GtkContainer *menu, GtkWidget *widget, gpointer data)
+item_removed_cb (GtkContainer *parent_w, GtkWidget *child_w, gpointer data)
 {
-	gpointer pmi = g_object_get_data(G_OBJECT(widget), CACHED_MENUITEM);
-	if (pmi == NULL) {
-		return;
-	}
+  DbusmenuMenuitem * child_mi;
 
-	DbusmenuMenuitem * child = DBUSMENU_MENUITEM(pmi);
+  if ((child_mi = dbusmenu_gtk_parse_get_cached_item (child_w)))
+    {
+      DbusmenuMenuitem * parent_mi;
 
-	pmi = g_object_get_data(G_OBJECT(menu), CACHED_MENUITEM);
-	if (pmi == NULL) {
-		return;
-	}
+      if ((parent_mi = dbusmenu_gtk_parse_get_cached_item (GTK_WIDGET(parent_w))))
+        dbusmenu_menuitem_child_delete (parent_mi, child_mi); 
 
-	DbusmenuMenuitem * parent = DBUSMENU_MENUITEM(pmi);
-
-	dbusmenu_menuitem_child_delete(parent, child);
-	return;
+      disconnect_from_widget (child_w);
+    }
 }
 
 static gboolean

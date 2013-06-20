@@ -25,7 +25,7 @@ dummy_users (DbusmenuMenuitem * root) {
 static gboolean
 quititall (gpointer data)
 {
-	g_main_quit(mainloop);
+	g_main_loop_quit(mainloop);
 	return FALSE;
 }
 
