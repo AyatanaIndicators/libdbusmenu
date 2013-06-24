@@ -400,7 +400,7 @@ test-gtk-parser-test: test-gtk-parser Makefile.am
 	@echo export G_DEBUG=fatal_criticals >> $@
 	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
-	@echo gtester --verbose -k -o $(GTK_PARSER_XML_REPORT) ./test-gtk-parser >> $@
+	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_PARSER_XML_REPORT) --parameter $(builddir)/test-gtk-parser >> $@
 	@chmod +x $@
 
 test_gtk_parser_SOURCES = test-gtk-parser.c
