@@ -155,6 +155,7 @@ test-glib-layout: test-glib-layout-client test-glib-layout-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-layout-client --task-name Client --task ./test-glib-layout-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -174,6 +175,7 @@ test-glib-events: test-glib-events-client test-glib-events-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-events-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -193,6 +195,7 @@ test-glib-events-nogroup: test-glib-events-nogroup-client test-glib-events-serve
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-events-nogroup-client --task-name Client --task ./test-glib-events-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -208,6 +211,7 @@ test-json: test-json-client test-json-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter test-json-01.output.json --task ./test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json >> $@
 	@echo diff $(srcdir)/test-json-01.json test-json-01.output.json \> /dev/null >> $@
@@ -239,6 +243,7 @@ test-json-instruction: test-json-client test-json-server test-json-instruction-c
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task $(builddir)/test-json-client --wait-for org.dbusmenu.test --task-name Client --parameter $(top_builddir)/tools/dbusmenu-dumper --parameter /dev/null --task libtool --parameter --mode=execute --parameter $(srcdir)/test-json-instruction-count --parameter $(builddir)/test-json-server --task-name Server --parameter $(srcdir)/test-json-01.json >> $@
 	@chmod +x $@
@@ -258,6 +263,7 @@ test-glib-submenu: test-glib-submenu-client test-glib-submenu-server Makefile.am
 # in the grabbing code on GTK3.  Since we can't add events to the stack
 # we can't remove this error from getting thrown :-(
 #	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-submenu-client --task-name Client --task ./test-glib-submenu-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -279,6 +285,7 @@ test-glib-objects-test: test-glib-objects Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(OBJECT_XML_REPORT) --parameter ./test-glib-objects >> $@
 	@chmod +x $@
 
@@ -296,6 +303,7 @@ test-glib-properties: test-glib-properties-client test-glib-properties-server Ma
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-properties-client --task-name Client --task ./test-glib-properties-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
 
@@ -315,6 +323,7 @@ test-glib-proxy: test-glib-proxy-client test-glib-proxy-server test-glib-proxy-p
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(DBUS_RUNNER) --task ./test-glib-proxy-client --task-name Client --task ./test-glib-proxy-server --task-name Server --ignore-return \\ >> $@
 	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.first_proxy --parameter test.proxy.second_proxy --task-name Proxy01 --ignore-return \\ >> $@
 	@echo --task ./test-glib-proxy-proxy --parameter test.proxy.second_proxy --parameter test.proxy.third_proxy --task-name Proxy02 --ignore-return \\ >> $@
@@ -368,6 +377,7 @@ test-gtk-objects-test: test-gtk-objects Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task gtester --task-name test --parameter --verbose --parameter -k --parameter -o --parameter $(GTK_OBJECT_XML_REPORT) --parameter ./test-gtk-objects >> $@
 	@chmod +x $@
@@ -388,6 +398,7 @@ test-gtk-parser-test: test-gtk-parser Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo gtester --verbose -k -o $(GTK_PARSER_XML_REPORT) ./test-gtk-parser >> $@
 	@chmod +x $@
@@ -406,6 +417,7 @@ test-gtk-label: test-gtk-label-client test-gtk-label-server test-gtk-label.json 
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-label-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -426,6 +438,7 @@ test-gtk-shortcut: test-gtk-shortcut-client test-gtk-shortcut-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-shortcut-client --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -446,6 +459,7 @@ test-gtk-shortcut-python: test-gtk-shortcut-server test-gtk-shortcut-client.py M
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task $(srcdir)/test-gtk-shortcut-client.py --task-name Client --task ./test-gtk-shortcut-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -461,6 +475,7 @@ test-gtk-remove: test-gtk-remove-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-remove-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -477,6 +492,7 @@ test-gtk-reorder: test-gtk-label-client test-gtk-reorder-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-label-client --task-name Client --task ./test-gtk-reorder-server --parameter $(srcdir)/test-gtk-label.json --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -493,6 +509,7 @@ test-gtk-submenu: test-gtk-submenu-client test-gtk-submenu-server Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo $(DBUS_RUNNER) --task ./test-gtk-submenu-client --task-name Client --task ./test-gtk-submenu-server --task-name Server --ignore-return >> $@
 	@chmod +x $@
@@ -513,6 +530,7 @@ test-mago: test-gtk-label-client test-gtk-label-server $(srcdir)/dbusmenu-gtk/ma
 	@echo "#!/bin/bash" > $@
 	@echo export UBUNTU_MENUPROXY="" >> $@
 	@echo export G_DEBUG=fatal_criticals >> $@
+	@echo export G_MESSAGES_DEBUG=all >> $@
 	@echo $(XVFB_RUN) >> $@
 	@echo cd $(srcdir)/dbusmenu-gtk >> $@
 	@echo /usr/lib/at-spi/at-spi-registryd \& >> $@
