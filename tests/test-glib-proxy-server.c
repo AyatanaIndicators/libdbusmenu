@@ -95,7 +95,7 @@ layout_change (DbusmenuMenuitem * oldroot, guint timestamp, gpointer data)
 	if (death_timer != 0) {
 		g_source_remove(death_timer);
 	}
-	death_timer = g_timeout_add_seconds(4, timer_func, data);
+	death_timer = g_timeout_add_seconds(10, timer_func, data);
 
 	return;
 }
