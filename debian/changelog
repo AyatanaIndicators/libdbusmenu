@@ -1,3 +1,22 @@
+libdbusmenu (12.10.3+13.10.20130628-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * Fix a bug caused by keeping signals connected to menuitems that
+    we're not using anymore. (LP: #1154701)
+  * Fix breakage when building with coverage scanning.
+
+  [ Ted Gould ]
+  * Increase test timeouts to ensure proper results on slower platforms
+    (ARM).
+
+  [ Jeremy Bicha ]
+  * Build with default valac.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 453
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 28 Jun 2013 02:03:25 +0000
+
 libdbusmenu (12.10.3daily13.06.19-0ubuntu1) saucy; urgency=low
 
   [ Jeremy Bicha ]
