@@ -100,7 +100,7 @@ main (int argc, char ** argv)
 	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
-	g_timeout_add_seconds(10, timer_func, client);
+	g_timeout_add_seconds(60, timer_func, client);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
