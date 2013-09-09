@@ -26,6 +26,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "test-glib-properties.h"
 
+#define DEATH_TIME 60
+
 static guint layouton = 0;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
@@ -137,7 +139,7 @@ layout_verify_timer (gpointer data)
 	} else {
 		/* Extend our death */
 		g_source_remove(death_timer);
-		death_timer = g_timeout_add_seconds(10, timer_func, data);
+		death_timer = g_timeout_add_seconds(DEATH_TIME, timer_func, data);
 	}
 
 	layouton++;
@@ -158,7 +160,7 @@ main (int argc, char ** argv)
 	DbusmenuClient * client = dbusmenu_client_new(":1.0", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
-	death_timer = g_timeout_add_seconds(10, timer_func, client);
+	death_timer = g_timeout_add_seconds(DEATH_TIME, timer_func, client);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
