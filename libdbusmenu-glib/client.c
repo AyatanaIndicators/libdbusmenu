@@ -560,12 +560,16 @@ set_property (GObject * obj, guint id, const GValue * value, GParamSpec * pspec)
 
 	switch (id) {
 	case PROP_DBUSNAME:
+		g_return_if_fail(g_dbus_is_name(g_value_get_string(value)));
+
 		priv->dbus_name = g_value_dup_string(value);
 		if (priv->dbus_name != NULL && priv->dbus_object != NULL) {
 			build_proxies(DBUSMENU_CLIENT(obj));
 		}
 		break;
 	case PROP_DBUSOBJECT:
+		g_return_if_fail(g_variant_is_object_path(g_value_get_string(value)));
+
 		priv->dbus_object = g_value_dup_string(value);
 		if (priv->dbus_name != NULL && priv->dbus_object != NULL) {
 			build_proxies(DBUSMENU_CLIENT(obj));
@@ -2472,6 +2476,9 @@ update_layout (DbusmenuClient * client)
 DbusmenuClient *
 dbusmenu_client_new (const gchar * name, const gchar * object)
 {
+	g_return_val_if_fail(g_dbus_is_name(name), NULL);
+	g_return_val_if_fail(g_variant_is_object_path(object), NULL);
+
 	DbusmenuClient * self = g_object_new(DBUSMENU_TYPE_CLIENT,
 	                                     DBUSMENU_CLIENT_PROP_DBUS_NAME, name,
 	                                     DBUSMENU_CLIENT_PROP_DBUS_OBJECT, object,
