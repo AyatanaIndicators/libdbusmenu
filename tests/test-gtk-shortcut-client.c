@@ -60,7 +60,7 @@ main (int argc, char ** argv)
 	gtk_window_add_accel_group(GTK_WINDOW(window), agroup);
 	gtk_widget_show(window);
 
-	death_timer = g_timeout_add_seconds(10, timer_func, window);
+	death_timer = g_timeout_add_seconds(60, timer_func, window);
 
 	g_debug("Entering Mainloop");
 	mainloop = g_main_loop_new(NULL, FALSE);

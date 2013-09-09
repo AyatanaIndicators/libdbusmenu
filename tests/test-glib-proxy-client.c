@@ -26,6 +26,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "test-glib-proxy.h"
 
+#define DEATH_TIME  60
+
 static guint layouton = -2;
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
@@ -123,7 +125,7 @@ layout_updated (DbusmenuClient * client, gpointer data)
 		g_source_remove(verify_timer);
 	}
 
-	verify_timer = g_timeout_add_seconds (5, layout_verify_timer, client);
+	verify_timer = g_timeout_add_seconds (10, layout_verify_timer, client);
 	return;
 }
 
@@ -143,7 +145,7 @@ layout_verify_timer (gpointer data)
 	} else {
 		/* Extend our death */
 		g_source_remove(death_timer);
-		death_timer = g_timeout_add_seconds(10, timer_func, data);
+		death_timer = g_timeout_add_seconds(DEATH_TIME, timer_func, data);
 	}
 
 	if (layouts[layouton+1].id == -1) {
@@ -162,7 +164,7 @@ main (int argc, char ** argv)
 	DbusmenuClient * client = dbusmenu_client_new("test.proxy.first_proxy", "/org/test");
 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
 
-	death_timer = g_timeout_add_seconds(10, timer_func, client);
+	death_timer = g_timeout_add_seconds(DEATH_TIME, timer_func, client);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
