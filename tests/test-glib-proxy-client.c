@@ -125,7 +125,7 @@ layout_updated (DbusmenuClient * client, gpointer data)
 		g_source_remove(verify_timer);
 	}
 
-	verify_timer = g_timeout_add_seconds (5, layout_verify_timer, client);
+	verify_timer = g_timeout_add_seconds (10, layout_verify_timer, client);
 	return;
 }
 
