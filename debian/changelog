@@ -1,7 +1,6 @@
-libdbusmenu (12.10.3+13.10.20130913-0ubuntu2) UNRELEASED; urgency=low
+libdbusmenu (12.10.3+13.10.20130913-0ubuntu2) saucy; urgency=low
 
-  * Do not build-depend on valgrind on AArch64 (not yet available). (LP:
-    #1239473)
+  * Do not build-depend on valgrind on AArch64 (not yet available).
 
  -- Matthias Klose <doko@ubuntu.com>  Mon, 14 Oct 2013 01:30:44 +0200
 
