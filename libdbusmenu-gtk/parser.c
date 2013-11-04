@@ -97,9 +97,7 @@ static void           a11y_name_notify_cb      (AtkObject *         accessible,
                                                 gpointer            data);
 static void           item_inserted_cb         (GtkContainer *      menu,
                                                 GtkWidget *         widget,
-#ifdef HAVE_GTK3
                                                 gint                position,
-#endif
                                                 gpointer            data);
 static void           item_removed_cb          (GtkContainer *      menu,
                                                 GtkWidget *         widget,
@@ -431,11 +429,7 @@ watch_submenu(DbusmenuMenuitem * mi, GtkWidget * menu)
 
 	pdata->shell = menu;
 	pdata->item_inserted_handler_id = g_signal_connect (G_OBJECT (menu),
-#ifdef HAVE_GTK3
                           "insert",
-#else
-                          "child-added",
-#endif
 		          G_CALLBACK (item_inserted_cb),
 		          mi);
 	pdata->item_removed_handler_id = g_signal_connect (G_OBJECT (menu),
@@ -1394,9 +1388,7 @@ settings_notify_cb (GtkSettings * settings, GParamSpec * pspec, gpointer data)
 static void
 item_inserted_cb (GtkContainer *menu,
                   GtkWidget    *widget,
-#ifdef HAVE_GTK3
                   gint          position,
-#endif
                   gpointer      data)
 {
 	DbusmenuMenuitem *menuitem = (DbusmenuMenuitem *)data;
