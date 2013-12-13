@@ -1313,8 +1313,12 @@ widget_notify_cb (GtkWidget * widget, GParamSpec * pspec, gpointer data)
 
 	  if (item != NULL) {
         GtkWidget * menu = GTK_WIDGET (g_value_get_object (&prop_value));
-        parse_menu_structure_helper(menu, &recurse);
-        watch_submenu(item, menu);
+        /* Ensure the submenu isn't being set to NULL to remove it
+         * (ex. Geany does this) */
+        if (menu != NULL) {
+            parse_menu_structure_helper(menu, &recurse);
+            watch_submenu(item, menu);
+        }
       } else {
         /* Note: it would be really odd that we wouldn't have a cached
            item, but we should handle that appropriately. */
