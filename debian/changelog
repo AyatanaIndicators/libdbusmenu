@@ -1,3 +1,9 @@
+libdbusmenu (12.10.3+14.04.20131125-0ubuntu2) trusty; urgency=medium
+
+  * Do not build-depend on valgrind on ppc64el (not yet available).
+
+ -- Matthias Klose <doko@ubuntu.com>  Wed, 18 Dec 2013 19:01:15 +0100
+
 libdbusmenu (12.10.3+14.04.20131125-0ubuntu1) trusty; urgency=low
 
   [ Alistair Buxton ]
