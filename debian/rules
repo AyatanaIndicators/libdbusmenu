@@ -35,7 +35,12 @@ doinstall-%:
 override_dh_auto_test: $(FLAVORS:%=dotest-%)
 
 dotest-%:
+ifeq ($(DEB_HOST_ARCH),ppc64el)
+	: # ignore the test results on $(DEB_HOST_ARCH)
+	-xvfb-run -a dh_auto_test --builddirectory=builddir/$*
+else
 	xvfb-run -a dh_auto_test --builddirectory=builddir/$*
+endif
 
 override_dh_install:
 	find debian/tmp -name \*.la -delete
