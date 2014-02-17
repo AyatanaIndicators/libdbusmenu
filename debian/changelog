@@ -1,3 +1,14 @@
+libdbusmenu (12.10.3+14.04.20140217.1-0ubuntu1) trusty; urgency=low
+
+  [ Ted Gould ]
+  * Don't depend on valgrind on ppc64el. (LP: #1262374)
+  * Flushing trunk with a release
+
+  [ Matthew Brush ]
+  * Check to ensure the property isn't set to NULL. (LP: #907635)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 17 Feb 2014 18:07:41 +0000
+
 libdbusmenu (12.10.3+14.04.20131125-0ubuntu2) trusty; urgency=medium
 
   * Do not build-depend on valgrind on ppc64el (not yet available).
