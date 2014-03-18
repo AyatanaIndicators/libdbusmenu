@@ -72,6 +72,7 @@ struct _DbusmenuMenuitemProxyClass {
 	Public instance data for a #DbusmenuMenuitemProxy.
 */
 struct _DbusmenuMenuitemProxy {
+	/*< private >*/
 	DbusmenuMenuitem parent;
 
 	/*< Private >*/

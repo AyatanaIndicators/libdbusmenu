@@ -151,6 +151,7 @@ struct _DbusmenuServerClass {
 */
 typedef struct _DbusmenuServer      DbusmenuServer;
 struct _DbusmenuServer {
+	/*< private >*/
 	GObject parent;
 
 	/*< Private >*/
