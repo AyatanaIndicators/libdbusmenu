@@ -1,3 +1,18 @@
+libdbusmenu (12.10.3+14.04.20140319-0ubuntu1) trusty; urgency=low
+
+  [ Charles Kerr ]
+  * Fix FTBFS caused by failing gtk-doc coverage test * when generating
+    the script that runs gtester, use ${GTKDOC_CHECK_PATH} instead of
+    ${GTKDOC_CHECK} to work with upstream changes
+    https://bugzilla.gnome.org/show_bug.cgi?id=701638 * add gtk-doc
+    markup to subclass structs' parent fields so that gtk-doc won't mark
+    them as undocumented. (LP: #1294165)
+
+  [ Colin Watson ]
+  * Run tests with VERBOSE=1 so that Automake shows more detail.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 19 Mar 2014 09:04:45 +0000
+
 libdbusmenu (12.10.3+14.04.20140217.1-0ubuntu1) trusty; urgency=low
 
   [ Ted Gould ]
