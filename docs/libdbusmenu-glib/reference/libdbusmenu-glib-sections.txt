@@ -16,7 +16,6 @@ DBUSMENU_CLIENT_TYPES_DEFAULT
 DBUSMENU_CLIENT_TYPES_SEPARATOR
 DBUSMENU_CLIENT_TYPES_IMAGE
 DbusmenuClient
-DbusmenuClientClass
 DbusmenuClientTypeHandler
 dbusmenu_client_new
 dbusmenu_client_get_icon_paths
@@ -26,6 +25,7 @@ dbusmenu_client_get_text_direction
 dbusmenu_client_add_type_handler
 dbusmenu_client_add_type_handler_full
 <SUBSECTION Standard>
+DbusmenuClientClass
 DBUSMENU_CLIENT
 DBUSMENU_IS_CLIENT
 DBUSMENU_TYPE_CLIENT
@@ -147,7 +147,6 @@ DBUSMENU_SERVER_PROP_STATUS
 DBUSMENU_SERVER_PROP_TEXT_DIRECTION
 DBUSMENU_SERVER_PROP_VERSION
 DbusmenuServer
-DbusmenuServerClass
 dbusmenu_server_new
 dbusmenu_server_get_status
 dbusmenu_server_get_text_direction
@@ -155,6 +154,7 @@ dbusmenu_server_set_root
 dbusmenu_server_set_status
 dbusmenu_server_set_text_direction
 <SUBSECTION Standard>
+DbusmenuServerClass
 DBUSMENU_SERVER
 DBUSMENU_IS_SERVER
 DBUSMENU_TYPE_SERVER
@@ -172,10 +172,10 @@ dbusmenu_server_set_icon_paths
 <FILE>menuitem-proxy</FILE>
 <TITLE>DbusmenuMenuitemProxy</TITLE>
 DbusmenuMenuitemProxy
-DbusmenuMenuitemProxyClass
 dbusmenu_menuitem_proxy_new
 dbusmenu_menuitem_proxy_get_wrapped
 <SUBSECTION Standard>
+DbusmenuMenuitemProxyClass
 DBUSMENU_MENUITEM_PROXY
 DBUSMENU_IS_MENUITEM_PROXY
 DBUSMENU_TYPE_MENUITEM_PROXY

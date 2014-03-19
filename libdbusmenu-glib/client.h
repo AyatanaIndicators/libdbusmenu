@@ -183,6 +183,7 @@ struct _DbusmenuClientClass {
 */
 typedef struct _DbusmenuClient      DbusmenuClient;
 struct _DbusmenuClient {
+	/*< private >*/
 	GObject parent;
 
 	/*< Private >*/

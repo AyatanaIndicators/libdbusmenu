@@ -551,13 +551,13 @@ test-mago: test-gtk-label-client test-gtk-label-server $(srcdir)/dbusmenu-gtk/ma
 test_libdbusmenu_glib_gtkdoc:
 	@echo "#!/bin/bash" > $@
 	@echo cd $(abs_top_builddir)/docs/libdbusmenu-glib/reference >> $@
-	@echo gtester --verbose -k $(GTKDOC_CHECK) >> $@
+	@echo gtester --verbose -k $(GTKDOC_CHECK_PATH) >> $@
 	@chmod +x $@
 
 test_libdbusmenu_gtk_gtkdoc:
 	@echo "#!/bin/bash" > $@
 	@echo cd $(abs_top_builddir)/docs/libdbusmenu-gtk/reference >> $@
-	@echo gtester --verbose -k $(GTKDOC_CHECK) >> $@
+	@echo gtester --verbose -k $(GTKDOC_CHECK_PATH) >> $@
 	@chmod +x $@
 
 examplesdir = $(docdir)/examples/

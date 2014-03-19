@@ -87,6 +87,7 @@ struct _DbusmenuGtkClientClass {
  */
 typedef struct _DbusmenuGtkClient      DbusmenuGtkClient;
 struct _DbusmenuGtkClient {
+	/*< private >*/
 	DbusmenuClient parent;
 
 	/*< Private >*/
