@@ -1,3 +1,13 @@
+libdbusmenu (12.10.3+14.10.20140610-0ubuntu1) utopic; urgency=low
+
+  [ Marco Trevisan (Treviño) ]
+  * Parser: make sure that the old dbus menuitem is detached from the
+    widget before recreating When a dbus menuitem has to be recreated,
+    we need to disconnect the widget from it, or the old one will be
+    reused at next parsing cycle. (LP: #1086563)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 10 Jun 2014 15:29:30 +0000
+
 libdbusmenu (12.10.3+14.04.20140319-0ubuntu1) trusty; urgency=low
 
   [ Charles Kerr ]
