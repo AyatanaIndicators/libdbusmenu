@@ -987,6 +987,7 @@ recreate_menu_item (DbusmenuMenuitem * parent, DbusmenuMenuitem * child)
   GtkWidget * menuitem = pdata->widget;
 
   dbusmenu_menuitem_child_delete (parent, child);
+  disconnect_from_widget (menuitem);
 
   RecurseContext recurse = {0};
   recurse.toplevel = gtk_widget_get_toplevel(menuitem);
