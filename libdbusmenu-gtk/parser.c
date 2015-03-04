@@ -886,7 +886,7 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImage *image)
         const gchar * label = NULL;
         label = dbusmenu_menuitem_property_get (menuitem,
                                                 DBUSMENU_MENUITEM_PROP_LABEL);
-        if (stock.label != NULL && label != NULL) {
+        if (stock.label != NULL && label != NULL && label[0] == '\0') {
           dbusmenu_menuitem_property_set (menuitem,
                                           DBUSMENU_MENUITEM_PROP_LABEL,
                                           stock.label);
