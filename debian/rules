@@ -12,7 +12,7 @@ INSTALL_COMMON_FLAGS = --fail-missing
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
 %:
-	dh $@ --with autoreconf
+	dh $@ --with autoreconf,gir
 
 override_dh_autoreconf:
 	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
