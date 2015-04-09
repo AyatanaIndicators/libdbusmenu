@@ -36,8 +36,7 @@ root_activate (void)
 	g_debug("Dumping callgrind data");
 	CALLGRIND_DUMP_STATS_AT("exported");
 	CALLGRIND_STOP_INSTRUMENTATION;
-	g_main_loop_quit(mainloop);
-	return;
+	g_timeout_add(500, (GSourceFunc)g_main_loop_quit, mainloop);
 }
 
 static void
