@@ -1,3 +1,14 @@
+libdbusmenu (12.10.3+15.04.20150410.2-0ubuntu1) vivid; urgency=medium
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+  [ Marco Trevisan (Treviño) ]
+  * Parser: don't override the label for stock items if a custom one is
+    provided (LP: #1270486)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 10 Apr 2015 21:56:13 +0000
+
 libdbusmenu (12.10.3+15.04.20150409.1-0ubuntu1) vivid; urgency=medium
 
   [ Iain Lane ]
