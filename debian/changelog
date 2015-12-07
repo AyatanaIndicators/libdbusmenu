@@ -1,3 +1,10 @@
+libdbusmenu (12.10.3+15.04.20150410.2-0ubuntu2) xenial; urgency=high
+
+  * Disable test-json-instruction, hangs on buildds, see launchpad bug
+    1429291.
+
+ -- Dimitri John Ledkov <xnox@ubuntu.com>  Mon, 07 Dec 2015 10:13:22 +0000
+
 libdbusmenu (12.10.3+15.04.20150410.2-0ubuntu1) vivid; urgency=medium
 
   [ CI Train Bot ]
