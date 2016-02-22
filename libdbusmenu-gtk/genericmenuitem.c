@@ -62,7 +62,7 @@ static void activate (GtkMenuItem * menu_item);
 /* GObject stuff */
 G_DEFINE_TYPE (Genericmenuitem, genericmenuitem, GTK_TYPE_CHECK_MENU_ITEM);
 
-#if HAVE_GTK3
+#if GTK_CHECK_VERSION(3,0,0)
 static void draw_indicator (GtkCheckMenuItem *check_menu_item, cairo_t *cr);
 static void (*parent_draw_indicator) (GtkCheckMenuItem *check_menu_item, cairo_t *cr) = NULL;
 #else
@@ -83,7 +83,7 @@ genericmenuitem_class_init (GenericmenuitemClass *klass)
 	object_class->dispose = genericmenuitem_dispose;
 	object_class->finalize = genericmenuitem_finalize;
 
-#ifdef HAVE_GTK3
+#if GTK_CHECK_VERSION(3,2,0)
 	GtkWidgetClass * widget_class = GTK_WIDGET_CLASS(klass);
 
 	gtk_widget_class_set_accessible_role(widget_class, ATK_ROLE_MENU_ITEM);
@@ -115,7 +115,7 @@ genericmenuitem_init (Genericmenuitem *self)
 	self->priv->disposition = GENERICMENUITEM_DISPOSITION_NORMAL;
 	self->priv->label_text = NULL;
 
-#ifndef HAVE_GTK3
+#if !GTK_CHECK_VERSION(3,0,0)
 	AtkObject * aobj = gtk_widget_get_accessible(GTK_WIDGET(self));
 	if (aobj != NULL) {
 		atk_object_set_role(aobj, ATK_ROLE_MENU_ITEM);
@@ -148,7 +148,7 @@ genericmenuitem_finalize (GObject *object)
 /* Checks to see if we should be drawing a little box at
    all.  If we should be, let's do that, otherwise we're
    going suppress the box drawing. */
-#if HAVE_GTK3
+#if GTK_CHECK_VERSION(3,0,0)
 static void
 draw_indicator (GtkCheckMenuItem *check_menu_item, cairo_t *cr)
 {
@@ -310,12 +310,12 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 			/* We need to put the child into a new box and
 			   make the box the child of the menu item.  Basically
 			   we're inserting a box in the middle. */
-			#ifdef HAVE_GTK3
+#if GTK_CHECK_VERSION(3,0,0)
 			GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,
 			                               get_toggle_space(GTK_WIDGET(menu_item)));
-			#else
+#else
 			GtkWidget * hbox = gtk_hbox_new(FALSE, get_toggle_space(GTK_WIDGET(menu_item)));
-			#endif
+#endif
 			g_object_ref(child);
 			gtk_container_remove(GTK_CONTAINER(menu_item), child);
 			gtk_box_pack_start(GTK_BOX(hbox), child, FALSE, FALSE, 0);
@@ -334,7 +334,11 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 		/* Build it */
 		labelw = GTK_LABEL(gtk_accel_label_new(local_label));
 		gtk_label_set_use_markup(GTK_LABEL(labelw), TRUE);
+#if GTK_CHECK_VERSION(3,0,0)
+		gtk_widget_set_valign(GTK_WIDGET (labelw), GTK_ALIGN_CENTER);
+#else
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
+#endif
 		gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(labelw), GTK_WIDGET(menu_item));
 
 		if (has_mnemonic(in_label, FALSE)) {
@@ -541,12 +545,12 @@ genericmenuitem_set_image (Genericmenuitem * menu_item, GtkWidget * image)
 			/* We need to put the child into a new box and
 			   make the box the child of the menu item.  Basically
 			   we're inserting a box in the middle. */
-			#ifdef HAVE_GTK3
+#if GTK_CHECK_VERSION(3,0,0)
 			GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,
 			                               get_toggle_space(GTK_WIDGET(menu_item)));
-			#else
+#else
 			GtkWidget * hbox = gtk_hbox_new(FALSE, get_toggle_space(GTK_WIDGET(menu_item)));
-			#endif
+#endif
 			g_object_ref(child);
 			gtk_container_remove(GTK_CONTAINER(menu_item), child);
 			gtk_box_pack_end(GTK_BOX(hbox), child, TRUE, TRUE, 0);
