@@ -82,7 +82,8 @@ static void           checkbox_toggled         (GtkWidget *         widget,
 static void           update_icon              (DbusmenuMenuitem *  menuitem,
                                                 ParserData *        pdata,
                                                 GtkImage *          image);
-static GtkWidget *    find_menu_label          (GtkWidget *         widget);
+static GtkWidget *    find_menu_child          (GtkWidget *         widget,
+                                                GType               child_type);
 static void           label_notify_cb          (GtkWidget *         widget,
                                                 GParamSpec *        pspec,
                                                 gpointer            data);
@@ -648,7 +649,7 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
       gboolean visible = FALSE;
       gboolean sensitive = FALSE;
-      if (GTK_IS_SEPARATOR_MENU_ITEM (widget) || !find_menu_label (widget))
+      if (GTK_IS_SEPARATOR_MENU_ITEM (widget) || !find_menu_child (widget, GTK_TYPE_LABEL))
         {
           dbusmenu_menuitem_property_set (mi,
                                           DBUSMENU_MENUITEM_PROP_TYPE,
@@ -659,6 +660,8 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
         }
       else
         {
+          GtkWidget *image = NULL;
+
           pdata->widget_accel_handler_id = g_signal_connect (widget, "accel-closures-changed",
                                                              G_CALLBACK (accel_changed), mi);
 
@@ -674,20 +677,26 @@ construct_dbusmenu_for_widget (GtkWidget * widget)
 
               pdata->widget_toggle_handler_id = g_signal_connect (widget, "activate", G_CALLBACK (checkbox_toggled), mi);
             }
-
-          if (GTK_IS_IMAGE_MENU_ITEM (widget))
+          else if (GTK_IS_IMAGE_MENU_ITEM (widget))
             {
-              GtkWidget *image;
 
               image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
 
-              if (GTK_IS_IMAGE (image))
-                {
-                  update_icon (mi, pdata, GTK_IMAGE (image));
-                }
+            }
+          else
+            {
+              // GtkImageMenuItem is deprecated, so check regular GtkMenuItems
+              // for an image child too
+              image = find_menu_child (widget, GTK_TYPE_IMAGE);
             }
 
-          GtkWidget *label = find_menu_label (widget);
+          if (GTK_IS_IMAGE (image))
+            {
+              update_icon (mi, pdata, GTK_IMAGE (image));
+            }
+
+
+          GtkWidget *label = find_menu_child (widget, GTK_TYPE_LABEL);
 
           // Sometimes, an app will directly find and modify the label
           // (like empathy), so watch the label especially for that.
@@ -948,11 +957,11 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImage *image)
 }
 
 static GtkWidget *
-find_menu_label (GtkWidget *widget)
+find_menu_child (GtkWidget *widget, GType child_type)
 {
-  GtkWidget *label = NULL;
+  GtkWidget *child = NULL;
 
-  if (GTK_IS_LABEL (widget))
+  if (G_TYPE_CHECK_INSTANCE_TYPE (widget, child_type))
     return widget;
 
   if (GTK_IS_CONTAINER (widget))
@@ -964,16 +973,16 @@ find_menu_label (GtkWidget *widget)
 
       for (l = children; l; l = l->next)
         {
-          label = find_menu_label (l->data);
+          child = find_menu_child (l->data, child_type);
 
-          if (label)
+          if (child)
             break;
         }
 
       g_list_free (children);
     }
 
-  return label;
+  return child;
 }
 
 static void
@@ -1125,7 +1134,7 @@ a11y_name_notify_cb (AtkObject * accessible, GParamSpec * pspec, gpointer data)
     {
       DbusmenuMenuitem * item = DBUSMENU_MENUITEM(data);
       GtkWidget *widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible));
-      GtkWidget *label = find_menu_label (widget);
+      GtkWidget *label = find_menu_child (widget, GTK_TYPE_LABEL);
       const gchar *label_text = gtk_label_get_text (GTK_LABEL (label));
       const gchar *name = atk_object_get_name (accessible);
 
@@ -1339,7 +1348,7 @@ widget_add_cb (GtkWidget *widget,
                GtkWidget *child,
                gpointer   data)
 {
-  if (find_menu_label (child) != NULL)
+  if (find_menu_child (widget, GTK_TYPE_LABEL) != NULL)
     handle_first_label (data);
 }
 
@@ -1437,6 +1446,9 @@ should_show_image (GtkImage *image)
 
   item = gtk_widget_get_ancestor (GTK_WIDGET (image),
                                   GTK_TYPE_IMAGE_MENU_ITEM);
+  if (!item)
+    item = gtk_widget_get_ancestor (GTK_WIDGET (image),
+                                    GTK_TYPE_MENU_ITEM);
 
   if (item)
     {
@@ -1450,7 +1462,8 @@ should_show_image (GtkImage *image)
       if (gtk_menu_images)
         return TRUE;
 
-      return gtk_image_menu_item_get_always_show_image (GTK_IMAGE_MENU_ITEM (item));
+      if (GTK_IS_IMAGE_MENU_ITEM (item))
+        return gtk_image_menu_item_get_always_show_image (GTK_IMAGE_MENU_ITEM (item));
     }
 
   return FALSE;
