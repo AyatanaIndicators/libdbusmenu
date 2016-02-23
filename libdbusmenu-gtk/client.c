@@ -842,7 +842,7 @@ activate_helper (GtkMenuShell * shell)
 				   doesn't expose the right variables.  We need to figure
 				   this out as menus won't get grabs properly.
 				   TODO FIXME HELP ARGHHHHHHHH */
-#if (HAVE_GTK3 == 0)
+#if !GTK_CHECK_VERSION(3,0,0)
 				if (!GTK_MENU_SHELL (parent)->active) {
 					gtk_grab_add (parent);
 					GTK_MENU_SHELL (parent)->have_grab = TRUE;
@@ -1278,7 +1278,12 @@ image_property_handle (DbusmenuMenuitem * item, const gchar * property, GVariant
 		gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
 
 		gtk_widget_set_size_request(GTK_WIDGET(gtkimage), width, height);
+#if GTK_CHECK_VERSION(3,0,0)
+		gtk_widget_set_halign(GTK_WIDGET(gtkimage), GTK_ALIGN_START);
+		gtk_widget_set_valign(GTK_WIDGET(gtkimage), GTK_ALIGN_CENTER);
+#else
 		gtk_misc_set_alignment(GTK_MISC(gtkimage), 0.0, 0.5);
+#endif
 	}
 
 	genericmenuitem_set_image(GENERICMENUITEM(gimi), gtkimage);
