@@ -1,3 +1,10 @@
+libdbusmenu (12.10.3+16.04.20160223.1-0ubuntu1) xenial; urgency=medium
+
+  [ Dan Williams ]
+  * gtk: look for GtkImages on regular GtkMenuItems too (LP: #1549021)
+
+ -- Marco Trevisan (Treviño) <mail@3v1n0.net>  Tue, 23 Feb 2016 23:20:43 +0000
+
 libdbusmenu (12.10.3+15.04.20150410.2-0ubuntu2) xenial; urgency=high
 
   * Disable test-json-instruction, hangs on buildds, see launchpad bug
