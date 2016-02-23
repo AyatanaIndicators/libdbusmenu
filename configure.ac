@@ -67,7 +67,6 @@ AS_IF([test "x$with_gtk" = x3],
                                          glib-2.0 >= $GLIB_REQUIRED_VERSION,
                                          [have_gtk=yes]
 )
-         AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
         ],
       [test "x$with_gtk" = x2],
         [PKG_CHECK_MODULES(DBUSMENUGTK,  gtk+-2.0 >= $GTK_REQUIRED_VERSION

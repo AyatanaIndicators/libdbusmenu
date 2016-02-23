@@ -907,7 +907,11 @@ update_icon (DbusmenuMenuitem *menuitem, ParserData * pdata, GtkImage *image)
                                              GTK_ICON_LOOKUP_FORCE_SIZE);
       if (info != NULL) {
         pixbuf = gtk_icon_info_load_icon (info, NULL);
+#if GTK_CHECK_VERSION(3,8,0)
+        g_object_unref (info);
+#else
         gtk_icon_info_free (info);
+#endif
       }
       break;
 
