@@ -1,11 +1,11 @@
 
-AC_INIT(libdbusmenu, 12.10.2, ted@canonical.com)
-AC_COPYRIGHT([Copyright 2009,2010 Canonical])
+AC_INIT(libdbusmenu, 16.04.0, ted@canonical.com)
+AC_COPYRIGHT([Copyright 2009-2016 Canonical])
 
 AC_PREREQ(2.62)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libdbusmenu, 12.10.2, [-Wno-portability])
+AM_INIT_AUTOMAKE(libdbusmenu, 16.04.0, [-Wno-portability])
 
 AM_MAINTAINER_MODE
 
@@ -137,6 +137,16 @@ PKG_CHECK_EXISTS([gobject-introspection-1.0 >= 0.10],
 				 introspection_ten=no)
 
 AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
+
+if test "$enable_introspection" = "yes"; then
+	# Redefine introspection dirs using proper prefixes
+
+	INTROSPECTION_GIRDIR=`$PKG_CONFIG --define-variable=datadir=${datadir} --variable=girdir gobject-introspection-1.0`
+	AC_SUBST(INTROSPECTION_GIRDIR)
+
+	INTROSPECTION_TYPELIBDIR=`$PKG_CONFIG --define-variable=libdir=${libdir} --variable=typelibdir gobject-introspection-1.0`
+	AC_SUBST(INTROSPECTION_TYPELIBDIR)
+fi
 
 ###########################
 # Vala API Generation
