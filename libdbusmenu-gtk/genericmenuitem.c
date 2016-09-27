@@ -335,8 +335,8 @@ set_label (GtkMenuItem * menu_item, const gchar * in_label)
 		labelw = GTK_LABEL(gtk_accel_label_new(local_label));
 		gtk_label_set_use_markup(GTK_LABEL(labelw), TRUE);
 #if GTK_CHECK_VERSION(3,0,0)
-		gtk_widget_set_halign(GTK_WIDGET(labelw), GTK_ALIGN_START);
-		gtk_widget_set_valign(GTK_WIDGET(labelw), GTK_ALIGN_CENTER);
+		gtk_label_set_xalign (labelw, 0);
+		gtk_label_set_yalign (labelw, 0.5);
 #else
 		gtk_misc_set_alignment(GTK_MISC(labelw), 0.0, 0.5);
 #endif
