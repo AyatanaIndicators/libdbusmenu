@@ -1,8 +1,12 @@
-libdbusmenu (16.04.1-0ubuntu1) UNRELEASED; urgency=medium
+libdbusmenu (16.04.1+16.10.20160927.2-0ubuntu1) yakkety; urgency=medium
 
+  [ Marco Trevisan (Treviño) ]
   * New upstream release
 
- -- Marco Trevisan (Treviño) <marco@ubuntu.com>  Sat, 27 Feb 2016 19:44:28 +0100
+  [ Albert Astals Cid ]
+  * genericmenuitem: Make accelerator text appear again (LP: #1628196)
+
+ -- Marco Trevisan (Treviño) <mail@3v1n0.net>  Tue, 27 Sep 2016 22:03:54 +0000
 
 libdbusmenu (12.10.3+16.04.20160223.1-0ubuntu1) xenial; urgency=medium
 
