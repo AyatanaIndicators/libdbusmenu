@@ -1,3 +1,14 @@
+libdbusmenu (16.04.1+17.04.20170109.1-0ubuntu1) zesty; urgency=medium
+
+  [ Dmitry Shachnev ]
+  * Fix build with --enable-massivedebugging
+
+  [ Marco Trevisan (Treviño) ]
+  * debian/control: add gnome-common as build dependency for autogen.sh"
+    debian/control
+
+ -- Marco Trevisan (Treviño) <mail@3v1n0.net>  Mon, 09 Jan 2017 15:38:49 +0000
+
 libdbusmenu (16.04.1+16.10.20160927.2-0ubuntu1) yakkety; urgency=medium
 
   [ Marco Trevisan (Treviño) ]
