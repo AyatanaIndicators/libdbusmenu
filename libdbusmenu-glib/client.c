@@ -2511,7 +2511,7 @@ dbusmenu_client_get_root (DbusmenuClient * client)
 	DbusmenuClientPrivate * priv = DBUSMENU_CLIENT_GET_PRIVATE(client);
 
 	#ifdef MASSIVEDEBUGGING
-	g_debug("Client get root: %X", (guint)priv->root);
+	g_debug("Client get root: %p", priv->root);
 	#endif
 
 	return priv->root;

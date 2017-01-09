@@ -879,7 +879,7 @@ static void
 destroy_gmi (GtkMenuItem * gmi)
 {
 #ifdef MASSIVEDEBUGGING
-	g_debug("Destroying GTK Menuitem %d", gmi);
+	g_debug("Destroying GTK Menuitem %p", gmi);
 #endif
 
 	/* Call gtk_widget_destroy to remove from any containers and cleanup */
