@@ -1,3 +1,67 @@
+libdbusmenu (16.04.1+17.04.20170109.1-4) unstable; urgency=medium
+
+  * Upload to unstable.
+
+  * debian/control:
+    + Raise versioned B-D for debhelper (>= 10.3~).
+    + Bump Standards-Version: to 4.0.1. No changes needed.
+  * debian/rules:
+    + Switch over from dh_install --fail-missing to dh_missing
+      --fail-missing.
+
+ -- Mike Gabriel <sunweaver@debian.org>  Wed, 23 Aug 2017 20:06:43 +0200
+
+libdbusmenu (16.04.1+17.04.20170109.1-3) experimental; urgency=medium
+
+  * debian/control:
+    + Drop Evgeni Golov from Uploaders: field per request via #debian-devel
+      on 2017-05-22 12:37 CEST.
+  * debian/rules:
+    + Add get-orig-source rule.
+  * debian/watch:
+    + Use Ubuntu's orig.tar.gz as orig tarball source.
+
+ -- Mike Gabriel <sunweaver@debian.org>  Tue, 23 May 2017 10:41:41 +0200
+
+libdbusmenu (16.04.1+17.04.20170109.1-2) experimental; urgency=medium
+
+  * debian/control:
+    + Exclude valgrind as B-D from various Debian-supported build platforms.
+
+ -- Mike Gabriel <sunweaver@debian.org>  Sat, 20 May 2017 12:15:21 +0200
+
+libdbusmenu (16.04.1+17.04.20170109.1-1) experimental; urgency=medium
+
+  * Merge new upstream release from Ubuntu.
+    - libdbusmenu-gtk4: Don't send Ubuntu-specific signal 'child-added' anymore.
+      (Closes: #850769).
+  * debian/patches:
+    + Add 0001_no-deprecated-gnome-common-macros.patch. Fully drop deprecated
+      gnome-common variables and macros. This and latest upstream changes...
+      (Closes: #829962).
+  * debian/control:
+    + New uploader for this package (Mike Gabriel). Package remains
+      team-maintained. (Closes: #818020).
+    + Replace Ubuntu's Vcs-*: fields. Now pointing to Debian's pkg-ayatana
+      namespace on git.debian.org.
+    + Bump Standards-Version: to 3.9.8. No changes needed.
+    + Typo fix for the word "development".
+    + Fix duplicate SYNOPSIS and LONG_DESCRIPTION phrases.
+    + Drop superfluous Pre-Depends: fields.
+  * debian/{control,compat}:
+    + Bump to DH level 10.
+  * debian/{control,rules}:
+    + Enable bindnow hardening (i.e. all hardening flags).
+  * debian/rules:
+    + Remove builddir/ on dh_auto_clean. Make build idempotent.
+    + Don't do parallel make during dh_auto_install. Several race conditions
+      have been observed for unknown reason. Avoid those.
+    + More dh_shlibdeps calls (for libdbusmenu-glib4, libdbusmenu-jsonloader4
+      and libdbusmenu-tools).
+  * debian/*: Process with 'wrap-and-sort -s -b -t'.
+
+ -- Mike Gabriel <sunweaver@debian.org>  Fri, 19 May 2017 16:33:42 +0200
+
 libdbusmenu (16.04.1+17.04.20170109.1-0ubuntu1) zesty; urgency=medium
 
   [ Dmitry Shachnev ]
@@ -248,6 +312,39 @@ libdbusmenu (12.10.3daily13.02.01-0ubuntu1) raring; urgency=low
 
  -- Automatic PS uploader <ps-jenkins@lists.canonical.com>  Fri, 01 Feb 2013 02:01:01 +0000
 
+libdbusmenu (12.10.2-2) unstable; urgency=medium
+
+  * QA upload.
+  * Set maintainer to Debian QA Group. (see #818020)
+  * Fix a spelling error in the description synopsis.
+
+ -- Adrian Bunk <bunk@debian.org>  Sun, 15 Jan 2017 01:28:48 +0200
+
+libdbusmenu (12.10.2-1) unstable; urgency=medium
+
+  [ Andrew Starr-Bochicchio ]
+  * Team upload.
+  * Many thanks to Andreas Cadhalpun!
+
+  [Andreas Cadhalpun]
+  * Import upstream version 12.10.2.
+  * debian/source/format: Switch from 1.0 to 3.0 (quilt).
+  * debian/patches:
+     - Drop optional-valgrind.patch, included upstream.
+     - Add g_type_init.patch to fix FTBFS (g_type_init is deprecated
+       after glib 2.36).
+     - Add reference-xinclude.patch to fix FTBFS due to XInclude errors.
+  * debian/control:
+     - Update valac build-dependency. (Closes: 707409, 709690)
+     - Drop build-dependency on quilt.
+     - Drop Breaks: libdbusmenu-glib0 (shouldn't be around anymore and
+       lintian complains)
+     - Update Standards version from 3.9.3 to 3.9.5 (no changes required).
+  * debian/copyright: Update dates.
+  * debian/rules: Drop quilt code.
+
+ -- Andrew Starr-Bochicchio <asb@debian.org>  Thu, 28 Aug 2014 11:15:52 -0700
+
 libdbusmenu (12.10.2-0ubuntu1) quantal; urgency=low
 
   * New upstream release.
@@ -273,6 +370,17 @@ libdbusmenu (12.10.1-0ubuntu1) quantal; urgency=low
 
  -- Didier Roche <didrocks@ubuntu.com>  Thu, 20 Sep 2012 19:22:52 +0200
 
+libdbusmenu (0.6.2-1) unstable; urgency=low
+
+  * Import latest upstream version from Ubuntu.
+  * Generate header files not arch-specific by droping the full 
+    (build time) path to the included files from comments.
+    Closes: #674200
+  * Only disable valgrind tests, not all of them.
+    This reintroduces the jsonloader packages that were previously droped.
+
+ -- Evgeni Golov <evgeni@debian.org>  Tue, 26 Jun 2012 21:13:01 +0200
+
 libdbusmenu (0.6.2-0ubuntu1) quantal; urgency=low
 
   * New upstream release.
@@ -282,6 +390,20 @@ libdbusmenu (0.6.2-0ubuntu1) quantal; urgency=low
     * Ensure menuitems with '&' show them properly (LP: #994564)
 
  -- Ted Gould <ted@ubuntu.com>  Wed, 13 Jun 2012 14:44:52 -0500
+
+libdbusmenu (0.6.1-2) unstable; urgency=low
+
+  * Disable tests, they need valgrind, not available on all arches.
+
+ -- Evgeni Golov <evgeni@debian.org>  Mon, 21 May 2012 07:54:01 +0200
+
+libdbusmenu (0.6.1-1) unstable; urgency=low
+
+  * Import latest upstream version from Ubuntu.
+    Closes: #666943
+  * Drop patches, applied upstream.
+
+ -- Evgeni Golov <evgeni@debian.org>  Sun, 20 May 2012 16:48:48 +0200
 
 libdbusmenu (0.6.1-0ubuntu3) precise-proposed; urgency=low
 
@@ -458,6 +580,20 @@ libdbusmenu (0.5.1-0ubuntu1) precise; urgency=low
       gets destroyed (LP: #835646)
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 28 Oct 2011 09:35:13 -0400
+
+libdbusmenu (0.5.0-3) unstable; urgency=low
+
+  * Fix GTK3 deprecations (based on upstream r352).
+    Closes: #669436
+  * Standards-Version: 3.9.3
+
+ -- Evgeni Golov <evgeni@debian.org>  Sun, 22 Apr 2012 19:15:37 +0200
+
+libdbusmenu (0.5.0-2) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Evgeni Golov <evgeni@debian.org>  Sun, 19 Feb 2012 10:55:28 +0100
 
 libdbusmenu (0.5.0-1ubuntu1) precise; urgency=low
 

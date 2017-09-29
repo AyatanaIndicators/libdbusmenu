@@ -1,2 +1,2 @@
 version=3
-http://launchpad.net/dbusmenu/+download .*/libdbusmenu-([0-9.]+)\.tar\.gz
+http://archive.ubuntu.com/ubuntu/pool/main/libd/libdbusmenu/libdbusmenu_([0-9.\+]+).orig.tar.gz
