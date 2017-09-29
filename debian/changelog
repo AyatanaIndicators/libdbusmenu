@@ -1,3 +1,10 @@
+libdbusmenu (17.09.29.1-0) UNRELEASED; urgency=medium
+
+  * Upstream-provided Debian package for libayatana-appindicator.
+    See upstream ChangeLog for recent changes.
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Wed, 23 Aug 2017 20:06:43 +0200
+
 libdbusmenu (16.04.1+17.04.20170109.1-4) unstable; urgency=medium
 
   * Upload to unstable.
