@@ -131,7 +131,6 @@ DbusmenuGtk_0_4_gir_EXPORT_PACKAGES = dbusmenu-gtk$(VER)-0.4
 # We duplicate these for the same reason as libdbusmenu_gtk3includedir above
 DbusmenuGtk3_0_4_gir_INCLUDES = $(DbusmenuGtk_0_4_gir_INCLUDES)
 DbusmenuGtk3_0_4_gir_CFLAGS = $(DbusmenuGtk_0_4_gir_CFLAGS)
-DbusmenuGtk3_0_4_gir_LDFLAGS = $(DbusmenuGtk_0_4_gir_LDFLAGS)
 DbusmenuGtk3_0_4_gir_LIBS = $(DbusmenuGtk_0_4_gir_LIBS)
 DbusmenuGtk3_0_4_gir_FILES = $(DbusmenuGtk_0_4_gir_FILES)
 DbusmenuGtk3_0_4_gir_NAMESPACE = $(DbusmenuGtk_0_4_gir_NAMESPACE)
