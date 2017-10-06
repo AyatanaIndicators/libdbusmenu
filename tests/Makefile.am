@@ -40,12 +40,6 @@ TESTS += \
 #	test-gtk-submenu 
 endif
 
-if ENABLE_GTK_DOC
-TESTS += \
-	test_libdbusmenu_glib_gtkdoc \
-	test_libdbusmenu_gtk_gtkdoc
-endif
-
 # The Python test only work on the system copy of
 # dbusmenu, so while they can be usefule they're not
 # good tests of what you're currently building.  Handy
@@ -543,22 +537,6 @@ test-mago: test-gtk-label-client test-gtk-label-server $(srcdir)/dbusmenu-gtk/ma
 	@echo echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests >> $@
 	@echo export INDICATOR_BUILD_DIR=$(abs_builddir) >> $@
 	@echo PYTHONPATH=$(abs_srcdir)/dbusmenu-gtk/mago_tests mago -f dbusmenu.xml -t $(abs_builddir)/mago.results --log-level=debug >> $@
-	@chmod +x $@
-
-#########################
-# Other
-#########################
-
-test_libdbusmenu_glib_gtkdoc:
-	@echo "#!/bin/bash" > $@
-	@echo cd $(abs_top_builddir)/docs/libdbusmenu-glib/reference >> $@
-	@echo gtester --verbose -k $(GTKDOC_CHECK_PATH) >> $@
-	@chmod +x $@
-
-test_libdbusmenu_gtk_gtkdoc:
-	@echo "#!/bin/bash" > $@
-	@echo cd $(abs_top_builddir)/docs/libdbusmenu-gtk/reference >> $@
-	@echo gtester --verbose -k $(GTKDOC_CHECK_PATH) >> $@
 	@chmod +x $@
 
 examplesdir = $(docdir)/examples/
