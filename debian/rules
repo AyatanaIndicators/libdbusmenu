@@ -11,8 +11,8 @@ CONFIGURE_FLAGS_gtk3 = --with-gtk=3
 
 CONFIGURE_COMMON_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection  --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
 
-INSTALL_COMMON_FLAGS =
-MISSING_COMMON_FLAGS = --fail-missing
+INSTALL_COMMON_FLAGS = --fail-missing
+#MISSING_COMMON_FLAGS = --fail-missing
 
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
@@ -51,21 +51,21 @@ else
 	VERBOSE=1 xvfb-run -a dh_auto_test --builddirectory=builddir/$*
 endif
 
-override_dh_missing:
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk4 --sourcedir=debian/tmp/gtk2
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk-dev --sourcedir=debian/tmp/gtk2
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk-doc --sourcedir=debian/tmp/gtk2
-	dh_missing $(MISSING_COMMON_FLAGS) -pgir1.2-dbusmenu-gtk-0.4 --sourcedir=debian/tmp/gtk2
-	dh_missing $(MISSING_COMMON_FLAGS) -pgir1.2-dbusmenu-glib-0.4 --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -pgir1.2-dbusmenu-gtk3-0.4 --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-glib4 --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-glib-dev --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-glib-doc --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk3-4 --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk3-dev --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-jsonloader4 --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-jsonloader-dev --sourcedir=debian/tmp/gtk3
-	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-tools --sourcedir=debian/tmp/gtk3
+#override_dh_missing:
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk4 --sourcedir=debian/tmp/gtk2
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk-dev --sourcedir=debian/tmp/gtk2
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk-doc --sourcedir=debian/tmp/gtk2
+#	dh_missing $(MISSING_COMMON_FLAGS) -pgir1.2-dbusmenu-gtk-0.4 --sourcedir=debian/tmp/gtk2
+#	dh_missing $(MISSING_COMMON_FLAGS) -pgir1.2-dbusmenu-glib-0.4 --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -pgir1.2-dbusmenu-gtk3-0.4 --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-glib4 --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-glib-dev --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-glib-doc --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk3-4 --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-gtk3-dev --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-jsonloader4 --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-jsonloader-dev --sourcedir=debian/tmp/gtk3
+#	dh_missing $(MISSING_COMMON_FLAGS) -plibdbusmenu-tools --sourcedir=debian/tmp/gtk3
 
 override_dh_install:
 	find debian/tmp -name \*.la -delete

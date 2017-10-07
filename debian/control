@@ -5,7 +5,7 @@ Maintainer: The Ayatana Packages <pkg-ayatana-devel@lists.alioth.debian.org>
 Uploaders:
  Mike Gabriel <sunweaver@debian.org>,
 Build-Depends: dbus-test-runner,
- debhelper (>= 10.3~),
+ debhelper (>= 9),
  dh-autoreconf,
  dpkg-dev (>= 1.16.1.1),
  gnome-common,
