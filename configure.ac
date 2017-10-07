@@ -1,5 +1,5 @@
 
-AC_INIT(libdbusmenu, 16.04.0, ted@canonical.com)
+AC_INIT(libdbusmenu, 17.09.29.1, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009-2016 Canonical])
 
 AC_PREREQ(2.62)
