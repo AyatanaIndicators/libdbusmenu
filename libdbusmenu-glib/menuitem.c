@@ -456,7 +456,7 @@ send_about_to_show (DbusmenuMenuitem * mi, void (*cb) (DbusmenuMenuitem * mi, gp
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(mi));
 
 	if (dbusmenu_menuitem_get_children(mi) == NULL && g_strcmp0(DBUSMENU_MENUITEM_CHILD_DISPLAY_SUBMENU, dbusmenu_menuitem_property_get(mi, DBUSMENU_MENUITEM_PROP_CHILD_DISPLAY)) != 0) {
-		g_warning("About to Show called on an item wihtout submenus.  We're ignoring it.");
+		g_warning("About to Show called on an item without submenus.  We're ignoring it.");
 	} else {
 		gboolean dummy;
 		g_signal_emit(G_OBJECT(mi), signals[ABOUT_TO_SHOW], 0, &dummy);
