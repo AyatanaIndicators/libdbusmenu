@@ -340,7 +340,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 			<arg type="ai" name="idErrors" direction="out">
 				<dox:d>
-					I list of menuitem IDs that couldn't be found.  If none of the ones
+					ID list of menuitem IDs that couldn't be found.  If none of the ones
 					in the list can be found, a DBus error is returned.
 				</dox:d>
 			</arg>
@@ -383,7 +383,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 			</arg>
 			<arg type="ai" name="idErrors" direction="out">
 				<dox:d>
-					I list of menuitem IDs that couldn't be found.  If none of the ones
+					ID list of menuitem IDs that couldn't be found.  If none of the ones
 					in the list can be found, a DBus error is returned.
 				</dox:d>
 			</arg>
